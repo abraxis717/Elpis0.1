@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "72394e3a81baf4f128985d83ba49dc8cbf3e62b03f0d33e1b0c1525d5ee490e9",
-      "size": 5681
+      "sha256": "7cc13f18687208069bc367c22f0d7b4b040a92b353e4741950347dc5ba988e6c",
+      "size": 5649
     },
     {
       "path": ".gitignore",
@@ -2175,7 +2175,7 @@
     },
     {
       "path": "manifests/PUBLIC_RELEASE_MANIFEST.json",
-      "sha256": "e0485ad4f32a2abf7fea2411aa3ade6f60e509580cea711dca0b2e1f72a86cb1",
+      "sha256": "a8719801a360da58b7cb52cfcd890f7d213956a525d15dc80c436a432ae24693",
       "size": 197448
     },
     {
@@ -5040,8 +5040,8 @@
     },
     {
       "path": "tools/ci_secret_scan.py",
-      "sha256": "343f2ecf7a7fec925d719eaaeec4e83a49b5bdaf173984fa6a5ce8b2a2bff31c",
-      "size": 7047
+      "sha256": "f58eb610172599e796a4fd8453fe08eb8cfc4f6248792f6f7e2c8b37505769db",
+      "size": 7516
     },
     {
       "path": "tools/print_component_map.py",

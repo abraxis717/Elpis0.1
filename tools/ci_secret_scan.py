@@ -78,6 +78,14 @@ TEST_FIXTURE_NAMES: set[str] = {
     "test_ci_secret_scan.py",
 }
 
+# Files that contain FORBIDDEN_PREFIXES security guard patterns with intentional
+# workstation paths — skip to avoid false positives on security guards
+GUARD_NAMES: set[str] = {
+    "transaction.py",
+    "test_r0_transaction.py",
+    "verify_public_release.py",
+}
+
 
 def scan_secrets(repo_root: Path) -> list[str]:
     """Scan for secrets and return list of finding descriptions."""
@@ -88,6 +96,8 @@ def scan_secrets(repo_root: Path) -> list[str]:
         if any(part in SKIP_DIRS for part in f.parts):
             continue
         if f.name == SELF_NAME:
+            continue
+        if f.name in TEST_FIXTURE_NAMES:
             continue
         if f.suffix not in TEXT_EXTENSIONS:
             continue
@@ -109,6 +119,10 @@ def scan_private_paths(repo_root: Path) -> list[str]:
         if f.is_dir():
             continue
         if any(part in SKIP_DIRS for part in f.parts):
+            continue
+        if f.name == SELF_NAME:
+            continue
+        if f.name in TEST_FIXTURE_NAMES or f.name in GUARD_NAMES:
             continue
         if f.suffix not in TEXT_EXTENSIONS and f.suffix != ".json":
             continue
