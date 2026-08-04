@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "11998866fa44c8e59ffe2dacf09d1ad1d0abaa37451b52ab02cb6cf6c4a0dcd1",
-      "size": 6037
+      "sha256": "5f719d77013576a65288b7177c753acd92c5cc0c10586044f439377f898abe8f",
+      "size": 6128
     },
     {
       "path": ".gitignore",
@@ -2175,8 +2175,8 @@
     },
     {
       "path": "manifests/PUBLIC_RELEASE_MANIFEST.json",
-      "sha256": "e905af67b852129cc292310d70548f20cc7791377c1b3f260d7d0edc58a11b47",
-      "size": 200787
+      "sha256": "77edf3ff2bfbd1f577081ee8d089743b6fed0f8423ced6c26b0ab2d03515911f",
+      "size": 202474
     },
     {
       "path": "native/elpis-header/COMPONENT_MANIFEST.json",

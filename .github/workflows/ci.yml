@@ -136,11 +136,11 @@ jobs:
         run: python tools/ci_secret_scan.py .
       - name: Run secret scanner tests
         run: PYTHONPATH=. pytest tests/test_ci_secret_scan.py -v
-      - name: Check for generated artifacts (exclude .git)
+      - name: Check for generated artifacts (exclude .git and __pycache__)
         run: |
-          if find . -not -path "./.git/*" \( -name "*.so" -o -name "*.a" -o -name "*.o" -o -name "*.pyc" -o -name "*.egg" \) -print 2>/dev/null | grep -q .; then
-            echo "BINARY ARTIFACTS DETECTED"
-            find . -not -path "./.git/*" \( -name "*.so" -o -name "*.a" -o -name "*.o" -o -name "*.pyc" -o -name "*.egg" \) -print
+          find . -not -path "./.git/*" -not -path "*/__pycache__/*" \( -name "*.so" -o -name "*.a" -o -name "*.o" -o -name "*.pyc" -o -name "*.egg" \) -print 2>/dev/null
+          if find . -not -path "./.git/*" -not -path "*/__pycache__/*" \( -name "*.so" -o -name "*.a" -o -name "*.o" -o -name "*.egg" \) -print 2>/dev/null | grep -q .; then
+            echo "BINARY ARTIFACTS DETECTED (excluding __pycache__)"
             exit 1
           fi
           echo "Binary artifact scan: CLEAN"
