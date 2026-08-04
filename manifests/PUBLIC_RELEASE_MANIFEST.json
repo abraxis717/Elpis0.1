@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "7cc13f18687208069bc367c22f0d7b4b040a92b353e4741950347dc5ba988e6c",
-      "size": 5649
+      "sha256": "11998866fa44c8e59ffe2dacf09d1ad1d0abaa37451b52ab02cb6cf6c4a0dcd1",
+      "size": 6037
     },
     {
       "path": ".gitignore",
@@ -2175,8 +2175,8 @@
     },
     {
       "path": "manifests/PUBLIC_RELEASE_MANIFEST.json",
-      "sha256": "a8719801a360da58b7cb52cfcd890f7d213956a525d15dc80c436a432ae24693",
-      "size": 197448
+      "sha256": "11ba6f8ee6d52e8fac51e78edcbf6e2134d2b2b6e163b11503970bc2538ea566",
+      "size": 200787
     },
     {
       "path": "native/elpis-header/COMPONENT_MANIFEST.json",
@@ -3015,8 +3015,8 @@
     },
     {
       "path": "native/hacf_bridge/CMakeLists.txt",
-      "sha256": "dbcf95a63c8e6e9f8b58a28312c03dc535175a775ff3a2cf75d368a7c10a03ef",
-      "size": 3536
+      "sha256": "768af6986d08308e776a88584615eadb1f23ed5385ab7917d257485b8c95a46e",
+      "size": 3049
     },
     {
       "path": "native/hacf_bridge/python_r1_wrapper.c",
@@ -5029,6 +5029,106 @@
       "size": 12371
     },
     {
+      "path": "src/elpis/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "src/elpis/contracts/__init__.py",
+      "sha256": "16f11f35d45b261c8bb24925ade94d2acefb2b3d5273cd77e963ba21aae0f616",
+      "size": 1449
+    },
+    {
+      "path": "src/elpis/contracts/budget.py",
+      "sha256": "9ba6bfa5d3a0f483ce2b9796e28a2dd2e90c44de4c21767827e73eb008ab95f2",
+      "size": 5534
+    },
+    {
+      "path": "src/elpis/contracts/closure/__init__.py",
+      "sha256": "8c7f7b3de8e70f6a263aef6675f9bd05347d98bc448d666d13a3be61e689aef1",
+      "size": 1310
+    },
+    {
+      "path": "src/elpis/contracts/closure/convergence.py",
+      "sha256": "a5bd8f8298666aef0463875bde0fff97804faf163c4193faa244a49ce112e4bd",
+      "size": 3774
+    },
+    {
+      "path": "src/elpis/contracts/closure/governance.py",
+      "sha256": "f2e992a14e2e44803ee949d4f87f46d032700f737053bc8878f5db68f8739b96",
+      "size": 3035
+    },
+    {
+      "path": "src/elpis/contracts/closure/identity.py",
+      "sha256": "3ed317a148b8294d751300a18702b593a6d37bd7effc4c93900a8b3680622318",
+      "size": 2333
+    },
+    {
+      "path": "src/elpis/contracts/closure/obligations.py",
+      "sha256": "3c35570c39555f7edfbe0bc2ffa32a67bcdb23c01b5d91b305a32f33f0a245c2",
+      "size": 4649
+    },
+    {
+      "path": "src/elpis/contracts/closure/observation.py",
+      "sha256": "a339a472cfa3db2ae857ae3fd3f8d1ead02a1ad22221676ecbd5032cf6dacb27",
+      "size": 2495
+    },
+    {
+      "path": "src/elpis/contracts/closure/projection.py",
+      "sha256": "35d34c7b31448410a905c118a1ee2b0f69e201b192f92b38af83195612461cb9",
+      "size": 5327
+    },
+    {
+      "path": "src/elpis/contracts/envelope.py",
+      "sha256": "acf750a5cac6fdf44169b1e4d82bdfce6e543cd6086e7709132d57c12df05e5a",
+      "size": 3161
+    },
+    {
+      "path": "src/elpis/contracts/equality.py",
+      "sha256": "3c02f329c0a97f3bce79b34b7a877523606eafd0d8e144c9a916d2c0e03b0b6c",
+      "size": 1408
+    },
+    {
+      "path": "src/elpis/contracts/identity.py",
+      "sha256": "5d3b1d956f0f8f3022324576f44efa9738d593a7c530e8fcc8e7473395642303",
+      "size": 3988
+    },
+    {
+      "path": "src/elpis/contracts/masks.py",
+      "sha256": "27a522c6245beb9ef71fd60895c59ac0ab5bf5fd67bd203d3caf28f8b67be710",
+      "size": 1618
+    },
+    {
+      "path": "src/elpis/contracts/payloads.py",
+      "sha256": "5b619501eb148ddef9c73b2bfdd3ef1e62cd5131e0434f4bb08b82235d11139d",
+      "size": 3212
+    },
+    {
+      "path": "src/elpis/contracts/phases.py",
+      "sha256": "d435a41fe8ae643e39abbfb67d820991edddcbd5f9f22a9356b44a4e1e6cf509",
+      "size": 3252
+    },
+    {
+      "path": "src/elpis/contracts/results.py",
+      "sha256": "3b9155052dd901a532ed5b1254c754df61ab04bb886d48489d5e014e2523f6fa",
+      "size": 2459
+    },
+    {
+      "path": "src/elpis/contracts/routing.py",
+      "sha256": "94beb0176be712e70d07f4a998c16e19af4514a16332e3c154b07a16df36ee59",
+      "size": 2827
+    },
+    {
+      "path": "src/elpis/logic/__init__.py",
+      "sha256": "b11399e67292f497d1a3b089df6d08dc90ce7df012f77782030586bddcae0b96",
+      "size": 2436
+    },
+    {
+      "path": "src/elpis/logic/account.py",
+      "sha256": "3ab74281fe21b726394f62c499a778ae1277b92fc7314904b10a012c1e8a615b",
+      "size": 27074
+    },
+    {
       "path": "tests/test_ci_secret_scan.py",
       "sha256": "bf8b2107e973ac43b5cde50ceae83a7b72153b03c822af98c45e7e99baca394d",
       "size": 9295
@@ -5055,8 +5155,8 @@
     },
     {
       "path": "tools/verify_public_release.py",
-      "sha256": "746274a8c5ad645d06301607f67ecb89de4db25039b670533dc48d8b247420be",
-      "size": 9083
+      "sha256": "6dd4f72d00f1e11de8528053f6cb0dbbb179e17b21a9ffd4febc9f89370d9ec8",
+      "size": 9090
     }
   ]
 }

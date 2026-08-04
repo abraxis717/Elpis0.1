@@ -187,7 +187,7 @@ def check_no_generated() -> tuple[bool, list[str]]:
 def check_undeclared_roots() -> tuple[bool, list[str]]:
     """Check for undeclared top-level directory roots."""
     allowed_roots = {
-        "components", "native", "runtime", "docs", "manifests", "tests", "tools",
+        "components", "native", "runtime", "docs", "manifests", "tests", "tools", "src",
         ".github", "LICENSE", "LICENSES", "README.md", "VERSION", "pyproject.toml",
         "CMakeLists.txt", "RELEASE_NOTES.md", "CHANGELOG.md", "CITATION.cff",
         "SECURITY.md", "CONTRIBUTING.md", "THIRD_PARTY_NOTICES.md",

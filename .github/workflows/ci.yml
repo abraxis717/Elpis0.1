@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install pytest==9.0.2
+      - run: pip install pytest==9.0.2 numpy
       - run: >
           PYTHONPATH=components/Grid81StructuralSemantics/src:components/Grid81TypedProjectionCompiler/src:components/Grid81StructuralGroupProjectionCompiler/src:components/Grid81DeterministicStructuralAdjudicator/src
           pytest components/Grid81StructuralSemantics/tests/ -v
@@ -42,9 +42,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install pytest==9.0.2 numpy
+      - run: pip install pytest==9.0.2 numpy torch --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple
       - run: >
-          PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components
+          PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src
           pytest runtime/R0/tests/ -v
 
   hacf-native:
@@ -119,7 +119,7 @@ jobs:
             -DHACF_LIB_DIR="$(pwd)/native/hacf/build"
           cmake --build native/hacf_bridge/build --parallel
       - run: >
-          PYTHONPATH=runtime/R1/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components
+          PYTHONPATH=runtime/R1/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src
           HACF_WRAPPER_LIB=native/hacf_bridge/build/libr1_hacf_wrapper.so
           pytest runtime/R1/tests/ -v
 
@@ -136,15 +136,18 @@ jobs:
         run: python tools/ci_secret_scan.py .
       - name: Run secret scanner tests
         run: PYTHONPATH=. pytest tests/test_ci_secret_scan.py -v
-      - name: Check for generated artifacts
+      - name: Check for generated artifacts (exclude .git)
         run: |
-          if find . \( -name "*.so" -o -name "*.a" -o -name "*.o" -o -name "*.pyc" -o -name "*.egg" \) -print 2>/dev/null | grep -q .; then
+          if find . -not -path "./.git/*" \( -name "*.so" -o -name "*.a" -o -name "*.o" -o -name "*.pyc" -o -name "*.egg" \) -print 2>/dev/null | grep -q .; then
             echo "BINARY ARTIFACTS DETECTED"
+            find . -not -path "./.git/*" \( -name "*.so" -o -name "*.a" -o -name "*.o" -o -name "*.pyc" -o -name "*.egg" \) -print
             exit 1
           fi
+          echo "Binary artifact scan: CLEAN"
       - name: Check for model weights
         run: |
-          if find . \( -name "*.gguf" -o -name "*.safetensors" -o -name "*.pt" \) -print 2>/dev/null | grep -q .; then
+          if find . -not -path "./.git/*" \( -name "*.gguf" -o -name "*.safetensors" -o -name "*.pt" \) -print 2>/dev/null | grep -q .; then
             echo "MODEL WEIGHTS DETECTED"
             exit 1
           fi
+          echo "Model weight scan: CLEAN"

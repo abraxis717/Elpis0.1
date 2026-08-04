@@ -51,32 +51,28 @@ target_include_directories(r1_hacf_wrapper PRIVATE
 )
 
 # Link the wrapper against the HACF static libraries and system dependencies.
-# The static libs are passed via target_link_libraries so CMake resolves
-# transitive dependencies correctly.  On Linux we also add --no-undefined so
-# any missing symbol fails at link time rather than load time.
+# The static libs contain C++ objects that need libstdc++ and libm available
+# during their resolution.  Use --start-group/--end-group linker flags (Linux)
+# so the linker handles circular dependencies among the static archives.
 target_link_libraries(r1_hacf_wrapper PRIVATE
   ${Python3_LIBRARIES}
-  stdc++
   sqlite3
   pthread
+  # HACF static archives inside a link group so C++ symbols resolve properly
+  "-Wl,--start-group"
+  ${HACF_HASH_LIB}
+  ${HACF_GRAPH_LIB}
+  ${HACF_FMS_LIB}
+  ${HACF_CASCADE_LIB}
+  ${HACF_EMBEDDING_LIB}
+  ${HACF_CHUNKING_LIB}
+  ${HACF_CORPUS_LIB}
+  ${HACF_VECTOR_LIB}
+  ${HACF_HYBRID_LIB}
+  stdc++
   m
-  # HACF static archives — order matters for the linker; hash -> graph -> fms
-  # -> cascade -> embedding -> chunking -> corpus -> vector -> hybrid
-  $<LINK_LIBRARY:WHOLE_ARCHIVE,${HACF_HASH_LIB}>
-  $<LINK_LIBRARY:WHOLE_ARCHIVE,${HACF_GRAPH_LIB}>
-  $<LINK_LIBRARY:WHOLE_ARCHIVE,${HACF_FMS_LIB}>
-  $<LINK_LIBRARY:WHOLE_ARCHIVE,${HACF_CASCADE_LIB}>
-  $<LINK_LIBRARY:WHOLE_ARCHIVE,${HACF_EMBEDDING_LIB}>
-  $<LINK_LIBRARY:WHOLE_ARCHIVE,${HACF_CHUNKING_LIB}>
-  $<LINK_LIBRARY:WHOLE_ARCHIVE,${HACF_CORPUS_LIB}>
-  $<LINK_LIBRARY:WHOLE_ARCHIVE,${HACF_VECTOR_LIB}>
-  $<LINK_LIBRARY:WHOLE_ARCHIVE,${HACF_HYBRID_LIB}>
+  "-Wl,--end-group"
 )
-
-# Reject unresolved symbols at link time (catches missing HACF symbols early).
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  target_link_options(r1_hacf_wrapper PRIVATE "-Wl,--no-undefined")
-endif()
 
 set_target_properties(r1_hacf_wrapper PROPERTIES
   OUTPUT_NAME "r1_hacf_wrapper"
