@@ -1,0 +1,22 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Grid81DeterministicCapabilityAuthorityEvaluator",
+  "component_id": "G52b_Capability_Authority_Evaluator",
+  "dependencies": [],
+  "display_name": "Capability Authority Evaluator",
+  "evidence_references": {},
+  "manifest_self_hash": "017ab42afd9b85d69078c11058b0d69c0b4844b5adf7c3b2fb145240be969a81",
+  "pipeline_role": "Capability authority evaluation (S13)",
+  "promotion_receipt_path": "promotion-receipts/G52b_Capability_Authority_Evaluator.json",
+  "public_interface_paths": [
+    "src/elpis_grid81_capability_authority/"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 35,
+  "release_file_list_digest": "ccd85fa324812726ec9e2b2635c43a461ae3e12eebf33e79882db49ad7124d8e",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "0dd1918df17bf756186a3901d8681ef6a22912780fcc96df6b54b2d887c11bc8",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Grid81DeterministicCapabilityAuthorityEvaluator",
+  "version": "production"
+}

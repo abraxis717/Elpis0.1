@@ -1,0 +1,73 @@
+{
+  "artifact_inventory": [
+    {
+      "artifact_role": "authority_audit",
+      "byte_size": 0,
+      "generation_order": 1,
+      "relative_path": "Canonical/Grid81/.authority_audit.json",
+      "sha256": "c16e54bf09e2f7eb75203ca0bb565d68d302a0cba33b262fa1dafbb71e350a93"
+    },
+    {
+      "artifact_role": "consumed_capability",
+      "byte_size": 0,
+      "generation_order": 2,
+      "relative_path": "Canonical/Grid81/.consumed_capability.json",
+      "sha256": "4dfd05a6629f6668a63dc90cf9bf2e88b547d121171aa48c6c034b8d49b531c4"
+    },
+    {
+      "artifact_role": "consumption_receipt",
+      "byte_size": 0,
+      "generation_order": 3,
+      "relative_path": "Canonical/Grid81/.consumption_receipt.json",
+      "sha256": "35b1d07161fd1b34cb82149a2aaa13e347583d5aa417cb2447716fcf99c1119f"
+    },
+    {
+      "artifact_role": "source_nonmutation_audit",
+      "byte_size": 0,
+      "generation_order": 4,
+      "relative_path": "Canonical/Grid81/.source_nonmutation_audit.json",
+      "sha256": "b55cd9552d40842c796e5d2f2bf4972572cde1c3605be17436b996f05f54668f"
+    },
+    {
+      "artifact_role": "transaction_manifest",
+      "byte_size": 0,
+      "generation_order": 5,
+      "relative_path": "Canonical/Grid81/.transaction_manifest.json",
+      "sha256": ""
+    },
+    {
+      "artifact_role": "canonical_head",
+      "byte_size": 0,
+      "generation_order": 6,
+      "relative_path": "Canonical/Grid81/HEAD.json",
+      "sha256": "1b0fbe02d123698f9cba2568b0967e860ec4957119feb02f29c0e3c783a8f7eb"
+    },
+    {
+      "artifact_role": "canonical_generation",
+      "byte_size": 0,
+      "generation_order": 7,
+      "relative_path": "Canonical/Grid81/generations/000001.json",
+      "sha256": "9b12c19386bfd7ef4ecf57c2c114bfaa6087a7caf14c415990f35d3b02fd0187"
+    }
+  ],
+  "authorization_digest": "70b6998d3d4f698d8e1eba8e3fde64a182e8f66a02c61dfdeb0ac55d4da31a17",
+  "capability_id": "1781086f674ea897aa7622133055592f3d4b07a862f691432be55541e729518c",
+  "commit_point": "HEAD written last after generation verified",
+  "generation": 1,
+  "ordered_actions": [
+    "create_staging_directory",
+    "write_generation",
+    "verify_generation",
+    "write_consumption_receipt",
+    "write_consumed_capability",
+    "write_head",
+    "verify_head",
+    "atomic_rename",
+    "verify_committed_state",
+    "write_replay_marker"
+  ],
+  "package_digest": "7641dfff72789b56c88735d180c269fbe519f1ebdbca91c9142eb2c02c3df571",
+  "schema": "elpis.grid81.g5-3i-e-transaction-manifest.v1",
+  "transaction_id": "63eea762300839621eac4959ddde3bfd5a344acbb94e2165a1ad2dd8755dc2eb",
+  "transaction_state": "PREPARED"
+}

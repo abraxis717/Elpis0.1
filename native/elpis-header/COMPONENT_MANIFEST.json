@@ -1,0 +1,24 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "components/elpis_header",
+  "component_id": "elpis_header",
+  "dependencies": [
+    "Grid81_Canonical_Substrate"
+  ],
+  "display_name": "Elpis Header",
+  "evidence_references": {},
+  "manifest_self_hash": "8799a7943bc001a7e5fec2425fde4f14b099250c581f9e1900ad294f21e818a6",
+  "pipeline_role": "Runtime reducers, Grid81 consumer (S04, S08)",
+  "promotion_receipt_path": "promotion-receipts/elpis_header.json",
+  "public_interface_paths": [
+    "src/elpis_header/contracts/"
+  ],
+  "qualification_disposition": "QUALIFIED_BUT_RELEASE_BOUNDARY_UNDEFINED",
+  "release_file_count": 20,
+  "release_file_list_digest": "3c8c5736ecb9fbb7454546b3559d91a5f5b876ff5311ad55d751539409e292b0",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "82291c3815c93a4858041cbcb2ae68f67a4b5d9087d6129be9ac6c7b65a17d73",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/components/elpis_header",
+  "version": "0.1.0"
+}

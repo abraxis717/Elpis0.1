@@ -1,0 +1,22 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Grid81",
+  "component_id": "Grid81_Canonical_Substrate",
+  "dependencies": [],
+  "display_name": "Grid81 Canonical Substrate",
+  "evidence_references": {},
+  "manifest_self_hash": "5f0f3c220b6454f5157ebaeae92898b6eff2c252a08443d8fc5e9ece5f2da021",
+  "pipeline_role": "Grid81 canonical state and reader (S04)",
+  "promotion_receipt_path": "promotion-receipts/Grid81_Canonical_Substrate.json",
+  "public_interface_paths": [
+    "canonical_reader.py"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 3,
+  "release_file_list_digest": "b9adf0a6b5b440ce0b0b79745d60523d6c3b1d6ea972a220a0aa919531dfa800",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "74fca63bcedae6d828e610cc759c27deb7fae4aec14b912f0defb1b8107434e5",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Grid81",
+  "version": "generation_000001"
+}

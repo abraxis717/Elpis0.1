@@ -1,0 +1,34 @@
+# HACF R2 Exact Dense Retrieval Cross-Host Seal
+
+status=HACF_R2_EXACT_DENSE_RETRIEVAL_CROSS_HOST_SEALED
+sealed_utc=2026-07-28T21:35:40Z
+
+control_host=Ouroboros
+qualification_host=elpis-mba72
+qualification_target=/home/joe/HashAdressedCascadeFabric
+
+r0_r1_seal_sha256=cf492f6345a8a9e89e2c7e2b68ee831d36e51aec48eeba18bfcfcada1632ed74
+r2_source_manifest_sha256=09d25ea40c153cc53aa357c2dd118425b4eeb6eafa24219783ea267176d56403
+macbook_r2_source_manifest_sha256=09d25ea40c153cc53aa357c2dd118425b4eeb6eafa24219783ea267176d56403
+ouroboros_r2_qualification_sha256=eca65ecd995da26ffa89bc8f1a8df97bf72e2ca23c55e98565af4eeb12d34c39
+macbook_r2_qualification_sha256=355123f28b5852afc784c0c399189ab056e245d393267dc09a70e52e3ef67815
+fixture_expectations_sha256=1761f258d86204e45a09b4abe181e4456427427f4161fe4cc770be346632ab4c
+
+embedding_profile_digest=68db7e3136ca715df91cf3bb059a51a921627419af7046f88b9d50525cafd1d5
+corpus_manifest_digest=0236ee2156c0c3d0b02924bcfe2a78aafac71c9a48b2229f4bab058534b1ed40
+fixture_shard_digest=db3f287093db35e1de525ba3f359a9d7bc597e65c07374b89101dfc1d2ae3332
+fixture_index_manifest_digest=e90263312cffd531dd6e7662b34a4c74b21d552d2e2baeafa15a7905cc084113
+fixture_query_digest=8075ab006b2dcb9bc3ec27ffb481703a94e3c23aadd53e1b8435e3dca762a42d
+fixture_result_digest=440a91c23c3b3177a228576dd6f560dfcab972fd66311032355ae158269fbd69
+
+tests=fms_r0,fms_concurrency,fms_adversarial,hash,r1_corpus,chunking_adversarial,cascade,graph,embedding_provider,vector_shard,vector_search,vector_fms,vector_concurrency,vector_crosshost_fixture,vector_adversarial
+functional_result=15/15_PASS
+cross_host_fixture_result=98_checks_0_failures
+source_parity=BYTE_IDENTICAL
+sanitizers=ASAN_UBSAN_TSAN_PASS
+
+scope=exact deterministic 384-dimensional CPU dense retrieval; immutable content-addressed vector shards; fixture and external embedding-provider ABI; L2-normalized cosine or normalized-dot scoring; canonical score-key ranking; FMS WARM-only shard residency; namespace and authority filtering; corruption rejection; concurrent read-only search; cross-host deterministic fixture identity
+
+excluded=approximate nearest-neighbor search; FAISS; HNSW; quantized vector formats; Intel GPU execution; Vulkan; hybrid lexical-vector fusion; RRF; bounded graph expansion; RetrievalBundle; persistent queue journal; Projector adapter; TRM adapter; DarwinianMatrix adapter
+
+baseline_policy=R2 source and identity-bearing fixture files are frozen after this seal; any modification requires a new gate and new source manifest

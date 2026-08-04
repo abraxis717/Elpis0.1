@@ -1,0 +1,22 @@
+{
+  "active_or_optional_status": "OPTIONAL",
+  "canonical_destination": "CNumPyCortex",
+  "component_id": "CNumPyCortex",
+  "dependencies": [],
+  "display_name": "C NumPy Cortex",
+  "evidence_references": {},
+  "manifest_self_hash": "f4e759fc4be0f6ac372165745fe4669103e6248e5a6598ddb0f049b8c5195081",
+  "pipeline_role": "Telemetry cortex, Grid81 transport (S08)",
+  "promotion_receipt_path": "promotion-receipts/CNumPyCortex.json",
+  "public_interface_paths": [
+    "src/c_numpy_cortex/"
+  ],
+  "qualification_disposition": "QUALIFIED_BUT_RELEASE_BOUNDARY_UNDEFINED",
+  "release_file_count": 46,
+  "release_file_list_digest": "55090625ecdf2813b962b12a27aebabdeb19d4df8565fdea184cb6aa15007f54",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "3ca7e72700f182fc55fb9c50c2a14996b1ddabdaaecb43284d8fbccc183c4f6c",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/CNumPyCortex",
+  "version": "0.1.0"
+}

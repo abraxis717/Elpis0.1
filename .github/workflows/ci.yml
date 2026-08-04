@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+  verify:
+    name: Public release verifier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python tools/verify_public_release.py
+
+  grid81:
+    name: Grid81 R1.1.1 tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pytest
+      - run: >
+          PYTHONPATH=components/Grid81StructuralSemantics/src:components/Grid81TypedProjectionCompiler/src:components/Grid81StructuralGroupProjectionCompiler/src:components/Grid81DeterministicStructuralAdjudicator/src
+          pytest components/Grid81StructuralSemantics/tests/ -v
+
+  runtime-r0:
+    name: Runtime R0 tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pytest
+      - run: >
+          PYTHONPATH=runtime/R0/src:components/Grid81StructuralSemantics/src
+          pytest runtime/R0/tests/ -v
+
+  runtime-r1:
+    name: Runtime R1 tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pytest
+      - name: Build HACF
+        run: |
+          cd native/hacf
+          mkdir build && cd build
+          cmake ..
+          make -j$(nproc)
+      - name: Build R1 wrapper
+        run: |
+          cd native/hacf_bridge
+          mkdir build && cd build
+          cmake .. -DHACF_INCLUDE_DIR=../hacf/include -DHACF_LIB_DIR=../hacf/build
+          make
+      - run: >
+          PYTHONPATH=runtime/R1/src:components/Grid81StructuralSemantics/src
+          HACF_WRAPPER_LIB=native/hacf_bridge/build/libr1_hacf_wrapper.so
+          pytest runtime/R1/tests/ -v
+
+  secret-scan:
+    name: Secret and artifact scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for secrets
+        run: |
+          if grep -r "BEGIN PRIVATE KEY\|ghp_\|github_pat_\|sk-\|AKIA\|AIza\|Authorization: Bearer\|password=\|token=\|secret=" --include="*.py" --include="*.c" --include="*.cpp" --include="*.h" --include="*.json" --include="*.toml" . 2>/dev/null; then
+            echo "SECRETS DETECTED"
+            exit 1
+          fi
+      - name: Check for binaries
+        run: |
+          if find . -name "*.so" -o -name "*.a" -o -name "*.o" -o -name "*.pyc" -o -name "*.egg" 2>/dev/null | grep -q .; then
+            echo "BINARY ARTIFACTS DETECTED"
+            exit 1
+          fi
+      - name: Check for model weights
+        run: |
+          if find . -name "*.gguf" -o -name "*.safetensors" -o -name "*.pt" 2>/dev/null | grep -q .; then
+            echo "MODEL WEIGHTS DETECTED"
+            exit 1
+          fi

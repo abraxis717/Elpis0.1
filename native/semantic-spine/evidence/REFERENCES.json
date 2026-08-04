@@ -1,0 +1,11 @@
+{
+  "component_id": "Semantic_Structural_Spine_V1",
+  "references": [
+    {
+      "authoritative_absolute_path": "${ELPIS_CANON}/Elpis_Companions/Elpis_Semantic_Fabric/reports/",
+      "evidence_kind": "qualification_reports",
+      "qualification_disposition": "QUALIFIED",
+      "availability": "AUTHORITATIVE_ROOT_ONLY"
+    }
+  ]
+}

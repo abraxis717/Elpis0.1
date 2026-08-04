@@ -1,0 +1,172 @@
+# FS1.1 Codec Registry Configuration
+# Static codec registry — controller-owned, hard-coded classes.
+# No dynamic imports, no model-selected codec IDs.
+
+registry_version = "elpis.codec-registry.fs11.v1"
+metric = "euclidean"  # <x, y> = x^T y — no codec-specific metric
+
+allowed_parameter_formats = ["json", "toml", "npy", "npz"]
+
+# Source priority — deterministic ordering (computational precedence only)
+source_priority = [
+    "trm.anchor",
+    "synthetic.fixture",
+]
+
+# Quality thresholds per fixture codec
+
+[thresholds.identity_cell81]
+collision_rate_max = 0.05
+perturbation_stability_p95_max = 1.1
+norm_distortion_max = 0.01
+
+[thresholds.scale_invariant]
+collision_rate_max = 0.05
+perturbation_stability_p95_max = 0.01
+
+[thresholds.collision_fixture]
+collision_rate_max = 0.1
+
+[thresholds.unstable_fixture]
+perturbation_stability_p95_max = 2.0
+
+[thresholds.ood_fixture]
+ood_correct_abstention_min = 0.8
+in_distribution_false_abstention_max = 0.05
+
+[thresholds.native_vector_passthrough]
+collision_rate_max = 0.05
+
+# Synthetic codec entries (TEST_ONLY only)
+
+[[codecs]]
+codec_id = "identity_cell81_fixture"
+codec_version = "0.1.0"
+codec_class = "DETERMINISTIC_NUMERIC"
+source_model_id = "__synthetic_fixture__"
+source_semantic_space = "fixture.native.vector81.v1"
+source_abi_version = "elpis.fixture.vector81.v1"
+source_shape = [81]
+source_dtype = "float64"
+target_evidence_kind = "CELL_ALIGNED_EVIDENCE"
+target_semantic_space = "latent.trm-orthogonal.cell81.v1"
+target_abi_version = "elpis.trm-orthogonal-latent.v1"
+target_shape = [81]
+target_dtype = "float64"
+implementation_digest = "sha256:identity_cell81_impl_v1"
+deterministic_mode = "pass_through"
+admission_status = "TEST_ONLY"
+evaluation_corpus_digest = "sha256:identity_eval_corpus_v1"
+authority_class = "PURE_EVIDENCE_TRANSFORM"
+context_fields = ["request_id", "node_id", "target_space_digest", "target_basis_digest"]
+notes = "Identity cell81 fixture codec — pass-through with validation only."
+
+[[codecs]]
+codec_id = "scale_invariant_fixture"
+codec_version = "0.1.0"
+codec_class = "DETERMINISTIC_NUMERIC"
+source_model_id = "__synthetic_fixture__"
+source_semantic_space = "fixture.native.vector81.v1"
+source_abi_version = "elpis.fixture.vector81.v1"
+source_shape = [81]
+source_dtype = "float64"
+target_evidence_kind = "CELL_ALIGNED_EVIDENCE"
+target_semantic_space = "latent.trm-orthogonal.cell81.v1"
+target_abi_version = "elpis.trm-orthogonal-latent.v1"
+target_shape = [81]
+target_dtype = "float64"
+implementation_digest = "sha256:scale_invariant_impl_v1"
+deterministic_mode = "unit_norm"
+admission_status = "TEST_ONLY"
+evaluation_corpus_digest = "sha256:scale_invariant_eval_corpus_v1"
+authority_class = "PURE_EVIDENCE_TRANSFORM"
+context_fields = ["request_id", "node_id", "target_space_digest", "target_basis_digest"]
+notes = "Scale-invariant fixture — normalizes to unit norm. Magnitude semantics: false."
+
+[[codecs]]
+codec_id = "collision_fixture"
+codec_version = "0.1.0"
+codec_class = "DETERMINISTIC_NUMERIC"
+source_model_id = "__synthetic_fixture__"
+source_semantic_space = "fixture.native.vector81.v1"
+source_abi_version = "elpis.fixture.vector81.v1"
+source_shape = [81]
+source_dtype = "float64"
+target_evidence_kind = "CELL_ALIGNED_EVIDENCE"
+target_semantic_space = "latent.trm-orthogonal.cell81.v1"
+target_abi_version = "elpis.trm-orthogonal-latent.v1"
+target_shape = [81]
+target_dtype = "float64"
+implementation_digest = "sha256:collision_fixture_impl_v1"
+deterministic_mode = "collapse"
+admission_status = "TEST_ONLY"
+evaluation_corpus_digest = "sha256:collision_fixture_eval_corpus_v1"
+authority_class = "PURE_EVIDENCE_TRANSFORM"
+context_fields = ["request_id", "node_id", "target_space_digest", "target_basis_digest"]
+notes = "Collision fixture — deliberately maps distinct inputs to same vector. Expected to fail."
+
+[[codecs]]
+codec_id = "unstable_fixture"
+codec_version = "0.1.0"
+codec_class = "DETERMINISTIC_NUMERIC"
+source_model_id = "__synthetic_fixture__"
+source_semantic_space = "fixture.native.vector81.v1"
+source_abi_version = "elpis.fixture.vector81.v1"
+source_shape = [81]
+source_dtype = "float64"
+target_evidence_kind = "CELL_ALIGNED_EVIDENCE"
+target_semantic_space = "latent.trm-orthogonal.cell81.v1"
+target_abi_version = "elpis.trm-orthogonal-latent.v1"
+target_shape = [81]
+target_dtype = "float64"
+implementation_digest = "sha256:unstable_fixture_impl_v1"
+deterministic_mode = "amplify"
+admission_status = "TEST_ONLY"
+evaluation_corpus_digest = "sha256:unstable_fixture_eval_corpus_v1"
+authority_class = "PURE_EVIDENCE_TRANSFORM"
+context_fields = ["request_id", "node_id", "target_space_digest", "target_basis_digest"]
+notes = "Unstable fixture — amplifies perturbations beyond threshold. Expected to fail."
+
+[[codecs]]
+codec_id = "ood_fixture"
+codec_version = "0.1.0"
+codec_class = "DETERMINISTIC_NUMERIC"
+source_model_id = "__synthetic_fixture__"
+source_semantic_space = "fixture.native.vector81.v1"
+source_abi_version = "elpis.fixture.vector81.v1"
+source_shape = [81]
+source_dtype = "float64"
+target_evidence_kind = "CELL_ALIGNED_EVIDENCE"
+target_semantic_space = "latent.trm-orthogonal.cell81.v1"
+target_abi_version = "elpis.trm-orthogonal-latent.v1"
+target_shape = [81]
+target_dtype = "float64"
+implementation_digest = "sha256:ood_fixture_impl_v1"
+deterministic_mode = "domain_gated"
+admission_status = "TEST_ONLY"
+evaluation_corpus_digest = "sha256:ood_fixture_eval_corpus_v1"
+authority_class = "PURE_EVIDENCE_TRANSFORM"
+context_fields = ["request_id", "node_id", "target_space_digest", "target_basis_digest"]
+notes = "OOD fixture — abstains outside [-10, 10] domain. Tests OOD behavior."
+
+[[codecs]]
+codec_id = "native_vector_passthrough"
+codec_version = "0.1.0"
+codec_class = "DETERMINISTIC_NUMERIC"
+source_model_id = "__synthetic_fixture__"
+source_semantic_space = "fixture.native.vector16.v1"
+source_abi_version = "elpis.fixture.vector16.v1"
+source_shape = [16]
+source_dtype = "float64"
+target_evidence_kind = "NATIVE_VECTOR_EVIDENCE"
+target_semantic_space = "fixture.native.vector16.canonical.v1"
+target_abi_version = "elpis.fixture.vector16.canonical.v1"
+target_shape = [16]
+target_dtype = "float64"
+implementation_digest = "sha256:native_vector_passthrough_impl_v1"
+deterministic_mode = "canonicalize"
+admission_status = "TEST_ONLY"
+evaluation_corpus_digest = "sha256:native_vector_passthrough_eval_corpus_v1"
+authority_class = "PURE_EVIDENCE_TRANSFORM"
+context_fields = ["request_id", "node_id", "target_space_digest", "target_basis_digest"]
+notes = "Native vector passthrough — stored, never orthogonalized."

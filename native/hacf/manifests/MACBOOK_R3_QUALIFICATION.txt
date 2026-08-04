@@ -1,0 +1,220 @@
+HACF_MACBOOK_R3_QUALIFICATION
+status=HACF_R3_MACBOOK_NATIVE_AND_PARITY_QUALIFIED
+captured_utc=2026-07-29T11:31:43Z
+control_host=Ouroboros
+target_alias=elpis-mba72
+target_root=/home/joe/HashAdressedCascadeFabric
+r2_seal_sha256=6988b9f0319d159437456efd15a027cf6ce14ba9ff7d11155194ee3c20f7a5e7
+source_manifest_sha256=6381ef1c6b845c7f953cbb9dcbf7701c8a5133c503d941123f3e5866cff141de
+ouroboros_r3_qualification_sha256=d49ead190eb15536e2048cb61d8791093d29eac81e4fe7d63037a514edff05da
+fixture_expectations_sha256=7987902a74be7cd49f6b7c9fdb5ebeebd79edfaaa3effa90610d14a2ced75530
+
+=== TARGET TOOLCHAIN ===
+elpis-mba72
+Linux elpis-mba72 6.18.40-2-lts #1 SMP PREEMPT_DYNAMIC Sat, 25 Jul 2026 19:01:40 +0000 x86_64 GNU/Linux
+cmake version 4.4.0
+1.13.2
+cc (GCC) 16.1.1 20260725
+3.53.4 2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e0945alt1 (64-bit)
+
+=== SOURCE PARITY ===
+local_manifest=/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/manifests/R3_SOURCE_SHA256SUMS.txt
+remote_manifest=/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/manifests/MACBOOK_R3_SOURCE_SHA256SUMS.txt
+manifest_sha256=6381ef1c6b845c7f953cbb9dcbf7701c8a5133c503d941123f3e5866cff141de
+diff=EMPTY
+
+=== TARGET RELEASE BUILD AND COMPLETE TEST SUITE ===
+-- The C compiler identification is GNU 16.1.1
+-- The CXX compiler identification is GNU 16.1.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Found SQLite3: /usr/lib/libsqlite3.so (found version "3.53.4")
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/joe/HashAdressedCascadeFabric/build-r3-release
+[1/73] Building C object CMakeFiles/elpis_fms.dir/src/memory/fms/fms_pal_posix.c.o
+[2/73] Building C object CMakeFiles/elpis_hash.dir/src/hash/sha256.c.o
+[3/73] Linking C static library libelpis_hash.a
+[4/73] Building CXX object CMakeFiles/elpis_embedding.dir/src/retrieval/embedding/external_vector_provider.cpp.o
+[5/73] Building C object CMakeFiles/elpis_cascade.dir/src/kernel/cascade.c.o
+[6/73] Building CXX object CMakeFiles/elpis_embedding.dir/src/retrieval/embedding/fixture_embedder.cpp.o
+[7/73] Linking CXX static library libelpis_embedding.a
+[8/73] Building C object CMakeFiles/elpis_fms.dir/src/memory/fms/fms_core.c.o
+[9/73] Linking C static library libelpis_fms.a
+[10/73] Building CXX object CMakeFiles/elpis_vector.dir/src/retrieval/vector/cpu_exact.cpp.o
+[11/73] Linking C static library libelpis_cascade.a
+[12/73] Building C object CMakeFiles/elpis_graph.dir/src/graph/graph.c.o
+[13/73] Building CXX object CMakeFiles/elpis_chunking.dir/src/retrieval/chunking/chunker.cpp.o
+[14/73] Linking CXX static library libelpis_chunking.a
+[15/73] Building C object CMakeFiles/elpis_fms_test_pal.dir/tests/support/fms_pal_test.c.o
+[16/73] Building CXX object CMakeFiles/elpis_corpus.dir/src/retrieval/corpus/corpus.cpp.o
+[17/73] Linking CXX static library libelpis_corpus.a
+[18/73] Building CXX object CMakeFiles/elpis_vector.dir/src/retrieval/vector/vector_manifest.cpp.o
+[19/73] Linking C static library libelpis_graph.a
+[20/73] Linking C static library libelpis_fms_test_pal.a
+[21/73] Building CXX object CMakeFiles/elpis_hybrid.dir/src/retrieval/hybrid/context_graph.cpp.o
+[22/73] Building C object CMakeFiles/test_fms_concurrency.dir/tests/fms/test_fms_concurrency.c.o
+[23/73] Building C object CMakeFiles/test_fms_adversarial.dir/tests/fms/test_fms_adversarial.c.o
+[24/73] Building C object CMakeFiles/test_hash.dir/tests/hash_test.c.o
+[25/73] Building CXX object CMakeFiles/elpis_vector.dir/src/retrieval/vector/vector_index.cpp.o
+[26/73] Building C object CMakeFiles/test_fms_r0.dir/tests/fms/test_fms_r0.c.o
+[27/73] Building C object CMakeFiles/test_cascade.dir/tests/kernel/test_cascade.c.o
+[28/73] Building C object CMakeFiles/test_graph.dir/tests/graph/test_graph.c.o
+[29/73] Building CXX object CMakeFiles/elpis_vector.dir/src/retrieval/vector/vector_shard.cpp.o
+[30/73] Linking CXX static library libelpis_vector.a
+[31/73] Building CXX object CMakeFiles/test_chunking_adversarial.dir/tests/retrieval/test_chunking_adversarial.cpp.o
+[32/73] Building CXX object CMakeFiles/elpis_hybrid.dir/src/retrieval/hybrid/retrieval_bundle.cpp.o
+[33/73] Building CXX object CMakeFiles/elpis_hybrid.dir/src/retrieval/hybrid/hybrid_retrieval.cpp.o
+[34/73] Building CXX object CMakeFiles/test_r1_corpus.dir/tests/retrieval/test_r1_corpus.cpp.o
+[35/73] Building CXX object CMakeFiles/test_embedding_provider.dir/tests/vector/test_embedding_provider.cpp.o
+[36/73] Building CXX object CMakeFiles/test_vector_shard.dir/tests/vector/test_vector_shard.cpp.o
+[37/73] Building CXX object CMakeFiles/test_vector_concurrency.dir/tests/vector/test_vector_concurrency.cpp.o
+[38/73] Linking CXX static library libelpis_hybrid.a
+[39/73] Building CXX object CMakeFiles/test_vector_fms.dir/tests/vector/test_vector_fms.cpp.o
+[40/73] Building CXX object CMakeFiles/test_vector_crosshost_fixture.dir/tests/vector/test_vector_crosshost_fixture.cpp.o
+[41/73] Building CXX object CMakeFiles/test_context_graph.dir/tests/hybrid/test_context_graph.cpp.o
+[42/73] Building CXX object CMakeFiles/test_vector_search.dir/tests/vector/test_vector_search.cpp.o
+[43/73] Building CXX object CMakeFiles/benchmark_vector_exact.dir/benchmarks/vector/benchmark_exact.cpp.o
+[44/73] Building CXX object CMakeFiles/test_hybrid_fusion.dir/tests/hybrid/test_hybrid_fusion.cpp.o
+[45/73] Building CXX object CMakeFiles/test_retrieval_bundle.dir/tests/hybrid/test_retrieval_bundle.cpp.o
+[46/73] Linking C executable test_fms_r0
+[47/73] Linking C executable test_fms_concurrency
+[48/73] Linking C executable test_fms_adversarial
+[49/73] Linking C executable test_hash
+[50/73] Linking CXX executable test_r1_corpus
+[51/73] Building CXX object CMakeFiles/test_hybrid_adversarial.dir/tests/hybrid/test_hybrid_adversarial.cpp.o
+[52/73] Linking C executable test_cascade
+[53/73] Linking C executable test_graph
+[54/73] Linking CXX executable test_chunking_adversarial
+[55/73] Linking CXX executable test_embedding_provider
+[56/73] Linking CXX executable test_vector_search
+[57/73] Linking CXX executable test_vector_shard
+[58/73] Linking CXX executable test_vector_fms
+[59/73] Linking CXX executable test_vector_crosshost_fixture
+[60/73] Linking CXX executable test_vector_concurrency
+[61/73] Linking CXX executable benchmark_vector_exact
+[62/73] Linking CXX executable test_context_graph
+[63/73] Linking CXX executable test_hybrid_fusion
+[64/73] Linking CXX executable test_retrieval_bundle
+[65/73] Linking CXX executable test_hybrid_adversarial
+[66/73] Building CXX object CMakeFiles/benchmark_hybrid.dir/benchmarks/hybrid/benchmark_hybrid.cpp.o
+[67/73] Building CXX object CMakeFiles/test_hybrid_concurrency.dir/tests/hybrid/test_hybrid_concurrency.cpp.o
+[68/73] Linking CXX executable benchmark_hybrid
+[69/73] Linking CXX executable test_hybrid_concurrency
+[70/73] Building CXX object CMakeFiles/test_vector_adversarial.dir/tests/vector/test_vector_adversarial.cpp.o
+[71/73] Linking CXX executable test_vector_adversarial
+[72/73] Building CXX object CMakeFiles/test_hybrid_crosshost_fixture.dir/tests/hybrid/test_hybrid_crosshost_fixture.cpp.o
+[73/73] Linking CXX executable test_hybrid_crosshost_fixture
+Test project /home/joe/HashAdressedCascadeFabric/build-r3-release
+      Start  1: fms_r0
+ 1/21 Test  #1: fms_r0 ...........................   Passed    1.33 sec
+      Start  2: fms_concurrency
+ 2/21 Test  #2: fms_concurrency ..................   Passed    0.57 sec
+      Start  3: fms_adversarial
+ 3/21 Test  #3: fms_adversarial ..................   Passed    0.01 sec
+      Start  4: hash
+ 4/21 Test  #4: hash .............................   Passed    0.00 sec
+      Start  5: r1_corpus
+ 5/21 Test  #5: r1_corpus ........................   Passed    0.52 sec
+      Start  6: chunking_adversarial
+ 6/21 Test  #6: chunking_adversarial .............   Passed    0.00 sec
+      Start  7: cascade
+ 7/21 Test  #7: cascade ..........................   Passed    0.00 sec
+      Start  8: graph
+ 8/21 Test  #8: graph ............................   Passed    0.00 sec
+      Start  9: embedding_provider
+ 9/21 Test  #9: embedding_provider ...............   Passed    0.00 sec
+      Start 10: vector_shard
+10/21 Test #10: vector_shard .....................   Passed    0.03 sec
+      Start 11: vector_search
+11/21 Test #11: vector_search ....................   Passed    0.02 sec
+      Start 12: vector_fms
+12/21 Test #12: vector_fms .......................   Passed    0.50 sec
+      Start 13: vector_concurrency
+13/21 Test #13: vector_concurrency ...............   Passed    1.17 sec
+      Start 14: vector_crosshost_fixture
+14/21 Test #14: vector_crosshost_fixture .........   Passed    0.09 sec
+      Start 15: vector_adversarial
+15/21 Test #15: vector_adversarial ...............   Passed    0.09 sec
+      Start 16: context_graph
+16/21 Test #16: context_graph ....................   Passed    0.00 sec
+      Start 17: hybrid_fusion
+17/21 Test #17: hybrid_fusion ....................   Passed    0.10 sec
+      Start 18: retrieval_bundle
+18/21 Test #18: retrieval_bundle .................   Passed    0.09 sec
+      Start 19: hybrid_adversarial
+19/21 Test #19: hybrid_adversarial ...............   Passed    0.09 sec
+      Start 20: hybrid_crosshost_fixture
+20/21 Test #20: hybrid_crosshost_fixture .........   Passed    0.09 sec
+      Start 21: hybrid_concurrency
+21/21 Test #21: hybrid_concurrency ...............   Passed    0.14 sec
+
+100% tests passed out of 21
+
+Total Test time (real) =   4.85 sec
+
+=== TARGET R3 CROSS-HOST FIXTURE ===
+UpdateCTestConfiguration  from :/home/joe/HashAdressedCascadeFabric/build-r3-release/DartConfiguration.tcl
+Test project /home/joe/HashAdressedCascadeFabric/build-r3-release
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 20
+    Start 20: hybrid_crosshost_fixture
+
+20: Test command: /home/joe/HashAdressedCascadeFabric/build-r3-release/test_hybrid_crosshost_fixture "/home/joe/HashAdressedCascadeFabric/build-r3-release/hybrid-xhost-state"
+20: Working Directory: /home/joe/HashAdressedCascadeFabric/build-r3-release
+20: Test timeout computed to be: 10000000
+20: R3 cross-host fixture
+20: # HACF R3 cross-host fixture expectations
+20: # Regenerate only for a deliberate R3 ABI or policy change.
+20: policy_digest=a6002ef6e93502169280774fe9e3073d0e9a3e391a19e2b6c80da48cc7a823d4
+20: graph_digest=2b43e80c3204b69c9a35f792dee019977ba15b01434e95b8c005d3d641d01b76
+20: corpus_manifest_digest=f25aa08d883435420588790b184ef125b2fe8a9871d17bee1e6bfd0c976faced
+20: index_manifest_digest=74f95a78f4bcf9d6ddd0c69af37d345fa78f7ae24580f0422d62b2f2b6ae86f2
+20: query_digest=3ab7d5328f3ec1f8179e31d1c916f7ddf0599e99769878326321deee315f5ddd
+20: bundle_digest=851bccfd919b06f3f45988bf76cac2c04ae609eb646570f5f8cb53abf996e7bb
+20: package_digest=2bc98328ba6b3f3f7924b34b7e6b794f5f723373305af649c5004c2bc69448b0
+20: item_count=2
+20: item_0=2194fa11494215d133fb29b61746c77c55f9b8c2adc7ab16570b36f9362a7252:3:3252247487:0
+20: item_1=c0b0d9f8256228c9aacdb5d0fb5523dd664458beed03382bcfebce030d803453:6:1587301587:1
+20: 10 checks, 0 failures
+1/1 Test #20: hybrid_crosshost_fixture .........   Passed    0.09 sec
+
+The following tests passed:
+	hybrid_crosshost_fixture
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.09 sec
+
+=== COMMITTED R3 FIXTURE IDENTITIES ===
+# HACF R3 cross-host fixture expectations
+# Regenerate only for a deliberate R3 ABI or policy change.
+policy_digest=a6002ef6e93502169280774fe9e3073d0e9a3e391a19e2b6c80da48cc7a823d4
+graph_digest=2b43e80c3204b69c9a35f792dee019977ba15b01434e95b8c005d3d641d01b76
+corpus_manifest_digest=f25aa08d883435420588790b184ef125b2fe8a9871d17bee1e6bfd0c976faced
+index_manifest_digest=74f95a78f4bcf9d6ddd0c69af37d345fa78f7ae24580f0422d62b2f2b6ae86f2
+query_digest=3ab7d5328f3ec1f8179e31d1c916f7ddf0599e99769878326321deee315f5ddd
+bundle_digest=851bccfd919b06f3f45988bf76cac2c04ae609eb646570f5f8cb53abf996e7bb
+package_digest=2bc98328ba6b3f3f7924b34b7e6b794f5f723373305af649c5004c2bc69448b0
+item_count=2
+item_0=2194fa11494215d133fb29b61746c77c55f9b8c2adc7ab16570b36f9362a7252:3:3252247487:0
+item_1=c0b0d9f8256228c9aacdb5d0fb5523dd664458beed03382bcfebce030d803453:6:1587301587:1
+
+=== TARGET R3 BENCHMARK ===
+{"bundle_digest":"851bccfd919b06f3f45988bf76cac2c04ae609eb646570f5f8cb53abf996e7bb","iterations":200,"p50_ms":0.389444,"p95_ms":0.425478,"schema":"elpis.hybrid_benchmark.v1"}

@@ -1,0 +1,11 @@
+{
+  "component_id": "Grid81_Canonical_Substrate",
+  "references": [
+    {
+      "authoritative_absolute_path": "${ELPIS_CANON}/Elpis_Canon/Grid81/",
+      "evidence_kind": "canonical_state",
+      "qualification_disposition": "QUALIFIED",
+      "availability": "AUTHORITATIVE_ROOT_ONLY"
+    }
+  ]
+}

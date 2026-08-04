@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "elpis-grid81-typed"
+version = "0.1.0"
+description = "G4.0B.1 Typed Projection Compiler with D4 Orbit Implementation"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

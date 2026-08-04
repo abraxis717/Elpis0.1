@@ -1,0 +1,60 @@
+{
+  "capability_digest": "74e48e6ec143f0c16a9be2b3f0a843f7e35df35b1c56c75c0f9cade46d262020",
+  "capability_id": "1781086f674ea897aa7622133055592f3d4b07a862f691432be55541e729518c",
+  "capability_type": "ATOMIC_GRID81_CANONICAL_PROMOTION",
+  "constraints": {
+    "append_only": true,
+    "atomic_staging_required": true,
+    "consumption_receipt_required": true,
+    "generation_verified_before_head": true,
+    "generation_written_first": true,
+    "head_written_last": true,
+    "one_use": true,
+    "post_write_verification_required": true,
+    "replay_rejection_required": true,
+    "rollback_required": true
+  },
+  "execution": {
+    "canonical_write_applied": true,
+    "ecs_world_write_applied": false,
+    "executable": false,
+    "generation_file_created": true,
+    "head_file_created": true,
+    "self_applying": false
+  },
+  "grants": {
+    "append_grid81_canonical_generation": true,
+    "create_grid81_canonical_head": true,
+    "ecs_world_commit": false,
+    "overwrite_existing_generation": false,
+    "overwrite_existing_head": false
+  },
+  "lifecycle": {
+    "consumed": true,
+    "consumption_count": 1,
+    "replay_permitted": false,
+    "state": "CONSUMED"
+  },
+  "schema": "elpis.grid81.g5-3i-b-one-use-canonical-promotion-capability.v1",
+  "source_bindings": {
+    "authority_preflight_sha256": "b015391819e0c405c067d0640a81341e4c0f3fc27160d73bf8c8690da6f141c2",
+    "preflight_chain_digest": "f6cd8e6e46d20bf3827fd07e26740dc5177e0353017f2267b3bddf899cd9576b",
+    "preflight_manifest_sha256": "bfca94111329e410035837b6d58df14658284a7295b8c38aeebc91d658cd274c",
+    "qualification_report_sha256": "bf12898be4fdd701baf4d8398f9ad85af076dcf80c87af9991c8363497a54483",
+    "readiness_seal_sha256": "0f2eacdc4d335460dc240dff346b0d1a952bdcef3e174ca91148e901a1cae908"
+  },
+  "target_bindings": {
+    "generation": 1,
+    "generation_file": "Canonical/Grid81/generations/000001.json",
+    "generation_prestate": "ABSENT",
+    "generation_prestate_digest": "5ec00b5b877005bf998546d665eea08b5b8dbe419b474a655eb09b620e1d8b0f",
+    "head_file": "Canonical/Grid81/HEAD.json",
+    "head_prestate": "ABSENT",
+    "head_prestate_digest": "a61a2c41dc6f6ef1cc9ff85049745705c8226ca92456dd8ba75ac917aa165fc1"
+  },
+  "transaction_binding": {
+    "generation_target": "Canonical/Grid81/generations/000001.json",
+    "head_target": "Canonical/Grid81/HEAD.json",
+    "transaction_id": "63eea762300839621eac4959ddde3bfd5a344acbb94e2165a1ad2dd8755dc2eb"
+  }
+}

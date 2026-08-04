@@ -1,0 +1,14 @@
+"""Explicit Header transaction terminal dispositions."""
+
+from enum import Enum
+
+
+class HeaderDisposition(str, Enum):
+    SEALED = "SEALED"
+    SEAL_VETOED = "SEAL_VETOED"
+    NO_VIABLE_SURVIVOR = "NO_VIABLE_SURVIVOR"
+    INNER_BUDGET_EXHAUSTED = "INNER_BUDGET_EXHAUSTED"
+    OUTER_BUDGET_EXHAUSTED = "OUTER_BUDGET_EXHAUSTED"
+    CONTROL_STILL_ACTIVE = "CONTROL_STILL_ACTIVE"
+    OSCILLATORY = "OSCILLATORY"
+    ABSTAINED = "ABSTAINED"

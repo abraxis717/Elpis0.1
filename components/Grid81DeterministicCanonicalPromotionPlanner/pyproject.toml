@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "elpis-grid81-promotion-planner"
+version = "1.0.0"
+description = "G5.3E Deterministic Canonical Promotion Planner"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+g53e-plan = "elpis_grid81_promotion_planner.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

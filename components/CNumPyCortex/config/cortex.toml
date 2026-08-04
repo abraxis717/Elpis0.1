@@ -1,0 +1,44 @@
+[loop]
+sample_hz = 20.0
+compile_hz = 10.0
+print_hz = 10.0
+forecast_interval_s = 5.0
+ring_capacity = 4096
+
+[chronos]
+enabled = true
+model_path = "/mnt/primesauce/Elpis_Canon/Models/chronos-2"
+device = "cpu"
+context_points = 256
+prediction_length = 8
+resample_rule = "200ms"
+min_points = 32
+
+[sensors]
+include_hwmon = true
+include_cpu_threads = true
+include_nvidia = true
+llama_poll_interval_s = 1.0
+llama_timeout_s = 0.20
+
+[compiler]
+channels = []
+normalization_window = 256
+clip_z = 3.0
+
+[output]
+grid_npz = "/mnt/primesauce/Elpis_Canon/CNumPyCortex/runtime/grid81_latest.npz"
+state_json = "/mnt/primesauce/Elpis_Canon/CNumPyCortex/runtime/state_latest.json"
+
+[retention]
+generations = 4
+
+channel_schema_path = "config/channel_schema.toml"
+
+[[llama.endpoints]]
+name = "cpu_8080"
+url = "http://127.0.0.1:8080"
+
+[[llama.endpoints]]
+name = "blackwell_8081"
+url = "http://127.0.0.1:8081"

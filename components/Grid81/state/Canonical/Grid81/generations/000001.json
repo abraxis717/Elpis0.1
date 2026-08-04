@@ -1,0 +1,46 @@
+{
+  "abi_version": "2.0.0",
+  "artifact_inventory": [
+    {
+      "content_digest": "",
+      "logical_path": "Canonical/Grid81/generations/000001.json",
+      "order": 1
+    },
+    {
+      "content_digest": "",
+      "logical_path": "Canonical/Grid81/HEAD.json",
+      "order": 2
+    }
+  ],
+  "authority_record": {
+    "authorization_digest": "70b6998d3d4f698d8e1eba8e3fde64a182e8f66a02c61dfdeb0ac55d4da31a17",
+    "capability_id": "1781086f674ea897aa7622133055592f3d4b07a862f691432be55541e729518c",
+    "operator_chain_digest": "f6cd8e6e46d20bf3827fd07e26740dc5177e0353017f2267b3bddf899cd9576b",
+    "package_digest": "7641dfff72789b56c88735d180c269fbe519f1ebdbca91c9142eb2c02c3df571",
+    "role": "production_atomic_promotion",
+    "schema": "elpis.grid81.g5-3i-e-authority-record.v1"
+  },
+  "capability_consumption_record": {
+    "capability_digest": "74e48e6ec143f0c16a9be2b3f0a843f7e35df35b1c56c75c0f9cade46d262020",
+    "capability_id": "1781086f674ea897aa7622133055592f3d4b07a862f691432be55541e729518c",
+    "consumed": true,
+    "consumption_count": 1,
+    "one_use": true,
+    "schema": "elpis.grid81.g5-3i-e-consumption-record.v1"
+  },
+  "ecs_world_write_applied": false,
+  "generation_file_sha256": "9eb6dadbda215b0139044d78c5b46e6664287fb97e70a5185904d917516e33d1",
+  "generation_number": 1,
+  "generation_semantic_digest": "d470ad79c00e8664ba03fa15caad7bb63777d8006b4c2825ef1fe9c94cbbe6c6",
+  "prior_generation_binding": "GENESIS",
+  "schema": "elpis.grid81.g5-3i-e-canonical-generation.v1",
+  "shadow_promotion_evidence": {
+    "shadow_ledger_head_digest": "b4443f60739e45520be5c022daa367e71cb494f93d8ba24e0fb3719203a781d2",
+    "shadow_post_state_digest": "6bb5d391ae3d7e43a5730255750d04896624ba677a91e28204d764b2e885cba4",
+    "shadow_transaction_digest": "7fbf365c97d13da6a8aaaae23edec6a5e39473c0e162f10718243082c23c2626"
+  },
+  "source_capability_digest": "74e48e6ec143f0c16a9be2b3f0a843f7e35df35b1c56c75c0f9cade46d262020",
+  "source_chain_digest": "f6cd8e6e46d20bf3827fd07e26740dc5177e0353017f2267b3bddf899cd9576b",
+  "transaction_id": "63eea762300839621eac4959ddde3bfd5a344acbb94e2165a1ad2dd8755dc2eb",
+  "type": "append_only_canonical_promotion"
+}

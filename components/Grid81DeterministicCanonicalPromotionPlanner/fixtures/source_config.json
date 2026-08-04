@@ -1,0 +1,5 @@
+{
+  "g53b1_directory": "${ELPIS_CANON}/Elpis_Canon/reports/G5_3B_DeterministicCapabilityConsumptionCompiler",
+  "g53c_directory": "${ELPIS_CANON}/Elpis_Canon/reports/G5_3C_DeterministicCapabilityApplicationExecutor",
+  "g53d_directory": "${ELPIS_CANON}/Elpis_Canon/reports/G5_3D_DeterministicApplicationEvidenceObservatory"
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "elpis.public.qualificationsummary.v1",
+  "release_version": "v1.1.1",
+  "grid81_version": "R1.1.1",
+  "runtime_admission": false,
+  "component_count": 17,
+  "qualified_dispositions": [
+    "ELPIS_RUNTIME_INTEGRATION_R0_DETERMINISTIC_TRANSACTION_QUALIFIED",
+    "ELPIS_RUNTIME_INTEGRATION_R1_BOUNDED_PREREFINEMENT_RETRIEVAL_QUALIFIED",
+    "ELPIS_RUNTIME_INTEGRATION_R1_CANONICAL_HYGIENE_RECONCILED",
+    "ELPIS_RUNTIME_R0_R1_GRID81_R1_1_CANONICAL_REBIND_QUALIFIED",
+    "GRID81_STRUCTURAL_SEMANTICS_R1.1.1_PROMOTED"
+  ],
+  "test_results": {
+    "grid81_direct": "122/122 PASS",
+    "grid81_consumer": "5/5 PASS",
+    "grid81_determinism": "9/9 PASS",
+    "runtime_r0": "26/26 PASS",
+    "runtime_r0_negative": "13/13 PASS",
+    "runtime_r0_determinism": "5/5 PASS",
+    "runtime_r1": "24/24 PASS",
+    "runtime_r1_negative": "12/12 PASS",
+    "runtime_r1_determinism": "5/5 PASS"
+  },
+  "hacf_wrapper": {
+    "buildable_from_source": true,
+    "binary_not_published": true,
+    "original_sha256": "94e887f19623b7339e4f0d3c51d82f1c83e09141ef994261ca92f317bd7affd0"
+  }
+}

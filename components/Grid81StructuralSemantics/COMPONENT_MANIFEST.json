@@ -1,0 +1,43 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Grid81StructuralSemantics",
+  "component_id": "Grid81_Structural_Semantics",
+  "dependencies": [],
+  "display_name": "Grid81 Structural Semantics",
+  "evidence_references": {
+    "candidate_file_manifest": {
+      "path": "${ELPIS_CANON}/Elpis_Canon/Elpis_Parallel/Grid81StructuralSemantics_R1_1_PromotionReadiness/audit/CANDIDATE_FILE_MANIFEST.json",
+      "sha256": "86ef3fa0477bd19d98e0d1c2d185dc3cd0632dbc93c2b0e2c0247ecd8df28977"
+    },
+    "digest_contract_manifest": {
+      "path": "${ELPIS_CANON}/Elpis_Canon/Elpis_Parallel/Grid81StructuralSemantics_R1_1_DigestContract/audit/RAW_DIGEST_CONTRACT_MANIFEST.json",
+      "sha256": "e410d50176b1b567cf79b4e435dddf1508868e396619caa378054272e3406fac"
+    },
+    "placement_contract_manifest": {
+      "path": "${ELPIS_CANON}/Elpis_Canon/Elpis_Parallel/Grid81StructuralSemantics_R1_1_PlacementContract/audit/RAW_PLACEMENT_CONTRACT_MANIFEST.json",
+      "sha256": "c258bf50cf8f060f4c4a6af9eb09eba11d5333de21c6e05e19a7bd511eb16709"
+    },
+    "promotion_readiness_manifest": {
+      "path": "${ELPIS_CANON}/Elpis_Canon/Elpis_Parallel/Grid81StructuralSemantics_R1_1_PromotionReadiness/audit/RAW_PROMOTION_READINESS_MANIFEST.json",
+      "sha256": "86d47aeb712605e5f5324ee768c4f67e902adf66c1c789d7fa6c45d23ea45ac8"
+    },
+    "source_digest_contract_manifest": {
+      "path": "${ELPIS_CANON}/Elpis_Canon/Elpis_Parallel/Grid81StructuralSemantics_R1_1_SourceDigestContract/audit/RAW_SOURCE_DIGEST_CONTRACT_MANIFEST.json",
+      "sha256": "430ada2839507adec5c1acd1b75fa5fed32b6d59a772baf7b0e9fe7827d79805"
+    }
+  },
+  "manifest_self_hash": "354a77b612b39f67ff259d41c0f8fcb8fa2ead93ba52c02aa3d3adbc4e1e8ffe",
+  "pipeline_role": "Grid81 structural semantics (S04)",
+  "promotion_receipt_path": "promotion-receipts/Grid81_Structural_Semantics.json",
+  "public_interface_paths": [
+    "src/elpis_grid81_semantics/"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 25,
+  "release_file_list_digest": "e926cac84f40aeb0ffb383891903d4f59090928ce0f86a2fe1692e8c1080951a",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "9204d944e1a643ddcd5f22e9cbc044a410136c3b5d8e57698957f1736376b388",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Elpis_Parallel/Grid81StructuralSemantics_R1_1_PromotionReadiness/candidate/Grid81StructuralSemantics",
+  "version": "R1.1.1"
+}

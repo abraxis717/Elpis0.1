@@ -1,0 +1,24 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Grid81DeterministicCapabilityApplicationExecutor",
+  "component_id": "G53c_Capability_Application_Executor",
+  "dependencies": [
+    "G53b_Capability_Consumption_Compiler"
+  ],
+  "display_name": "Capability Application Executor",
+  "evidence_references": {},
+  "manifest_self_hash": "9c7b3a95c4822dcc931c1b2d115339eff7a3e665c320532c5a06ae73a6328805",
+  "pipeline_role": "Capability application execution (S13)",
+  "promotion_receipt_path": "promotion-receipts/G53c_Capability_Application_Executor.json",
+  "public_interface_paths": [
+    "src/elpis_grid81_application_executor/"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 23,
+  "release_file_list_digest": "f1d704943fc2d36fcb0ce18b563e2f91f6cfbe55043acc8ad1102350a6ecc480",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "ffffa337fa67161ae06b324b75dfe9a3248e381b5807303ba5d5534aff1f567b",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Grid81DeterministicCapabilityApplicationExecutor",
+  "version": "production"
+}

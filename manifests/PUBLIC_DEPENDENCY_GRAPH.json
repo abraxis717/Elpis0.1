@@ -1,0 +1,59 @@
+{
+  "edges": [
+    {
+      "from": "Semantic_Structural_Spine_V1",
+      "to": "HACF_R3"
+    },
+    {
+      "from": "Grid81_Typed_Projection_Compiler",
+      "to": "Grid81_Structural_Semantics"
+    },
+    {
+      "from": "G50b_Structural_Group_Projection_Compiler",
+      "to": "Grid81_Structural_Semantics"
+    },
+    {
+      "from": "G51b_Deterministic_Structural_Adjudicator",
+      "to": "Grid81_Structural_Semantics"
+    },
+    {
+      "from": "P0ControlProtocol",
+      "to": "TRMFractalSpine_Structural_Modules"
+    },
+    {
+      "from": "elpis_header",
+      "to": "Grid81_Canonical_Substrate"
+    },
+    {
+      "from": "G53b_Capability_Consumption_Compiler",
+      "to": "G52b_Capability_Authority_Evaluator"
+    },
+    {
+      "from": "G53c_Capability_Application_Executor",
+      "to": "G53b_Capability_Consumption_Compiler"
+    },
+    {
+      "from": "G53e_Canonical_Promotion_Planner",
+      "to": "G53c_Capability_Application_Executor"
+    }
+  ],
+  "nodes": [
+    "HACF_R3",
+    "Semantic_Structural_Spine_V1",
+    "Grid81_Structural_Semantics",
+    "Grid81_Typed_Projection_Compiler",
+    "G50b_Structural_Group_Projection_Compiler",
+    "Grid81_Canonical_Substrate",
+    "TRMFractalSpine_Structural_Modules",
+    "G51b_Deterministic_Structural_Adjudicator",
+    "DarwinianMatrix",
+    "P0ControlProtocol",
+    "elpis_header",
+    "G52b_Capability_Authority_Evaluator",
+    "G53b_Capability_Consumption_Compiler",
+    "G53c_Capability_Application_Executor",
+    "G53e_Canonical_Promotion_Planner",
+    "CNumPyCortex",
+    "elpis_nanbeige42_host"
+  ]
+}

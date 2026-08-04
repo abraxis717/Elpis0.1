@@ -1,0 +1,144 @@
+HACF_R2_OUROBOROS_QUALIFICATION
+status=PASS_NOT_CROSS_HOST_SEALED
+captured_utc=2026-07-28T21:28:52Z
+host=Ouroboros
+Linux Ouroboros 6.18.33-1-MANJARO #1 SMP PREEMPT_DYNAMIC Sun, 24 May 2026 04:55:09 +0000 x86_64 GNU/Linux
+cmake version 4.3.3
+1.13.2
+cc (GCC) 16.1.1 20260430
+3.53.1 2026-05-05 10:34:17 c88b22011a54b4f6fbd149e9f8e4de77658ce58143a1af0e3785e4e64751alt1 (64-bit)
+
+FUNCTIONAL
+Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r2-functional
+      Start  1: fms_r0
+ 1/15 Test  #1: fms_r0 ...........................   Passed    1.12 sec
+      Start  2: fms_concurrency
+ 2/15 Test  #2: fms_concurrency ..................   Passed    0.25 sec
+      Start  3: fms_adversarial
+ 3/15 Test  #3: fms_adversarial ..................   Passed    0.01 sec
+      Start  4: hash
+ 4/15 Test  #4: hash .............................   Passed    0.00 sec
+      Start  5: r1_corpus
+ 5/15 Test  #5: r1_corpus ........................   Passed    0.44 sec
+      Start  6: chunking_adversarial
+ 6/15 Test  #6: chunking_adversarial .............   Passed    0.00 sec
+      Start  7: cascade
+ 7/15 Test  #7: cascade ..........................   Passed    0.00 sec
+      Start  8: graph
+ 8/15 Test  #8: graph ............................   Passed    0.00 sec
+      Start  9: embedding_provider
+ 9/15 Test  #9: embedding_provider ...............   Passed    0.00 sec
+      Start 10: vector_shard
+10/15 Test #10: vector_shard .....................   Passed    0.02 sec
+      Start 11: vector_search
+11/15 Test #11: vector_search ....................   Passed    0.03 sec
+      Start 12: vector_fms
+12/15 Test #12: vector_fms .......................   Passed    0.36 sec
+      Start 13: vector_concurrency
+13/15 Test #13: vector_concurrency ...............   Passed    0.91 sec
+      Start 14: vector_crosshost_fixture
+14/15 Test #14: vector_crosshost_fixture .........   Passed    0.09 sec
+      Start 15: vector_adversarial
+15/15 Test #15: vector_adversarial ...............   Passed    0.12 sec
+
+100% tests passed, 0 tests failed out of 15
+
+Total Test time (real) =   3.39 sec
+
+ASAN_UBSAN_RUNTIME
+	libasan.so.8 => /usr/lib/libasan.so.8 (0x00007f9091400000)
+	libubsan.so.1 => /usr/lib/libubsan.so.1 (0x00007f9090600000)
+
+ASAN_UBSAN
+Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r2-asan
+      Start  1: fms_r0
+ 1/15 Test  #1: fms_r0 ...........................   Passed    8.73 sec
+      Start  2: fms_concurrency
+ 2/15 Test  #2: fms_concurrency ..................   Passed    2.96 sec
+      Start  3: fms_adversarial
+ 3/15 Test  #3: fms_adversarial ..................   Passed    0.04 sec
+      Start  4: hash
+ 4/15 Test  #4: hash .............................   Passed    0.02 sec
+      Start  5: r1_corpus
+ 5/15 Test  #5: r1_corpus ........................   Passed    0.55 sec
+      Start  6: chunking_adversarial
+ 6/15 Test  #6: chunking_adversarial .............   Passed    0.03 sec
+      Start  7: cascade
+ 7/15 Test  #7: cascade ..........................   Passed    0.02 sec
+      Start  8: graph
+ 8/15 Test  #8: graph ............................   Passed    0.02 sec
+      Start  9: embedding_provider
+ 9/15 Test  #9: embedding_provider ...............   Passed    0.02 sec
+      Start 10: vector_shard
+10/15 Test #10: vector_shard .....................   Passed    0.07 sec
+      Start 11: vector_search
+11/15 Test #11: vector_search ....................   Passed    0.21 sec
+      Start 12: vector_fms
+12/15 Test #12: vector_fms .......................   Passed    4.57 sec
+      Start 13: vector_concurrency
+13/15 Test #13: vector_concurrency ...............   Passed   15.72 sec
+      Start 14: vector_crosshost_fixture
+14/15 Test #14: vector_crosshost_fixture .........   Passed    0.15 sec
+      Start 15: vector_adversarial
+15/15 Test #15: vector_adversarial ...............   Passed    0.39 sec
+
+100% tests passed, 0 tests failed out of 15
+
+Total Test time (real) =  33.50 sec
+
+TSAN_RUNTIME
+	libtsan.so.2 => /usr/lib/libtsan.so.2 (0x00007f6182400000)
+
+TSAN
+Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r2-tsan
+      Start  1: fms_r0
+ 1/15 Test  #1: fms_r0 ...........................   Passed    9.46 sec
+      Start  2: fms_concurrency
+ 2/15 Test  #2: fms_concurrency ..................   Passed    3.15 sec
+      Start  3: fms_adversarial
+ 3/15 Test  #3: fms_adversarial ..................   Passed    0.06 sec
+      Start  4: hash
+ 4/15 Test  #4: hash .............................   Passed    0.02 sec
+      Start  5: r1_corpus
+ 5/15 Test  #5: r1_corpus ........................   Passed    0.56 sec
+      Start  6: chunking_adversarial
+ 6/15 Test  #6: chunking_adversarial .............   Passed    0.02 sec
+      Start  7: cascade
+ 7/15 Test  #7: cascade ..........................   Passed    0.03 sec
+      Start  8: graph
+ 8/15 Test  #8: graph ............................   Passed    0.01 sec
+      Start  9: embedding_provider
+ 9/15 Test  #9: embedding_provider ...............   Passed    0.01 sec
+      Start 10: vector_shard
+10/15 Test #10: vector_shard .....................   Passed    0.11 sec
+      Start 11: vector_search
+11/15 Test #11: vector_search ....................   Passed    0.20 sec
+      Start 12: vector_fms
+12/15 Test #12: vector_fms .......................   Passed    5.61 sec
+      Start 13: vector_concurrency
+13/15 Test #13: vector_concurrency ...............   Passed   16.91 sec
+      Start 14: vector_crosshost_fixture
+14/15 Test #14: vector_crosshost_fixture .........   Passed    0.16 sec
+      Start 15: vector_adversarial
+15/15 Test #15: vector_adversarial ...............   Passed    0.53 sec
+
+100% tests passed, 0 tests failed out of 15
+
+Total Test time (real) =  36.84 sec
+
+CROSS_HOST_FIXTURE
+# HACF R2 cross-host fixture expectations
+# Regenerate only when a profile or ABI deliberately changes.
+embedding_profile_digest=68db7e3136ca715df91cf3bb059a51a921627419af7046f88b9d50525cafd1d5
+corpus_manifest_digest=0236ee2156c0c3d0b02924bcfe2a78aafac71c9a48b2229f4bab058534b1ed40
+shard_digest=db3f287093db35e1de525ba3f359a9d7bc597e65c07374b89101dfc1d2ae3332
+index_manifest_digest=e90263312cffd531dd6e7662b34a4c74b21d552d2e2baeafa15a7905cc084113
+query_digest=8075ab006b2dcb9bc3ec27ffb481703a94e3c23aadd53e1b8435e3dca762a42d
+chunk_count=12
+hit_count=5
+hit_0=27d252d04b10e1e4929d423fe2102f40a482aedccb8b0f4f42fd832019efec11:62500000000
+hit_1=3f65469b1444d75b3179ecaa7f2b51417c36d6bc06f3fa28b2cdfb1fe5dcadd2:62500000000
+hit_2=c855b3601ad812b1742438e62c83c0c8e8182152b2635920c6666c09838a4a7c:62500000000
+hit_3=2ae446a800548db1f5007c58152d332350687fc7c7ea5dbabf084ade69c69118:0
+hit_4=32637dc74ad1f7fbe9faa28bdee28f353d50a17a7213b8adf9a7a41456e40b76:0
+result_digest=440a91c23c3b3177a228576dd6f560dfcab972fd66311032355ae158269fbd69

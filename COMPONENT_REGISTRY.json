@@ -1,0 +1,300 @@
+{
+  "assembly_version": "ELPIS_CANONICAL_ASSEMBLY_R1",
+  "component_count": 17,
+  "components": [
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "HACF_R3",
+      "component_manifest_digest": "1dd835f3a755b7f616af3eb84e435561b1192cfef6581db4d494d5fe90ed890d",
+      "component_manifest_path": "HACF_R3/COMPONENT_MANIFEST.json",
+      "dependencies": [],
+      "promotion_order": 1,
+      "promotion_receipt": "promotion-receipts/HACF_R3.json",
+      "public_interfaces": [
+        "include/elpis/"
+      ],
+      "qualification_disposition": "SEALED_AND_PROMOTABLE",
+      "relative_path": "HACF_R3",
+      "runtime_admission": false,
+      "version": "R3"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "Semantic_Structural_Spine_V1",
+      "component_manifest_digest": "d4dd2c7cc6deef418fd78608482520e85f99db8044d14f582e8cc325375a149e",
+      "component_manifest_path": "SemanticStructuralSpine_V1/COMPONENT_MANIFEST.json",
+      "dependencies": [
+        "HACF_R3"
+      ],
+      "promotion_order": 2,
+      "promotion_receipt": "promotion-receipts/Semantic_Structural_Spine_V1.json",
+      "public_interfaces": [
+        "include/elpis_semantic/"
+      ],
+      "qualification_disposition": "SEALED_AND_PROMOTABLE",
+      "relative_path": "SemanticStructuralSpine_V1",
+      "runtime_admission": false,
+      "version": "V1"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "Grid81_Structural_Semantics",
+      "component_manifest_digest": "476886d5b750d84edf1e8a743e6167991c83ff99f5f936e3313becbcdcebd308",
+      "component_manifest_path": "Grid81StructuralSemantics/COMPONENT_MANIFEST.json",
+      "dependencies": [],
+      "promotion_order": 3,
+      "promotion_receipt": "promotion-receipts/Grid81_Structural_Semantics.json",
+      "public_interfaces": [
+        "src/elpis_grid81_semantics/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Grid81StructuralSemantics",
+      "runtime_admission": false,
+      "version": "R1.1"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "Grid81_Typed_Projection_Compiler",
+      "component_manifest_digest": "109809a126ae4fc889d8032129df49de3cf453a211a53eecfe6aa427be985911",
+      "component_manifest_path": "Grid81TypedProjectionCompiler/COMPONENT_MANIFEST.json",
+      "dependencies": [
+        "Grid81_Structural_Semantics"
+      ],
+      "promotion_order": 4,
+      "promotion_receipt": "promotion-receipts/Grid81_Typed_Projection_Compiler.json",
+      "public_interfaces": [
+        "src/elpis_grid81_typed/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Grid81TypedProjectionCompiler",
+      "runtime_admission": false,
+      "version": "production"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "G50b_Structural_Group_Projection_Compiler",
+      "component_manifest_digest": "3a4b9d6fe7058a63b4dd6fc026aaf3e0382f81bec2d573dc9ba06682cbb5c05a",
+      "component_manifest_path": "Grid81StructuralGroupProjectionCompiler/COMPONENT_MANIFEST.json",
+      "dependencies": [
+        "Grid81_Structural_Semantics"
+      ],
+      "promotion_order": 5,
+      "promotion_receipt": "promotion-receipts/G50b_Structural_Group_Projection_Compiler.json",
+      "public_interfaces": [
+        "src/elpis_grid81_groups/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Grid81StructuralGroupProjectionCompiler",
+      "runtime_admission": false,
+      "version": "production"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "Grid81_Canonical_Substrate",
+      "component_manifest_digest": "acd8f38f03338841459068fd621f9aab2af57708547c57525454d4ae5d12b96a",
+      "component_manifest_path": "Grid81/COMPONENT_MANIFEST.json",
+      "dependencies": [],
+      "promotion_order": 6,
+      "promotion_receipt": "promotion-receipts/Grid81_Canonical_Substrate.json",
+      "public_interfaces": [
+        "canonical_reader.py"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Grid81",
+      "runtime_admission": false,
+      "version": "generation_000001"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "TRMFractalSpine_Structural_Modules",
+      "component_manifest_digest": "db9ed23be2b8fa5162d6687af46933b636fe8cd69f1660710e00dea7918718ce",
+      "component_manifest_path": "TRMFractalSpine/COMPONENT_MANIFEST.json",
+      "dependencies": [],
+      "promotion_order": 7,
+      "promotion_receipt": "promotion-receipts/TRMFractalSpine_Structural_Modules.json",
+      "public_interfaces": [
+        "structural_semantics.py",
+        "structural_oracle.py",
+        "structural_refinement.py"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "TRMFractalSpine",
+      "runtime_admission": false,
+      "version": "production"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "G51b_Deterministic_Structural_Adjudicator",
+      "component_manifest_digest": "51f53ac4a374cd724eaa61098654a570679caa61a4b2c96679b466dd6abbb80c",
+      "component_manifest_path": "Grid81DeterministicStructuralAdjudicator/COMPONENT_MANIFEST.json",
+      "dependencies": [
+        "Grid81_Structural_Semantics"
+      ],
+      "promotion_order": 8,
+      "promotion_receipt": "promotion-receipts/G51b_Deterministic_Structural_Adjudicator.json",
+      "public_interfaces": [
+        "src/elpis_grid81_adjudication/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Grid81DeterministicStructuralAdjudicator",
+      "runtime_admission": false,
+      "version": "production"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "DarwinianMatrix",
+      "component_manifest_digest": "65ae8b13f32f8d072fbbeb9a55940c2d80afd7d56d4be7fa6cebac7f94ef9c36",
+      "component_manifest_path": "DarwinianMatrix/COMPONENT_MANIFEST.json",
+      "dependencies": [],
+      "promotion_order": 9,
+      "promotion_receipt": "promotion-receipts/DarwinianMatrix.json",
+      "public_interfaces": [
+        "__init__.py"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "DarwinianMatrix",
+      "runtime_admission": false,
+      "version": "production"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "P0ControlProtocol",
+      "component_manifest_digest": "30a49d68646f53313dd95a60bb6f17b70d3befbec8400bdcbaf201850c938818",
+      "component_manifest_path": "Pipeline/P0ControlProtocol/COMPONENT_MANIFEST.json",
+      "dependencies": [
+        "TRMFractalSpine_Structural_Modules"
+      ],
+      "promotion_order": 10,
+      "promotion_receipt": "promotion-receipts/P0ControlProtocol.json",
+      "public_interfaces": [
+        "src/elpis_p0/contracts.py",
+        "src/elpis_p0/ports.py"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Pipeline/P0ControlProtocol",
+      "runtime_admission": false,
+      "version": "P0.3"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "elpis_header",
+      "component_manifest_digest": "bd3a5acb59442c65aef7ae06f9586e48ff391f06933857735d8ca6e00639ba9c",
+      "component_manifest_path": "components/elpis_header/COMPONENT_MANIFEST.json",
+      "dependencies": [
+        "Grid81_Canonical_Substrate"
+      ],
+      "promotion_order": 11,
+      "promotion_receipt": "promotion-receipts/elpis_header.json",
+      "public_interfaces": [
+        "src/elpis_header/contracts/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "components/elpis_header",
+      "runtime_admission": false,
+      "version": "0.1.0"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "G52b_Capability_Authority_Evaluator",
+      "component_manifest_digest": "6b8ec8ebbb99a5d12cbfa4cf07a8455f854b897df39d4181fbfaaa258185676c",
+      "component_manifest_path": "Grid81DeterministicCapabilityAuthorityEvaluator/COMPONENT_MANIFEST.json",
+      "dependencies": [],
+      "promotion_order": 12,
+      "promotion_receipt": "promotion-receipts/G52b_Capability_Authority_Evaluator.json",
+      "public_interfaces": [
+        "src/elpis_grid81_capability_authority/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Grid81DeterministicCapabilityAuthorityEvaluator",
+      "runtime_admission": false,
+      "version": "production"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "G53b_Capability_Consumption_Compiler",
+      "component_manifest_digest": "56a6ba177ace856da48420d507188f6a9adce60e2cb864505cfb37cc7a6a6dd9",
+      "component_manifest_path": "Grid81DeterministicCapabilityConsumptionCompiler/COMPONENT_MANIFEST.json",
+      "dependencies": [
+        "G52b_Capability_Authority_Evaluator"
+      ],
+      "promotion_order": 13,
+      "promotion_receipt": "promotion-receipts/G53b_Capability_Consumption_Compiler.json",
+      "public_interfaces": [
+        "src/elpis_grid81_consumption_compiler/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Grid81DeterministicCapabilityConsumptionCompiler",
+      "runtime_admission": false,
+      "version": "production"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "G53c_Capability_Application_Executor",
+      "component_manifest_digest": "8bdd8363173a562a4ba583ac4a116d563deb4bde70c38d87fa295f4845f27b06",
+      "component_manifest_path": "Grid81DeterministicCapabilityApplicationExecutor/COMPONENT_MANIFEST.json",
+      "dependencies": [
+        "G53b_Capability_Consumption_Compiler"
+      ],
+      "promotion_order": 14,
+      "promotion_receipt": "promotion-receipts/G53c_Capability_Application_Executor.json",
+      "public_interfaces": [
+        "src/elpis_grid81_application_executor/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Grid81DeterministicCapabilityApplicationExecutor",
+      "runtime_admission": false,
+      "version": "production"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "G53e_Canonical_Promotion_Planner",
+      "component_manifest_digest": "360036983a65c5d3eccbdbfa4d8b288c7dbc09be979348737ff8a83fcea6c573",
+      "component_manifest_path": "Grid81DeterministicCanonicalPromotionPlanner/COMPONENT_MANIFEST.json",
+      "dependencies": [
+        "G53c_Capability_Application_Executor"
+      ],
+      "promotion_order": 15,
+      "promotion_receipt": "promotion-receipts/G53e_Canonical_Promotion_Planner.json",
+      "public_interfaces": [
+        "src/elpis_grid81_promotion_planner/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "Grid81DeterministicCanonicalPromotionPlanner",
+      "runtime_admission": false,
+      "version": "production"
+    },
+    {
+      "active_path_status": "OPTIONAL",
+      "component_id": "CNumPyCortex",
+      "component_manifest_digest": "bae3f1e1fa0f42b6e6a6ce31d4daea25700450e89fd494abf5f5fa2a03b48c9c",
+      "component_manifest_path": "CNumPyCortex/COMPONENT_MANIFEST.json",
+      "dependencies": [],
+      "promotion_order": 16,
+      "promotion_receipt": "promotion-receipts/CNumPyCortex.json",
+      "public_interfaces": [
+        "src/c_numpy_cortex/"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "CNumPyCortex",
+      "runtime_admission": false,
+      "version": "0.1.0"
+    },
+    {
+      "active_path_status": "ACTIVE",
+      "component_id": "elpis_nanbeige42_host",
+      "component_manifest_digest": "486e45f6582095d7b15b5d96aeb46fb5fad61d25b68fba886e85a74766964c8b",
+      "component_manifest_path": "components/elpis_nanbeige42_host/COMPONENT_MANIFEST.json",
+      "dependencies": [],
+      "promotion_order": 17,
+      "promotion_receipt": "promotion-receipts/elpis_nanbeige42_host.json",
+      "public_interfaces": [
+        "src/elpis_nanbeige42_host/host_abi.py"
+      ],
+      "qualification_disposition": "QUALIFIED",
+      "relative_path": "components/elpis_nanbeige42_host",
+      "runtime_admission": false,
+      "version": "P14.0b"
+    }
+  ],
+  "runtime_admission": false
+}

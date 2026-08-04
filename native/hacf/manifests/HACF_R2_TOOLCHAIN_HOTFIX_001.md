@@ -1,0 +1,11 @@
+# HACF R2 Toolchain Hotfix 001
+
+status=HACF_R2_IMPLEMENTED_NOT_SEALED
+hotfix=HACF_R2_TOOLCHAIN_HOTFIX_001
+scope=test-only GCC 16 allocation-injection compatibility
+preimage_sha256=ae3eab4684ac47a397f6e09c6792d930e42aef151472b0d981adf40b9685d0d0
+postimage_sha256=72be0c52513ebbfedb53bc7993aa885a75df1b2969950531d822f30302788983
+warnings_suppressed=no
+runtime_abi_changed=no
+fixture_identity_changed=no
+seal_created=no

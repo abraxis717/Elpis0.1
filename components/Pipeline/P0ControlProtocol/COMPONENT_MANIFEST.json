@@ -1,0 +1,25 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Pipeline/P0ControlProtocol",
+  "component_id": "P0ControlProtocol",
+  "dependencies": [
+    "TRMFractalSpine_Structural_Modules"
+  ],
+  "display_name": "P0 Control Protocol",
+  "evidence_references": {},
+  "manifest_self_hash": "1f29d1d3e0aad16581f0ef3b2bf6f4336b9a80e7a79c119b56c68b410d96f825",
+  "pipeline_role": "Controller, projector, decoder, TRM proposer (S01, S05, S11, S12)",
+  "promotion_receipt_path": "promotion-receipts/P0ControlProtocol.json",
+  "public_interface_paths": [
+    "src/elpis_p0/contracts.py",
+    "src/elpis_p0/ports.py"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 56,
+  "release_file_list_digest": "e1ad50c91ed1e5af5a6e3c3db4845c440ef2881e6bce43313c85bbd84a386316",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "f430fd3dc5d966b6a38ea483b630005f432e6b83b80770bddc7d82aa2b142614",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Pipeline/P0ControlProtocol",
+  "version": "P0.3"
+}

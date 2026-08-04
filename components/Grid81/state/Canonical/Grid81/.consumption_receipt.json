@@ -1,0 +1,17 @@
+{
+  "authorization_digest": "70b6998d3d4f698d8e1eba8e3fde64a182e8f66a02c61dfdeb0ac55d4da31a17",
+  "capability_consumed": true,
+  "capability_digest": "74e48e6ec143f0c16a9be2b3f0a843f7e35df35b1c56c75c0f9cade46d262020",
+  "capability_id": "1781086f674ea897aa7622133055592f3d4b07a862f691432be55541e729518c",
+  "commit_status": "COMMITTED",
+  "consumed_capability_sha256": "4dfd05a6629f6668a63dc90cf9bf2e88b547d121171aa48c6c034b8d49b531c4",
+  "consumption_count": 1,
+  "consumption_receipt": true,
+  "ecs_world_write_applied": false,
+  "generation_file_sha256": "9b12c19386bfd7ef4ecf57c2c114bfaa6087a7caf14c415990f35d3b02fd0187",
+  "head_file_sha256": "1b0fbe02d123698f9cba2568b0967e860ec4957119feb02f29c0e3c783a8f7eb",
+  "one_use": true,
+  "schema": "elpis.grid81.g5-3i-e-consumption-receipt.v1",
+  "source_chain_digest": "f6cd8e6e46d20bf3827fd07e26740dc5177e0353017f2267b3bddf899cd9576b",
+  "transaction_id": "63eea762300839621eac4959ddde3bfd5a344acbb94e2165a1ad2dd8755dc2eb"
+}

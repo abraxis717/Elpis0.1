@@ -1,0 +1,11 @@
+{
+  "component_id": "TRMFractalSpine_Structural_Modules",
+  "references": [
+    {
+      "authoritative_absolute_path": "${ELPIS_CANON}/Elpis_Canon/TRMFractalSpine/ModelRecursionStack/",
+      "evidence_kind": "qualification_reports",
+      "qualification_disposition": "QUALIFIED",
+      "availability": "AUTHORITATIVE_ROOT_ONLY"
+    }
+  ]
+}

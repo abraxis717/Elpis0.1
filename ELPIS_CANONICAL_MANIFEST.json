@@ -1,0 +1,120 @@
+{
+  "assembly_version": "ELPIS_CANONICAL_ASSEMBLY_R1",
+  "component_count": 17,
+  "components": [
+    {
+      "component_id": "HACF_R3",
+      "manifest_digest": "1dd835f3a755b7f616af3eb84e435561b1192cfef6581db4d494d5fe90ed890d",
+      "relative_path": "HACF_R3"
+    },
+    {
+      "component_id": "Semantic_Structural_Spine_V1",
+      "manifest_digest": "d4dd2c7cc6deef418fd78608482520e85f99db8044d14f582e8cc325375a149e",
+      "relative_path": "SemanticStructuralSpine_V1"
+    },
+    {
+      "component_id": "Grid81_Structural_Semantics",
+      "manifest_digest": "476886d5b750d84edf1e8a743e6167991c83ff99f5f936e3313becbcdcebd308",
+      "relative_path": "Grid81StructuralSemantics"
+    },
+    {
+      "component_id": "Grid81_Typed_Projection_Compiler",
+      "manifest_digest": "109809a126ae4fc889d8032129df49de3cf453a211a53eecfe6aa427be985911",
+      "relative_path": "Grid81TypedProjectionCompiler"
+    },
+    {
+      "component_id": "G50b_Structural_Group_Projection_Compiler",
+      "manifest_digest": "3a4b9d6fe7058a63b4dd6fc026aaf3e0382f81bec2d573dc9ba06682cbb5c05a",
+      "relative_path": "Grid81StructuralGroupProjectionCompiler"
+    },
+    {
+      "component_id": "Grid81_Canonical_Substrate",
+      "manifest_digest": "acd8f38f03338841459068fd621f9aab2af57708547c57525454d4ae5d12b96a",
+      "relative_path": "Grid81"
+    },
+    {
+      "component_id": "TRMFractalSpine_Structural_Modules",
+      "manifest_digest": "db9ed23be2b8fa5162d6687af46933b636fe8cd69f1660710e00dea7918718ce",
+      "relative_path": "TRMFractalSpine"
+    },
+    {
+      "component_id": "G51b_Deterministic_Structural_Adjudicator",
+      "manifest_digest": "51f53ac4a374cd724eaa61098654a570679caa61a4b2c96679b466dd6abbb80c",
+      "relative_path": "Grid81DeterministicStructuralAdjudicator"
+    },
+    {
+      "component_id": "DarwinianMatrix",
+      "manifest_digest": "65ae8b13f32f8d072fbbeb9a55940c2d80afd7d56d4be7fa6cebac7f94ef9c36",
+      "relative_path": "DarwinianMatrix"
+    },
+    {
+      "component_id": "P0ControlProtocol",
+      "manifest_digest": "30a49d68646f53313dd95a60bb6f17b70d3befbec8400bdcbaf201850c938818",
+      "relative_path": "Pipeline/P0ControlProtocol"
+    },
+    {
+      "component_id": "elpis_header",
+      "manifest_digest": "bd3a5acb59442c65aef7ae06f9586e48ff391f06933857735d8ca6e00639ba9c",
+      "relative_path": "components/elpis_header"
+    },
+    {
+      "component_id": "G52b_Capability_Authority_Evaluator",
+      "manifest_digest": "6b8ec8ebbb99a5d12cbfa4cf07a8455f854b897df39d4181fbfaaa258185676c",
+      "relative_path": "Grid81DeterministicCapabilityAuthorityEvaluator"
+    },
+    {
+      "component_id": "G53b_Capability_Consumption_Compiler",
+      "manifest_digest": "56a6ba177ace856da48420d507188f6a9adce60e2cb864505cfb37cc7a6a6dd9",
+      "relative_path": "Grid81DeterministicCapabilityConsumptionCompiler"
+    },
+    {
+      "component_id": "G53c_Capability_Application_Executor",
+      "manifest_digest": "8bdd8363173a562a4ba583ac4a116d563deb4bde70c38d87fa295f4845f27b06",
+      "relative_path": "Grid81DeterministicCapabilityApplicationExecutor"
+    },
+    {
+      "component_id": "G53e_Canonical_Promotion_Planner",
+      "manifest_digest": "360036983a65c5d3eccbdbfa4d8b288c7dbc09be979348737ff8a83fcea6c573",
+      "relative_path": "Grid81DeterministicCanonicalPromotionPlanner"
+    },
+    {
+      "component_id": "CNumPyCortex",
+      "manifest_digest": "bae3f1e1fa0f42b6e6a6ce31d4daea25700450e89fd494abf5f5fa2a03b48c9c",
+      "relative_path": "CNumPyCortex"
+    },
+    {
+      "component_id": "elpis_nanbeige42_host",
+      "manifest_digest": "486e45f6582095d7b15b5d96aeb46fb5fad61d25b68fba886e85a74766964c8b",
+      "relative_path": "components/elpis_nanbeige42_host"
+    }
+  ],
+  "dependency_order": [
+    "HACF_R3",
+    "Semantic_Structural_Spine_V1",
+    "Grid81_Structural_Semantics",
+    "Grid81_Typed_Projection_Compiler",
+    "G50b_Structural_Group_Projection_Compiler",
+    "Grid81_Canonical_Substrate",
+    "TRMFractalSpine_Structural_Modules",
+    "G51b_Deterministic_Structural_Adjudicator",
+    "DarwinianMatrix",
+    "P0ControlProtocol",
+    "elpis_header",
+    "G52b_Capability_Authority_Evaluator",
+    "G53b_Capability_Consumption_Compiler",
+    "G53c_Capability_Application_Executor",
+    "G53e_Canonical_Promotion_Planner",
+    "CNumPyCortex",
+    "elpis_nanbeige42_host"
+  ],
+  "manifest_self_hash": "e2afc3cbef625bc035710caf085cc2bc4698ed656c711d3d05c8fda332f18e07",
+  "outer_loop_status": "UNFINISHED",
+  "pipeline_stages_implemented": 11,
+  "pipeline_stages_total": 13,
+  "qualified_substrates": [
+    "HACF_R3",
+    "Semantic_Structural_Spine_V1"
+  ],
+  "runtime_admission": false,
+  "schema_version": "1.0"
+}

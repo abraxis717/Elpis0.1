@@ -1,0 +1,13 @@
+# HACF R0/R1 Cross-Host Functional Seal
+
+status=HACF_R0_R1_CROSS_HOST_FUNCTIONAL_SEALED
+sealed_utc=2026-07-27T19:36:03Z
+control_host=Ouroboros
+qualification_host=elpis-mba72
+source_manifest_sha256=d15d49245063643a57a4e70190f61d34efb7728092af340360e5ac57c34e5d01
+macbook_source_manifest_sha256=d15d49245063643a57a4e70190f61d34efb7728092af340360e5ac57c34e5d01
+macbook_qualification_sha256=ff45ebaf718fa6f772f0f8fb52592dc3f57a31af95ed9422d52f99db4be251f7
+tests=fms_r0,fms_concurrency,fms_adversarial,hash,r1_corpus,chunking_adversarial,cascade,graph
+result=8/8 PASS
+scope=CPU functional baseline, deterministic hashing, corpus/FTS, chunking, FMS, cascade, graph
+excluded=Intel GPU backend,dense vector RAG,persistent queue journal,Projector/TRM/DarwinianMatrix adapters

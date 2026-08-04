@@ -1,0 +1,13 @@
+[project]
+name = "elpis-grid81-semantics"
+version = "0.1.0"
+description = "Deterministic D4 pair-orbit compiler and corpus seal for Grid81 structural semantics"
+requires-python = ">=3.11"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,9 @@
+[project]
+name = "elpis-grid81-adjudication"
+version = "g5.1b.v1"
+description = "G5.1B Deterministic Structural Adjudicator"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,24 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Grid81StructuralGroupProjectionCompiler",
+  "component_id": "G50b_Structural_Group_Projection_Compiler",
+  "dependencies": [
+    "Grid81_Structural_Semantics"
+  ],
+  "display_name": "Grid81 Structural Group Projection Compiler",
+  "evidence_references": {},
+  "manifest_self_hash": "6a1dc599f363c7e81b73956ce27cc54a3f112dc1f963b02da48c5c2db3438e68",
+  "pipeline_role": "Grid81 structural group projection (S04)",
+  "promotion_receipt_path": "promotion-receipts/G50b_Structural_Group_Projection_Compiler.json",
+  "public_interface_paths": [
+    "src/elpis_grid81_groups/"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 25,
+  "release_file_list_digest": "172c7b0d474bfbebe8c4dc7fcf54d458cffad7bfd5440697f6a26362b87ac99c",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "3f66ef40e0e179e938bdad6d496bd16e49f6268452b8d0f0fa26379e2db002f1",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Grid81StructuralGroupProjectionCompiler",
+  "version": "production"
+}

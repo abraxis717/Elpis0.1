@@ -1,0 +1,356 @@
+{
+  "authority_boundaries": {
+    "backend_selection": {
+      "authority": "P12_REGISTRY",
+      "component": "P12_BACKEND_REGISTRY.json"
+    },
+    "closure": {
+      "authority": "P13",
+      "component": "P13_FINAL_REPORT.json"
+    },
+    "decoder": {
+      "authority": "P8",
+      "component": "P8_FINAL_REPORT.json"
+    },
+    "mutation": {
+      "authority": "P8",
+      "component": "P8_FINAL_REPORT.json"
+    },
+    "placement": {
+      "authority": "P7",
+      "component": "P7_FINAL_REPORT.json"
+    },
+    "proposal": {
+      "authority": "DETERMINISTIC_MRV_SOLVER",
+      "note": "PROPOSAL_ONLY - no commit authority"
+    },
+    "runtime_admission": {
+      "authority": "NONE",
+      "status": "FALSE"
+    },
+    "semantic": {
+      "authority": "P5/P6",
+      "component": "P5_FINAL_REPORT.json, P6_FINAL_REPORT.json"
+    },
+    "state_commit": {
+      "authority": "P9",
+      "component": "P9_FINAL_REPORT.json"
+    },
+    "topology": {
+      "authority": "P6",
+      "component": "P6_FINAL_REPORT.json"
+    }
+  },
+  "canonical_backend": {
+    "adapter_digest": "c02bde108fa5120245f03fdbec0a74d89b7505568ef0eb3919ba4d5ad34efdea",
+    "candidate_manifest_digest": "eddc0603f21df1bf6f1937ae3847394912599b0c799e12bbc40639b7d13d638a",
+    "class": "DETERMINISTIC_SEARCH_REFINER",
+    "closure_report": "48022d4c052cec9fea0bba51709668014848cadb045b2786e5bff18cd3b48050",
+    "integration_report": "c9624ac8783664b7e88f028a7a68bd4a7714a06c40cdf196a987b07b98bba6b4",
+    "name": "DETERMINISTIC_MRV_SOLVER",
+    "registry_digest": "65d0683ea8e454429c34276e953a67bab0b479d6f58614111b96389e3469dff2",
+    "selection_report": "5c72501be9ab8a2a0538e6e1bbeebaf64efba3987cea8e6a3905353d54bc2969",
+    "status": "ACTIVE_CANONICAL"
+  },
+  "closure_disposition": "SEMANTIC_HYPERGRAPH_P13_INTEGRATED_STRUCTURAL_SPINE_VALIDATION_QUALIFIED",
+  "consumption_contract": {
+    "allowed": [
+      "read_closure_manifest",
+      "bind_sealed_spine_as_dependency",
+      "submit_qualified_inputs",
+      "consume_structural_observations",
+      "verify_receipts_and_digests",
+      "wrap_in_runtime_transaction",
+      "create_versioned_successor"
+    ],
+    "dependency_mode": "READ_ONLY",
+    "forbidden": [
+      "modify_sealed_evidence",
+      "reactivate_ACTV1",
+      "bypass_P8_P9_guards",
+      "treat_MRV_as_semantic_authority",
+      "infer_semantic_meaning_from_digits",
+      "alter_backend_selection_silently",
+      "redefine_P7_placement_policy_in_place",
+      "add_ABI_fields_without_versioning",
+      "claim_runtime_wrapped_qualified_from_spine_closure",
+      "define_residual81_as_V1",
+      "claim_runtime_admission_true"
+    ],
+    "requires_exact_manifest_binding": true,
+    "requires_versioned_successor_for_change": true
+  },
+  "evidence_roots": {
+    "P0": {
+      "directory": "reports/P0ImmutableHypergraph/",
+      "final_print": null,
+      "final_report": "reports/P0ImmutableHypergraph/P0_FINAL_REPORT.json",
+      "final_report_digest": "f5354f775b8a5e3d67e6dbccb18a1f273ed3e317d80249990902c3b2c1a848a8",
+      "raw_manifest": "reports/P0ImmutableHypergraph/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "6c942f7c78c17b43c5837250697ff48f398839d19b0732c6b3a1cffa1a5a5533"
+    },
+    "P1": {
+      "directory": "reports/P1EmbeddingReferences/",
+      "final_print": null,
+      "final_report": "reports/P1EmbeddingReferences/P1_FINAL_REPORT.json",
+      "final_report_digest": "4dce51b9b778c657efc63b710823027278098cf3a759331348da5ae270745254",
+      "raw_manifest": "reports/P1EmbeddingReferences/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "21916dd2be675d8570736e4f1de7acc0d6853f8b0295ea5b5f1911304374f0b1"
+    },
+    "P10": {
+      "directory": "reports/P10GuardedRefinementEfficacy/",
+      "final_print": "reports/P10GuardedRefinementEfficacy/P10_FINAL_PRINT.txt",
+      "final_print_digest": "d286711fbe1422b8c97dbdcf21f0474f2257f6e9778b18dc7832097c19df2d6e",
+      "final_report": "reports/P10GuardedRefinementEfficacy/P10_FINAL_REPORT.json",
+      "final_report_digest": "ca9f334272084d1e7121ccb3cda367e3334eed36c654ccfe970eef285f306af6",
+      "raw_manifest": "reports/P10GuardedRefinementEfficacy/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "5e8a7444ed272ddc45c54897950e5047df7627db0da7ecdeb66bde57dc105633"
+    },
+    "P10R": {
+      "directory": "reports/P10RPlacementABIAlignment/",
+      "final_print": "reports/P10RPlacementABIAlignment/P10R_FINAL_PRINT.txt",
+      "final_print_digest": "02fef32295392bac7a6e4ceb8a78a89792d7f49564566492797c348e65f3178a",
+      "final_report": "reports/P10RPlacementABIAlignment/P10R_FINAL_REPORT.json",
+      "final_report_digest": "49cd4c76dd9cefd1b2b3593bb450defa5512cda38c57edb3f04716e6ba10d6fd",
+      "raw_manifest": "reports/P10RPlacementABIAlignment/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "66ec7dd3ffeff3d83f795ef35dbc5ec37870b07123c56b03f2597fee8339640d"
+    },
+    "P11": {
+      "directory": "reports/P11RefinementEngineBakeoff/",
+      "final_print": "reports/P11RefinementEngineBakeoff/P11_FINAL_PRINT.txt",
+      "final_print_digest": "e9204bfc576215727862dcc0748fd2eb14c112e8be4819aa70bc9fa41a2203be",
+      "final_report": "reports/P11RefinementEngineBakeoff/P11_FINAL_REPORT.json",
+      "final_report_digest": "a9bbf03cd6bcfcb3ba137ceea8845651c19e460bc15f93fec043e54e1ae27d24",
+      "raw_manifest": "reports/P11RefinementEngineBakeoff/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "f47df2b764c72917f7112ddd0f733787d4939570b255c12df4258332d97c3bba"
+    },
+    "P12": {
+      "directory": "reports/P12ReplacementEngineIntegration/",
+      "final_print": "reports/P12ReplacementEngineIntegration/P12_FINAL_PRINT.txt",
+      "final_print_digest": "0b80712b4272ca994840943b5ff2979213205befa3411439b5346fff9fcf81fa",
+      "final_report": "reports/P12ReplacementEngineIntegration/P12_FINAL_REPORT.json",
+      "final_report_digest": "e2e8d5eea336659270fc33359d48353c50d2ab055c632483aa797bdc37607e47",
+      "raw_manifest": "reports/P12ReplacementEngineIntegration/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "52c82d1ef268a3c1efef3dbbdf0aac5ad8c719e3405de0d1793e625fb60577d6"
+    },
+    "P13": {
+      "directory": "reports/P13IntegratedStructuralSpine/",
+      "final_print": "reports/P13IntegratedStructuralSpine/P13_FINAL_PRINT.txt",
+      "final_print_digest": "55d5246b416b9b6e95b2cebe2dca1a5fad83ad9a5a28111c95253ca4ec623fb7",
+      "final_report": "reports/P13IntegratedStructuralSpine/P13_FINAL_REPORT.json",
+      "final_report_digest": "48022d4c052cec9fea0bba51709668014848cadb045b2786e5bff18cd3b48050",
+      "raw_manifest": "reports/P13IntegratedStructuralSpine/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "7f2bca62674dda2dcde62de7f74ffe2d32b7053faae3d5496956484c4c8e6f6c"
+    },
+    "P2": {
+      "directory": "reports/P2ContextDeficitRemediation/",
+      "final_print": null,
+      "final_report": "reports/P2ContextDeficitRemediation/P2R_FINAL_REPORT.json",
+      "final_report_digest": "6968f2d0bbc05d180a95bf4b236ef36cba150eac4daed0ddb09a0495cd41a648",
+      "note": "P2 original blocked; P2R remediation qualified",
+      "original_blocked_report": "reports/P2ContextDeficit/P2_FINAL_REPORT.json",
+      "raw_manifest": "reports/P2ContextDeficitRemediation/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "4414f4ee636db50ef2c2d991122fd1092f992d5e1cdf321a64d3dcb5cb6e38c7"
+    },
+    "P3": {
+      "directory": "reports/P3R3RetrievalBridge/",
+      "final_print": null,
+      "final_report": "reports/P3R3RetrievalBridge/P3_FINAL_REPORT.json",
+      "final_report_digest": "fe822d07847c19a3bfb877f0e0f67c7977c0622dddab963a3fc09148e3d46d6a",
+      "raw_manifest": "reports/P3R3RetrievalBridge/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "90a2f03f3edea55a90a52ac2263f3cbd3bafdcf8a0532ae566ac70bab5d63f71"
+    },
+    "P4": {
+      "directory": "reports/P4QualificationReconciliation/",
+      "final_print": null,
+      "final_report": "reports/P4QualificationReconciliation/P4Q_FINAL_REPORT.json",
+      "final_report_digest": "06b53e6c1937a069fd623613e6fa05d36e5bcb0cca4d759bc116e1f228e51453",
+      "note": "P4 original superseded by P4Q qualification reconciliation",
+      "raw_manifest": "reports/P4QualificationReconciliation/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "f638f121d7888a094e0cea7bef450739cf0c5a7e670ff7154a0877cbfcd2b447"
+    },
+    "P5": {
+      "directory": "reports/P5ContextReevaluationBoundedView/",
+      "final_print": null,
+      "final_report": "reports/P5ContextReevaluationBoundedView/P5_FINAL_REPORT.json",
+      "final_report_digest": "01e7bafdffc6d0c39a9962d1db605b06acd741131931de59fff05cb5af2c656c",
+      "raw_manifest": "reports/P5ContextReevaluationBoundedView/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "f91e9a923f2adf52131fdabec285ed903640937981e2ad6f3438fe0a4cbead1f"
+    },
+    "P6": {
+      "directory": "reports/P6SemanticTopologyCompiler/",
+      "final_print": "reports/P6SemanticTopologyCompiler/P6_FINAL_PRINT.txt",
+      "final_print_digest": "2b4bef6e296b3d442e812f603cc5e67727d95185c2d7cb51ddcccdbbe14e06b5",
+      "final_report": "reports/P6SemanticTopologyCompiler/P6_FINAL_REPORT.json",
+      "final_report_digest": "4dbcd0c18bce642409f29362b17488ddd16cf6d0e5b1f4c64f7ed43c89d7d17f",
+      "raw_manifest": "reports/P6SemanticTopologyCompiler/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "c30adedfdd2631681f4f2c3f1122dc730a05b7b5b6bd651fba1f6cc3db8ba9d4"
+    },
+    "P7": {
+      "directory": "reports/P7Grid81StructuralCompiler/",
+      "final_print": "reports/P7Grid81StructuralCompiler/P7_FINAL_PRINT.txt",
+      "final_print_digest": "3bd62a72b693079e1aba3e7478ef38502c6e6ae3911a407d06c7742283f79bdb",
+      "final_report": "reports/P7Grid81StructuralCompiler/P7_FINAL_REPORT.json",
+      "final_report_digest": "97292f18c2f6d50e00d9597e311f9ef5037a5a7714638ba84a4d23093ff9f119",
+      "raw_manifest": "reports/P7Grid81StructuralCompiler/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "59ff47079c0b0b0db9b32efb38f412a989708c34095d3afd6852dc6ab5f932f0"
+    },
+    "P8": {
+      "directory": "reports/P8TRMAdapterMutability/",
+      "final_print": "reports/P8TRMAdapterMutability/P8_FINAL_PRINT.txt",
+      "final_print_digest": "a670fdfffd0ebc3fb6767da787cd7e97a3238c2fd54d97cde81c63aca9ea8edb",
+      "final_report": "reports/P8TRMAdapterMutability/P8_FINAL_REPORT.json",
+      "final_report_digest": "66b84f0102b71d22997b2c129cf08259524381d88c24828f64b69ff8ad8969e7",
+      "raw_manifest": "reports/P8TRMAdapterMutability/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "a27971894ce733256b89b049766cb532effa2e6267386835dfae676f495b711b"
+    },
+    "P9": {
+      "directory": "reports/P9FrozenTRMExecution/",
+      "final_print": "reports/P9FrozenTRMExecution/P9_FINAL_PRINT.txt",
+      "final_print_digest": "b0cd6913e2e6f4d93aa05e2d8c039144964d4343fe0fca930de43b49fe9b98f9",
+      "final_report": "reports/P9FrozenTRMExecution/P9_FINAL_REPORT.json",
+      "final_report_digest": "72fe8678aac1f601e677d1242212e8f3806db35134471a7ead39050e3a073b2a",
+      "raw_manifest": "reports/P9FrozenTRMExecution/RAW_EVIDENCE_MANIFEST.json",
+      "raw_manifest_digest": "f7452e287548e112966520731d0cb540a615fbd4420f2d4190dd1a4dce3a29b5"
+    }
+  },
+  "manifest_digest": "b0f3e64daabdaddcf06d4b1929d69f64a5c8514f7223d60b5566af1eef78531a",
+  "name": "ELPIS_SEMANTIC_STRUCTURAL_SPINE_V1",
+  "next_program": {
+    "initial_gate": "ELPIS_RUNTIME_R0_SEALED_SPINE_CONSUMPTION_AND_QUERY_TRANSACTION",
+    "may_modify_spine_v1": false,
+    "name": "ELPIS_RUNTIME_INTEGRATION",
+    "status": "NOT_STARTED"
+  },
+  "phase_history": [
+    {
+      "architectural_consequence": "Qualified substrate dependency",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P0ImmutableHypergraph/",
+      "phase": "P0",
+      "status_class": "SEMANTIC_HYPERGRAPH_P0_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "Qualified substrate dependency",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P1EmbeddingReferences/",
+      "phase": "P1",
+      "status_class": "SEMANTIC_HYPERGRAPH_P1_EMBEDDING_REFERENCES_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "Qualified substrate dependency (P2R remediation of original block)",
+      "disposition": "BLOCKED_ORIGINAL_QUALIFIED_REMEDIATION",
+      "evidence_root": "reports/P2ContextDeficitRemediation/",
+      "phase": "P2/P2R",
+      "status_class": "SEMANTIC_HYPERGRAPH_P2_CONTEXT_DEFICIT_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "Qualified substrate dependency",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P3R3RetrievalBridge/",
+      "phase": "P3",
+      "status_class": "SEMANTIC_HYPERGRAPH_P3_R3_RETRIEVAL_BRIDGE_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "Qualified substrate dependency",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P4QualificationReconciliation/",
+      "phase": "P4/P4Q",
+      "status_class": "SEMANTIC_HYPERGRAPH_P4_QUALIFICATION_CONFIRMED"
+    },
+    {
+      "architectural_consequence": "Active spine entry point",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P5ContextReevaluationBoundedView/",
+      "phase": "P5",
+      "status_class": "SEMANTIC_HYPERGRAPH_P5_CONTEXT_REEVALUATION_AND_BOUNDED_VIEW_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "Active topology authority",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P6SemanticTopologyCompiler/",
+      "phase": "P6",
+      "status_class": "SEMANTIC_HYPERGRAPH_P6_SEMANTIC_TOPOLOGY_COMPILER_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "Active placement authority",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P7Grid81StructuralCompiler/",
+      "phase": "P7",
+      "status_class": "SEMANTIC_HYPERGRAPH_P7_GRID81_STRUCTURAL_COMPILER_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "Active mutation control",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P8TRMAdapterMutability/",
+      "phase": "P8",
+      "status_class": "SEMANTIC_HYPERGRAPH_P8_TRM_ADAPTER_AND_MUTABILITY_POLICY_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "Active guard authority",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P9FrozenTRMExecution/",
+      "phase": "P9",
+      "status_class": "SEMANTIC_HYPERGRAPH_P9_FROZEN_TRM_EXECUTION_AND_BOUNDED_REFINEMENT_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "ACTV1 retired (valid measurement, not efficacious)",
+      "disposition": "MEASURED_NOT_EFFICACIOUS",
+      "evidence_root": "reports/P10GuardedRefinementEfficacy/",
+      "phase": "P10",
+      "status_class": "SEMANTIC_HYPERGRAPH_P10_MEASURED_NOT_EFFICACIOUS"
+    },
+    {
+      "architectural_consequence": "ACTV1 intrinsic model insufficiency confirmed",
+      "disposition": "INTRINSIC_INSUFFICIENCY_CONFIRMED",
+      "evidence_root": "reports/P10RPlacementABIAlignment/",
+      "phase": "P10R",
+      "status_class": "SEMANTIC_HYPERGRAPH_P10R_INTRINSIC_MODEL_INSUFFICIENCY_CONFIRMED"
+    },
+    {
+      "architectural_consequence": "DETERMINISTIC_MRV_SOLVER selected as replacement",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P11RefinementEngineBakeoff/",
+      "phase": "P11",
+      "status_class": "SEMANTIC_HYPERGRAPH_P11_REFINEMENT_ENGINE_REPLACEMENT_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "DETERMINISTIC_MRV_SOLVER active canonical backend",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P12ReplacementEngineIntegration/",
+      "phase": "P12",
+      "status_class": "SEMANTIC_HYPERGRAPH_P12_REPLACEMENT_ENGINE_INTEGRATION_QUALIFIED"
+    },
+    {
+      "architectural_consequence": "Spine closed and sealed",
+      "disposition": "QUALIFIED",
+      "evidence_root": "reports/P13IntegratedStructuralSpine/",
+      "phase": "P13",
+      "status_class": "SEMANTIC_HYPERGRAPH_P13_INTEGRATED_STRUCTURAL_SPINE_VALIDATION_QUALIFIED"
+    }
+  ],
+  "prohibited_reopenings": [
+    "silent_P5_P13_mutation",
+    "ACTV1_reactivation",
+    "guard_bypass",
+    "semantic_inference_from_digits",
+    "backend_replacement_without_versioning",
+    "runtime_admission_claim",
+    "projector_attribution_to_V1",
+    "residual81_attribution_to_V1"
+  ],
+  "retired_components": [
+    {
+      "name": "ACTV1_Inner",
+      "retirement_basis": [
+        "SEMANTIC_HYPERGRAPH_P10_MEASURED_NOT_EFFICACIOUS",
+        "SEMANTIC_HYPERGRAPH_P10R_INTRINSIC_MODEL_INSUFFICIENCY_CONFIRMED"
+      ],
+      "selectable": false,
+      "status": "RETIRED_NEGATIVE_CONTROL"
+    }
+  ],
+  "runtime_admission": false,
+  "schema": "elpis.semantic_structural_spine_manifest.v1",
+  "status": "CLOSED_AND_SEALED"
+}

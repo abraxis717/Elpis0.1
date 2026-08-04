@@ -1,0 +1,14 @@
+{
+  "append_only": true,
+  "capability_consumed_id": "1781086f674ea897aa7622133055592f3d4b07a862f691432be55541e729518c",
+  "capability_id": "1781086f674ea897aa7622133055592f3d4b07a862f691432be55541e729518c",
+  "ecs_world_write_applied": false,
+  "generation": 1,
+  "generation_file_sha256": "9b12c19386bfd7ef4ecf57c2c114bfaa6087a7caf14c415990f35d3b02fd0187",
+  "generation_path": "Canonical/Grid81/generations/000001.json",
+  "generation_semantic_digest": "d470ad79c00e8664ba03fa15caad7bb63777d8006b4c2825ef1fe9c94cbbe6c6",
+  "ledger": "Grid81",
+  "previous_generation_binding": "GENESIS",
+  "schema": "elpis.grid81.g5-3i-e-canonical-head.v1",
+  "transaction_id": "63eea762300839621eac4959ddde3bfd5a344acbb94e2165a1ad2dd8755dc2eb"
+}

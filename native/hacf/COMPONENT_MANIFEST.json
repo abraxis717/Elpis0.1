@@ -1,0 +1,22 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "HACF_R3",
+  "component_id": "HACF_R3",
+  "dependencies": [],
+  "display_name": "Hash-Addressed Cascade Fabric R3",
+  "evidence_references": {},
+  "manifest_self_hash": "50c2f8a74085a7b210aa17b6d2ecc28751cddffcae238f573586e66074142128",
+  "pipeline_role": "Retrieval substrate (S02)",
+  "promotion_receipt_path": "promotion-receipts/HACF_R3.json",
+  "public_interface_paths": [
+    "include/elpis/"
+  ],
+  "qualification_disposition": "SEALED_AND_PROMOTABLE",
+  "release_file_count": 99,
+  "release_file_list_digest": "6121a245390a87ecf15fa086903e98f83a8a94379fc1bb05d396671510133bc0",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "6515bec8d37147d6043a8294d88f480be8a0b27921adf2da137bae1ae6cdcd96",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/HashAdressedCascadeFabric",
+  "version": "R3"
+}

@@ -1,0 +1,183 @@
+HACF_MACBOOK_R2_QUALIFICATION
+status=HACF_R2_MACBOOK_NATIVE_AND_PARITY_QUALIFIED
+captured_utc=2026-07-28T21:35:40Z
+control_host=Ouroboros
+target_alias=elpis-mba72
+target_root=/home/joe/HashAdressedCascadeFabric
+source_manifest_sha256=09d25ea40c153cc53aa357c2dd118425b4eeb6eafa24219783ea267176d56403
+ouroboros_qualification_sha256=eca65ecd995da26ffa89bc8f1a8df97bf72e2ca23c55e98565af4eeb12d34c39
+fixture_expectations_sha256=1761f258d86204e45a09b4abe181e4456427427f4161fe4cc770be346632ab4c
+
+=== TARGET TOOLCHAIN ===
+elpis-mba72
+Linux elpis-mba72 6.18.40-2-lts #1 SMP PREEMPT_DYNAMIC Sat, 25 Jul 2026 19:01:40 +0000 x86_64 GNU/Linux
+cmake version 4.4.0
+1.13.2
+cc (GCC) 16.1.1 20260725
+3.53.4 2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e0945alt1 (64-bit)
+
+=== SOURCE PARITY ===
+local_manifest=/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/manifests/R2_SOURCE_SHA256SUMS.txt
+remote_manifest=/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/manifests/MACBOOK_R2_SOURCE_SHA256SUMS.txt
+manifest_sha256=09d25ea40c153cc53aa357c2dd118425b4eeb6eafa24219783ea267176d56403
+diff=EMPTY
+
+=== TARGET RELEASE BUILD AND COMPLETE TEST SUITE ===
+-- The C compiler identification is GNU 16.1.1
+-- The CXX compiler identification is GNU 16.1.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Found SQLite3: /usr/lib/libsqlite3.so (found version "3.53.4")
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/joe/HashAdressedCascadeFabric/build-r2-release
+[1/55] Building C object CMakeFiles/elpis_fms.dir/src/memory/fms/fms_pal_posix.c.o
+[2/55] Building C object CMakeFiles/elpis_cascade.dir/src/kernel/cascade.c.o
+[3/55] Building C object CMakeFiles/elpis_hash.dir/src/hash/sha256.c.o
+[4/55] Linking C static library libelpis_hash.a
+[5/55] Linking C static library libelpis_cascade.a
+[6/55] Building C object CMakeFiles/elpis_graph.dir/src/graph/graph.c.o
+[7/55] Building CXX object CMakeFiles/elpis_embedding.dir/src/retrieval/embedding/external_vector_provider.cpp.o
+[8/55] Building C object CMakeFiles/elpis_fms_test_pal.dir/tests/support/fms_pal_test.c.o
+[9/55] Building CXX object CMakeFiles/elpis_embedding.dir/src/retrieval/embedding/fixture_embedder.cpp.o
+[10/55] Linking CXX static library libelpis_embedding.a
+[11/55] Building C object CMakeFiles/elpis_fms.dir/src/memory/fms/fms_core.c.o
+[12/55] Linking C static library libelpis_fms.a
+[13/55] Building CXX object CMakeFiles/elpis_chunking.dir/src/retrieval/chunking/chunker.cpp.o
+[14/55] Linking CXX static library libelpis_chunking.a
+[15/55] Linking C static library libelpis_graph.a
+[16/55] Building CXX object CMakeFiles/elpis_vector.dir/src/retrieval/vector/cpu_exact.cpp.o
+[17/55] Linking C static library libelpis_fms_test_pal.a
+[18/55] Building C object CMakeFiles/test_fms_concurrency.dir/tests/fms/test_fms_concurrency.c.o
+[19/55] Building C object CMakeFiles/test_fms_adversarial.dir/tests/fms/test_fms_adversarial.c.o
+[20/55] Building C object CMakeFiles/test_hash.dir/tests/hash_test.c.o
+[21/55] Building C object CMakeFiles/test_fms_r0.dir/tests/fms/test_fms_r0.c.o
+[22/55] Building CXX object CMakeFiles/test_chunking_adversarial.dir/tests/retrieval/test_chunking_adversarial.cpp.o
+[23/55] Building CXX object CMakeFiles/elpis_corpus.dir/src/retrieval/corpus/corpus.cpp.o
+[24/55] Linking CXX static library libelpis_corpus.a
+[25/55] Building C object CMakeFiles/test_cascade.dir/tests/kernel/test_cascade.c.o
+[26/55] Building C object CMakeFiles/test_graph.dir/tests/graph/test_graph.c.o
+[27/55] Building CXX object CMakeFiles/elpis_vector.dir/src/retrieval/vector/vector_manifest.cpp.o
+[28/55] Building CXX object CMakeFiles/test_r1_corpus.dir/tests/retrieval/test_r1_corpus.cpp.o
+[29/55] Building CXX object CMakeFiles/test_embedding_provider.dir/tests/vector/test_embedding_provider.cpp.o
+[30/55] Building CXX object CMakeFiles/elpis_vector.dir/src/retrieval/vector/vector_index.cpp.o
+[31/55] Building CXX object CMakeFiles/elpis_vector.dir/src/retrieval/vector/vector_shard.cpp.o
+[32/55] Linking CXX static library libelpis_vector.a
+[33/55] Building CXX object CMakeFiles/test_vector_shard.dir/tests/vector/test_vector_shard.cpp.o
+[34/55] Building CXX object CMakeFiles/test_vector_fms.dir/tests/vector/test_vector_fms.cpp.o
+[35/55] Linking C executable test_fms_r0
+[36/55] Linking C executable test_fms_concurrency
+[37/55] Linking C executable test_fms_adversarial
+[38/55] Linking C executable test_hash
+[39/55] Linking CXX executable test_r1_corpus
+[40/55] Building CXX object CMakeFiles/test_vector_concurrency.dir/tests/vector/test_vector_concurrency.cpp.o
+[41/55] Linking CXX executable test_chunking_adversarial
+[42/55] Linking C executable test_cascade
+[43/55] Linking C executable test_graph
+[44/55] Linking CXX executable test_vector_shard
+[45/55] Linking CXX executable test_embedding_provider
+[46/55] Building CXX object CMakeFiles/test_vector_crosshost_fixture.dir/tests/vector/test_vector_crosshost_fixture.cpp.o
+[47/55] Linking CXX executable test_vector_fms
+[48/55] Linking CXX executable test_vector_concurrency
+[49/55] Linking CXX executable test_vector_crosshost_fixture
+[50/55] Building CXX object CMakeFiles/benchmark_vector_exact.dir/benchmarks/vector/benchmark_exact.cpp.o
+[51/55] Linking CXX executable benchmark_vector_exact
+[52/55] Building CXX object CMakeFiles/test_vector_search.dir/tests/vector/test_vector_search.cpp.o
+[53/55] Linking CXX executable test_vector_search
+[54/55] Building CXX object CMakeFiles/test_vector_adversarial.dir/tests/vector/test_vector_adversarial.cpp.o
+[55/55] Linking CXX executable test_vector_adversarial
+Test project /home/joe/HashAdressedCascadeFabric/build-r2-release
+      Start  1: fms_r0
+ 1/15 Test  #1: fms_r0 ...........................   Passed    1.40 sec
+      Start  2: fms_concurrency
+ 2/15 Test  #2: fms_concurrency ..................   Passed    0.53 sec
+      Start  3: fms_adversarial
+ 3/15 Test  #3: fms_adversarial ..................   Passed    0.01 sec
+      Start  4: hash
+ 4/15 Test  #4: hash .............................   Passed    0.00 sec
+      Start  5: r1_corpus
+ 5/15 Test  #5: r1_corpus ........................   Passed    0.57 sec
+      Start  6: chunking_adversarial
+ 6/15 Test  #6: chunking_adversarial .............   Passed    0.00 sec
+      Start  7: cascade
+ 7/15 Test  #7: cascade ..........................   Passed    0.00 sec
+      Start  8: graph
+ 8/15 Test  #8: graph ............................   Passed    0.00 sec
+      Start  9: embedding_provider
+ 9/15 Test  #9: embedding_provider ...............   Passed    0.00 sec
+      Start 10: vector_shard
+10/15 Test #10: vector_shard .....................   Passed    0.02 sec
+      Start 11: vector_search
+11/15 Test #11: vector_search ....................   Passed    0.02 sec
+      Start 12: vector_fms
+12/15 Test #12: vector_fms .......................   Passed    0.49 sec
+      Start 13: vector_concurrency
+13/15 Test #13: vector_concurrency ...............   Passed    1.38 sec
+      Start 14: vector_crosshost_fixture
+14/15 Test #14: vector_crosshost_fixture .........   Passed    0.08 sec
+      Start 15: vector_adversarial
+15/15 Test #15: vector_adversarial ...............   Passed    0.08 sec
+
+100% tests passed out of 15
+
+Total Test time (real) =   4.60 sec
+
+=== TARGET CROSS-HOST FIXTURE ===
+UpdateCTestConfiguration  from :/home/joe/HashAdressedCascadeFabric/build-r2-release/DartConfiguration.tcl
+Test project /home/joe/HashAdressedCascadeFabric/build-r2-release
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 14
+    Start 14: vector_crosshost_fixture
+
+14: Test command: /home/joe/HashAdressedCascadeFabric/build-r2-release/test_vector_crosshost_fixture "/home/joe/HashAdressedCascadeFabric/build-r2-release/vector-xhost-state"
+14: Working Directory: /home/joe/HashAdressedCascadeFabric/build-r2-release
+14: Test timeout computed to be: 10000000
+14: R2 cross-host fixture, fixture=/home/joe/HashAdressedCascadeFabric/tests/vector/fixture
+14: - committed corpus ingests to stable identities
+14: - chunk enumeration is deterministic and bounded
+14: - shard build over the fixture corpus
+14: - index admission and query over the fixture shard
+14: - all seven identities match the committed fixture
+14: - second run of the same pipeline is identical
+14: 98 checks, 0 failures
+1/1 Test #14: vector_crosshost_fixture .........   Passed    0.09 sec
+
+The following tests passed:
+	vector_crosshost_fixture
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.09 sec
+
+=== COMMITTED FIXTURE IDENTITIES ===
+# HACF R2 cross-host fixture expectations
+# Regenerate only when a profile or ABI deliberately changes.
+embedding_profile_digest=68db7e3136ca715df91cf3bb059a51a921627419af7046f88b9d50525cafd1d5
+corpus_manifest_digest=0236ee2156c0c3d0b02924bcfe2a78aafac71c9a48b2229f4bab058534b1ed40
+shard_digest=db3f287093db35e1de525ba3f359a9d7bc597e65c07374b89101dfc1d2ae3332
+index_manifest_digest=e90263312cffd531dd6e7662b34a4c74b21d552d2e2baeafa15a7905cc084113
+query_digest=8075ab006b2dcb9bc3ec27ffb481703a94e3c23aadd53e1b8435e3dca762a42d
+chunk_count=12
+hit_count=5
+hit_0=27d252d04b10e1e4929d423fe2102f40a482aedccb8b0f4f42fd832019efec11:62500000000
+hit_1=3f65469b1444d75b3179ecaa7f2b51417c36d6bc06f3fa28b2cdfb1fe5dcadd2:62500000000
+hit_2=c855b3601ad812b1742438e62c83c0c8e8182152b2635920c6666c09838a4a7c:62500000000
+hit_3=2ae446a800548db1f5007c58152d332350687fc7c7ea5dbabf084ade69c69118:0
+hit_4=32637dc74ad1f7fbe9faa28bdee28f353d50a17a7213b8adf9a7a41456e40b76:0
+result_digest=440a91c23c3b3177a228576dd6f560dfcab972fd66311032355ae158269fbd69

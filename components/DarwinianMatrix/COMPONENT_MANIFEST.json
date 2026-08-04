@@ -1,0 +1,22 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "DarwinianMatrix",
+  "component_id": "DarwinianMatrix",
+  "dependencies": [],
+  "display_name": "Darwinian Matrix",
+  "evidence_references": {},
+  "manifest_self_hash": "e26091a7cf232db0c88e3833d16ebff1da7a8898b27905e436dea90c370512d1",
+  "pipeline_role": "Darwinian lifecycle, fitness, selection, heredity (S09, S12)",
+  "promotion_receipt_path": "promotion-receipts/DarwinianMatrix.json",
+  "public_interface_paths": [
+    "__init__.py"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 61,
+  "release_file_list_digest": "f42062baa52ec7ee0ceb41bd119154fe029a1234202093682a2559751abe49d4",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "7a8ce29dea0604a6facad497df09a12cbb48aee14541ac974d83b33fa9b3f0de",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/DarwinianMatrix",
+  "version": "production"
+}

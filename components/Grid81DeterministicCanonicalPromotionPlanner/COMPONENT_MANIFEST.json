@@ -1,0 +1,24 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Grid81DeterministicCanonicalPromotionPlanner",
+  "component_id": "G53e_Canonical_Promotion_Planner",
+  "dependencies": [
+    "G53c_Capability_Application_Executor"
+  ],
+  "display_name": "Canonical Promotion Planner",
+  "evidence_references": {},
+  "manifest_self_hash": "b9439433b1037d53acf19121aa7b2e8fe7158827e2840d9c478dc7628a3ede6b",
+  "pipeline_role": "Canonical promotion planning (S13)",
+  "promotion_receipt_path": "promotion-receipts/G53e_Canonical_Promotion_Planner.json",
+  "public_interface_paths": [
+    "src/elpis_grid81_promotion_planner/"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 17,
+  "release_file_list_digest": "6e2d2bbf3150ac23015719263f7f18e72c05a09c3b079020aca4f779116f6fff",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "c8e072bb8d92e9da980424aad7d834f61a1b4a5d52c43f3f230ced31046d432f",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Grid81DeterministicCanonicalPromotionPlanner",
+  "version": "production"
+}

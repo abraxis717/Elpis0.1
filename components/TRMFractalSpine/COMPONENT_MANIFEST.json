@@ -1,0 +1,24 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "TRMFractalSpine",
+  "component_id": "TRMFractalSpine_Structural_Modules",
+  "dependencies": [],
+  "display_name": "TRM Fractal Spine Structural Modules",
+  "evidence_references": {},
+  "manifest_self_hash": "bf64169c13897b976feb4775651074116b21c6210fbc2d81acd9e13364f4919f",
+  "pipeline_role": "Structural proposal, refinement, oracle (S06, S07)",
+  "promotion_receipt_path": "promotion-receipts/TRMFractalSpine_Structural_Modules.json",
+  "public_interface_paths": [
+    "src/elpis_fractal_spine/structural_semantics.py",
+    "src/elpis_fractal_spine/structural_oracle.py",
+    "src/elpis_fractal_spine/structural_refinement.py"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 19,
+  "release_file_list_digest": "d37a5682dcfe6e7cda9afaead054091fbe6a1687b538d839ea32454f2511187a",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "550927d9da232d647261688a69f1061baadcb49e14d91cf8bf5ae2df3369b19e",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/TRMFractalSpine/ModelRecursionStack",
+  "version": "production"
+}

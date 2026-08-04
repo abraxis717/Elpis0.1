@@ -1,0 +1,19 @@
+{
+  "append_only_prestate_valid": true,
+  "authorization_digest": "70b6998d3d4f698d8e1eba8e3fde64a182e8f66a02c61dfdeb0ac55d4da31a17",
+  "authorization_valid": true,
+  "authorized_generation_target_matches": true,
+  "authorized_head_target_matches": true,
+  "capability_digest": "74e48e6ec143f0c16a9be2b3f0a843f7e35df35b1c56c75c0f9cade46d262020",
+  "capability_id": "1781086f674ea897aa7622133055592f3d4b07a862f691432be55541e729518c",
+  "capability_valid_before_execution": true,
+  "d21_final_report_sha256": "feef9ce6b19e48cd4ba5e23a73883d35c5a53b41cf6b5be34726525a406631ce",
+  "d2_rebound_package_digest": "7641dfff72789b56c88735d180c269fbe519f1ebdbca91c9142eb2c02c3df571",
+  "generation_written_under_capability": true,
+  "head_written_under_capability": true,
+  "one_use_prestate_valid": true,
+  "schema": "elpis.grid81.g5-3i-e-authority-audit.v1",
+  "source_capability_file_unchanged": true,
+  "transaction_id": "63eea762300839621eac4959ddde3bfd5a344acbb94e2165a1ad2dd8755dc2eb",
+  "transaction_package_valid": true
+}

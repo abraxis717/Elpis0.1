@@ -1,0 +1,11 @@
+{
+  "component_id": "HACF_R3",
+  "references": [
+    {
+      "authoritative_absolute_path": "${ELPIS_CANON}/Elpis_Canon/HashAdressedCascadeFabric/manifests/",
+      "evidence_kind": "qualification_seal",
+      "qualification_disposition": "QUALIFIED",
+      "availability": "AUTHORITATIVE_ROOT_ONLY"
+    }
+  ]
+}

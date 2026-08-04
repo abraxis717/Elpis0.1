@@ -1,0 +1,11 @@
+{
+  "component_id": "P0ControlProtocol",
+  "references": [
+    {
+      "authoritative_absolute_path": "${ELPIS_CANON}/Elpis_Canon/Pipeline/P0ControlProtocol/reports/",
+      "evidence_kind": "qualification_reports",
+      "qualification_disposition": "QUALIFIED",
+      "availability": "AUTHORITATIVE_ROOT_ONLY"
+    }
+  ]
+}

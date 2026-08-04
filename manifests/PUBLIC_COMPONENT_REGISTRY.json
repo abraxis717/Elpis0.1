@@ -1,0 +1,161 @@
+{
+  "assembly_version": "ELPIS_CANONICAL_PUBLIC_R1_1_1",
+  "component_count": 17,
+  "runtime_admission": false,
+  "components": [
+    {
+      "component_id": "HACF_R3",
+      "version": "R3",
+      "public_path": "native/hacf",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": []
+    },
+    {
+      "component_id": "Semantic_Structural_Spine_V1",
+      "version": "V1",
+      "public_path": "native/semantic-spine",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": [
+        "HACF_R3"
+      ]
+    },
+    {
+      "component_id": "Grid81_Structural_Semantics",
+      "version": "R1.1",
+      "public_path": "components/Grid81StructuralSemantics",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": []
+    },
+    {
+      "component_id": "Grid81_Typed_Projection_Compiler",
+      "version": "production",
+      "public_path": "components/Grid81TypedProjectionCompiler",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": [
+        "Grid81_Structural_Semantics"
+      ]
+    },
+    {
+      "component_id": "G50b_Structural_Group_Projection_Compiler",
+      "version": "production",
+      "public_path": "components/Grid81StructuralGroupProjectionCompiler",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": [
+        "Grid81_Structural_Semantics"
+      ]
+    },
+    {
+      "component_id": "Grid81_Canonical_Substrate",
+      "version": "generation_000001",
+      "public_path": "components/Grid81",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": []
+    },
+    {
+      "component_id": "TRMFractalSpine_Structural_Modules",
+      "version": "production",
+      "public_path": "components/TRMFractalSpine",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": []
+    },
+    {
+      "component_id": "G51b_Deterministic_Structural_Adjudicator",
+      "version": "production",
+      "public_path": "components/Grid81DeterministicStructuralAdjudicator",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": [
+        "Grid81_Structural_Semantics"
+      ]
+    },
+    {
+      "component_id": "DarwinianMatrix",
+      "version": "production",
+      "public_path": "components/DarwinianMatrix",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": []
+    },
+    {
+      "component_id": "P0ControlProtocol",
+      "version": "P0.3",
+      "public_path": "components/Pipeline/P0ControlProtocol",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": [
+        "TRMFractalSpine_Structural_Modules"
+      ]
+    },
+    {
+      "component_id": "elpis_header",
+      "version": "0.1.0",
+      "public_path": "native/elpis-header",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": [
+        "Grid81_Canonical_Substrate"
+      ]
+    },
+    {
+      "component_id": "G52b_Capability_Authority_Evaluator",
+      "version": "production",
+      "public_path": "components/Grid81DeterministicCapabilityAuthorityEvaluator",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": []
+    },
+    {
+      "component_id": "G53b_Capability_Consumption_Compiler",
+      "version": "production",
+      "public_path": "components/Grid81DeterministicCapabilityConsumptionCompiler",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": [
+        "G52b_Capability_Authority_Evaluator"
+      ]
+    },
+    {
+      "component_id": "G53c_Capability_Application_Executor",
+      "version": "production",
+      "public_path": "components/Grid81DeterministicCapabilityApplicationExecutor",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": [
+        "G53b_Capability_Consumption_Compiler"
+      ]
+    },
+    {
+      "component_id": "G53e_Canonical_Promotion_Planner",
+      "version": "production",
+      "public_path": "components/Grid81DeterministicCanonicalPromotionPlanner",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": [
+        "G53c_Capability_Application_Executor"
+      ]
+    },
+    {
+      "component_id": "CNumPyCortex",
+      "version": "0.1.0",
+      "public_path": "components/CNumPyCortex",
+      "runtime_admission": false,
+      "active_status": "OPTIONAL",
+      "dependencies": []
+    },
+    {
+      "component_id": "elpis_nanbeige42_host",
+      "version": "P14.0b",
+      "public_path": "native/elpis-nanbeige42-host",
+      "runtime_admission": false,
+      "active_status": "ACTIVE",
+      "dependencies": []
+    }
+  ]
+}

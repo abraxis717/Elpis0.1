@@ -1,0 +1,24 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "SemanticStructuralSpine_V1",
+  "component_id": "Semantic_Structural_Spine_V1",
+  "dependencies": [
+    "HACF_R3"
+  ],
+  "display_name": "Semantic Structural Spine V1",
+  "evidence_references": {},
+  "manifest_self_hash": "e40f3d2389a527f03be2c310bcd5e1b8c59d85946b866cb932fc252908c7fa5f",
+  "pipeline_role": "Semantic projection (S03)",
+  "promotion_receipt_path": "promotion-receipts/Semantic_Structural_Spine_V1.json",
+  "public_interface_paths": [
+    "include/elpis_semantic/"
+  ],
+  "qualification_disposition": "SEALED_AND_PROMOTABLE",
+  "release_file_count": 376,
+  "release_file_list_digest": "d638ae7682db95a194140710ea60539c1958fe757d68c0813683157d0a997023",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "c37c2a5bc536088e6a5c720609e62b55ff26635c7d38e3dad8c1a8f7202f40c0",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Companions/Elpis_Semantic_Fabric",
+  "version": "V1"
+}

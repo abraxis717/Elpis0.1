@@ -1,0 +1,24 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Grid81DeterministicStructuralAdjudicator",
+  "component_id": "G51b_Deterministic_Structural_Adjudicator",
+  "dependencies": [
+    "Grid81_Structural_Semantics"
+  ],
+  "display_name": "Grid81 Deterministic Structural Adjudicator",
+  "evidence_references": {},
+  "manifest_self_hash": "f4da6235b40f80e0c7cf79ae53d01c989d63dc358dd6736422512dd6c8414811",
+  "pipeline_role": "Structural validation and transition authority (S07)",
+  "promotion_receipt_path": "promotion-receipts/G51b_Deterministic_Structural_Adjudicator.json",
+  "public_interface_paths": [
+    "src/elpis_grid81_adjudication/"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 26,
+  "release_file_list_digest": "9b8e642b93835d8e3677e37a3e712d326d97a9eef77d5aae808802913ce23e9a",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "022e394eb48e6b73d407dd1b6d285e1f0d6a10e36c9480f42678231c3473f03a",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Grid81DeterministicStructuralAdjudicator",
+  "version": "production"
+}

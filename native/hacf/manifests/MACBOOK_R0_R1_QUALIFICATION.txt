@@ -1,0 +1,30 @@
+HACF_MACBOOK_QUALIFICATION
+captured_utc=2026-07-27T19:36:03Z
+target=elpis-mba72
+elpis-mba72
+Linux elpis-mba72 6.18.40-2-lts #1 SMP PREEMPT_DYNAMIC Sat, 25 Jul 2026 19:01:40 +0000 x86_64 GNU/Linux
+cmake version 4.4.0
+1.13.2
+cc (GCC) 16.1.1 20260725
+3.53.4 2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e0945alt1 (64-bit)
+Test project /home/joe/HashAdressedCascadeFabric/build
+    Start 1: fms_r0
+1/8 Test #1: fms_r0 ...........................   Passed    1.42 sec
+    Start 2: fms_concurrency
+2/8 Test #2: fms_concurrency ..................   Passed    0.50 sec
+    Start 3: fms_adversarial
+3/8 Test #3: fms_adversarial ..................   Passed    0.01 sec
+    Start 4: hash
+4/8 Test #4: hash .............................   Passed    0.00 sec
+    Start 5: r1_corpus
+5/8 Test #5: r1_corpus ........................   Passed    0.50 sec
+    Start 6: chunking_adversarial
+6/8 Test #6: chunking_adversarial .............   Passed    0.00 sec
+    Start 7: cascade
+7/8 Test #7: cascade ..........................   Passed    0.00 sec
+    Start 8: graph
+8/8 Test #8: graph ............................   Passed    0.00 sec
+
+100% tests passed out of 8
+
+Total Test time (real) =   2.44 sec

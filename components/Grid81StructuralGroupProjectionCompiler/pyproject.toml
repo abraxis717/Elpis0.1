@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "elpis-grid81-groups"
+version = "5.0.0"
+description = "G5.0B Structural Group Projection Compiler"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-W error::pytest.PytestReturnNotNoneWarning -q"

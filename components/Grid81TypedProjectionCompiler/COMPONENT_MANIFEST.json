@@ -1,0 +1,24 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Grid81TypedProjectionCompiler",
+  "component_id": "Grid81_Typed_Projection_Compiler",
+  "dependencies": [
+    "Grid81_Structural_Semantics"
+  ],
+  "display_name": "Grid81 Typed Projection Compiler",
+  "evidence_references": {},
+  "manifest_self_hash": "e0c09adacfe1d116b10890ead6cdd71a0b8f94a6be4624e1acf5f9ec1618409f",
+  "pipeline_role": "Grid81 typed projection (S04)",
+  "promotion_receipt_path": "promotion-receipts/Grid81_Typed_Projection_Compiler.json",
+  "public_interface_paths": [
+    "src/elpis_grid81_typed/"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 13,
+  "release_file_list_digest": "22ff9023ed5bf72b76198b96134e4c55f8ea948c2bbcd520a25e5edf2e1b08e3",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "85b03f0768ee8e2a1c2345954a440721326745783843c8e1e42147f1c6b961b5",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Grid81TypedProjectionCompiler",
+  "version": "production"
+}

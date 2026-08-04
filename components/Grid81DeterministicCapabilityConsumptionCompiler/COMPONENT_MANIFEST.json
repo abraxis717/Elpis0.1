@@ -1,0 +1,24 @@
+{
+  "active_or_optional_status": "ACTIVE",
+  "canonical_destination": "Grid81DeterministicCapabilityConsumptionCompiler",
+  "component_id": "G53b_Capability_Consumption_Compiler",
+  "dependencies": [
+    "G52b_Capability_Authority_Evaluator"
+  ],
+  "display_name": "Capability Consumption Compiler",
+  "evidence_references": {},
+  "manifest_self_hash": "ddb23d74b397415a72100f08fc13d402f25eb573cfe38544380047876e178004",
+  "pipeline_role": "Capability consumption compilation (S13)",
+  "promotion_receipt_path": "promotion-receipts/G53b_Capability_Consumption_Compiler.json",
+  "public_interface_paths": [
+    "src/elpis_grid81_consumption_compiler/"
+  ],
+  "qualification_disposition": "QUALIFIED",
+  "release_file_count": 24,
+  "release_file_list_digest": "9ae3f535a4c72874127ef7ade4fdbdec4c52daed32e8a0997452586ffcca11a0",
+  "runtime_admission": false,
+  "schema_version": "1.0",
+  "source_content_digest": "a99a42782a63f70f808b50a439cfdd736cda33db152774dad0a9f2f4f68addbd",
+  "source_provenance_root": "${ELPIS_CANON}/Elpis_Canon/Grid81DeterministicCapabilityConsumptionCompiler",
+  "version": "production"
+}

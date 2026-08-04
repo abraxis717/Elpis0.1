@@ -1,0 +1,6 @@
+{
+  "schema": "elpis.public.file_licensemap.v1",
+  "default_license": "MIT",
+  "default_copyright": "Elpis Contributors",
+  "exceptions": []
+}

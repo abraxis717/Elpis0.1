@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elpis-runtime-r1"
+version = "0.1.0"
+description = "Elpis Runtime Integration R1 — Bounded pre-refinement HACF retrieval"
+requires-python = ">=3.11"
+dependencies = [
+    "elpis-runtime-r0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

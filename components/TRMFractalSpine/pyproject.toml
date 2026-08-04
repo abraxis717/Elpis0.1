@@ -1,0 +1,29 @@
+[project]
+name = "elpis-fractal-spine"
+version = "0.1.0"
+description = "TRM Orthogonal Recursive Embedding Foundation (FS0.1)"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.0",
+    "tomllib; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+training = [
+    "torch>=2.0",
+    "safetensors>=0.4",
+]
+
+[project.scripts]
+elpis-fractal-spine = "elpis_fractal_spine.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests*", "tests.*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

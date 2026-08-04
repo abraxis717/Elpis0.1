@@ -1,0 +1,3 @@
+Deployment originates from Ouroboros over SSH and rsync.
+The internal APFS disk on the MacBook is never touched.
+Evidence is never used as a cache, a WAL location, or a swap tier.

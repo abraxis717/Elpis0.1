@@ -1,0 +1,33 @@
+[build-system]
+requires = [
+  "setuptools>=69",
+  "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "c-numpy-cortex"
+version = "0.1.0"
+description = "Telemetry-first NumPy cortex with Chronos-2 forecasting and Grid81 transport"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "pyarrow>=15",
+  "psutil>=5.9",
+  "requests>=2.31",
+  "chronos-forecasting>=2.0",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8",
+]
+
+[project.scripts]
+cnumpy-cortex = "c_numpy_cortex.cli:main"
+
+[tool.setuptools.packages.find]
+where = [
+  "src",
+]

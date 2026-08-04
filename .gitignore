@@ -1,0 +1,59 @@
+# Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Distribution
+*.egg-info/
+dist/
+build/
+*.egg
+
+# CMake build
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+*.o
+*.so
+*.a
+build*/
+
+# Testing
+.pytest_cache/
+.hypothesis/
+coverage/
+*.cover
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Runtime state
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Model weights (not included in release)
+*.gguf
+*.safetensors
+*.pt
+*.bin
+
+# Secrets
+.env
+*.key
+*.pem
+*.crt
+
+# Generated
+*.sha256

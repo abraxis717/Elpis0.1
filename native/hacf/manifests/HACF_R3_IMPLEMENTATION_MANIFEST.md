@@ -1,0 +1,27 @@
+# HACF R3 Implementation Manifest
+
+status=HACF_R3_IMPLEMENTED_NOT_SEALED
+base_status=HACF_R2_EXACT_DENSE_RETRIEVAL_CROSS_HOST_SEALED
+base_seal_sha256=6988b9f0319d159437456efd15a027cf6ce14ba9ff7d11155194ee3c20f7a5e7
+
+scope=deterministic lexical+dense rank fusion; immutable contextual graph snapshot; bounded one-hop expansion; epoch drift detection; exact evidence freezing; canonical RetrievalBundle JSON; HACF retrieval-bundle package identity
+
+test_count=21
+construction_functional=21/21_PASS
+construction_asan_ubsan=21/21_PASS
+construction_tsan=21/21_PASS_SPLIT_RUN
+
+rrf_scale=1000000000
+bundle_schema=elpis.retrieval_bundle.v1
+context_graph_schema=elpis.context_graph.v1
+policy_schema=elpis.hybrid_policy.v1
+
+fixture_policy_digest=a6002ef6e93502169280774fe9e3073d0e9a3e391a19e2b6c80da48cc7a823d4
+fixture_graph_digest=2b43e80c3204b69c9a35f792dee019977ba15b01434e95b8c005d3d641d01b76
+fixture_corpus_manifest_digest=f25aa08d883435420588790b184ef125b2fe8a9871d17bee1e6bfd0c976faced
+fixture_index_manifest_digest=74f95a78f4bcf9d6ddd0c69af37d345fa78f7ae24580f0422d62b2f2b6ae86f2
+fixture_query_digest=3ab7d5328f3ec1f8179e31d1c916f7ddf0599e99769878326321deee315f5ddd
+fixture_bundle_digest=851bccfd919b06f3f45988bf76cac2c04ae609eb646570f5f8cb53abf996e7bb
+fixture_package_digest=2bc98328ba6b3f3f7924b34b7e6b794f5f723373305af649c5004c2bc69448b0
+
+excluded=learned reranking; ANN; multi-hop graph traversal; mutable graph database; persistent queue journal; Projector adapter; TRM adapter; DarwinianMatrix adapter; GPU execution
