@@ -58,7 +58,8 @@ target_link_libraries(r1_hacf_wrapper PRIVATE
   ${Python3_LIBRARIES}
   sqlite3
   pthread
-  # HACF static archives inside a link group so C++ symbols resolve properly
+  # HACF static archives inside a link group so C++ symbols resolve properly.
+  # Shared system libs (sqlite3, pthread) stay outside the group.
   "-Wl,--start-group"
   ${HACF_HASH_LIB}
   ${HACF_GRAPH_LIB}
@@ -72,6 +73,8 @@ target_link_libraries(r1_hacf_wrapper PRIVATE
   stdc++
   m
   "-Wl,--end-group"
+  sqlite3
+  pthread
 )
 
 set_target_properties(r1_hacf_wrapper PROPERTIES

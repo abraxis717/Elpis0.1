@@ -2175,7 +2175,7 @@
     },
     {
       "path": "manifests/PUBLIC_RELEASE_MANIFEST.json",
-      "sha256": "11ba6f8ee6d52e8fac51e78edcbf6e2134d2b2b6e163b11503970bc2538ea566",
+      "sha256": "e905af67b852129cc292310d70548f20cc7791377c1b3f260d7d0edc58a11b47",
       "size": 200787
     },
     {
@@ -3015,8 +3015,8 @@
     },
     {
       "path": "native/hacf_bridge/CMakeLists.txt",
-      "sha256": "768af6986d08308e776a88584615eadb1f23ed5385ab7917d257485b8c95a46e",
-      "size": 3049
+      "sha256": "07eddc23c09d741ef5c401980d930743b338e7671df691fa0059fec9a8fe9d0e",
+      "size": 3136
     },
     {
       "path": "native/hacf_bridge/python_r1_wrapper.c",
@@ -5079,6 +5079,16 @@
       "size": 5327
     },
     {
+      "path": "src/elpis/contracts/codecs/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "src/elpis/contracts/codecs/grid_numpy_torch.py",
+      "sha256": "45339359cc8843d7e4be83d06f8f7cf5048ac979e931c36324fafa0c60819220",
+      "size": 3952
+    },
+    {
       "path": "src/elpis/contracts/envelope.py",
       "sha256": "acf750a5cac6fdf44169b1e4d82bdfce6e543cd6086e7709132d57c12df05e5a",
       "size": 3161
@@ -5092,6 +5102,21 @@
       "path": "src/elpis/contracts/identity.py",
       "sha256": "5d3b1d956f0f8f3022324576f44efa9738d593a7c530e8fcc8e7473395642303",
       "size": 3988
+    },
+    {
+      "path": "src/elpis/contracts/legacy/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "src/elpis/contracts/legacy/canary_telemetry.py",
+      "sha256": "e080e66d0d258e2eba5ded1f5739dc6848d67678224fba11fc86deca480cfa5f",
+      "size": 15839
+    },
+    {
+      "path": "src/elpis/contracts/legacy/spine_adapter.py",
+      "sha256": "44288dc2d0b17165acd57ed74fdd169fb223a0ee94e1e11beba1ba6683b9581a",
+      "size": 8083
     },
     {
       "path": "src/elpis/contracts/masks.py",
@@ -5127,6 +5152,31 @@
       "path": "src/elpis/logic/account.py",
       "sha256": "3ab74281fe21b726394f62c499a778ae1277b92fc7314904b10a012c1e8a615b",
       "size": 27074
+    },
+    {
+      "path": "src/elpis/logic/authority.py",
+      "sha256": "edc3dd0e7062e870717ce5684250b00c8a320da60a8bf62ca79835bb983a0c1d",
+      "size": 8821
+    },
+    {
+      "path": "src/elpis/logic/budget_adapter.py",
+      "sha256": "50276d534f0decff5663eac2ab167915b710260b3d9ea73c3d8bd71f86bfc0b1",
+      "size": 5891
+    },
+    {
+      "path": "src/elpis/logic/errors.py",
+      "sha256": "4086bb162980f39b3ae69947ebc78161b68f571776060ddaf420719605db83c0",
+      "size": 1735
+    },
+    {
+      "path": "src/elpis/logic/obligations.py",
+      "sha256": "881da053524ca5e04bf7e3ba53be053af2fe69212ef16597a2adcb26ea99e7b4",
+      "size": 2624
+    },
+    {
+      "path": "src/elpis/logic/phases.py",
+      "sha256": "ace7acc2b8c3cdb0b2fffd2e880c8dd1400508be2f17085f30d0ea12f42523f2",
+      "size": 4929
     },
     {
       "path": "tests/test_ci_secret_scan.py",
