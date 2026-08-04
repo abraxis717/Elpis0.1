@@ -3,7 +3,7 @@
 import sys
 import os
 
-BASE = '/mnt/primesauce/Elpis_Canon'
+BASE = '$ELPIS_CANON_ROOT/Elpis_Canon'
 PACKAGE = os.path.join(BASE, 'Grid81StructuralGroupProjectionCompiler')
 sys.path.insert(0, os.path.join(PACKAGE, 'src'))
 

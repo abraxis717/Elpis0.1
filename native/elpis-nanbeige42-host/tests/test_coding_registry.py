@@ -20,7 +20,7 @@ def binding(task_id, family='f'):
     return RegistryPacketBinding('elpis.nanbeige42.registry-packet-binding.v1',task_id,task_id,family,'c','train','sha256:'+'a'*64,p.packet_digest,p).with_digest()
 
 def entry(task_id, family, partition, binding_digest):
-    root=f'/mnt/primesauce/Elpis_Canon/hosts/nanbeige42/coding_pilot_v0_1/workspaces/{task_id}'
+    root=f'$ELPIS_CANON_ROOT/Elpis_Canon/hosts/nanbeige42/coding_pilot_v0_1/workspaces/{task_id}'
     return CodingRegistryEntry(
         'elpis.nanbeige42.coding-registry-entry.v1',task_id,partition,family,'fix',('bounded',),root,
         'sha256:'+'2'*64,(root,), 'sha256:'+'3'*64,command(),binding_digest,

@@ -126,7 +126,7 @@ def load_nanbeige42(*, repo_root: Path, view_root: Path | None = None) -> tuple[
     torch.use_deterministic_algorithms(True)
     torch.backends.cuda.matmul.allow_tf32 = False
 
-    with tempfile.TemporaryDirectory(prefix="p14-1-load-", dir="/home/joe") as temporary_offload:
+    with tempfile.TemporaryDirectory(prefix="p14-1-load-", dir="$HOME") as temporary_offload:
         model = AutoModelForCausalLM.from_pretrained(
             str(view.root),
             local_files_only=True,

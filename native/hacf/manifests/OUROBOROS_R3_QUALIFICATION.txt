@@ -31,7 +31,7 @@ cc (GCC) 16.1.1 20260430
 -- Found SQLite3: /usr/lib/libsqlite3.so (found version "3.53.1")
 -- Configuring done (0.9s)
 -- Generating done (0.0s)
--- Build files have been written to: /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release
+-- Build files have been written to: $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release
 [1/73] Building C object CMakeFiles/elpis_graph.dir/src/graph/graph.c.o
 [2/73] Building C object CMakeFiles/test_fms_concurrency.dir/tests/fms/test_fms_concurrency.c.o
 [3/73] Building C object CMakeFiles/elpis_fms.dir/src/memory/fms/fms_pal_posix.c.o
@@ -105,7 +105,7 @@ cc (GCC) 16.1.1 20260430
 [71/73] Linking CXX executable test_vector_search
 [72/73] Building CXX object CMakeFiles/test_vector_adversarial.dir/tests/vector/test_vector_adversarial.cpp.o
 [73/73] Linking CXX executable test_vector_adversarial
-Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release
+Test project $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release
       Start  1: fms_r0
  1/21 Test  #1: fms_r0 ...........................   Passed    1.23 sec
       Start  2: fms_concurrency
@@ -172,7 +172,7 @@ Total Test time (real) =   4.04 sec
 -- Found SQLite3: /usr/lib/libsqlite3.so (found version "3.53.1")
 -- Configuring done (0.9s)
 -- Generating done (0.0s)
--- Build files have been written to: /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-asan
+-- Build files have been written to: $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-asan
 [1/73] Building C object CMakeFiles/elpis_graph.dir/src/graph/graph.c.o
 [2/73] Building C object CMakeFiles/elpis_fms.dir/src/memory/fms/fms_pal_posix.c.o
 [3/73] Building C object CMakeFiles/elpis_hash.dir/src/hash/sha256.c.o
@@ -248,7 +248,7 @@ Total Test time (real) =   4.04 sec
 [73/73] Linking CXX executable benchmark_hybrid
 	libasan.so.8 => /usr/lib/libasan.so.8 (0x00007f3a05800000)
 	libubsan.so.1 => /usr/lib/libubsan.so.1 (0x00007f3a04a00000)
-Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-asan
+Test project $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-asan
       Start  1: fms_r0
  1/21 Test  #1: fms_r0 ...........................   Passed    8.68 sec
       Start  2: fms_concurrency
@@ -315,7 +315,7 @@ Total Test time (real) =  33.19 sec
 -- Found SQLite3: /usr/lib/libsqlite3.so (found version "3.53.1")
 -- Configuring done (0.9s)
 -- Generating done (0.0s)
--- Build files have been written to: /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-tsan
+-- Build files have been written to: $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-tsan
 [1/73] Building C object CMakeFiles/elpis_fms_test_pal.dir/tests/support/fms_pal_test.c.o
 [2/73] Building C object CMakeFiles/elpis_hash.dir/src/hash/sha256.c.o
 [3/73] Building C object CMakeFiles/elpis_graph.dir/src/graph/graph.c.o
@@ -390,7 +390,7 @@ Total Test time (real) =  33.19 sec
 [72/73] Linking CXX executable benchmark_hybrid
 [73/73] Linking CXX executable test_hybrid_concurrency
 	libtsan.so.2 => /usr/lib/libtsan.so.2 (0x00007fd363c00000)
-Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-tsan
+Test project $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-tsan
       Start  1: fms_r0
  1/21 Test  #1: fms_r0 ...........................   Passed    8.99 sec
       Start  2: fms_concurrency
@@ -439,8 +439,8 @@ Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-tsan
 Total Test time (real) =  36.83 sec
 
 === R3 CROSS-HOST FIXTURE INSTRUMENT ===
-UpdateCTestConfiguration  from :/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release/DartConfiguration.tcl
-Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release
+UpdateCTestConfiguration  from :$ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release/DartConfiguration.tcl
+Test project $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release
 Constructing a list of tests
 Done constructing a list of tests
 Updating test list for fixtures
@@ -450,8 +450,8 @@ Checking test dependency graph end
 test 20
     Start 20: hybrid_crosshost_fixture
 
-20: Test command: /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release/test_hybrid_crosshost_fixture "/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release/hybrid-xhost-state"
-20: Working Directory: /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release
+20: Test command: $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release/test_hybrid_crosshost_fixture "$ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release/hybrid-xhost-state"
+20: Working Directory: $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r3-release
 20: Test timeout computed to be: 10000000
 20: R3 cross-host fixture
 20: # HACF R3 cross-host fixture expectations

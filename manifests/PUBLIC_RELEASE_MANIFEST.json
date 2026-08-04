@@ -1,9 +1,17 @@
 {
+  "version": "v1.1.2",
+  "release_type": "corrective",
+  "description": "Clean-clone portability and reproducibility correction for v1.1.2",
   "files": [
     {
+      "path": ".github/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
       "path": ".github/workflows/ci.yml",
-      "sha256": "8bc75dd189cd9afe878327c20d2cb7686a501de3925b493d00940469b3271544",
-      "size": 3026
+      "sha256": "72394e3a81baf4f128985d83ba49dc8cbf3e62b03f0d33e1b0c1525d5ee490e9",
+      "size": 5681
     },
     {
       "path": ".gitignore",
@@ -92,8 +100,8 @@
     },
     {
       "path": "components/CNumPyCortex/config/cortex.toml",
-      "sha256": "2257b11e8394e900cf38fcbfe86477246296ae6a73afa7935f4256eca828d2a5",
-      "size": 884
+      "sha256": "1a2493923788f45cce4014f838e4033ba1f8b5986d3833d880aab4bddce3e2a4",
+      "size": 890
     },
     {
       "path": "components/CNumPyCortex/evidence/REFERENCES.json",
@@ -132,8 +140,8 @@
     },
     {
       "path": "components/CNumPyCortex/src/c_numpy_cortex/config.py",
-      "sha256": "1004888b98ffc081f5d5e86ce7eb47eddebea281098663a9392ff371a7c75c88",
-      "size": 4444
+      "sha256": "31bf57044812b6b1345cda4bc252c4f0a39dea525c1ad7bf5f048e2303096549",
+      "size": 4450
     },
     {
       "path": "components/CNumPyCortex/src/c_numpy_cortex/contracts.py",
@@ -632,8 +640,8 @@
     },
     {
       "path": "components/Grid81/README.md",
-      "sha256": "7752aa495113182746f854bcf7b32d711178473201498c7ea908fc591c942809",
-      "size": 7746
+      "sha256": "bc44344dfa8b3b634904b48cd1c17e916205f5ac6697adb1add43abae34a12c1",
+      "size": 7756
     },
     {
       "path": "components/Grid81/canonical_reader.py",
@@ -682,8 +690,8 @@
     },
     {
       "path": "components/Grid81/test_g53ig1_adversarial_runtime_consumer.py",
-      "sha256": "1f9b7fe377c118c8f827555ab351ee10876ed0258460cd220376326698789e05",
-      "size": 12389
+      "sha256": "d05d00823ef043984223f829878e4474b66711a1e11ca07160b2f333cb39825b",
+      "size": 12391
     },
     {
       "path": "components/Grid81DeterministicCanonicalPromotionPlanner/COMPONENT_MANIFEST.json",
@@ -907,8 +915,8 @@
     },
     {
       "path": "components/Grid81DeterministicCapabilityAuthorityEvaluator/g52b_execute.py",
-      "sha256": "4d6bb15ec7e28f4a38f1dbd1ae05412e655e1b70765b0f6be6dc08cec5c617ba",
-      "size": 31983
+      "sha256": "2b6cdb9f0fad329d297ce61b9d6c865cda9eeb6b38640588b568cf5a8c34abd6",
+      "size": 31987
     },
     {
       "path": "components/Grid81DeterministicCapabilityAuthorityEvaluator/g52b_mutation_harness.py",
@@ -1227,8 +1235,8 @@
     },
     {
       "path": "components/Grid81DeterministicCapabilityConsumptionCompiler/verify_g53b.py",
-      "sha256": "dc0fba9d486678d5ddfa2b5801674908e0b1a1691a32e77609970dce7937a0ea",
-      "size": 12820
+      "sha256": "84afe840bc3ea990dd4dd70c8817bb7e5499241f0b7035e9be45a3c194dcb80b",
+      "size": 12822
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/COMPONENT_MANIFEST.json",
@@ -1317,53 +1325,53 @@
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_abstention.py",
-      "sha256": "2ca53cdf26e5cfad3f102a0e315d4ae9ca285dd6402b63eae438fea3fde619ea",
-      "size": 5078
+      "sha256": "c75a74171a5b36f2b65f7097863bc6c5a9d0687c8b107795adddcc760fb05911",
+      "size": 5080
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_boundary.py",
-      "sha256": "4423f1213f56d36c6a6a8e0d6e96a7dca47dfe76789416e8ff65de2381bb948f",
-      "size": 3120
+      "sha256": "df4eb8b038853398fe74ab02f5fc47c2aed7d40d2b0a53ab69cd7a1b993bb45f",
+      "size": 3122
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_dispositions.py",
-      "sha256": "f5cdfe892873eec0962a914057fe8308cb2a025238c95b7f998d20d8543d224c",
-      "size": 8949
+      "sha256": "d5d8a6e75f6d1d53bc1731bdd00d7840110d1ff04c65c721b8336120025d9396",
+      "size": 8951
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_mutations.py",
-      "sha256": "5935ab44071aa15f934ecb9ebbe3fb3d71b8fd57a0442bce302d3b4556852707",
-      "size": 4455
+      "sha256": "32084c90c3bd40be690b2cfa5ace0f33a6ed77b543d15b30927e3a2205866490",
+      "size": 4457
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_policy.py",
-      "sha256": "7ecb1f09279876bc13966e5f3368a2ce3cd5efcdbfeedec6ea22cc0ecf81cd3c",
-      "size": 7834
+      "sha256": "000ada27bd14e1ba00d6cf548b6a8a3ec521445014ec03acd754cf0c9946742f",
+      "size": 7836
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_review_request.py",
-      "sha256": "db09e10c0a93db2801e6f72ef47fab1515158deff37efabc166681d00ba7d629",
-      "size": 2898
+      "sha256": "14353a9c6d1bcb4450deac5c76827486ffe98c837f827d2a02326606704e3b92",
+      "size": 2900
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_semantic_identity.py",
-      "sha256": "c92a95523e2d0afabca818413a0e1b0e5fe2745fef16b0b6f5f8a7dde194438e",
-      "size": 4921
+      "sha256": "830d3b5b96340da3522d8fb43e3501f64565d5e05b19117d33514f2e43fcc07d",
+      "size": 4923
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_source_join.py",
-      "sha256": "2b868858b6fbf4faaef095c769d42c6f0c22c51166e5090147757680b5106b10",
-      "size": 2080
+      "sha256": "e2b1fdcf41ae98f4a1fa4c7c5782dcc9796cb419b047bad620837e5a6a5f55e6",
+      "size": 2082
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_upstream.py",
-      "sha256": "e33d4a3640b0fa4c4b7fdd43d13e98b9759200e08c55fcfcb8d5bb592a73f437",
-      "size": 2601
+      "sha256": "a9c5affc51c725a955af36ac4dec6a3d1c433286d381b5aa0ee27bfc1fae8032",
+      "size": 2603
     },
     {
       "path": "components/Grid81DeterministicStructuralAdjudicator/tests/test_verifier_qualification.py",
-      "sha256": "8b56a831e2ff81f93e43796861e80688b4363e9b548f182d0898b240aaf18b2d",
-      "size": 4332
+      "sha256": "4edf6a9bb2d1ad87217dd80ff5b098670ef4bac92f3a673c84362095c8205850",
+      "size": 4334
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/COMPONENT_MANIFEST.json",
@@ -1442,8 +1450,8 @@
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/src/elpis_grid81_groups/verifier.py",
-      "sha256": "112c62925d0766bb86ee7d5be118fcaf7fc8b5bda14706ad94335ae53b634e00",
-      "size": 24418
+      "sha256": "99c3316952f65f09139a40dfd3f41a7c47bcf9ae8cac20fe1ce330f5d64accd1",
+      "size": 24420
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/__init__.py",
@@ -1452,48 +1460,48 @@
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/test_boundary.py",
-      "sha256": "d191754a1968958455e216bffecccb7af25fb219a5152de7b2379ac3f9dd5de4",
-      "size": 2589
+      "sha256": "f53d0b7866df5aebf821e9e60cee96a1ffa061ad6a85ee97fcf79adeafa6f81b",
+      "size": 2591
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/test_conflicts.py",
-      "sha256": "296a2cc8dbca33ab078ffedc9ef127fe79ef30cc959c1cf1f6e24595e46a6205",
-      "size": 5274
+      "sha256": "ec65751d4cd390ee32191c366efdcfb356bd9caa5e08b441844145f9594f843f",
+      "size": 5276
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/test_derivation.py",
-      "sha256": "4bb79044ba80d366418a7eacb1bc046579fc56709ffca3e448e3692222eb6ea8",
-      "size": 3976
+      "sha256": "c5a696eed379cbb9c5dd8e71a40c1c068f0d6e67df2b1338d28cb752000938e0",
+      "size": 3978
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/test_mutations.py",
-      "sha256": "926ffeb1fcc026dcf0a1b38c5cab3f9ac85a1f8c62231b1684b86b9fdab0490f",
-      "size": 11887
+      "sha256": "1d91cc57589ea204f756905937dc2fa89305e2b8f20b874dc4871e1a5458b10b",
+      "size": 11889
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/test_orbits.py",
-      "sha256": "b293adda6de0ec4100c5eb8fcafa65924989ca4cedea0dae5b072ce60dec97fa",
-      "size": 3935
+      "sha256": "0bc1d874e2920dc13ee3dc675ce496b2c497acbfd7eead39bc4278b0b014008b",
+      "size": 3937
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/test_ordering.py",
-      "sha256": "d32500b3a6c865a50db21a58a5c7ba18d83bcb8625decfda076c724010eab2dc",
-      "size": 2013
+      "sha256": "74c4342905a5feaeb1c05f9f07f8266d223f35a10e8192306613d57b444f7ad8",
+      "size": 2015
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/test_proposals.py",
-      "sha256": "d3e0d562a4c16b4af06f7fe70c77168fe38087b8927d0516b19e9e232826f0f5",
-      "size": 2223
+      "sha256": "61410d8adac2fd909bf077ad0ee0d694ab828319cc8947a39b2cd4ba64ca3e8f",
+      "size": 2225
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/test_source_join.py",
-      "sha256": "2c124bec1273294f495b0fff46313ad6ea887a771d8747f016d12e201007d66e",
-      "size": 2732
+      "sha256": "05a267f27ac6c69b696a90190fdfc61b9eb2f8e1375c70fe79aa3d43a93c0484",
+      "size": 2734
     },
     {
       "path": "components/Grid81StructuralGroupProjectionCompiler/tests/test_upstream_consumption.py",
-      "sha256": "f00a0e35d6e842dd4f118053e63217ce408a6d1604e521100ba287bad72070f4",
-      "size": 2546
+      "sha256": "47e45970bde8c23a5be41bc66dbcb8d07d633e7a0ab16d6db6a16a375f5837e6",
+      "size": 2548
     },
     {
       "path": "components/Grid81StructuralSemantics/COMPONENT_MANIFEST.json",
@@ -1567,8 +1575,8 @@
     },
     {
       "path": "components/Grid81StructuralSemantics/tests/test_consumer_compatibility.py",
-      "sha256": "76fda654f9a8dc8e2faab9f7ea4b5281de01a53fb2142477f04a1be92a150fe5",
-      "size": 3895
+      "sha256": "c1da03d9a8ec95c58c6f3998c7ac50a75514437bd953dc5cff2d5bc6f494b8aa",
+      "size": 4380
     },
     {
       "path": "components/Grid81StructuralSemantics/tests/test_contract_invariants.py",
@@ -1821,6 +1829,11 @@
       "size": 5709
     },
     {
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/refinement_scope_builder.py",
+      "sha256": "22ba3ece36abfe1d88dc8c1c5671e56970cd0d0bf52b7d6dfc5f1605b5c9d170",
+      "size": 3428
+    },
+    {
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/refinement_validation.py",
       "sha256": "eaa83f11e53ab711f7971c24ac39be103787589055d8882ce4f943ccb023cc30",
       "size": 8055
@@ -1977,8 +1990,8 @@
     },
     {
       "path": "components/TRMFractalSpine/registry/models.toml",
-      "sha256": "3c13dd986adfa3e2830da9501a3467e4d3d10bd6524493a56dca583299cea819",
-      "size": 5227
+      "sha256": "a01fa7a55a03bce1a6ef3f703f62d3db256b3e5e85017ca479e46c76118154d9",
+      "size": 5249
     },
     {
       "path": "components/TRMFractalSpine/src/elpis_fractal_spine/__init__.py",
@@ -2162,8 +2175,8 @@
     },
     {
       "path": "manifests/PUBLIC_RELEASE_MANIFEST.json",
-      "sha256": "48e98bea001312488afd43fc97d729255503c418fb9ed6e2db4ce4e8b107f29a",
-      "size": 196597
+      "sha256": "e0485ad4f32a2abf7fea2411aa3ade6f60e509580cea711dca0b2e1f72a86cb1",
+      "size": 197448
     },
     {
       "path": "native/elpis-header/COMPONENT_MANIFEST.json",
@@ -2232,8 +2245,8 @@
     },
     {
       "path": "native/elpis-header/src/elpis_header/observer/README.md",
-      "sha256": "1e18bc349a344aebf548bf5690b4ab6897d3d46a3cad0a2921bce77015e7d33c",
-      "size": 2284
+      "sha256": "658a5f3749e241b6fd079f3c06bdcd2bc69b30572d97f560f1684f70451c7fd7",
+      "size": 2290
     },
     {
       "path": "native/elpis-header/src/elpis_header/observer/__init__.py",
@@ -2322,7 +2335,7 @@
     },
     {
       "path": "native/elpis-nanbeige42-host/src/elpis_nanbeige42_host/executor_policy.py",
-      "sha256": "b44277fd231abaf34ad12ed7f8b57e554fc4fbe8ec3adb0867639bf2be5bfc03",
+      "sha256": "0fa3112f278e28fa1d0508e1bca5983950ee82e5fb8f09ab3b0565f133970646",
       "size": 5412
     },
     {
@@ -2347,8 +2360,8 @@
     },
     {
       "path": "native/elpis-nanbeige42-host/src/elpis_nanbeige42_host/model_loader.py",
-      "sha256": "19ae3b8f344eda079205d3c9497d98caac7389d6e9f59cfe879b6d630a478e52",
-      "size": 7860
+      "sha256": "c3bd7aa8670d3ffd47792ecd8ed4bfe51138095ab1b083112fc6fc406fbf2aa7",
+      "size": 7856
     },
     {
       "path": "native/elpis-nanbeige42-host/src/elpis_nanbeige42_host/packet_derivation.py",
@@ -2397,8 +2410,8 @@
     },
     {
       "path": "native/elpis-nanbeige42-host/tests/test_coding_registry.py",
-      "sha256": "8d9b3074764e91300ee4882bb38724379101442dc3d503e5fa96672f640dd829",
-      "size": 3306
+      "sha256": "313893bbcd50269776fdee121687884e93eac63d90f23e818bb5b5c9413ee59e",
+      "size": 3308
     },
     {
       "path": "native/elpis-nanbeige42-host/tests/test_control_realization.py",
@@ -2412,8 +2425,8 @@
     },
     {
       "path": "native/elpis-nanbeige42-host/tests/test_executor_policy.py",
-      "sha256": "d0d873040b9a17c344fbd5751e4008b3f1203a1ab263ccd2b2f3c9f3ad25478b",
-      "size": 2076
+      "sha256": "8cc529bdbd55c3eab4c11d56748c84125a477989116d4706dd54204e82310489",
+      "size": 2078
     },
     {
       "path": "native/elpis-nanbeige42-host/tests/test_hooks.py",
@@ -2442,13 +2455,13 @@
     },
     {
       "path": "native/elpis-nanbeige42-host/tests/test_p14_2b_shadow_snapshot_adapter.py",
-      "sha256": "097399113d337ced73d4de171712422c6945e049febd193baa1250c0ccc1ffc7",
-      "size": 4571
+      "sha256": "726d9a02560bd708f6e7532b9e8a72f0f4dc5a6f30e6a2629ada6b298a321d4d",
+      "size": 4573
     },
     {
       "path": "native/elpis-nanbeige42-host/tests/test_packet_derivation.py",
-      "sha256": "94102123fc609757800964bf49e60e46d02dd6f24f70522ed314e35c9cb78d7b",
-      "size": 6172
+      "sha256": "1fce022b8e08c194cc755f234c06cd422b90f58bcfd69afb4afe6c832d58db5b",
+      "size": 6174
     },
     {
       "path": "native/elpis-nanbeige42-host/tests/test_registry_packet_derivation.py",
@@ -2492,8 +2505,8 @@
     },
     {
       "path": "native/hacf/README.md",
-      "sha256": "d4080d9c7b8a3a8da08d7c5aefc86a2c35c5febf90898c9744d5d3ce58c6e19f",
-      "size": 4905
+      "sha256": "5e89370726c1fbf415e6ba44dd445622aa6b9edc5224b24645af40bc3b55a9da",
+      "size": 4965
     },
     {
       "path": "native/hacf/benchmarks/hybrid/benchmark_hybrid.cpp",
@@ -2657,8 +2670,8 @@
     },
     {
       "path": "native/hacf/manifests/HACF_R2_EXACT_DENSE_RETRIEVAL_SEAL.md",
-      "sha256": "6988b9f0319d159437456efd15a027cf6ce14ba9ff7d11155194ee3c20f7a5e7",
-      "size": 2510
+      "sha256": "ee2893b6f454c4b35fa014e72960706ddee76a3f0eb00989e33cd537c689d26b",
+      "size": 2506
     },
     {
       "path": "native/hacf/manifests/HACF_R2_IMPLEMENTATION_MANIFEST.md",
@@ -2672,8 +2685,8 @@
     },
     {
       "path": "native/hacf/manifests/HACF_R3_DETERMINISTIC_HYBRID_RETRIEVAL_SEAL.md",
-      "sha256": "aa986152024608a25b5c6883e4324f0b0742d5d2fe919fc5381f5983804f7f91",
-      "size": 2782
+      "sha256": "426d92f49fb7043419664a3155985862029ee9a77a8623608d84ffa9a416130f",
+      "size": 2778
     },
     {
       "path": "native/hacf/manifests/HACF_R3_IMPLEMENTATION_MANIFEST.md",
@@ -2687,13 +2700,13 @@
     },
     {
       "path": "native/hacf/manifests/MACBOOK_R0_R1_QUALIFICATION.txt",
-      "sha256": "ff45ebaf718fa6f772f0f8fb52592dc3f57a31af95ed9422d52f99db4be251f7",
-      "size": 1214
+      "sha256": "4bde5b6362537c17d91e85f2ac27387fdd948fe0b16fe674b886a82cd62a107f",
+      "size": 1210
     },
     {
       "path": "native/hacf/manifests/MACBOOK_R2_QUALIFICATION.txt",
-      "sha256": "355123f28b5852afc784c0c399189ab056e245d393267dc09a70e52e3ef67815",
-      "size": 10189
+      "sha256": "126879db6246d0ccd72199f4e7894d11ace4acaa3ec67ac7d16d23efa75a6079",
+      "size": 10157
     },
     {
       "path": "native/hacf/manifests/MACBOOK_R2_SOURCE_SHA256SUMS.txt",
@@ -2702,8 +2715,8 @@
     },
     {
       "path": "native/hacf/manifests/MACBOOK_R3_QUALIFICATION.txt",
-      "sha256": "324f7a08017ad043809d9572885dd9a8305a2c43dc8c5aeabac49b8158936ced",
-      "size": 12953
+      "sha256": "9ee2c15277caa70f996243d5edc1489f2efd300ba8940422525399d5ff1715c6",
+      "size": 12925
     },
     {
       "path": "native/hacf/manifests/MACBOOK_R3_SOURCE_SHA256SUMS.txt",
@@ -2717,13 +2730,13 @@
     },
     {
       "path": "native/hacf/manifests/OUROBOROS_R2_QUALIFICATION.txt",
-      "sha256": "eca65ecd995da26ffa89bc8f1a8df97bf72e2ca23c55e98565af4eeb12d34c39",
-      "size": 6748
+      "sha256": "8b1f92a21748f5484c8ebad80fd1c7538732400b64367d00a55916930c14b975",
+      "size": 6754
     },
     {
       "path": "native/hacf/manifests/OUROBOROS_R3_QUALIFICATION.txt",
-      "sha256": "d49ead190eb15536e2048cb61d8791093d29eac81e4fe7d63037a514edff05da",
-      "size": 30120
+      "sha256": "4c20f0f27f6c863878bd7359cd636734cbcc544301b5237a63823426cacb08f8",
+      "size": 30142
     },
     {
       "path": "native/hacf/manifests/R2_SOURCE_SHA256SUMS.txt",
@@ -3002,8 +3015,8 @@
     },
     {
       "path": "native/hacf_bridge/CMakeLists.txt",
-      "sha256": "9048e11eb87b19cf3ee5148587d909eb5721277a853fa0e81717c4ad4813c995",
-      "size": 1923
+      "sha256": "dbcf95a63c8e6e9f8b58a28312c03dc535175a775ff3a2cf75d368a7c10a03ef",
+      "size": 3536
     },
     {
       "path": "native/hacf_bridge/python_r1_wrapper.c",
@@ -3012,8 +3025,8 @@
     },
     {
       "path": "native/semantic-spine/CMakeLists.txt",
-      "sha256": "045b676eac3fab92c683bc0389c7df659a008279b182098f973f306aeb102cab",
-      "size": 33129
+      "sha256": "31d734df4c4864840b79071ca0d3ddf4b790bb16c120ed57fd8dbd53f38fa1c2",
+      "size": 33127
     },
     {
       "path": "native/semantic-spine/COMPONENT_MANIFEST.json",
@@ -4522,8 +4535,8 @@
     },
     {
       "path": "native/semantic-spine/tests/context/test_context_boundaries.c",
-      "sha256": "c75eb7b99bc4e9b06a2c2e70625a216881e50d13f4ea74ed9033d9c7b95784ce",
-      "size": 3167
+      "sha256": "9ab350942a91d8a2722a4599df4ae1445ef1805b2ac9ad3141a2c2d86afd2734",
+      "size": 3171
     },
     {
       "path": "native/semantic-spine/tests/context/test_context_deficit_policy.c",
@@ -4562,8 +4575,8 @@
     },
     {
       "path": "native/semantic-spine/tests/embedding/test_embedding_boundary.c",
-      "sha256": "4769fe2aac31d20a04bdee2b0df102d8085726d5bec2d0314da43b82aaac06c0",
-      "size": 9859
+      "sha256": "b064791807cc78d5f2f456f1e7263644f4ec1f48df48cd681c7bf58046fce24b",
+      "size": 9861
     },
     {
       "path": "native/semantic-spine/tests/embedding/test_embedding_collection.c",
@@ -4837,8 +4850,8 @@
     },
     {
       "path": "native/semantic-spine/tests/trm/test_trm_adapter.c",
-      "sha256": "450f28e85cd715d720d4f7ec8826ae60e160361b29da161e5bf4dc70e630f9b3",
-      "size": 47677
+      "sha256": "f488a07c5c847afbd09d7c97ea58233cf84f459f29f2631d6321af67b6765e91",
+      "size": 47681
     },
     {
       "path": "native/semantic-spine/tests/trm_align/test_p10r_alignment.c",
@@ -4882,8 +4895,8 @@
     },
     {
       "path": "runtime/R0/README.md",
-      "sha256": "cd34094e0fa070dac5232acbce598525b07dfb8730f5dbd654b158983990550c",
-      "size": 2622
+      "sha256": "ab55306bfd55794c75851fece812de7126c2228b0156981f7e89bbd1b3ded386",
+      "size": 2636
     },
     {
       "path": "runtime/R0/pyproject.toml",
@@ -4927,8 +4940,8 @@
     },
     {
       "path": "runtime/R0/src/elpis_runtime_r0/transaction.py",
-      "sha256": "e5c247e22e7a95c7517057805d463a48ea42ceb053868cee3bace98eeed39544",
-      "size": 13813
+      "sha256": "7d70d298d92a07bbc6c8342d481667e8414874eb66f20278093b73d5e44598fa",
+      "size": 15352
     },
     {
       "path": "runtime/R0/tests/__init__.py",
@@ -4937,13 +4950,13 @@
     },
     {
       "path": "runtime/R0/tests/test_r0_transaction.py",
-      "sha256": "4ff5acd52111a0fac0a6418373c2fadb28e5b21e29c3f156843432dfcb8856a2",
-      "size": 12303
+      "sha256": "39ca2a2a75024c3824218fb8451da8d87f47b7adb131f2916ed440074526ccbe",
+      "size": 13207
     },
     {
       "path": "runtime/R1/README.md",
-      "sha256": "134f235cb3207109ff7090f74bd616b4ef63ee38e6c293de0061bf08e4376105",
-      "size": 1576
+      "sha256": "7b28a5e7d0b4ed8dc8df2e18df524c1bc24a993f41e4b0aa29c0bb697bdd2e39",
+      "size": 1582
     },
     {
       "path": "runtime/R1/pyproject.toml",
@@ -4982,8 +4995,8 @@
     },
     {
       "path": "runtime/R1/src/elpis_runtime_r1/hacf_adapter.py",
-      "sha256": "bf888e83281c045e16e863fdb18973a89d7444591c12c57132e74934d772b67f",
-      "size": 13784
+      "sha256": "5c98b95ccb563c67a19d28e35d43e985c520a204630f0a08a7b63dcccda58779",
+      "size": 14482
     },
     {
       "path": "runtime/R1/src/elpis_runtime_r1/query_derivation.py",
@@ -5002,8 +5015,8 @@
     },
     {
       "path": "runtime/R1/src/elpis_runtime_r1/transaction.py",
-      "sha256": "41b36ecc86f70cce1186e886f8fa035e0406e31fffa8161c3a6c27901423f04b",
-      "size": 11819
+      "sha256": "cafe8217b115fb58913afcffe4f5f5111cf44780c16b0ffa47de2bbbc3590092",
+      "size": 12699
     },
     {
       "path": "runtime/R1/tests/__init__.py",
@@ -5012,8 +5025,23 @@
     },
     {
       "path": "runtime/R1/tests/test_r1.py",
-      "sha256": "f50f1cc8a20ad8fa534c9f43e6890bd366a2bd30c7ee5a98dd06c9f034b62026",
-      "size": 12270
+      "sha256": "20906582d1abad11d954a3a1139e6b0bfae852ec912f57c878c2e3a12fd0b4e5",
+      "size": 12371
+    },
+    {
+      "path": "tests/test_ci_secret_scan.py",
+      "sha256": "bf8b2107e973ac43b5cde50ceae83a7b72153b03c822af98c45e7e99baca394d",
+      "size": 9295
+    },
+    {
+      "path": "tools/__init__.py",
+      "sha256": "a5fefd8d4d5bda78072a945c7eac54243deebcc6ecd1fe4c24d85e8da597de04",
+      "size": 35
+    },
+    {
+      "path": "tools/ci_secret_scan.py",
+      "sha256": "343f2ecf7a7fec925d719eaaeec4e83a49b5bdaf173984fa6a5ce8b2a2bff31c",
+      "size": 7047
     },
     {
       "path": "tools/print_component_map.py",
@@ -5027,12 +5055,8 @@
     },
     {
       "path": "tools/verify_public_release.py",
-      "sha256": "0bababc21f9519919f88b0b89c54ab747ce1b311dc97db36908db1005627fb23",
-      "size": 8374
+      "sha256": "746274a8c5ad645d06301607f67ecb89de4db25039b670533dc48d8b247420be",
+      "size": 9083
     }
-  ],
-  "schema": "elpis.public.releasemanifest.v1",
-  "version": "v1.1.1",
-  "file_count": 1006,
-  "total_bytes": 6096144
+  ]
 }

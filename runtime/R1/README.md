@@ -29,12 +29,12 @@ an evidence envelope consumed by downstream R0.
 
 R1 depends on the compiled HACF R3 shared library at:
 ```
-/mnt/primesauce/Elpis_Canon/Elpis/HACF_R3/build_ctypes/libelpis_hacf.so
+$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/HACF_R3/build_ctypes/libelpis_hacf.so
 ```
 
 Build HACF R3 first:
 ```bash
-cd /mnt/primesauce/Elpis_Canon/Elpis/HACF_R3
+cd $ELPIS_CANON_ROOT/Elpis_Canon/Elpis/HACF_R3
 mkdir -p build_ctypes && cd build_ctypes
 cmake -DHACF_BUILD_FMS=ON -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . -j$(nproc)
@@ -48,6 +48,6 @@ gcc -shared -o libelpis_hacf.so \
 ## Tests
 
 ```bash
-cd /mnt/primesauce/Elpis_Canon/Elpis_Runtime_Integration/R1
+cd $ELPIS_CANON_ROOT/Elpis_Canon/Elpis_Runtime_Integration/R1
 PYTHONPATH=src pytest tests/ -v
 ```

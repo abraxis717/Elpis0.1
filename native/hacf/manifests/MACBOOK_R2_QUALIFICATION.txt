@@ -3,7 +3,7 @@ status=HACF_R2_MACBOOK_NATIVE_AND_PARITY_QUALIFIED
 captured_utc=2026-07-28T21:35:40Z
 control_host=Ouroboros
 target_alias=elpis-mba72
-target_root=/home/joe/HashAdressedCascadeFabric
+target_root=$HOME/HashAdressedCascadeFabric
 source_manifest_sha256=09d25ea40c153cc53aa357c2dd118425b4eeb6eafa24219783ea267176d56403
 ouroboros_qualification_sha256=eca65ecd995da26ffa89bc8f1a8df97bf72e2ca23c55e98565af4eeb12d34c39
 fixture_expectations_sha256=1761f258d86204e45a09b4abe181e4456427427f4161fe4cc770be346632ab4c
@@ -17,8 +17,8 @@ cc (GCC) 16.1.1 20260725
 3.53.4 2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e0945alt1 (64-bit)
 
 === SOURCE PARITY ===
-local_manifest=/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/manifests/R2_SOURCE_SHA256SUMS.txt
-remote_manifest=/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/manifests/MACBOOK_R2_SOURCE_SHA256SUMS.txt
+local_manifest=$ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/manifests/R2_SOURCE_SHA256SUMS.txt
+remote_manifest=$ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/manifests/MACBOOK_R2_SOURCE_SHA256SUMS.txt
 manifest_sha256=09d25ea40c153cc53aa357c2dd118425b4eeb6eafa24219783ea267176d56403
 diff=EMPTY
 
@@ -41,7 +41,7 @@ diff=EMPTY
 -- Found SQLite3: /usr/lib/libsqlite3.so (found version "3.53.4")
 -- Configuring done (0.6s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/joe/HashAdressedCascadeFabric/build-r2-release
+-- Build files have been written to: $HOME/HashAdressedCascadeFabric/build-r2-release
 [1/55] Building C object CMakeFiles/elpis_fms.dir/src/memory/fms/fms_pal_posix.c.o
 [2/55] Building C object CMakeFiles/elpis_cascade.dir/src/kernel/cascade.c.o
 [3/55] Building C object CMakeFiles/elpis_hash.dir/src/hash/sha256.c.o
@@ -97,7 +97,7 @@ diff=EMPTY
 [53/55] Linking CXX executable test_vector_search
 [54/55] Building CXX object CMakeFiles/test_vector_adversarial.dir/tests/vector/test_vector_adversarial.cpp.o
 [55/55] Linking CXX executable test_vector_adversarial
-Test project /home/joe/HashAdressedCascadeFabric/build-r2-release
+Test project $HOME/HashAdressedCascadeFabric/build-r2-release
       Start  1: fms_r0
  1/15 Test  #1: fms_r0 ...........................   Passed    1.40 sec
       Start  2: fms_concurrency
@@ -134,8 +134,8 @@ Test project /home/joe/HashAdressedCascadeFabric/build-r2-release
 Total Test time (real) =   4.60 sec
 
 === TARGET CROSS-HOST FIXTURE ===
-UpdateCTestConfiguration  from :/home/joe/HashAdressedCascadeFabric/build-r2-release/DartConfiguration.tcl
-Test project /home/joe/HashAdressedCascadeFabric/build-r2-release
+UpdateCTestConfiguration  from :$HOME/HashAdressedCascadeFabric/build-r2-release/DartConfiguration.tcl
+Test project $HOME/HashAdressedCascadeFabric/build-r2-release
 Constructing a list of tests
 Done constructing a list of tests
 Updating test list for fixtures
@@ -145,10 +145,10 @@ Checking test dependency graph end
 test 14
     Start 14: vector_crosshost_fixture
 
-14: Test command: /home/joe/HashAdressedCascadeFabric/build-r2-release/test_vector_crosshost_fixture "/home/joe/HashAdressedCascadeFabric/build-r2-release/vector-xhost-state"
-14: Working Directory: /home/joe/HashAdressedCascadeFabric/build-r2-release
+14: Test command: $HOME/HashAdressedCascadeFabric/build-r2-release/test_vector_crosshost_fixture "$HOME/HashAdressedCascadeFabric/build-r2-release/vector-xhost-state"
+14: Working Directory: $HOME/HashAdressedCascadeFabric/build-r2-release
 14: Test timeout computed to be: 10000000
-14: R2 cross-host fixture, fixture=/home/joe/HashAdressedCascadeFabric/tests/vector/fixture
+14: R2 cross-host fixture, fixture=$HOME/HashAdressedCascadeFabric/tests/vector/fixture
 14: - committed corpus ingests to stable identities
 14: - chunk enumeration is deterministic and bounded
 14: - shard build over the fixture corpus

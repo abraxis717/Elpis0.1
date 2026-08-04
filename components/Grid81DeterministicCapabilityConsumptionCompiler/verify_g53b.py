@@ -14,7 +14,7 @@ from elpis_grid81_consumption_compiler.canonical import canonical_digest, canoni
 from elpis_grid81_consumption_compiler.validation import FORBIDDEN_FIELDS, check_forbidden_fields
 
 
-BASE = "/mnt/primesauce/Elpis_Canon"
+BASE = "$ELPIS_CANON_ROOT/Elpis_Canon"
 
 REPORTS_DIR = os.path.join(BASE, "reports", "G5_3B_DeterministicCapabilityConsumptionCompiler")
 

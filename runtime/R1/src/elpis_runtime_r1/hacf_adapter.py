@@ -19,11 +19,28 @@ from typing import Any
 from .contracts import RetrievalBundle, RetrievalItem, _digest
 from .errors import R1HacfImportError, R1HacfRetrievalError
 
-# C wrapper library path
-WRAPPER_LIB_PATH = os.environ.get(
-    "HACF_WRAPPER_LIB",
-    "/mnt/primesauce/Elpis_Canon/Elpis/HACF_R3/build_fpic/libr1_hacf_wrapper.so",
-)
+# C wrapper library path — resolved portably
+def _resolve_wrapper_lib() -> str:
+    """Resolve HACF wrapper library portably.
+
+    Priority:
+      1. HACF_WRAPPER_LIB env override (points to actual .so)
+      2. Built in native/hacf_bridge/build relative to repo root
+    """
+    env_lib = os.environ.get("HACF_WRAPPER_LIB")
+    if env_lib:
+        return env_lib
+    # This file lives at runtime/R1/src/elpis_runtime_r1/hacf_adapter.py
+    # Repo root is <this_file>/../../..
+    repo_root = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
+    return os.path.join(
+        repo_root, "native", "hacf_bridge", "build", "libr1_hacf_wrapper.so"
+    )
+
+
+WRAPPER_LIB_PATH: str = ""  # resolved lazily on first _load()
 
 ELPIS_EMBEDDING_DIM = 384
 BUNDLE_JSON_CAP = 1 << 18  # 256KB buffer for bundle JSON
@@ -40,6 +57,9 @@ def _load() -> ctypes.CDLL:
     global _lib
     if _lib is not None:
         return _lib
+    global WRAPPER_LIB_PATH
+    if not WRAPPER_LIB_PATH:
+        WRAPPER_LIB_PATH = _resolve_wrapper_lib()
     if not os.path.exists(WRAPPER_LIB_PATH):
         raise R1HacfImportError(
             "LIB_NOT_FOUND",

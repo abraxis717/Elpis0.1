@@ -11,7 +11,7 @@ static int passed = 0, failed = 0;
 
 int main(void) {
     /* chdir to project root so relative paths work */
-    chdir("/mnt/primesauce/Elpis_Companions/Elpis_Semantic_Fabric");
+    chdir("$ELPIS_CANON_ROOT/Elpis_Companions/Elpis_Semantic_Fabric");
     /* Boundary: P2 source files exist and are readable */
     const char *p2_sources[] = {
         "src/context/context_requirement.c",
@@ -61,7 +61,7 @@ int main(void) {
     /* Boundary: HACF root exists and is unmodified */
     {
         struct stat st;
-        ASSERT_EQ(stat("/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric", &st), 0);
+        ASSERT_EQ(stat("$ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric", &st), 0);
     }
 
     /* Boundary: No TRM dependency */

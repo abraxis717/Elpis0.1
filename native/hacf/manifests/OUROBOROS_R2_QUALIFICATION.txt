@@ -9,7 +9,7 @@ cc (GCC) 16.1.1 20260430
 3.53.1 2026-05-05 10:34:17 c88b22011a54b4f6fbd149e9f8e4de77658ce58143a1af0e3785e4e64751alt1 (64-bit)
 
 FUNCTIONAL
-Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r2-functional
+Test project $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r2-functional
       Start  1: fms_r0
  1/15 Test  #1: fms_r0 ...........................   Passed    1.12 sec
       Start  2: fms_concurrency
@@ -50,7 +50,7 @@ ASAN_UBSAN_RUNTIME
 	libubsan.so.1 => /usr/lib/libubsan.so.1 (0x00007f9090600000)
 
 ASAN_UBSAN
-Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r2-asan
+Test project $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r2-asan
       Start  1: fms_r0
  1/15 Test  #1: fms_r0 ...........................   Passed    8.73 sec
       Start  2: fms_concurrency
@@ -90,7 +90,7 @@ TSAN_RUNTIME
 	libtsan.so.2 => /usr/lib/libtsan.so.2 (0x00007f6182400000)
 
 TSAN
-Test project /mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/build-r2-tsan
+Test project $ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/build-r2-tsan
       Start  1: fms_r0
  1/15 Test  #1: fms_r0 ...........................   Passed    9.46 sec
       Start  2: fms_concurrency

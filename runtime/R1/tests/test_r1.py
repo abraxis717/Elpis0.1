@@ -9,13 +9,13 @@ import tempfile
 
 import pytest
 
-CANON = "/mnt/primesauce/Elpis_Canon/Elpis"
+# Resolve repository root portably
+# This test lives at runtime/R1/tests/
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _SRC = [
-    os.path.join(CANON, "TRMFractalSpine", "src"),
-    os.path.join(CANON, "Pipeline", "P0ControlProtocol", "src"),
-    os.path.join(CANON, "Grid81DeterministicStructuralAdjudicator", "src"),
-    os.path.join(CANON, "Grid81StructuralSemantics", "src"),
-    CANON,
+    os.path.join(_REPO_ROOT, "components", "TRMFractalSpine", "src"),
+    os.path.join(_REPO_ROOT, "components", "Grid81DeterministicStructuralAdjudicator", "src"),
+    os.path.join(_REPO_ROOT, "components", "Grid81StructuralSemantics", "src"),
 ]
 for _p in _SRC:
     if _p not in sys.path:

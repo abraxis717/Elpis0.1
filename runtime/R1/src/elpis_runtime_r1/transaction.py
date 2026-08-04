@@ -43,28 +43,52 @@ from .hacf_adapter import (
 from .query_derivation import derive_query
 from .receipt import receipt_bytes_hash
 
-CANONICAL_ROOT = os.environ.get(
-    "ELPIS_CANON_ROOT",
-    "/mnt/primesauce/Elpis_Canon/Elpis",
-)
+def _resolve_canonical_root() -> str:
+    """Resolve the canonical assembly root portably."""
+    env_root = os.environ.get("ELPIS_CANON_ROOT")
+    if env_root:
+        return env_root
+    # runtime/R1/src/elpis_runtime_r1/transaction.py -> repo_root/components
+    repo_root = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
+    )
+    return os.path.join(repo_root, "components")
 
-R0_ROOT = os.environ.get(
-    "ELPIS_R0_ROOT",
-    "/mnt/primesauce/Elpis_Canon/Elpis_Runtime_Integration/R0",
-)
 
-BUILD_DIR = os.environ.get(
-    "ELPIS_BUILD_DIR",
-    "/mnt/primesauce/Elpis_Canon/Elpis_Runtime_Integration/R1_Build",
-)
+CANONICAL_ROOT = _resolve_canonical_root()
+
+
+def _resolve_r0_root() -> str:
+    """Resolve R0 root portably."""
+    env_r0 = os.environ.get("ELPIS_R0_ROOT")
+    if env_r0:
+        return env_r0
+    repo_root = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
+    )
+    return os.path.join(repo_root, "runtime", "R0")
+
+
+R0_ROOT = _resolve_r0_root()
+
+
+def _resolve_build_dir() -> str:
+    """Resolve build directory portably."""
+    env_build = os.environ.get("ELPIS_BUILD_DIR")
+    if env_build:
+        return env_build
+    return tempfile.mkdtemp(prefix="elpis_r1_build_")
+
+
+BUILD_DIR: str = ""  # resolved lazily per-transaction
 
 FORBIDDEN_PREFIXES: tuple[str, ...] = (
-    "/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric",
-    "/mnt/primesauce/Elpis_Companions/Elpis_Semantic_Fabric",
-    "/mnt/primesauce/Elpis_Canon/Pipeline/P0ControlProtocol",
-    "/mnt/primesauce/Elpis_Canon/TRMFractalSpine",
-    "/mnt/primesauce/Elpis_Canon/DarwinianMatrix",
-    "/mnt/primesauce/Elpis_Canon/Elpis_Parallel",
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "HashAdressedCascadeFabric"),
+    os.path.join("/mnt/primesauce", "Elpis_Companions", "Elpis_Semantic_Fabric"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "TRMFractalSpine"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "DarwinianMatrix"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "Elpis_Parallel"),
 )
 
 DEFAULT_REQUEST: dict[str, Any] = {

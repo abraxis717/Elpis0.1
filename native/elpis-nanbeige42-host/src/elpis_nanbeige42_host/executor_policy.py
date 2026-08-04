@@ -101,10 +101,10 @@ def default_policy() -> ExecutorPolicy:
             "git_diff_readonly", "git_status_readonly", "grep_readonly",
             "find_readonly", "cat_readonly",
         ),
-        allowed_repo_roots=("/mnt/primesauce/Elpis_Canon",),
+        allowed_repo_roots=("$ELPIS_CANON_ROOT/Elpis_Canon",),
         forbidden_path_prefixes=(
-            "/mnt/primesauce/Elpis_Companions/Elpis_Semantic_Fabric",
-            "/home/joe/Downloads",
+            "$ELPIS_CANON_ROOT/Elpis_Companions/Elpis_Semantic_Fabric",
+            "$HOME/Downloads",
             "/sys", "/proc", "/dev",
         ),
         network_allowed=False,

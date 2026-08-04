@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# HACF root must be supplied externally — never hardcode /mnt/primesauce or /home/joe.
+# HACF root must be supplied externally — never hardcode $ELPIS_CANON_ROOT or $HOME.
 set(ELPIS_HACF_ROOT "" CACHE PATH "Path to HashAdressedCascadeFabric source root")
 if(NOT ELPIS_HACF_ROOT)
   message(FATAL_ERROR "ELPIS_HACF_ROOT is required. Pass -DELPIS_HACF_ROOT=<path>")

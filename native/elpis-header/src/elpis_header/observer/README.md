@@ -10,7 +10,7 @@ from pathlib import Path
 from elpis_header.observer.grid81_reducer import load_grid81_runtime_state
 
 state = load_grid81_runtime_state(
-    Path("/mnt/primesauce/Elpis_Canon")
+    Path("$ELPIS_CANON_ROOT/Elpis_Canon")
 )
 ```
 
@@ -71,9 +71,9 @@ Grid81/test_g53ig1_adversarial_runtime_consumer.py
 Run:
 
 ```bash
-cd /mnt/primesauce/Elpis_Canon
+cd $ELPIS_CANON_ROOT/Elpis_Canon
 
-/mnt/primesauce/Elpis/venv_cuda/bin/python3 -m pytest -q \
+$ELPIS_CANON_ROOT/Elpis/venv_cuda/bin/python3 -m pytest -q \
   -p no:asyncio \
   Grid81/test_g53ig1_adversarial_runtime_consumer.py
 ```

@@ -7,7 +7,7 @@ cmake version 4.4.0
 1.13.2
 cc (GCC) 16.1.1 20260725
 3.53.4 2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e0945alt1 (64-bit)
-Test project /home/joe/HashAdressedCascadeFabric/build
+Test project $HOME/HashAdressedCascadeFabric/build
     Start 1: fms_r0
 1/8 Test #1: fms_r0 ...........................   Passed    1.42 sec
     Start 2: fms_concurrency

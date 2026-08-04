@@ -37,7 +37,7 @@
 
 static int g_pass = 0;
 static int g_fail = 0;
-static const char *g_report_dir = "/mnt/primesauce/Elpis_Companions/Elpis_Semantic_Fabric/reports/P8TRMAdapterMutability";
+static const char *g_report_dir = "$ELPIS_CANON_ROOT/Elpis_Companions/Elpis_Semantic_Fabric/reports/P8TRMAdapterMutability";
 
 /* Helper: check if a buffer is all zeros */
 static int memset_check_zero(const uint8_t *buf, size_t len) {
@@ -1007,7 +1007,7 @@ int main(void) {
     printf("Results: %d PASS, %d FAIL, %d TOTAL\n", g_pass, g_fail, g_pass + g_fail);
 
     /* Write minimal test results JSON */
-    FILE *fp = fopen("/mnt/primesauce/Elpis_Companions/Elpis_Semantic_Fabric/reports/P8TRMAdapterMutability/P8_TEST_RESULTS.json", "w");
+    FILE *fp = fopen("$ELPIS_CANON_ROOT/Elpis_Companions/Elpis_Semantic_Fabric/reports/P8TRMAdapterMutability/P8_TEST_RESULTS.json", "w");
     if (fp) {
         fprintf(fp, "{\n  \"report\": \"P8_TEST_RESULTS\",\n");
         fprintf(fp, "  \"pass\": %d,\n", g_pass);

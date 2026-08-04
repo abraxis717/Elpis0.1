@@ -5,7 +5,7 @@ import os
 
 import sys
 
-BASE = '/mnt/primesauce/Elpis_Canon'
+BASE = '$ELPIS_CANON_ROOT/Elpis_Canon'
 PACKAGE = os.path.join(BASE, 'Grid81StructuralGroupProjectionCompiler')
 REPORTS = os.path.join(BASE, 'reports', 'G5_0B_StructuralGroupProjectionCompiler')
 

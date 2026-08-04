@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static char root_dir[] = "/mnt/primesauce/Elpis_Companions/Elpis_Semantic_Fabric";
+static char root_dir[] = "$ELPIS_CANON_ROOT/Elpis_Companions/Elpis_Semantic_Fabric";
 
 /* P0 header SHA-256 digests (computed in Phase 0) — must not change */
 static const char *p0_hashes[] = {
@@ -70,7 +70,7 @@ int main(void) {
 
     /* Test 9: HACF cascade.h exists */
     {
-        const char *hacf_root = "/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric";
+        const char *hacf_root = "$ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric";
         snprintf(fullpath, sizeof(fullpath), "%s/include/elpis/cascade.h", hacf_root);
         if (access(fullpath, F_OK) == 0) passed++;
         else { printf("FAIL: HACF cascade.h not found\n"); failed++; }
@@ -94,7 +94,7 @@ int main(void) {
         int all_clean = 1;
         for (int i = 0; srcs[i]; i++) {
             char cmd[512];
-            snprintf(cmd, sizeof(cmd), "grep -l '/mnt/primesauce\\|/home/joe' '%s/%s' 2>/dev/null",
+            snprintf(cmd, sizeof(cmd), "grep -l '$ELPIS_CANON_ROOT\\|$HOME' '%s/%s' 2>/dev/null",
                      root_dir, srcs[i]);
             if (system(cmd) == 0) {
                 printf("FAIL: machine path in %s\n", srcs[i]);

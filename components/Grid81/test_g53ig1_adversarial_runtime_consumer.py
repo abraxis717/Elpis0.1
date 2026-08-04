@@ -27,7 +27,7 @@ from Grid81.canonical_reader import CanonicalReadError, load_current_grid81
 from elpis_header.observer.grid81_reducer import load_grid81_runtime_state
 
 
-PROJECT_ROOT = pathlib.Path("/mnt/primesauce/Elpis_Canon")
+PROJECT_ROOT = pathlib.Path("$ELPIS_CANON_ROOT/Elpis_Canon")
 CANONICAL_DIR = PROJECT_ROOT / "Canonical" / "Grid81"
 
 

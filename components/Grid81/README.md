@@ -59,7 +59,7 @@ from Grid81.canonical_reader import (
 )
 
 state: Grid81CanonicalState = load_current_grid81(
-    Path("/mnt/primesauce/Elpis_Canon")
+    Path("$ELPIS_CANON_ROOT/Elpis_Canon")
 )
 ```
 
@@ -96,7 +96,7 @@ from pathlib import Path
 from elpis_header.observer.grid81_reducer import load_grid81_runtime_state
 
 runtime_state = load_grid81_runtime_state(
-    Path("/mnt/primesauce/Elpis_Canon")
+    Path("$ELPIS_CANON_ROOT/Elpis_Canon")
 )
 ```
 
@@ -145,9 +145,9 @@ Callers should catch `CanonicalReadError`; they must not silently fall back to p
 Run against the committed live root:
 
 ```bash
-cd /mnt/primesauce/Elpis_Canon
+cd $ELPIS_CANON_ROOT/Elpis_Canon
 
-/mnt/primesauce/Elpis/venv_cuda/bin/python3 -m pytest -q \
+$ELPIS_CANON_ROOT/Elpis/venv_cuda/bin/python3 -m pytest -q \
   -p no:asyncio \
   Grid81/test_g53ig1_adversarial_runtime_consumer.py
 ```
@@ -170,7 +170,7 @@ Run it unchanged in an isolated precommit replica that:
 - contains the unchanged source and test files;
 - has `Canonical/` present;
 - has `Canonical/Grid81` absent;
-- appears inside the test namespace at `/mnt/primesauce/Elpis_Canon`;
+- appears inside the test namespace at `$ELPIS_CANON_ROOT/Elpis_Canon`;
 - uses no `conftest.py` monkeypatches;
 - uses no modified expected hashes, paths, tests, or executor code.
 

@@ -8,12 +8,19 @@ from pathlib import Path
 import elpis_grid81_semantics as semantics
 from elpis_grid81_semantics import D4, canonical_bytes, transform_index
 
+# Resolve public repository root portably.
+# semantics.__file__  ->  .../Elpis-Canonical/components/Grid81StructuralSemantics/src/elpis_grid81_semantics/__init__.py
+#   .parent           ->  .../src/elpis_grid81_semantics
+#   .parent.parent    ->  .../src
+#   .parent.parent.parent  ->  .../Grid81StructuralSemantics
+#   .parent.parent.parent.parent  ->  Elpis-Canonical (REPO_ROOT)
+_SEMANTICS_PKG_DIR = Path(semantics.__file__).resolve().parent
+_REPO_ROOT = _SEMANTICS_PKG_DIR.parent.parent.parent.parent
 
-CANON = Path(os.environ.get("ELPIS_CANON", "/mnt/primesauce/Elpis_Canon/Elpis"))
 CONSUMERS = {
-    "typed_projection": CANON / "Grid81TypedProjectionCompiler",
-    "structural_group_projection": CANON / "Grid81StructuralGroupProjectionCompiler",
-    "deterministic_adjudicator": CANON / "Grid81DeterministicStructuralAdjudicator",
+    "typed_projection": _REPO_ROOT / "components" / "Grid81TypedProjectionCompiler",
+    "structural_group_projection": _REPO_ROOT / "components" / "Grid81StructuralGroupProjectionCompiler",
+    "deterministic_adjudicator": _REPO_ROOT / "components" / "Grid81DeterministicStructuralAdjudicator",
 }
 
 

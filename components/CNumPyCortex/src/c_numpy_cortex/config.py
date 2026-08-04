@@ -40,7 +40,7 @@ class LoopConfig:
 class ChronosConfig:
     enabled: bool = True
     model_path: str = (
-        "/mnt/primesauce/Elpis_Canon/Models/chronos-2"
+        "$ELPIS_CANON_ROOT/Elpis_Canon/Models/chronos-2"
     )
     device: str = "cpu"
     context_points: int = 256
@@ -68,11 +68,11 @@ class CompilerConfig:
 @dataclass(frozen=True, slots=True)
 class OutputConfig:
     grid_npz: str = (
-        "/mnt/primesauce/Elpis_Canon/"
+        "$ELPIS_CANON_ROOT/Elpis_Canon/"
         "CNumPyCortex/runtime/grid81_latest.npz"
     )
     state_json: str = (
-        "/mnt/primesauce/Elpis_Canon/"
+        "$ELPIS_CANON_ROOT/Elpis_Canon/"
         "CNumPyCortex/runtime/state_latest.json"
     )
 

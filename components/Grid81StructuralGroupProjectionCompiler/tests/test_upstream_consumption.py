@@ -3,7 +3,7 @@
 import json
 import os
 
-BASE = '/mnt/primesauce/Elpis_Canon'
+BASE = '$ELPIS_CANON_ROOT/Elpis_Canon'
 G4_REPORTS = os.path.join(BASE, 'reports', 'G4_0B_1_TypedProjectionCompiler')
 G50A_REPORTS = os.path.join(BASE, 'reports', 'G5_0A_StructuralGroupEvidenceContract')
 G50A_PACKAGE = os.path.join(BASE, 'Grid81StructuralGroupContract')

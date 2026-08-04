@@ -14,7 +14,7 @@ Sequence:
 8. Generate final report
 9. Generate G52B_RAW_EVIDENCE_MANIFEST.json last
 10. Run final full verifier with --no-write
-11. Write result outside REPORTS: /mnt/primesauce/G52B_FINAL_EXTERNAL_VERIFICATION.json
+11. Write result outside REPORTS: $ELPIS_CANON_ROOT/G52B_FINAL_EXTERNAL_VERIFICATION.json
 12. Require final verifier exit code 0
 13. Print final markers
 """
@@ -45,7 +45,7 @@ DISPOSITIONS_PATH = os.path.join(G51B_REPORTS, "G51B_PROPOSAL_DISPOSITION_INVENT
 ROW_INDEX_PATH = os.path.join(G51B_REPORTS, "G51B_ROW_ADJUDICATION_INDEX.jsonl")
 G51B_MANIFEST_DIGEST = "e24b6c097507b6b99053c1c0bc76a43101e99f850bd36ac67859de37231186b7"
 
-FINAL_EXTERNAL_PATH = "/mnt/primesauce/G52B_FINAL_EXTERNAL_VERIFICATION.json"
+FINAL_EXTERNAL_PATH = "$ELPIS_CANON_ROOT/G52B_FINAL_EXTERNAL_VERIFICATION.json"
 
 sys.path.insert(0, os.path.join(PACKAGE, "src"))
 

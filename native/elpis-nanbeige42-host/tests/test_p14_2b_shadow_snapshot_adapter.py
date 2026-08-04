@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 
 
-REPO = Path("/mnt/primesauce/Elpis_Canon")
+REPO = Path("$ELPIS_CANON_ROOT/Elpis_Canon")
 SOURCE = REPO / "hosts/nanbeige42/experiments/host_v0_1/p14_2b_open_canary_live_execution_v2.py"
 
 

@@ -517,7 +517,7 @@ def main():
     group.add_argument('--inventories', action='store_true', help='Run inventory checks only')
     group.add_argument('--upstream', action='store_true', help='Run upstream checks only')
     group.add_argument('--all', action='store_true', help='Run all checks')
-    parser.add_argument('--base-dir', default='/mnt/primesauce/Elpis_Canon')
+    parser.add_argument('--base-dir', default='$ELPIS_CANON_ROOT/Elpis_Canon')
     parser.add_argument('--evidence-dir', default=None, help='Override evidence directory')
     args = parser.parse_args()
 

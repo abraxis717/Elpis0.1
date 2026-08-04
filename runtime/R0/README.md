@@ -6,7 +6,7 @@ Create the first deterministic beginning-to-end Elpis runtime transaction
 using qualified components from the canonical R1 assembly at:
 
 ```
-/mnt/primesauce/Elpis_Canon/Elpis
+$ELPIS_CANON_ROOT/Elpis_Canon/Elpis
 ```
 
 ## Transaction Pipeline
@@ -46,8 +46,8 @@ R0/
 
 ```bash
 export CUDA_VISIBLE_DEVICES=""
-export PYTHONPATH="/mnt/primesauce/Elpis_Canon/Elpis/TRMFractalSpine/src:/mnt/primesauce/Elpis_Canon/Elpis/Pipeline/P0ControlProtocol/src:/mnt/primesauce/Elpis_Canon/Elpis/Grid81DeterministicStructuralAdjudicator/src:/mnt/primesauce/Elpis_Canon/Elpis/Grid81StructuralSemantics/src:/mnt/primesauce/Elpis_Canon/Elpis:src:$PYTHONPATH"
-cd /mnt/primesauce/Elpis_Canon/Elpis_Runtime_Integration/R0
+export PYTHONPATH="$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/TRMFractalSpine/src:$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/Pipeline/P0ControlProtocol/src:$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/Grid81DeterministicStructuralAdjudicator/src:$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/Grid81StructuralSemantics/src:$ELPIS_CANON_ROOT/Elpis_Canon/Elpis:src:$PYTHONPATH"
+cd $ELPIS_CANON_ROOT/Elpis_Canon/Elpis_Runtime_Integration/R0
 python -m pytest tests/ -v
 ```
 

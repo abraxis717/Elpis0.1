@@ -3,7 +3,7 @@ status=HACF_R3_MACBOOK_NATIVE_AND_PARITY_QUALIFIED
 captured_utc=2026-07-29T11:31:43Z
 control_host=Ouroboros
 target_alias=elpis-mba72
-target_root=/home/joe/HashAdressedCascadeFabric
+target_root=$HOME/HashAdressedCascadeFabric
 r2_seal_sha256=6988b9f0319d159437456efd15a027cf6ce14ba9ff7d11155194ee3c20f7a5e7
 source_manifest_sha256=6381ef1c6b845c7f953cbb9dcbf7701c8a5133c503d941123f3e5866cff141de
 ouroboros_r3_qualification_sha256=d49ead190eb15536e2048cb61d8791093d29eac81e4fe7d63037a514edff05da
@@ -18,8 +18,8 @@ cc (GCC) 16.1.1 20260725
 3.53.4 2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e0945alt1 (64-bit)
 
 === SOURCE PARITY ===
-local_manifest=/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/manifests/R3_SOURCE_SHA256SUMS.txt
-remote_manifest=/mnt/primesauce/Elpis_Canon/HashAdressedCascadeFabric/manifests/MACBOOK_R3_SOURCE_SHA256SUMS.txt
+local_manifest=$ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/manifests/R3_SOURCE_SHA256SUMS.txt
+remote_manifest=$ELPIS_CANON_ROOT/Elpis_Canon/HashAdressedCascadeFabric/manifests/MACBOOK_R3_SOURCE_SHA256SUMS.txt
 manifest_sha256=6381ef1c6b845c7f953cbb9dcbf7701c8a5133c503d941123f3e5866cff141de
 diff=EMPTY
 
@@ -42,7 +42,7 @@ diff=EMPTY
 -- Found SQLite3: /usr/lib/libsqlite3.so (found version "3.53.4")
 -- Configuring done (0.6s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/joe/HashAdressedCascadeFabric/build-r3-release
+-- Build files have been written to: $HOME/HashAdressedCascadeFabric/build-r3-release
 [1/73] Building C object CMakeFiles/elpis_fms.dir/src/memory/fms/fms_pal_posix.c.o
 [2/73] Building C object CMakeFiles/elpis_hash.dir/src/hash/sha256.c.o
 [3/73] Linking C static library libelpis_hash.a
@@ -116,7 +116,7 @@ diff=EMPTY
 [71/73] Linking CXX executable test_vector_adversarial
 [72/73] Building CXX object CMakeFiles/test_hybrid_crosshost_fixture.dir/tests/hybrid/test_hybrid_crosshost_fixture.cpp.o
 [73/73] Linking CXX executable test_hybrid_crosshost_fixture
-Test project /home/joe/HashAdressedCascadeFabric/build-r3-release
+Test project $HOME/HashAdressedCascadeFabric/build-r3-release
       Start  1: fms_r0
  1/21 Test  #1: fms_r0 ...........................   Passed    1.33 sec
       Start  2: fms_concurrency
@@ -165,8 +165,8 @@ Test project /home/joe/HashAdressedCascadeFabric/build-r3-release
 Total Test time (real) =   4.85 sec
 
 === TARGET R3 CROSS-HOST FIXTURE ===
-UpdateCTestConfiguration  from :/home/joe/HashAdressedCascadeFabric/build-r3-release/DartConfiguration.tcl
-Test project /home/joe/HashAdressedCascadeFabric/build-r3-release
+UpdateCTestConfiguration  from :$HOME/HashAdressedCascadeFabric/build-r3-release/DartConfiguration.tcl
+Test project $HOME/HashAdressedCascadeFabric/build-r3-release
 Constructing a list of tests
 Done constructing a list of tests
 Updating test list for fixtures
@@ -176,8 +176,8 @@ Checking test dependency graph end
 test 20
     Start 20: hybrid_crosshost_fixture
 
-20: Test command: /home/joe/HashAdressedCascadeFabric/build-r3-release/test_hybrid_crosshost_fixture "/home/joe/HashAdressedCascadeFabric/build-r3-release/hybrid-xhost-state"
-20: Working Directory: /home/joe/HashAdressedCascadeFabric/build-r3-release
+20: Test command: $HOME/HashAdressedCascadeFabric/build-r3-release/test_hybrid_crosshost_fixture "$HOME/HashAdressedCascadeFabric/build-r3-release/hybrid-xhost-state"
+20: Working Directory: $HOME/HashAdressedCascadeFabric/build-r3-release
 20: Test timeout computed to be: 10000000
 20: R3 cross-host fixture
 20: # HACF R3 cross-host fixture expectations

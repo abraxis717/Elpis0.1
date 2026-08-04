@@ -4,7 +4,7 @@ import os
 import sys
 import json
 
-BASE = os.environ.get("ELPIS_BASE", "/mnt/primesauce/Elpis_Canon")
+BASE = os.environ.get("ELPIS_BASE", "$ELPIS_CANON_ROOT/Elpis_Canon")
 sys.path.insert(0, os.path.join(BASE, "Grid81DeterministicStructuralAdjudicator", "src"))
 
 

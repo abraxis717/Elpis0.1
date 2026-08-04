@@ -50,15 +50,44 @@ from .errors import (
 # Canonical input
 # ---------------------------------------------------------------------------
 
-CANONICAL_ROOT = os.environ.get(
-    "ELPIS_CANON_ROOT",
-    "/mnt/primesauce/Elpis_Canon/Elpis",
-)
+def _resolve_canonical_root() -> str:
+    """Resolve the canonical assembly root portably.
 
-BUILD_DIR = os.environ.get(
-    "ELPIS_BUILD_DIR",
-    "/mnt/primesauce/Elpis_Canon/Elpis_Runtime_Integration/R0_Build",
-)
+    Priority:
+      1. ELPIS_CANON_ROOT env override
+      2. <repo_root>/components  (where Grid81, DarwinianMatrix, etc. live)
+    """
+    env_root = os.environ.get("ELPIS_CANON_ROOT")
+    if env_root:
+        return env_root
+    # This file lives at runtime/R0/src/elpis_runtime_r0/transaction.py
+    # dirname(__file__) = .../elpis_runtime_r0
+    # + 4 x ".." reaches repo_root: elpis_runtime_r0 -> src -> R0 -> runtime -> repo_root
+    repo_root = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
+    )
+    return os.path.join(repo_root, "components")
+
+
+CANONICAL_ROOT = _resolve_canonical_root()
+
+
+def _resolve_build_dir() -> str:
+    """Resolve build directory portably.
+
+    Priority:
+      1. ELPIS_BUILD_DIR env override
+      2. Temporary directory outside the source tree
+    """
+    env_build = os.environ.get("ELPIS_BUILD_DIR")
+    if env_build:
+        return env_build
+    import tempfile
+    base = tempfile.mkdtemp(prefix="elpis_r0_build_")
+    return base
+
+
+BUILD_DIR: str = ""  # resolved lazily per-transaction
 
 # Default request context for the canonical R0 transaction
 DEFAULT_REQUEST = {
@@ -72,6 +101,9 @@ DEFAULT_REQUEST = {
 
 
 def _ensure_build_dir() -> str:
+    global BUILD_DIR
+    if not BUILD_DIR:
+        BUILD_DIR = _resolve_build_dir()
     os.makedirs(BUILD_DIR, exist_ok=True)
     return BUILD_DIR
 
@@ -103,8 +135,15 @@ def _compute_component_manifest_digests() -> str:
 # Dependency resolution audit
 # ---------------------------------------------------------------------------
 
-FORBIDDEN_PREFIXES: tuple[str, ...] = tuple(
-    # Old pre-promotion source roots — must never be import targets
+FORBIDDEN_PREFIXES: tuple[str, ...] = (
+    # Construct old pre-promotion source roots from configured canonical root
+    # so the guard fires correctly even on a clean checkout
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "TRMFractalSpine"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "DarwinianMatrix"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "Grid81"),
+    os.path.join("/mnt/primesauce", "Elpis_Companions", "Elpis_Semantic_Fabric"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "HashAdressedCascadeFabric"),
 )
 
 

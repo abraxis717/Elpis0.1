@@ -37,7 +37,7 @@ def seed(mode: ControlMode = ControlMode.DOCK) -> CodingTickSeed:
             prohibited_action_ids=("git-push",),
         ),
         workspace=WorkspaceState(
-            repo_root="/mnt/primesauce/Elpis_Canon",
+            repo_root="$ELPIS_CANON_ROOT/Elpis_Canon",
             branch="p14",
             head_commit="deadbeef",
             tracked_file_manifest_digest="sha256:files",

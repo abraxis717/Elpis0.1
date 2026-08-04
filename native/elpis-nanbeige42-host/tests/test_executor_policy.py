@@ -32,7 +32,7 @@ def test_patch_path_and_transaction_are_enforced():
     policy = default_policy()
     payload = PatchPayload(
         operations=(PatchOperation(
-            target_path="/mnt/primesauce/Elpis_Canon/a.py",
+            target_path="$ELPIS_CANON_ROOT/Elpis_Canon/a.py",
             expected_preimage_digest="sha256:x", unified_diff="@@",
         ),),
         verification_command_ids=("python_py_compile",),

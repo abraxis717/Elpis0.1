@@ -3,7 +3,7 @@
 import os
 import sys
 
-BASE = os.environ.get("ELPIS_BASE", "/mnt/primesauce/Elpis_Canon")
+BASE = os.environ.get("ELPIS_BASE", "$ELPIS_CANON_ROOT/Elpis_Canon")
 sys.path.insert(0, os.path.join(BASE, "Grid81DeterministicStructuralAdjudicator", "src"))
 
 from elpis_grid81_adjudication.source_join import load_source_inventories, build_row_map, join_source_row, verify_source_join

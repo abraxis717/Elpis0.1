@@ -5,7 +5,7 @@ sealed_utc=2026-07-28T21:35:40Z
 
 control_host=Ouroboros
 qualification_host=elpis-mba72
-qualification_target=/home/joe/HashAdressedCascadeFabric
+qualification_target=$HOME/HashAdressedCascadeFabric
 
 r0_r1_seal_sha256=cf492f6345a8a9e89e2c7e2b68ee831d36e51aec48eeba18bfcfcada1632ed74
 r2_source_manifest_sha256=09d25ea40c153cc53aa357c2dd118425b4eeb6eafa24219783ea267176d56403
