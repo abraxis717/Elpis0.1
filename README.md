@@ -1,4 +1,4 @@
-# Elpis-Canonical
+# Elpis0.1
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and qualified offline runtime transactions.
 
