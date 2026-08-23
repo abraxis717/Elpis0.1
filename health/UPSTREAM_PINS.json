@@ -1,0 +1,13 @@
+{
+  "schema": "elpis.upstream-pins.v1",
+  "dependencies": [
+    {
+      "name": "TinyRecursiveModels",
+      "repository": "https://github.com/SamsungSAILMontreal/TinyRecursiveModels",
+      "commit": "c01103738605ba39d1430519b1ee0c62f4c707f8",
+      "license": "MIT",
+      "upstream_state": "ARCHIVED_READ_ONLY",
+      "purpose": "reference TRM architecture and Sudoku-Extreme reproduction baseline"
+    }
+  ]
+}
