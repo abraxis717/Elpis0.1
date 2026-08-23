@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Public release verifier for Elpis-Canonical.
+"""Public release verifier for Elpis0.1.
 
 Verifies the integrity, composition, and safety of the public distribution.
 Exits 0 on PASS, 1 on FAIL with detailed diagnostics.
@@ -18,8 +18,30 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def load_post_release_overlay() -> tuple[dict, list[str]]:
+    """Load and structurally validate the post-release overlay."""
+    errors = []
+    overlay_path = REPO / "manifests/PUBLIC_POST_RELEASE_OVERLAY.json"
+    if not overlay_path.exists():
+        return {}, ["PUBLIC_POST_RELEASE_OVERLAY.json not found"]
+
+    try:
+        overlay = json.loads(overlay_path.read_text())
+    except Exception as exc:
+        return {}, [f"Invalid PUBLIC_POST_RELEASE_OVERLAY.json: {exc}"]
+
+    if overlay.get("schema") != "elpis.public-post-release-overlay.v1":
+        errors.append(f"Unexpected overlay schema: {overlay.get('schema')}")
+    if overlay.get("repository") != "abraxis717/Elpis0.1":
+        errors.append(f"Unexpected overlay repository: {overlay.get('repository')}")
+    if overlay.get("base_release") != "v1.1.2":
+        errors.append(f"Unexpected overlay base release: {overlay.get('base_release')}")
+
+    return overlay, errors
+
+
 def check_manifest() -> tuple[bool, list[str]]:
-    """Verify PUBLIC_RELEASE_MANIFEST.json exists and all files match digests."""
+    """Verify the immutable v1.1.2 seal plus explicitly declared post-release changes."""
     errors = []
     manifest_path = REPO / "manifests/PUBLIC_RELEASE_MANIFEST.json"
     if not manifest_path.exists():
@@ -27,34 +49,77 @@ def check_manifest() -> tuple[bool, list[str]]:
 
     manifest = json.loads(manifest_path.read_text())
     if manifest.get("version") != "v1.1.2":
-        errors.append(f"Expected version v1.1.2, got {manifest.get('version')}")
+        errors.append(f"Expected historical release v1.1.2, got {manifest.get('version')}")
 
-    undeclared = []
-    mismatch = []
-    for entry in manifest.get("files", []):
-        # Skip self-reference: the manifest cannot contain its own digest
-        if entry["path"] == "manifests/PUBLIC_RELEASE_MANIFEST.json":
+    overlay, overlay_errors = load_post_release_overlay()
+    errors.extend(overlay_errors)
+
+    historical = {
+        entry["path"]: entry
+        for entry in manifest.get("files", [])
+        if entry["path"] != "manifests/PUBLIC_RELEASE_MANIFEST.json"
+    }
+
+    overlay_entries = {}
+    for entry in overlay.get("paths", []):
+        rel = entry.get("path")
+        classification = entry.get("classification")
+        digest = entry.get("sha256")
+
+        if not isinstance(rel, str) or not rel:
+            errors.append("Overlay entry has invalid path")
             continue
-        fp = REPO / entry["path"]
+        if rel in overlay_entries:
+            errors.append(f"Duplicate overlay path: {rel}")
+            continue
+        if classification not in {"ADDED", "POST_RELEASE_MODIFIED"}:
+            errors.append(f"Invalid overlay classification for {rel}: {classification}")
+            continue
+        if not isinstance(digest, str) or len(digest) != 64:
+            errors.append(f"Invalid overlay digest for {rel}")
+            continue
+
+        if classification == "ADDED" and rel in historical:
+            errors.append(f"Overlay marks historical path as ADDED: {rel}")
+        if classification == "POST_RELEASE_MODIFIED" and rel not in historical:
+            errors.append(f"Overlay modifies path absent from historical seal: {rel}")
+
+        overlay_entries[rel] = entry
+
+    for rel, entry in historical.items():
+        fp = REPO / rel
         if not fp.exists():
-            mismatch.append(f"MISSING: {entry['path']}")
+            errors.append(f"MISSING: {rel}")
+            continue
+
+        expected = entry["sha256"]
+        if rel in overlay_entries:
+            expected = overlay_entries[rel]["sha256"]
+
+        actual = sha256(fp)
+        if actual != expected:
+            errors.append(f"DIGEST MISMATCH: {rel}")
+
+    for rel, entry in overlay_entries.items():
+        fp = REPO / rel
+        if not fp.exists():
+            errors.append(f"OVERLAY MISSING: {rel}")
             continue
         actual = sha256(fp)
         if actual != entry["sha256"]:
-            mismatch.append(f"DIGEST MISMATCH: {entry['path']}")
+            errors.append(f"OVERLAY DIGEST MISMATCH: {rel}")
 
-    # Check for undeclared top-level roots
-    declared_paths = {e["path"].split("/")[0] for e in manifest.get("files", [])}
+    declared_roots = {
+        entry["path"].split("/")[0]
+        for entry in manifest.get("files", [])
+    }
+    declared_roots.update(overlay.get("allowed_new_roots", []))
+
     for item in sorted(REPO.iterdir()):
         if item.is_dir() and item.name.startswith("."):
-            continue  # .git is expected to be absent or empty
-        if item.name not in declared_paths and item.name not in (".git", "build"):
-            undeclared.append(f"UNDECLARED: {item.name}")
-
-    if mismatch:
-        errors.extend(mismatch)
-    if undeclared:
-        errors.extend(undeclared)
+            continue
+        if item.name not in declared_roots and item.name not in (".git", "build"):
+            errors.append(f"UNDECLARED: {item.name}")
 
     return len(errors) == 0, errors
 
@@ -185,7 +250,7 @@ def check_no_generated() -> tuple[bool, list[str]]:
 
 
 def check_undeclared_roots() -> tuple[bool, list[str]]:
-    """Check for undeclared top-level directory roots."""
+    """Check top-level roots against the release plus post-release overlay."""
     allowed_roots = {
         "components", "native", "runtime", "docs", "manifests", "tests", "tools", "src",
         ".github", "LICENSE", "LICENSES", "README.md", "VERSION", "pyproject.toml",
@@ -193,13 +258,17 @@ def check_undeclared_roots() -> tuple[bool, list[str]]:
         "SECURITY.md", "CONTRIBUTING.md", "THIRD_PARTY_NOTICES.md",
         "COMPONENT_REGISTRY.json", "ELPIS_CANONICAL_MANIFEST.json", ".gitignore",
     }
-    # .git may exist if in a git repo, skip it
-    errors = []
+
+    overlay, overlay_errors = load_post_release_overlay()
+    errors = list(overlay_errors)
+    allowed_roots.update(overlay.get("allowed_new_roots", []))
+
     for item in sorted(REPO.iterdir()):
         if item.name.startswith(".") and item.name != ".github":
             continue
         if item.name not in allowed_roots:
             errors.append(f"UNDECLARED ROOT: {item.name}")
+
     return len(errors) == 0, errors
 
 
