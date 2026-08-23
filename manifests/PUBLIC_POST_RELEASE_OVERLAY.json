@@ -1,0 +1,62 @@
+{
+  "schema": "elpis.public-post-release-overlay.v1",
+  "repository": "abraxis717/Elpis0.1",
+  "base_release": "v1.1.2",
+  "historical_release_commit": "869dd6061db1f9af7bcf93e5fbd7aba645069b29",
+  "created_from_main_commit": "45cf7feef522e7dd0fd05fd4c82747e06cbd910b",
+  "policy": "Historical release digests remain authoritative except for paths explicitly declared here. New top-level roots require explicit declaration.",
+  "allowed_new_roots": [
+    "health"
+  ],
+  "runtime_admission": false,
+  "paths": [
+    {
+      "path": "README.md",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Repository display identity renamed from Elpis-Canonical to Elpis0.1.",
+      "sha256": "46117474be31ffb5b3b17e951429c804e75dfe83952820cb51c39422f2b18791"
+    },
+    {
+      "path": "tools/verify_public_release.py",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Verifier extended to preserve the immutable v1.1.2 seal while validating explicit post-release overlays.",
+      "sha256": "65700ed1284dcf5b0106d5cb1654c619ab8473800db575be97b51fbb17cff16d"
+    },
+    {
+      "path": "docs/PUBLICATION_RECONCILIATION.md",
+      "classification": "ADDED",
+      "reason": "Documents additive-first publication reconciliation policy.",
+      "sha256": "0e5c0253ac3ca634723e0b488cd2665f1a209d1e97d7e18ca59da261f6053624"
+    },
+    {
+      "path": "docs/TRM_REFERENCE_REPRODUCTION.md",
+      "classification": "ADDED",
+      "reason": "Documents clean upstream TRM Sudoku reference reproduction policy.",
+      "sha256": "dd1fe93ca064c891b5c425702deea47281d7f4aa869221e6dd6fb00516667ce3"
+    },
+    {
+      "path": "health/CURRENT_REPOSITORY_STATUS.json",
+      "classification": "ADDED",
+      "reason": "Current repository status overlay.",
+      "sha256": "1e0570b6c565bf33b0e222192edeb2d1e62ce9e72039099e7317a91f17e03c99"
+    },
+    {
+      "path": "health/PUBLICATION_AUTHORITY.json",
+      "classification": "ADDED",
+      "reason": "Publication authority boundary.",
+      "sha256": "390b8847eddf39dbf06a76c0da62447e7068d173c1d9686b8a0ef407bc3133dc"
+    },
+    {
+      "path": "health/TRM_LINEAGE_STATUS.json",
+      "classification": "ADDED",
+      "reason": "TRM lineage status and ACTV1 retirement record.",
+      "sha256": "7a0ec97bca7252b183e1ef4411231767f6502e9f5cedd03a102735becac1dd6a"
+    },
+    {
+      "path": "health/UPSTREAM_PINS.json",
+      "classification": "ADDED",
+      "reason": "Pinned external source identities.",
+      "sha256": "9879cfdea6a9cb33591ee8f8d0fd896db4df1d30c5217c0058f6f765a6ef17d2"
+    }
+  ]
+}
