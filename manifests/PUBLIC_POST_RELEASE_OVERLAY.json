@@ -57,6 +57,18 @@
       "classification": "ADDED",
       "reason": "Pinned external source identities.",
       "sha256": "9879cfdea6a9cb33591ee8f8d0fd896db4df1d30c5217c0058f6f765a6ef17d2"
+    },
+    {
+      "path": "tools/verify_canonical_assembly.py",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Public assembly verification now resolves canonical component identities through PUBLIC_COMPONENT_REGISTRY public_path mappings.",
+      "sha256": "31dab4b4c7f1f4441d0d24f677115c72a6cf5f75d0103cf37043e98aba207553"
+    },
+    {
+      "path": "native/hacf_bridge/CMakeLists.txt",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "HACF bridge linking is portable across GNU/Linux and macOS and no longer declares an unused Python development dependency.",
+      "sha256": "5d64e130843b5d4895c8fb41e047e28ac024287b7ce94da9890a0959987646b7"
     }
   ]
 }
