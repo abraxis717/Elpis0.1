@@ -1,0 +1,12 @@
+{
+  "schema": "elpis.publication-authority.v1",
+  "public_repository": "https://github.com/abraxis717/Elpis0.1",
+  "authority_rules": {
+    "existing_public_content": "PRESERVE",
+    "local_publication_snapshot": "REFERENCE_ONLY",
+    "broader_local_canon": "DEVELOPMENT_SOURCE_NOT_ASSUMED_COMPLETE",
+    "deletion_from_local_absence": "FORBIDDEN",
+    "replacement_from_local_copy": "FORBIDDEN_UNLESS_INDEPENDENTLY_VERIFIED",
+    "new_reconciliation_artifacts": "ADDITIVE"
+  }
+}

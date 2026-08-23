@@ -1,0 +1,13 @@
+{
+  "schema": "elpis.repository-status.v1",
+  "repository": "abraxis717/Elpis0.1",
+  "status": "PUBLIC_PRESERVATION_AUTHORITY",
+  "published_main_basis": "723dc8f8a3cd0839943245c60b11add92c4db2e5",
+  "qualified_release_baseline": "v1.1.2",
+  "runtime_admission": false,
+  "notes": [
+    "Existing published files are preservation authority and must not be reconstructed wholesale from incomplete local copies.",
+    "Repository reconciliation after v1.1.2 is additive-first.",
+    "Learned TRM execution remains non-admitted."
+  ]
+}

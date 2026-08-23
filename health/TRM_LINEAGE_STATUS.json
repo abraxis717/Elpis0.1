@@ -1,0 +1,33 @@
+{
+  "schema": "elpis.trm-lineage-status.v1",
+  "active_runtime_model": null,
+  "runtime_admission": false,
+  "lineages": [
+    {
+      "id": "frozen_actv1_C2",
+      "architecture": "TinyRecursiveReasoningModel_ACTV1_Inner",
+      "status": "RETIRED_EXPERIMENTAL_LINEAGE",
+      "checkpoint_sha256": "152374716b05b4ad40a3b6066d1c0e757fa40d4d6732c781ea61b402d4dd739a",
+      "parameter_count": 1316866,
+      "task": "Elpis Grid81 structural reconstruction/denoising experiment",
+      "independent_qualification": "BLOCKED_BY_NATIVE_CAPABILITY_INSUFFICIENCY",
+      "runtime_admission": false,
+      "publish_authority": false,
+      "notes": [
+        "This artifact is not the Samsung Sudoku-Extreme reference checkpoint.",
+        "Historical validation was not sufficient evidence of denoising capability.",
+        "The lineage is preserved for provenance and negative-result analysis."
+      ]
+    },
+    {
+      "id": "trm_reference_reproduction",
+      "architecture": "SamsungSAILMontreal TinyRecursiveModels TRM",
+      "status": "PLANNED_CLEAN_REFERENCE_LANE",
+      "upstream_commit": "c01103738605ba39d1430519b1ee0c62f4c707f8",
+      "target_task": "Sudoku-Extreme",
+      "target_metric": "exact-grid accuracy",
+      "expected_upstream_reference": "approximately 87 percent for the documented MLP-T configuration",
+      "runtime_admission": false
+    }
+  ]
+}
