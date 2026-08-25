@@ -139,4 +139,4 @@ On pushes to `main`, the reference-runtime workflow also fetches the pinned chec
 
 Elpis code is MIT unless otherwise noted. The inference-only TRM namespace adaptation is derived from MIT-licensed upstream code; see `docs/REFERENCE_RUNTIME_PROVENANCE.md` and `THIRD_PARTY_NOTICES.md`.
 
-Christ is King -Alpharius
+Christ is King
