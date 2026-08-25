@@ -18,13 +18,32 @@ formats for task diagnostics, task residuals, structural observations, and
 resolved residuals. Public tests reproduce the exact frozen R7CR3R1
 diagnostic, residual, and resolution digests.
 
-This phase deliberately stops before mutating DarwinianMatrix clamp state.
-The canonical Projector RELEASE adapter remains the next promotion gate.
+C2R2 promotes the RELEASE-planning portion of the exact R7A source above into
+`src/elpis_reference/projector_release.py`. The semantic contract remains in
+`semantic_refinement.py`; the adapter consumes that contract and constructs the
+existing canonical DarwinianMatrix `ClampTransaction`.
+
+The promoted mechanism preserves these qualified R7A behaviors:
+
+- release targets come only from resolved pre-existing structural support;
+- inactive resolved cells are deterministic no-ops;
+- current clamp owners are derived from ClampState;
+- task-derived proposals are RELEASE only;
+- the transaction is bound to the current ClampState digest;
+- canonical Projector owner and stale-state rejection remain authoritative.
+
+`ClampProposal.evidence_digest` on this path is the originating task diagnostic
+digest. It binds the release request but is not a historical proof of the
+evidence that originally created the active clamp because ClampState does not
+retain that per-cell evidence digest.
 
 Invariant boundary:
 
 - structural rejection does not become a task residual;
 - task diagnostics carry no Grid81 cell/value selection;
 - reverse trace may resolve a semantic/topology locus to structural support;
+- task failure may RELEASE implicated existing support;
+- task failure may not ASSERT or REPLACE structural claims;
 - the learned TRM does not receive task semantics or task diagnostics;
+- learned re-proposal remains outside C2R2;
 - runtime admission remains false.

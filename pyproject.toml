@@ -1,6 +1,6 @@
 [project]
 name = "elpis-canonical"
-version = "1.2.2"
+version = "1.2.3"
 description = "Deterministic Elpis structural core with a runnable TRM Sudoku reference runtime"
 requires-python = ">=3.11"
 license = {text = "MIT"}
@@ -20,9 +20,16 @@ elpis = "elpis_reference.cli:main"
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+package-dir = {"" = "src", "DarwinianMatrix" = "components/DarwinianMatrix"}
+py-modules = ["DarwinianMatrix.geometry"]
+
 [tool.setuptools.packages.find]
-where = ["src"]
-include = ["elpis_reference*"]
+where = ["src", "components"]
+include = [
+  "elpis_reference*",
+  "DarwinianMatrix.projector*",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

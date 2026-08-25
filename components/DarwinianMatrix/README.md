@@ -26,24 +26,29 @@ not mean every path is active in the public runtime.
 
 ## Refinement integration status
 
-Public v1.2.2 has promoted the qualified R7A task diagnostic/residual contract
-and the semantic/topology reverse-trace foundation. The remaining production
-seam is still being consolidated:
+Public v1.2.3 promotes the qualified R7A RELEASE-planning mechanism against the
+existing canonical Projector transaction types:
 
 ```text
 task/validator failure
 → typed task residual
 → semantic/topology reverse trace
-→ DarwinianMatrix Projector RELEASE
+→ canonical DarwinianMatrix Projector RELEASE
 → revised structural support
-→ learned TRM re-proposal
-→ validation
 ```
 
-The **canonical Projector RELEASE adapter is not yet promoted into the public
-end-to-end controller**. Until that gate is qualified, do not interpret the
-presence of `projector/` as proof that arbitrary task failure is already
-driving live clamp mutation.
+The adapter releases only currently active support already selected by reverse
+trace, derives each owner from the current ClampState, and binds the transaction
+to the current state digest. Generic task failure cannot ASSERT or REPLACE a
+structural claim.
+
+The adapter does not prove that a task diagnostic matches the historical
+evidence digest that originally created a clamp because ClampState does not
+retain that per-cell history.
+
+The **learned re-proposal loop is not yet promoted**. Therefore this does not
+establish arbitrary-task improvement, generalized semantic resolution, or
+runtime admission.
 
 ## Safety / authority invariants
 

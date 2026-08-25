@@ -1,3 +1,14 @@
+## 1.2.3 — Canonical Projector release adapter
+
+- Promoted the exact qualified R7A RELEASE-planning mechanism through a narrow public adapter.
+- Reused canonical DarwinianMatrix `ClampProposal`, `ClampTransaction`, `ClampState`, and transaction application semantics without copying Projector mutation logic.
+- Task-derived mutation is RELEASE-only and limited to active support selected by pre-existing reverse trace.
+- Current owners are derived from canonical ClampState and stale-state/owner checks remain Projector-owned.
+- Added clean-wheel packaging for the minimal canonical Projector surface required by the adapter.
+- Preserved the evidence boundary: the release proposal binds to the task diagnostic but does not claim recovery of the clamp's original evidence digest.
+- Learned re-proposal remains outside this gate.
+- Runtime admission remains false.
+
 ## 1.2.2 — Platform-agnostic refinement foundation
 
 - Added a pure-Python platform discovery/build-plan boundary and portable setup entry point.

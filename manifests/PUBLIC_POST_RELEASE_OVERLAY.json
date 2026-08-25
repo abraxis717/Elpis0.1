@@ -15,8 +15,8 @@
     {
       "path": ".github/workflows/ci.yml",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
-      "sha256": "2b236eb6044446fe32ef75b389fff7a445284c56e45f4ff1f1fa02a0b8b58a27"
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "8109c9da644404ddef94e87f6df9eaa30048ace19b66438003a2b02d62de7ba7"
     },
     {
       "path": ".github/workflows/platform-matrix.yml",
@@ -33,8 +33,8 @@
     {
       "path": "CHANGELOG.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
-      "sha256": "90a4a02ebaa6d6baaf6eb98191d64bb58dcf32b1262075d11d8efc0cb420ecb6"
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "9dd7e912b37e2967d5cebf4c1a055d387fbf843c88d83bd33bdf35a02b949d2d"
     },
     {
       "path": "LICENSES/Samsung-TinyRecursiveModels-MIT.txt",
@@ -45,8 +45,8 @@
     {
       "path": "README.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
-      "sha256": "840b9946c4d918cbb328ba69c306ace5aadfebb838e8c5d07f68d27095c6c397"
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "da0aa4116640a6f7bbd138d7e07790ff7699effef0b22e06d5151752ac78e9e1"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -57,14 +57,14 @@
     {
       "path": "VERSION",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
-      "sha256": "c62a5cc61ac4525935753f5ec284c0a052a4b1da4b3a3580dce2b7d77a2154ae"
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "d82f34ae9aa41bc4a0cb529a1ac0898fed09d6b479fb1cc44cb66c34f15ee84d"
     },
     {
       "path": "components/DarwinianMatrix/README.md",
       "classification": "ADDED",
-      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
-      "sha256": "f0e05f0ace1495d6c940a84cc88b97d90934dbcb542e9bc9bde6b2cd69e1f140"
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "8747b785b1174774216dc61aeb33a27e1c880502bef394a31acec8244517ad60"
     },
     {
       "path": "components/Pipeline/P0ControlProtocol/README.md",
@@ -99,8 +99,8 @@
     {
       "path": "docs/REFINEMENT_SEAM_PROVENANCE.md",
       "classification": "ADDED",
-      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
-      "sha256": "fe5b35e73a2cb4d23f24b0955b9cb8551dce51592838805d19004221bb79c551"
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "3e0ec22d7276e6805f0cdd5aaa2b2a1b62fc71e61965798bffb999d806337e76"
     },
     {
       "path": "docs/TRM_REFERENCE_REPRODUCTION.md",
@@ -117,8 +117,8 @@
     {
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
       "classification": "ADDED",
-      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
-      "sha256": "cc61303330b1cd78c1a7728aaea5d17c13b7d7808dd8ba5b9bd119b6858a5c61"
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "0a1f8820c50772c81c4b7c0720324a1a5673d94e32b5715c036334fd519db75c"
     },
     {
       "path": "health/PUBLICATION_AUTHORITY.json",
@@ -153,8 +153,8 @@
     {
       "path": "pyproject.toml",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
-      "sha256": "58e9c7e8392d620b3009f5a419eed44803e31226f27706ff067f19200ac9d3c6"
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "9a8142f90a338b198fc545893d69a8ed8933dbb02cc3262b08109f1df4463d60"
     },
     {
       "path": "runtime/R0/README.md",
@@ -197,6 +197,12 @@
       "classification": "ADDED",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "a15ce9f74d42fb75dac51d0fa5cc9c4d453ce907717485e682a6d4a85cfd3a51"
+    },
+    {
+      "path": "src/elpis_reference/projector_release.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "8a5ba2e7e584b224fd3269672e34a3cb302a52c0fb64b5ff8531349590d0d384"
     },
     {
       "path": "src/elpis_reference/refinement.py",
@@ -251,6 +257,12 @@
       "classification": "ADDED",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "8ed01c44a0a49afeff0e6d894eeccb9937edc87bb08ed7605e7d243f31459ae7"
+    },
+    {
+      "path": "tests/test_projector_release_adapter.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
+      "sha256": "a18e7f098a2f6193082bdb4bf696bb12f001b822048b68c4d78549aa380bd839"
     },
     {
       "path": "tests/test_reference_runtime.py",

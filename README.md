@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.2 — Platform-Agnostic Refinement Foundation
+## Release: v1.2.3 — Canonical Projector Release Adapter
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -53,7 +53,7 @@ Sudoku givens
 
 The guard **rejects** a proposal that changes a given. It never repairs or rewrites the model output and then attributes the repaired result to the model.
 
-Validation controls only accept/continue in this reference path. It does not select a Grid81 cell/value or inject task semantics into the learned model. The qualified task-residual → semantic/topology → Projector re-projection mechanism is being consolidated separately into the production refinement seam.
+Validation controls only accept/continue in this reference path. It does not select a Grid81 cell/value or inject task semantics into the learned model. Separately, the qualified task-residual and semantic/topology reverse-trace path can now construct a canonical DarwinianMatrix RELEASE transaction for resolved active support. Learned re-proposal remains a later bounded-loop gate.
 
 ## Platform portability
 
@@ -78,12 +78,23 @@ explicitly unqualified.
 ## Task-residual refinement foundation
 
 The qualified R7A task diagnostic/residual and semantic/topology reverse-trace
-contracts are now present in the public package. Their domain-separated digests
+contracts are present in the public package. Their domain-separated digests
 reproduce the frozen R7CR3R1 mechanism-control evidence.
 
-This release deliberately stops before applying the resolved residual to the
-canonical DarwinianMatrix Projector. The next promotion gate is the existing
-Projector RELEASE adapter, followed by learned re-proposal.
+C2R2 promotes the qualified R7A RELEASE-planning mechanism as a narrow adapter
+to the existing canonical `DarwinianMatrix.projector.constraints` authority.
+Resolved support may release a currently active clamp using its current owner;
+task failure cannot ASSERT or REPLACE structural claims.
+
+The adapter's proposal evidence digest binds the release request to the task
+diagnostic. The current ClampState does not retain the historical evidence
+digest that originally created each clamp, so this release makes no stronger
+historical-evidence provenance claim.
+
+The distribution includes only the canonical DarwinianMatrix package surface
+needed by this Projector boundary. This does not admit the broader
+DarwinianMatrix runtime. Learned re-proposal and the bounded semantic feedback
+loop remain the next promotion gate.
 
 ## Existing qualified structural stack
 
