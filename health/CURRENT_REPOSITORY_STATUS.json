@@ -5,7 +5,7 @@
   "published_main_basis": "10c57ac009d6a3df53623b1be79aa9b62066f5e0",
   "qualified_release_baseline": "v1.1.2",
   "reference_runtime": "RUNNABLE",
-  "reference_runtime_version": "1.2.4",
+  "reference_runtime_version": "1.2.5",
   "runtime_admission": false,
   "notes": [
     "Historical v1.1.2 release digests remain preservation authority except for explicitly declared post-release overlay paths.",
@@ -19,6 +19,9 @@
     "C2R2 derives RELEASE owners from current ClampState and preserves canonical stale-state and owner enforcement; no task-derived ASSERT/REPLACE path is admitted.",
     "Release proposal evidence binds to the originating task diagnostic and is not claimed as proof of the historical evidence that created the clamp.",
     "C2R3 remains mechanism-control only: generalized task improvement, production validator ingress, production P5/P6/P7 binding, and runtime admission are not established.",
-    "C2R3 task diagnostics must bind subject_digest to the exact prior proposal digest before reverse trace or Projector mutation."
+    "C2R3 task diagnostics must bind subject_digest to the exact prior proposal digest before reverse trace or Projector mutation.",
+    "C2R4 binds the actual R0/P0 Python AST validator failure surface to a coordinate-free task diagnostic and a projection-frozen semantic/topology/P7 reverse trace.",
+    "Production artifact-to-structural-proposal lineage and production learned P0 re-proposal remain unproven; runtime admission remains false.",
+    "C2R4 red-team hardening: one-cell state-bound release bindings, immutable Sudoku givens, and converted tensor-state verification; generic trace records are not cryptographic attestation."
   ]
 }

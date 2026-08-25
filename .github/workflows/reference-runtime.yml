@@ -45,5 +45,9 @@ jobs:
       - run: elpis model fetch --cache-dir "$RUNNER_TEMP/elpis-model" --force
       - run: elpis model verify --path "$RUNNER_TEMP/elpis-model/model.safetensors"
       - run: elpis sudoku solve --file examples/sudoku_one_blank.txt --model "$RUNNER_TEMP/elpis-model/model.safetensors" --device cpu --max-steps 16
-      - name: Run C2R3 bounded feedback E2E
+      - name: Run C2R4 hardened feedback mechanism control
         run: PYTHONPATH="" python tests/run_c2r3_feedback_e2e.py --model "$RUNNER_TEMP/elpis-model/model.safetensors" --device cpu
+      - name: Run converted-model integrity red-team
+        run: PYTHONPATH="" python tests/run_model_integrity_redteam.py --model "$RUNNER_TEMP/elpis-model/model.safetensors"
+      - name: Run C2R4 production validator ingress E2E
+        run: PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r4_p0_validator_ingress_e2e.py

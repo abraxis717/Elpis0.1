@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.4 — Bounded Learned Feedback Traversal
+## Release: v1.2.5 — Production P0 Validator Ingress
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -107,6 +107,39 @@ The adapter's proposal evidence digest binds the release request to the task
 diagnostic. The current ClampState does not retain the historical evidence
 digest that originally created each clamp, so this release makes no stronger
 historical-evidence provenance claim.
+
+### C2R4 production P0 validator ingress
+
+C2R4 closes the first production feedback-boundary gap. The R0 AST adapter now
+exposes the actual typed `PythonASTValidator` evidence together with the exact
+artifact digest while preserving the existing transaction-facing validator ABI.
+
+The public refinement seam freezes a semantic/topology/P7 reverse trace from
+the real P0 projection before validation. A failed task validator binds to the
+artifact digest and the projection's semantic `validation` object; it does not
+select a Grid81 cell or value. Reverse trace then resolves that pre-existing
+semantic support and the canonical DarwinianMatrix Projector may RELEASE only
+currently active support.
+
+P0 refinement scope/structural rejection remains `STRUCTURAL_REJECTION` and is
+still barred from task-residual conversion.
+
+C2R4 does not claim production learned re-proposal. The production Python
+artifact currently lacks a qualified identity lineage back to a production
+learned structural proposal, so reconnecting a production proposer remains the
+next gate. Runtime admission remains false.
+
+### C2R4 red-team hardening
+
+The C2R4 candidate also hardens defects found by adversarial review before publication. RELEASE planning no longer copies the live owner out of `ClampState` as its own authorization input: it requires a state-bound, pre-validation release binding record whose owner and semantic locus must match the resolved active support. One traversal is hard-capped at one RELEASE target and rejects over-cardinality rather than truncating. The binding digest is a deterministic commitment, not a signature or independent attestation.
+
+For the Sudoku reference traversal, original puzzle givens are immutable hard support. They must be present in the pre-release clamp state, may not be RELEASE targets, and remain the validator input for the final learned proposal. RELEASE is therefore described as bounded search-space widening of a retractable hypothesis, not as intrinsically fail-closed.
+
+The C2R3 learned E2E no longer installs a model-produced solution as the support it later releases. The released one-cell hypothesis comes from an independent fixture; the learned call occurs only after that hypothesis is removed. This remains a mechanism control, not a competence evaluation.
+
+The converted safetensors tensor state is now pinned by a canonical tensor-state SHA-256 derived from the raw checkpoint after its existing raw SHA verification. `verify_model` and `load_model` reject tensor or metadata tampering.
+
+Generic reverse-trace records remain deterministic records rather than signed attestations; repository text must not treat `trace_proof_digests` as cryptographic proof. A held-out competence evaluation remains a separate gate.
 
 ## Existing qualified structural stack
 

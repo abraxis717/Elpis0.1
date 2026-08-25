@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 import torch
 from torch import nn
 from huggingface_hub import hf_hub_download
+from safetensors import safe_open
 from safetensors.torch import load_file, save_file
 
 from .vendor.trm import TinyRecursiveReasoningModel_ACTV1
@@ -14,6 +16,7 @@ MODEL_REPO = "Sanjin2024/TinyRecursiveModels-Sudoku-Extreme-mlp"
 MODEL_REVISION = "256f32fcbe7123e8bf8c449410773a5ad311dbc5"
 MODEL_FILENAME = "step_16275"
 MODEL_SHA256 = "20e9dc7ebf83b9b41a8b3f58f5fd94ee3a7eb0b0d245bdeeb14e2f1488d1daaf"
+CONVERTED_STATE_SHA256 = "225db649e70bcca706b06a5fc6f72c97d6585ebde9b1bb90de35d3991dadb37a"
 UPSTREAM_TRM_COMMIT = "c01103738605ba39d1430519b1ee0c62f4c707f8d"
 REGISTERED_PARAMETER_COUNT = 5_028_866
 
@@ -24,6 +27,33 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def _state_sha256(state: dict[str, torch.Tensor]) -> str:
+    h = hashlib.sha256()
+    h.update(b"elpis.converted-tensor-state.v1\x00")
+    for name in sorted(state):
+        tensor = state[name].detach().cpu().contiguous()
+        meta = json.dumps(
+            {"dtype": str(tensor.dtype), "name": name, "shape": list(tensor.shape)},
+            sort_keys=True, separators=(",", ":"), allow_nan=False,
+        ).encode("utf-8")
+        raw = tensor.view(torch.uint8).numpy().tobytes(order="C")
+        h.update(len(meta).to_bytes(8, "big"))
+        h.update(meta)
+        h.update(len(raw).to_bytes(8, "big"))
+        h.update(raw)
+    return h.hexdigest()
+
+
+def _expected_metadata() -> dict[str, str]:
+    return {
+        "source_repo": MODEL_REPO,
+        "source_revision": MODEL_REVISION,
+        "source_sha256": MODEL_SHA256,
+        "upstream_trm_commit": UPSTREAM_TRM_COMMIT,
+        "registered_parameter_count": str(REGISTERED_PARAMETER_COUNT),
+    }
 
 
 def default_cache_dir() -> Path:
@@ -220,9 +250,7 @@ def fetch_model(cache_dir: Path | None = None, force: bool = False) -> Path:
     model = _new_model(torch.device("cpu"))
     normalized = _select_strict_state(raw_state, model)
 
-    load_result = model.load_state_dict(normalized, strict=True)
-    if load_result.missing_keys or load_result.unexpected_keys:
-        raise RuntimeError("strict checkpoint verification produced key drift")
+    model.load_state_dict(normalized, strict=True)
 
     save_file(
         normalized,
@@ -243,24 +271,33 @@ def fetch_model(cache_dir: Path | None = None, force: bool = False) -> Path:
 def verify_model(path: Path) -> dict[str, object]:
     path = Path(path)
     state = load_file(str(path), device="cpu")
-
-    model = _new_model(torch.device("cpu"))
-    load_result = model.load_state_dict(state, strict=True)
-
-    if load_result.missing_keys or load_result.unexpected_keys:
+    observed_state_sha256 = _state_sha256(state)
+    if observed_state_sha256 != CONVERTED_STATE_SHA256:
         raise RuntimeError(
-            "checkpoint/model ABI mismatch: "
-            f"missing={list(load_result.missing_keys)} "
-            f"unexpected={list(load_result.unexpected_keys)}"
+            "converted model state SHA-256 mismatch: "
+            f"{observed_state_sha256} != {CONVERTED_STATE_SHA256}"
         )
 
+    with safe_open(str(path), framework="pt", device="cpu") as handle:
+        observed_metadata = handle.metadata() or {}
+    expected_metadata = _expected_metadata()
+    if observed_metadata != expected_metadata:
+        raise RuntimeError(
+            "converted model metadata mismatch: "
+            f"observed={observed_metadata!r} expected={expected_metadata!r}"
+        )
+
+    model = _new_model(torch.device("cpu"))
+    model.load_state_dict(state, strict=True)
     return {
         "path": str(path),
         "sha256": _sha256(path),
+        "converted_state_sha256": observed_state_sha256,
         "tensor_count": len(state),
         "registered_parameters": REGISTERED_PARAMETER_COUNT,
         "state_elements": sum(int(tensor.numel()) for tensor in state.values()),
         "strict_load": True,
+        "metadata_verified": True,
     }
 
 
@@ -269,18 +306,12 @@ def load_model(
     device: str = "auto",
 ) -> tuple[TinyRecursiveReasoningModel_ACTV1, torch.device]:
     model_path = Path(model_path or fetch_model())
+    verify_model(model_path)
     target_device = _device_from_name(device)
 
     model = _new_model(target_device)
     state = load_file(str(model_path), device="cpu")
-    load_result = model.load_state_dict(state, strict=True)
-
-    if load_result.missing_keys or load_result.unexpected_keys:
-        raise RuntimeError(
-            "checkpoint/model ABI mismatch: "
-            f"missing={list(load_result.missing_keys)} "
-            f"unexpected={list(load_result.unexpected_keys)}"
-        )
+    model.load_state_dict(state, strict=True)
 
     model.to(target_device)
     model.eval()

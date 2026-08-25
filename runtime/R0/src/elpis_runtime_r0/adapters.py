@@ -687,6 +687,42 @@ def run_decoder(
 # AST validator adapter
 # ---------------------------------------------------------------------------
 
+def run_ast_validator_evidence(
+    request_id: str,
+    prompt: str,
+    entrypoint: str,
+    artifact_source: str,
+) -> tuple[str, Any]:
+    """Run the canonical PythonASTValidator and preserve typed evidence.
+
+    Returns (artifact_digest, ValidatorEvidence). This is the C2R4 production
+    ingress surface; the existing run_ast_validator ABI remains unchanged.
+    """
+    try:
+        from elpis_p0.validators import PythonASTValidator
+        from elpis_p0.contracts import RequestContext, ArtifactCandidate
+        from elpis_p0.canonical import digest as p0_digest
+    except ImportError as e:
+        raise R0ASTValidationFailure(
+            "AST_VALIDATOR_IMPORT_FAILED",
+            str(e),
+        ) from e
+
+    context = RequestContext(
+        request_id=request_id,
+        prompt=prompt,
+        entrypoint=entrypoint,
+    )
+    artifact = ArtifactCandidate(
+        language="python",
+        source=artifact_source,
+        digest=p0_digest({"source": artifact_source}),
+    )
+    validator = PythonASTValidator()
+    evidence = validator.validate(context, artifact)
+    return artifact.digest, evidence
+
+
 def run_ast_validator(
     request_id: str,
     prompt: str,
@@ -697,31 +733,12 @@ def run_ast_validator(
 
     Returns (passed, code, message, validator_id).
     """
-    try:
-        from elpis_p0.validators import PythonASTValidator
-        from elpis_p0.contracts import (
-            RequestContext,
-            ArtifactCandidate,
-        )
-        from elpis_p0.canonical import digest as p0_digest
-    except ImportError as e:
-        raise R0Error("VALIDATOR_IMPORT_FAILED", str(e)) from e
-
-    context = RequestContext(
+    _, evidence = run_ast_validator_evidence(
         request_id=request_id,
         prompt=prompt,
         entrypoint=entrypoint,
+        artifact_source=artifact_source,
     )
-
-    artifact = ArtifactCandidate(
-        language="python",
-        source=artifact_source,
-        digest=p0_digest({"source": artifact_source}),
-    )
-
-    validator = PythonASTValidator()
-    evidence = validator.validate(context, artifact)
-
     return (
         evidence.passed,
         evidence.code,

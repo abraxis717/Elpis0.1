@@ -1,3 +1,20 @@
+## 1.2.5 — Production P0 validator ingress + red-team hardening
+
+- Require exact-state pre-validation release bindings; release owner is no longer copied from live state as its own authorization input.
+- Hard-cap one active RELEASE target per feedback traversal; over-cardinality rejects.
+- Carry immutable Sudoku givens through feedback and prohibit releasing them; final validation remains bound to original givens.
+- Replace the model-derived C2R3 round trip with an independent one-cell hypothesis mechanism control.
+- Pin and enforce the converted safetensors tensor-state digest and metadata; `load_model` now verifies before use.
+- Keep trace-record digests explicitly non-attesting; held-out model evaluation remains future work.
+
+
+- Exposed typed production `PythonASTValidator` evidence and exact artifact identity through the R0 adapter without changing its existing transaction-facing ABI.
+- Added deterministic pre-validation trace binding from the actual P0 projection through semantic object → topology vertex → P7 capsule/cell support.
+- Converted real P0 task-validator failure to coordinate-free `TaskDiagnosticV1` and canonical RELEASE of resolved active support.
+- Preserved P0 refinement scope/structural failures as `STRUCTURAL_REJECTION`; they cannot become task residuals.
+- Kept task-derived structural mutation RELEASE-only and preserved unrelated clamps.
+- Production artifact→structural-proposal lineage, production learned P0 re-proposal, generalized task improvement, and runtime admission remain unproven/false.
+
 ## 1.2.4 — Bounded learned feedback traversal
 
 - Added one deterministic C2R3 task-feedback composition step over the already-qualified semantic residual and canonical Projector RELEASE boundaries.

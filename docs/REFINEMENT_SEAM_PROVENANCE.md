@@ -58,6 +58,34 @@ surviving clamps remain preserved. It does not claim that the generic task
 failure is a production validator ingress or that the resulting proposal is a
 generalized task improvement.
 
+C2R4 binds the real R0/P0 validator boundary into this seam. The production
+R0 AST adapter exposes the exact artifact digest and typed `ValidatorEvidence`
+from `PythonASTValidator`. A projection trace is frozen from the actual P0
+`StructuralProjection` before validation, assigning domain-separated semantic
+object, topology vertex, P7 capsule, and observation identities.
+
+Task-validator failure selects only the pre-existing semantic `validation`
+object. Validator line/offset details are committed only through
+`details_digest`; they do not become structural coordinates. Reverse trace maps
+that semantic object to its pre-existing P7 support, after which the already
+qualified canonical RELEASE adapter applies current-owner and stale-state
+protections.
+
+P0 refinement validation is separately classified: scope/shape/input-binding
+rejections remain `STRUCTURAL_REJECTION` and cannot enter the task-residual
+path.
+
+This closes production P0 validator ingress and production
+projection→semantic/topology/P7 trace binding. It does not establish
+artifact→production-structural-proposal lineage, production learned P0
+re-proposal, generalized task improvement, or runtime admission.
+
+Red-team hardening after C2R3 changes the release planner contract. A release binding table is committed to the exact pre-release `ClampState` and carries the expected owner plus semantic locus for each eligible target. The planner compares that precommitted owner against the live state instead of deriving the requested owner from live state. Active RELEASE cardinality is fixed at one per traversal. These records are deterministic commitments, not signatures or third-party attestations. The legacy field name `trace_proof_digests` is retained for R7 digest compatibility but denotes trace-record digests, not cryptographic proof.
+
+Sudoku feedback additionally carries the episode's immutable puzzle givens. They may not be released, must be present before traversal, and are used for final validation. Retractable hypothesis RELEASE is search-space widening and is not described as conservative or fail-closed by itself.
+
+The converted model tensor state and safetensors metadata are now verified before model use. This closes the prior gap where a shape-compatible cached safetensors file could pass strict loading without matching a pinned converted-state identity.
+
 Invariant boundary:
 
 - structural rejection does not become a task residual;

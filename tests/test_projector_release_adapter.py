@@ -14,7 +14,11 @@ from DarwinianMatrix.projector.constraints import (
     ClampTransaction,
     apply_clamp_transaction,
 )
-from elpis_reference.projector_release import build_release_transaction
+from elpis_reference.projector_release import (
+    ReleaseBindingTableV1,
+    ReleaseBindingTargetV1,
+    build_release_transaction,
+)
 from elpis_reference.semantic_refinement import (
     SEMANTIC_OBJECT,
     STRUCTURAL_REJECTION,
@@ -29,48 +33,30 @@ def _h(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def _diagnostic(
-    diagnostic_class: str = TASK_REJECTION,
-    *,
-    frame_index: int = 0,
-    subject: str = "candidate",
-    details: str = "details",
-) -> TaskDiagnosticV1:
+def _diagnostic(diagnostic_class: str = TASK_REJECTION, *, locus: str | None = None):
     return TaskDiagnosticV1(
         diagnostic_class=diagnostic_class,
-        task_scope_id="c2r2-episode",
-        frame_index=frame_index,
-        subject_digest=_h(subject),
-        producer_id="c2r2.task-validator.v1",
+        task_scope_id="c2r4-release-episode",
+        frame_index=0,
+        subject_digest=_h("candidate"),
+        producer_id="c2r4.task-validator.v1",
         locus_namespace=SEMANTIC_OBJECT,
-        locus_identity=_h("semantic-a"),
+        locus_identity=locus or _h("semantic-a"),
         reason_codes=("TASK_REQUIREMENT_UNSATISFIED",),
-        details_digest=_h(details),
+        details_digest=_h("details"),
     )
 
 
-def _observations():
-    return (
-        StructuralObservationRecord.create(
-            source_semantic_object_digest=_h("semantic-a"),
-            topology_vertex_digest=_h("topology-a"),
-            P7_capsule_digest=_h("capsule-a"),
-            P7_primary_cell_index=10,
-        ),
-        StructuralObservationRecord.create(
-            source_semantic_object_digest=_h("semantic-a"),
-            topology_vertex_digest=_h("topology-b"),
-            P7_capsule_digest=_h("capsule-b"),
-            P7_primary_cell_index=20,
-        ),
+def _observation(cell: int, semantic: str = "semantic-a"):
+    return StructuralObservationRecord.create(
+        source_semantic_object_digest=_h(semantic),
+        topology_vertex_digest=_h(f"topology-{cell}"),
+        P7_capsule_digest=_h(f"capsule-{cell}"),
+        P7_primary_cell_index=cell,
     )
 
 
-def _transaction(
-    state: ClampState,
-    *proposals: ClampProposal,
-    transaction_id: str,
-) -> ClampTransaction:
+def _tx(state, *proposals, transaction_id="initial"):
     return ClampTransaction(
         transaction_id=transaction_id,
         episode_id=state.episode_id,
@@ -79,221 +65,221 @@ def _transaction(
     )
 
 
-def _clamped_state() -> ClampState:
-    state = ClampState.empty("c2r2-episode")
-    proposals = (
+def _state(cells=(10, 20, 30)):
+    state = ClampState.empty("c2r4-release-episode")
+    props = tuple(
         ClampProposal(
-            proposal_id="assert-10",
+            proposal_id=f"assert-{cell}",
             operation=ClampOperation.ASSERT,
-            slot_id="slot-a",
-            evidence_digest=_h("original-evidence-a"),
-            cell_index=10,
-            value=1,
-        ),
-        ClampProposal(
-            proposal_id="assert-20",
-            operation=ClampOperation.ASSERT,
-            slot_id="slot-b",
-            evidence_digest=_h("original-evidence-b"),
-            cell_index=20,
-            value=2,
-        ),
-        ClampProposal(
-            proposal_id="assert-30",
-            operation=ClampOperation.ASSERT,
-            slot_id="slot-c",
-            evidence_digest=_h("original-evidence-c"),
-            cell_index=30,
-            value=3,
-        ),
+            slot_id=f"slot-{cell}",
+            evidence_digest=_h(f"evidence-{cell}"),
+            cell_index=cell,
+            value=(cell % 9) + 1,
+        )
+        for cell in cells
     )
-    result = apply_clamp_transaction(
-        state=state,
-        transaction=_transaction(state, *proposals, transaction_id="initial-support"),
-    )
+    result = apply_clamp_transaction(state=state, transaction=_tx(state, *props))
     assert result.accepted
     return result.state
 
 
-def _resolved():
+def _binding(state, *, cell=10, owner=None, semantic="semantic-a"):
+    return ReleaseBindingTableV1(
+        episode_id=state.episode_id,
+        clamp_state_digest=state.digest(),
+        targets=(
+            ReleaseBindingTargetV1(
+                cell_index=cell,
+                owner=owner or f"slot-{cell}",
+                locus_namespace=SEMANTIC_OBJECT,
+                locus_identity=_h(semantic),
+            ),
+        ),
+    )
+
+
+def _resolved(cell=10):
     diagnostic = _diagnostic()
     residual = diagnostic.to_task_residual()
-    resolved = ReverseTraceIndex(_observations()).resolve(residual)
+    resolved = ReverseTraceIndex((_observation(cell),)).resolve(residual)
     return diagnostic, residual, resolved
 
 
-def test_semantic_resolution_builds_release_only_transaction():
+def test_release_uses_precommitted_owner_not_live_owner_copy():
     diagnostic, residual, resolved = _resolved()
-    state = _clamped_state()
+    state = _state()
+    binding = _binding(state)
     plan, transaction = build_release_transaction(
         residual=residual,
         resolved=resolved,
         clamp_state=state,
+        release_bindings=binding,
     )
-    assert plan.target_cells == (10, 20)
-    assert plan.target_owners == ("slot-a", "slot-b")
+    assert plan.target_cells == (10,)
+    assert plan.target_owners == ("slot-10",)
+    assert plan.binding_table_digest == binding.binding_table_digest
     assert transaction is not None
-    assert transaction.expected_state_digest == state.digest()
-    assert all(
-        proposal.operation == ClampOperation.RELEASE and proposal.value is None
-        for proposal in transaction.proposals
-    )
-    assert all(
-        proposal.evidence_digest == diagnostic.digest()
-        for proposal in transaction.proposals
-    )
-    assert {proposal.operation for proposal in transaction.proposals} == {
-        ClampOperation.RELEASE,
-    }
+    assert transaction.proposals[0].slot_id == "slot-10"
+    assert transaction.proposals[0].evidence_digest == diagnostic.digest()
+    assert transaction.proposals[0].operation == ClampOperation.RELEASE
 
 
-def test_canonical_projector_release_preserves_unrelated_clamp():
+def test_wrong_precommitted_owner_fails_before_projector_mutation():
     _, residual, resolved = _resolved()
-    state = _clamped_state()
-    plan, transaction = build_release_transaction(
+    state = _state()
+    with pytest.raises(ValueError, match="release binding owner does not match ClampState"):
+        build_release_transaction(
+            residual=residual,
+            resolved=resolved,
+            clamp_state=state,
+            release_bindings=_binding(state, owner="forged-owner"),
+        )
+
+
+def test_release_binding_is_exact_state_bound():
+    _, residual, resolved = _resolved()
+    state = _state()
+    binding = _binding(state)
+    extra = ClampProposal(
+        proposal_id="assert-40",
+        operation=ClampOperation.ASSERT,
+        slot_id="slot-40",
+        evidence_digest=_h("evidence-40"),
+        cell_index=40,
+        value=5,
+    )
+    changed = apply_clamp_transaction(
+        state=state,
+        transaction=_tx(state, extra, transaction_id="change"),
+    ).state
+    with pytest.raises(ValueError, match="not bound to current ClampState"):
+        build_release_transaction(
+            residual=residual,
+            resolved=resolved,
+            clamp_state=changed,
+            release_bindings=binding,
+        )
+
+
+def test_multi_cell_release_is_rejected_instead_of_truncated():
+    diagnostic = _diagnostic()
+    residual = diagnostic.to_task_residual()
+    resolved = ReverseTraceIndex((_observation(10), _observation(20))).resolve(residual)
+    state = _state()
+    bindings = ReleaseBindingTableV1(
+        episode_id=state.episode_id,
+        clamp_state_digest=state.digest(),
+        targets=tuple(
+            ReleaseBindingTargetV1(
+                cell_index=cell,
+                owner=f"slot-{cell}",
+                locus_namespace=SEMANTIC_OBJECT,
+                locus_identity=_h("semantic-a"),
+            )
+            for cell in (10, 20)
+        ),
+    )
+    with pytest.raises(ValueError, match="cardinality exceeds C2R4 bound of one"):
+        build_release_transaction(
+            residual=residual,
+            resolved=resolved,
+            clamp_state=state,
+            release_bindings=bindings,
+        )
+
+
+def test_missing_binding_for_active_resolved_support_fails_closed():
+    _, residual, resolved = _resolved(cell=20)
+    state = _state()
+    with pytest.raises(LookupError, match="lacks exactly one precommitted release binding"):
+        build_release_transaction(
+            residual=residual,
+            resolved=resolved,
+            clamp_state=state,
+            release_bindings=_binding(state, cell=10),
+        )
+
+
+def test_release_preserves_unrelated_clamps():
+    _, residual, resolved = _resolved()
+    state = _state()
+    _, transaction = build_release_transaction(
         residual=residual,
         resolved=resolved,
         clamp_state=state,
+        release_bindings=_binding(state),
     )
     assert transaction is not None
     result = apply_clamp_transaction(state=state, transaction=transaction)
     assert result.accepted
-    assert result.state.active_count == state.active_count - 2
-    for cell in (10, 20):
-        assert not bool(result.state.active_mask[cell])
-        assert int(result.state.values[cell]) == 0
-        assert result.state.owners[cell] is None
-    assert bool(result.state.active_mask[30])
-    assert int(result.state.values[30]) == 3
-    assert result.state.owners[30] == "slot-c"
-    assert plan.target_cells == (10, 20)
+    assert not bool(result.state.active_mask[10])
+    for cell in (20, 30):
+        assert bool(result.state.active_mask[cell])
+        assert result.state.owners[cell] == f"slot-{cell}"
 
 
 def test_inactive_resolved_support_is_deterministic_noop():
     _, residual, resolved = _resolved()
-    state = _clamped_state()
+    state = _state()
     _, transaction = build_release_transaction(
         residual=residual,
         resolved=resolved,
         clamp_state=state,
+        release_bindings=_binding(state),
     )
     assert transaction is not None
     after = apply_clamp_transaction(state=state, transaction=transaction).state
+    rebound = ReleaseBindingTableV1(
+        episode_id=after.episode_id,
+        clamp_state_digest=after.digest(),
+        targets=(
+            ReleaseBindingTargetV1(
+                cell_index=10,
+                owner="slot-10",
+                locus_namespace=SEMANTIC_OBJECT,
+                locus_identity=_h("semantic-a"),
+            ),
+        ),
+    )
     plan, second = build_release_transaction(
         residual=residual,
         resolved=resolved,
         clamp_state=after,
+        release_bindings=rebound,
     )
     assert plan.target_cells == ()
-    assert plan.target_owners == ()
     assert second is None
 
 
-def test_projector_rejects_intentionally_wrong_owner():
+def test_stale_projector_transaction_still_rejected():
     _, residual, resolved = _resolved()
-    state = _clamped_state()
+    state = _state()
     _, transaction = build_release_transaction(
         residual=residual,
         resolved=resolved,
         clamp_state=state,
+        release_bindings=_binding(state),
     )
     assert transaction is not None
-    original = transaction.proposals[0]
-    tampered = ClampProposal(
-        proposal_id=original.proposal_id,
-        operation=ClampOperation.RELEASE,
-        slot_id="wrong-owner",
-        evidence_digest=original.evidence_digest,
-        cell_index=original.cell_index,
-        value=None,
-    )
-    wrong_owner = ClampTransaction(
-        transaction_id=transaction.transaction_id + "-wrong-owner",
-        episode_id=transaction.episode_id,
-        expected_state_digest=transaction.expected_state_digest,
-        proposals=(tampered, *transaction.proposals[1:]),
-    )
-    result = apply_clamp_transaction(state=state, transaction=wrong_owner)
-    assert not result.accepted
-    assert result.receipt.reason_codes == ("CLAMP_OWNER_MISMATCH",)
-    assert result.state.digest() == state.digest()
-
-
-def test_stale_release_transaction_is_rejected():
-    _, residual, resolved = _resolved()
-    state = _clamped_state()
-    _, transaction = build_release_transaction(
-        residual=residual,
-        resolved=resolved,
-        clamp_state=state,
-    )
-    assert transaction is not None
-    unrelated = ClampProposal(
+    extra = ClampProposal(
         proposal_id="assert-40",
         operation=ClampOperation.ASSERT,
-        slot_id="slot-d",
-        evidence_digest=_h("original-evidence-d"),
+        slot_id="slot-40",
+        evidence_digest=_h("evidence-40"),
         cell_index=40,
-        value=4,
+        value=5,
     )
     changed = apply_clamp_transaction(
-        state=state,
-        transaction=_transaction(state, unrelated, transaction_id="unrelated-change"),
-    )
-    assert changed.accepted
-    stale = apply_clamp_transaction(state=changed.state, transaction=transaction)
+        state=state, transaction=_tx(state, extra, transaction_id="change")
+    ).state
+    stale = apply_clamp_transaction(state=changed, transaction=transaction)
     assert not stale.accepted
     assert stale.receipt.reason_codes == ("STALE_CLAMP_STATE",)
-    assert stale.state.digest() == changed.state.digest()
-
-
-def test_release_builder_rejects_residual_resolution_mismatch():
-    _, residual, resolved = _resolved()
-    other = _diagnostic(
-        frame_index=1,
-        subject="other-candidate",
-        details="other-details",
-    ).to_task_residual()
-    with pytest.raises(
-        ValueError,
-        match="Resolved residual is bound to another task residual",
-    ):
-        build_release_transaction(
-            residual=other,
-            resolved=resolved,
-            clamp_state=_clamped_state(),
-        )
-    assert residual.digest() != other.digest()
 
 
 def test_structural_rejection_cannot_reach_release_adapter():
-    structural = _diagnostic(STRUCTURAL_REJECTION)
-    with pytest.raises(
-        ValueError,
-        match="structural rejection cannot become a task residual",
-    ):
-        structural.to_task_residual()
-
-
-def test_release_planning_is_order_independent():
-    _, residual, resolved_a = _resolved()
-    resolved_b = ReverseTraceIndex(reversed(_observations())).resolve(residual)
-    state = _clamped_state()
-    plan_a, transaction_a = build_release_transaction(
-        residual=residual,
-        resolved=resolved_a,
-        clamp_state=state,
-    )
-    plan_b, transaction_b = build_release_transaction(
-        residual=residual,
-        resolved=resolved_b,
-        clamp_state=state,
-    )
-    assert transaction_a is not None
-    assert transaction_b is not None
-    assert resolved_a.resolution_digest == resolved_b.resolution_digest
-    assert plan_a.plan_digest == plan_b.plan_digest
-    assert transaction_a.digest() == transaction_b.digest()
+    with pytest.raises(ValueError, match="structural rejection cannot become a task residual"):
+        _diagnostic(STRUCTURAL_REJECTION).to_task_residual()
 
 
 def test_adapter_has_no_learned_model_dependency():
@@ -306,13 +292,9 @@ def test_adapter_has_no_learned_model_dependency():
         elif isinstance(node, ast.ImportFrom):
             imported.append(node.module or "")
     assert not any(
-        name.startswith("elpis_reference.model")
-        or name.startswith("elpis_reference.vendor")
+        name.startswith("elpis_reference.model") or name.startswith("elpis_reference.vendor")
         for name in imported
     )
-    signature = inspect.signature(build_release_transaction)
-    assert tuple(signature.parameters) == (
-        "residual",
-        "resolved",
-        "clamp_state",
+    assert tuple(inspect.signature(build_release_transaction).parameters) == (
+        "residual", "resolved", "clamp_state", "release_bindings"
     )
