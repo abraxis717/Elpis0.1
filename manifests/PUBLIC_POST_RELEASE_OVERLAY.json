@@ -15,8 +15,8 @@
     {
       "path": ".github/workflows/ci.yml",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
-      "sha256": "8109c9da644404ddef94e87f6df9eaa30048ace19b66438003a2b02d62de7ba7"
+      "reason": "Public v1.2.3 C2R2 R1: isolate installed semantic/adapter tests from the canonical DarwinianMatrix source test package so hosted CI exercises the same qualified package boundary as local preflight.",
+      "sha256": "88deac76e8856a2388c51a149aa89534ad5e313a5bae7644f8db3238f429a345"
     },
     {
       "path": ".github/workflows/platform-matrix.yml",
