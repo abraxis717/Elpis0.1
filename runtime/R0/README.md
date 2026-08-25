@@ -1,17 +1,19 @@
 # Elpis Runtime Integration R0 — Deterministic Structural Transaction
 
+> **Historical qualification layer.** R0 remains a qualified deterministic
+> structural transaction, but it predates the repository-level learned TRM
+> reference runtime. Commands below document the original qualification shape
+> and are not the current platform-neutral setup interface. See `runtime/README.md`
+> and `tools/setup.py` from the repository root for current setup guidance.
+
 ## Mission
 
-Create the first deterministic beginning-to-end Elpis runtime transaction
-using qualified components from the canonical R1 assembly at:
-
-```
-$ELPIS_CANON_ROOT/Elpis_Canon/Elpis
-```
+Create the first deterministic beginning-to-end Elpis runtime transaction using
+qualified structural components.
 
 ## Transaction Pipeline
 
-```
+```text
 RequestContext → P0 projection → Grid81 read → scope derivation
   → StructuralOracle → adjudication → Darwinian episode
   → decoder → AST validator → receipt
@@ -19,37 +21,39 @@ RequestContext → P0 projection → Grid81 read → scope derivation
 
 ## Disposition
 
-```
+```text
 ELPIS_RUNTIME_INTEGRATION_R0_DETERMINISTIC_TRANSACTION_QUALIFIED
 ```
 
 ## Package Structure
 
-```
+```text
 R0/
 ├── pyproject.toml
 ├── README.md
 ├── src/elpis_runtime_r0/
 │   ├── __init__.py
-│   ├── composition.py     # Authority binding and rules
-│   ├── contracts.py       # Receipt and intermediate data types
-│   ├── adapters.py        # Bridges to canonical component APIs
-│   ├── transaction.py     # Full pipeline orchestrator
-│   ├── receipt.py         # Receipt serialization and verification
-│   ├── replay.py          # Cross-process determinism testing
-│   └── errors.py          # Typed fail-closed error hierarchy
+│   ├── composition.py
+│   ├── contracts.py
+│   ├── adapters.py
+│   ├── transaction.py
+│   ├── receipt.py
+│   ├── replay.py
+│   └── errors.py
 └── tests/
     └── test_r0_transaction.py
 ```
 
-## Running
+## Running from the public repository
+
+The canonical CI composes `PYTHONPATH` from the public component directories and
+runs:
 
 ```bash
-export CUDA_VISIBLE_DEVICES=""
-export PYTHONPATH="$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/TRMFractalSpine/src:$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/Pipeline/P0ControlProtocol/src:$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/Grid81DeterministicStructuralAdjudicator/src:$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/Grid81StructuralSemantics/src:$ELPIS_CANON_ROOT/Elpis_Canon/Elpis:src:$PYTHONPATH"
-cd $ELPIS_CANON_ROOT/Elpis_Canon/Elpis_Runtime_Integration/R0
-python -m pytest tests/ -v
+pytest runtime/R0/tests/ -v
 ```
+
+See `.github/workflows/ci.yml` for the exact current public CI environment.
 
 ## Authority Rules
 
@@ -63,14 +67,11 @@ python -m pytest tests/ -v
 
 Runtime admission: **FALSE**
 
-## Test Results
+## Historical exclusion boundary
 
-26 tests, all passing:
-- 11 happy-path tests (projection, receipt, determinism, authority)
-- 10 negative fail-closed tests (malformed input, missing state, mutation detection)
-- 5 authority boundary and determinism tests
+R0 itself excludes HACF retrieval, learned TRM inference, sandbox execution,
+governance, persistent memory, and network serving.
 
-## Excluded from R0
-
-HACF retrieval, Semantic Structural Spine, RAG, learned TRM, model inference,
-sandbox execution, governance, persistent memory, network serving, Blackwell.
+That statement is scoped to **R0**. The repository now contains separate later
+layers: R1 adds HACF retrieval, and the top-level `src/elpis_reference/` package
+provides a runnable learned Samsung TRM reference path.

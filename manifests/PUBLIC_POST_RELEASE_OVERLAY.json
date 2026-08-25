@@ -13,16 +13,22 @@
   "runtime_admission": false,
   "paths": [
     {
+      "path": ".github/workflows/ci.yml",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "2b236eb6044446fe32ef75b389fff7a445284c56e45f4ff1f1fa02a0b8b58a27"
+    },
+    {
       "path": ".github/workflows/platform-matrix.yml",
       "classification": "ADDED",
-      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
-      "sha256": "fab415afcd864fea9d6ac9734eed85e8843ccfd6509ba31850465f03641ede84"
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "357cc5a58988af05eaf518fe717961e6c56dd7f0607b3f355e50b39991e0dcf6"
     },
     {
       "path": ".github/workflows/reference-runtime.yml",
       "classification": "ADDED",
-      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
-      "sha256": "e89169a7a23510971dc3e6310ffc5e04bbba825785cae7edf0709ce75c3feedd"
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "966f1ba7d138cbc9851612013de6d25af8186d659f20c130956d1069216de187"
     },
     {
       "path": "CHANGELOG.md",
@@ -53,6 +59,24 @@
       "classification": "POST_RELEASE_MODIFIED",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "c62a5cc61ac4525935753f5ec284c0a052a4b1da4b3a3580dce2b7d77a2154ae"
+    },
+    {
+      "path": "components/DarwinianMatrix/README.md",
+      "classification": "ADDED",
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "f0e05f0ace1495d6c940a84cc88b97d90934dbcb542e9bc9bde6b2cd69e1f140"
+    },
+    {
+      "path": "components/Pipeline/P0ControlProtocol/README.md",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "b0438601e976f22dc662ae9144513967e1cceef6f3a19d69f979eb9f553c9671"
+    },
+    {
+      "path": "components/TRMFractalSpine/README.md",
+      "classification": "ADDED",
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "2c2b68477cfdc2e87e26837f5a3d67cc8956c451fa346ed9031c36aa0c4926d2"
     },
     {
       "path": "docs/PLATFORM_PORTABILITY.md",
@@ -115,6 +139,12 @@
       "sha256": "9879cfdea6a9cb33591ee8f8d0fd896db4df1d30c5217c0058f6f765a6ef17d2"
     },
     {
+      "path": "native/README.md",
+      "classification": "ADDED",
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "0c74891293a08469397401f73cd201d9a917e4e0ddaee1dcc016eec4d1632fb2"
+    },
+    {
       "path": "native/hacf_bridge/CMakeLists.txt",
       "classification": "POST_RELEASE_MODIFIED",
       "reason": "HACF bridge linking is portable across GNU/Linux and macOS and no longer declares an unused Python development dependency.",
@@ -125,6 +155,24 @@
       "classification": "POST_RELEASE_MODIFIED",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "58e9c7e8392d620b3009f5a419eed44803e31226f27706ff067f19200ac9d3c6"
+    },
+    {
+      "path": "runtime/R0/README.md",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "1e4bd47617607c4207d443945540562b36b3e7295554f4fb51085b57ae9569cb"
+    },
+    {
+      "path": "runtime/R1/README.md",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "41fca60a22f97a04ddf554c27d208ef64c73233d0f00eeecd790053f6f60a0c6"
+    },
+    {
+      "path": "runtime/README.md",
+      "classification": "ADDED",
+      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
+      "sha256": "2edf691f20e22ec127ed778bb9d9089f17adadc5b6d14a5060589fd91600a9ee"
     },
     {
       "path": "src/elpis_reference/__init__.py",

@@ -1,10 +1,16 @@
 # Elpis Runtime Integration R1
 
-Bounded pre-refinement retrieval layer backed by canonical HACF R3.
+> **Historical qualification layer.** R1 preserves the bounded HACF retrieval
+> integration that was qualified before the current platform-aware setup path.
+> The architecture remains valid, but the original manual build commands were
+> environment-specific. Use `runtime/README.md`, `tools/setup.py`, and current
+> CI as the public setup authority.
+
+Bounded pre-refinement retrieval layer backed by canonical HACF.
 
 ## Transaction flow
 
-```
+```text
 RequestContext -> RetrievalQueryDeriver -> HACFRetrievalProvider
   -> RetrievalBundleValidator -> RetrievalBudgetGuard
   -> EvidenceBoundRequestAdapter -> qualified Runtime R0 transaction
@@ -14,40 +20,39 @@ RequestContext -> RetrievalQueryDeriver -> HACFRetrievalProvider
 ## Architecture
 
 R1 inserts a deterministic retrieval stage *before* P0 projection. The
-retrieval produces a validated `RetrievalBundle` from HACF R3 that becomes
-an evidence envelope consumed by downstream R0.
+retrieval produces a validated `RetrievalBundle` that becomes an evidence
+envelope consumed by downstream R0.
 
 ## Safety
 
-- HACF R3 is used read-only. No corpus or index mutation during retrieval.
+- HACF retrieval is read-only during the transaction.
 - All budgets are versioned contracts recorded in receipts.
-- Fail-closed on any budget overflow, epoch drift, or schema mismatch.
+- Fail-closed on budget overflow, epoch drift, or schema mismatch.
 - Runtime admission remains FALSE.
-- No network access, model serving, or learned models.
+- No network model serving or learned-model authority is introduced by R1.
 
-## Build
+## Current build guidance
 
-R1 depends on the compiled HACF R3 shared library at:
-```
-$ELPIS_CANON_ROOT/Elpis_Canon/Elpis/HACF_R3/build_ctypes/libelpis_hacf.so
-```
+The repository now owns a platform-aware setup boundary. Inspect the detected
+plan with:
 
-Build HACF R3 first:
 ```bash
-cd $ELPIS_CANON_ROOT/Elpis_Canon/Elpis/HACF_R3
-mkdir -p build_ctypes && cd build_ctypes
-cmake -DHACF_BUILD_FMS=ON -DCMAKE_BUILD_TYPE=Release ..
-cmake --build . -j$(nproc)
-# Link shared lib:
-gcc -shared -o libelpis_hacf.so \
-  libelpis_hash.a libelpis_chunking.a libelpis_corpus.a libelpis_cascade.a \
-  libelpis_graph.a libelpis_fms.a libelpis_embedding.a libelpis_vector.a \
-  libelpis_hybrid.a -lsqlite3 -lpthread -lm
+python tools/setup.py --profile full --dry-run
 ```
+
+On currently qualified native platforms, the setup layer derives CMake build
+commands for `native/hacf` and `native/hacf_bridge`. Native Windows HACF remains
+unqualified.
+
+The repository CI is the executable reference for the currently supported Linux
+native build path.
 
 ## Tests
 
 ```bash
-cd $ELPIS_CANON_ROOT/Elpis_Canon/Elpis_Runtime_Integration/R1
-PYTHONPATH=src pytest tests/ -v
+pytest runtime/R1/tests/ -v
 ```
+
+R1 itself remains an offline retrieval + structural transaction layer. The
+separate top-level learned TRM reference runtime does not retroactively make R1
+a learned-model-serving runtime.
