@@ -1,346 +1,376 @@
 {
-  "schema": "elpis.public-post-release-overlay.v1",
-  "repository": "abraxis717/Elpis0.1",
-  "base_release": "v1.1.2",
-  "historical_release_commit": "869dd6061db1f9af7bcf93e5fbd7aba645069b29",
-  "created_from_main_commit": "45cf7feef522e7dd0fd05fd4c82747e06cbd910b",
-  "policy": "Historical release digests remain authoritative except for paths explicitly declared here. New top-level roots require explicit declaration.",
   "allowed_new_roots": [
     "examples",
     "health",
     "src"
   ],
-  "runtime_admission": false,
+  "base_release": "v1.1.2",
+  "created_from_main_commit": "45cf7feef522e7dd0fd05fd4c82747e06cbd910b",
+  "historical_release_commit": "869dd6061db1f9af7bcf93e5fbd7aba645069b29",
   "paths": [
     {
-      "path": ".github/workflows/ci.yml",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "cd082621612b6022b90d2f5415b95a905ca994396e3bcd773b7ef2a157d4a529"
+      "path": ".github/workflows/ci.yml",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "e384e1acddd43b4f4d3f93c65051dc596e1f099a8c7ff718f54e0d53d625ef20"
     },
     {
-      "path": ".github/workflows/platform-matrix.yml",
       "classification": "ADDED",
+      "path": ".github/workflows/platform-matrix.yml",
       "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
       "sha256": "357cc5a58988af05eaf518fe717961e6c56dd7f0607b3f355e50b39991e0dcf6"
     },
     {
-      "path": ".github/workflows/reference-runtime.yml",
       "classification": "ADDED",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "00f39db175eb81fef4907cccbde07f0d06b6517c5819002c782dbdaf8cba4a95"
+      "path": ".github/workflows/reference-runtime.yml",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "8deedfc55363df868d7f150c279e920e4d88ae48dfbecfe84a88872707f2ef52"
     },
     {
-      "path": "CHANGELOG.md",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "CHANGELOG.md",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "a5ccdf1eca2dc0a607134e0432784a3b95a8fdeef7940cd35069f390c4484709"
     },
     {
-      "path": "LICENSES/Samsung-TinyRecursiveModels-MIT.txt",
       "classification": "ADDED",
+      "path": "LICENSES/Samsung-TinyRecursiveModels-MIT.txt",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "9ff72affa71f471f2ee3262b3aa49646788d1df76155ed61dd87b16e4e68d950"
     },
     {
-      "path": "README.md",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "README.md",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "8248a514bbd625b89c4a1d648fe779ba8cbe7fbc420cb348fc9b2641ba7dd4c3"
     },
     {
-      "path": "THIRD_PARTY_NOTICES.md",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "THIRD_PARTY_NOTICES.md",
       "reason": "Adds the declared NumPy runtime dependency.",
       "sha256": "7415ce168c11b34d26540ed425931fcfeb32196a5fbe493cab476b3b290702bf"
     },
     {
-      "path": "VERSION",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "fe2b7c237b5a6e42818aa3e4f7fc5820f49c32289c32c96260ef89a8c8f6d3d7"
+      "path": "VERSION",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "5844ffcc346f89c07b13ba7596bfb3788ed73f4755e541182d7822d43b7c7a24"
     },
     {
-      "path": "components/DarwinianMatrix/README.md",
       "classification": "ADDED",
+      "path": "components/DarwinianMatrix/README.md",
       "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
       "sha256": "503f11dcc5f12d9c54ed347068d9dba6d02f3108dd3cf9f0a40383ad80f8b656"
     },
     {
-      "path": "components/Pipeline/P0ControlProtocol/README.md",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "components/Pipeline/P0ControlProtocol/README.md",
       "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
       "sha256": "b0438601e976f22dc662ae9144513967e1cceef6f3a19d69f979eb9f553c9671"
     },
     {
-      "path": "components/TRMFractalSpine/README.md",
       "classification": "ADDED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/artifact_lineage.py",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "db83e5fc2fa0aabd0b692f41c6bc39be3ac6c910fe3cc85a31a92b1f9b4d2b4d"
+    },
+    {
+      "classification": "POST_RELEASE_MODIFIED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/contracts.py",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "0f058c92483efb31eed25f3863dcc7a4d1632c5103310269d3f996f7e0bb65c2"
+    },
+    {
+      "classification": "POST_RELEASE_MODIFIED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/controller.py",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "88060984fee391dab08db6ae3267d923d12d7bc038d9e528ac211506188a45a1"
+    },
+    {
+      "classification": "ADDED",
+      "path": "components/TRMFractalSpine/README.md",
       "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
       "sha256": "2c2b68477cfdc2e87e26837f5a3d67cc8956c451fa346ed9031c36aa0c4926d2"
     },
     {
-      "path": "docs/PLATFORM_PORTABILITY.md",
       "classification": "ADDED",
+      "path": "docs/PLATFORM_PORTABILITY.md",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "27f47a2528bed3df846718d943f08311c2a66546ea6146b759009f06ad1b76a0"
     },
     {
-      "path": "docs/PUBLICATION_RECONCILIATION.md",
       "classification": "ADDED",
+      "path": "docs/PUBLICATION_RECONCILIATION.md",
       "reason": "Documents additive-first publication reconciliation policy.",
       "sha256": "0e5c0253ac3ca634723e0b488cd2665f1a209d1e97d7e18ca59da261f6053624"
     },
     {
-      "path": "docs/REFERENCE_RUNTIME_PROVENANCE.md",
       "classification": "ADDED",
+      "path": "docs/REFERENCE_RUNTIME_PROVENANCE.md",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "961f7cc29304b47aa34ca8edf64977766059ac0b6f8bfa762c8388cd5a279a9c"
     },
     {
-      "path": "docs/REFINEMENT_SEAM_PROVENANCE.md",
       "classification": "ADDED",
+      "path": "docs/REFINEMENT_SEAM_PROVENANCE.md",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "22e6f092f3766ca4685e26d3f02d64db1d1b715052772cba11fab0d4979eaf1d"
     },
     {
-      "path": "docs/TRM_REFERENCE_REPRODUCTION.md",
       "classification": "ADDED",
+      "path": "docs/TRM_REFERENCE_REPRODUCTION.md",
       "reason": "Documents clean upstream TRM Sudoku reference reproduction policy.",
       "sha256": "dd1fe93ca064c891b5c425702deea47281d7f4aa869221e6dd6fb00516667ce3"
     },
     {
-      "path": "examples/sudoku_one_blank.txt",
       "classification": "ADDED",
+      "path": "examples/sudoku_one_blank.txt",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "278db3b14502fe30ab56d88dd4da863d12aa4dac9acb928fb9d44beab5d50fda"
     },
     {
-      "path": "health/CURRENT_REPOSITORY_STATUS.json",
       "classification": "ADDED",
+      "path": "health/CURRENT_REPOSITORY_STATUS.json",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "ac6800f3cfb474b63554d9e3f5ac8a6fe64849ef570b9e0eb032146951b4b8d5"
     },
     {
-      "path": "health/PUBLICATION_AUTHORITY.json",
       "classification": "ADDED",
+      "path": "health/PUBLICATION_AUTHORITY.json",
       "reason": "Publication authority boundary.",
       "sha256": "390b8847eddf39dbf06a76c0da62447e7068d173c1d9686b8a0ef407bc3133dc"
     },
     {
-      "path": "health/TRM_LINEAGE_STATUS.json",
       "classification": "ADDED",
+      "path": "health/TRM_LINEAGE_STATUS.json",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "e191c01a566378f7ccc0fecb9dd476bab702c1c3ce756ea657785bfe930e3ff2"
     },
     {
-      "path": "health/UPSTREAM_PINS.json",
       "classification": "ADDED",
+      "path": "health/UPSTREAM_PINS.json",
       "reason": "Pinned external source identities.",
       "sha256": "9879cfdea6a9cb33591ee8f8d0fd896db4df1d30c5217c0058f6f765a6ef17d2"
     },
     {
-      "path": "native/README.md",
       "classification": "ADDED",
+      "path": "native/README.md",
       "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
       "sha256": "0c74891293a08469397401f73cd201d9a917e4e0ddaee1dcc016eec4d1632fb2"
     },
     {
-      "path": "native/hacf_bridge/CMakeLists.txt",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "native/hacf_bridge/CMakeLists.txt",
       "reason": "HACF bridge linking is portable across GNU/Linux and macOS and no longer declares an unused Python development dependency.",
       "sha256": "5d64e130843b5d4895c8fb41e047e28ac024287b7ce94da9890a0959987646b7"
     },
     {
-      "path": "pyproject.toml",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "6c7b6342fef849a73c8d2dc8a884468c287c3e82b5e5d3c5b95f9f1bc691a875"
+      "path": "pyproject.toml",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "22d3db4baa4edfcc0f12fc9da2cd39253a9f9b9070b3e7029eefd675b1ed2cda"
     },
     {
-      "path": "runtime/R0/README.md",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "runtime/R0/README.md",
       "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
       "sha256": "1e4bd47617607c4207d443945540562b36b3e7295554f4fb51085b57ae9569cb"
     },
     {
-      "path": "runtime/R0/src/elpis_runtime_r0/adapters.py",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "runtime/R0/src/elpis_runtime_r0/adapters.py",
       "reason": "Public v1.2.5 C2R4 red-team hardening: modify the historical R0 validator adapter to expose typed production validator evidence while preserving its transaction-facing ABI.",
       "sha256": "8498403222b0cb8124b2ce7c89e8c3c41df074703cd82dc85d18ceeb856abd98"
     },
     {
-      "path": "runtime/R1/README.md",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "runtime/R1/README.md",
       "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
       "sha256": "41fca60a22f97a04ddf554c27d208ef64c73233d0f00eeecd790053f6f60a0c6"
     },
     {
-      "path": "runtime/README.md",
       "classification": "ADDED",
+      "path": "runtime/README.md",
       "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
       "sha256": "2edf691f20e22ec127ed778bb9d9089f17adadc5b6d14a5060589fd91600a9ee"
     },
     {
-      "path": "src/elpis_reference/__init__.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/__init__.py",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "b90eaa3304dae7563b0d4e2118ffd1c740885a4cc94349d8d4ede5e8a8267e57"
     },
     {
-      "path": "src/elpis_reference/cli.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/cli.py",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "060b46b1bade39cef9764f6a598cbbd94d3984c0b6f4f1c5c8675361350c55e1"
     },
     {
-      "path": "src/elpis_reference/feedback_refinement.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/feedback_refinement.py",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "9b21a0a39867d2557d422bfa326fdc50679d9574d7641b9df4b1063d9e38aa9d"
     },
     {
-      "path": "src/elpis_reference/model.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/model.py",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "8271c28621094e488f345a3c0c719fbfd3d3836bb0bba42e516d916eeb503080"
     },
     {
-      "path": "src/elpis_reference/p0_validator_ingress.py",
       "classification": "ADDED",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "29ae5f4c6a10a4b1aade61180a305b38522490acdb4744f886172a8e696c25be"
+      "path": "src/elpis_reference/p0_validator_ingress.py",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "d72c2770f26763296eae2dcd51ace2b8a9257861bbcab983e7ecc0acad1bda7d"
     },
     {
-      "path": "src/elpis_reference/platform_setup.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/platform_setup.py",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "a15ce9f74d42fb75dac51d0fa5cc9c4d453ce907717485e682a6d4a85cfd3a51"
     },
     {
-      "path": "src/elpis_reference/projector_release.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/projector_release.py",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "1ac43b037e87d1585ba1efa856ae46437506e8dc7350bad7f8bf4b55507b600f"
     },
     {
-      "path": "src/elpis_reference/refinement.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/refinement.py",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "1cc582a008d3278c4f10fe16fe1cc13330460044bfa7ab622e4c6ef5489b1370"
     },
     {
-      "path": "src/elpis_reference/semantic_refinement.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/semantic_refinement.py",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "239c6cc1ac6e2f3c673b9dd8c5baf46ef482bd8865b117f09f5d7ef2a1092b1e"
     },
     {
-      "path": "src/elpis_reference/sudoku.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/sudoku.py",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "d5c3108055061254fbeab636711937bff772404488b2866a7b3f3608014c966c"
     },
     {
-      "path": "src/elpis_reference/vendor/__init__.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/vendor/__init__.py",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "1072c442c5f6064e236ecd70e74115bd8920a58dbc8cca9fedfecd43a7a2e2df"
     },
     {
-      "path": "src/elpis_reference/vendor/common.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/vendor/common.py",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "b1f0e597d25e4f24027f0bfcd67101dfb4a701e599b8d3377bfc914721afe6ea"
     },
     {
-      "path": "src/elpis_reference/vendor/layers.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/vendor/layers.py",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "25c7d281cce7358d8deed3dd95bbe7bce9ca39d2326c644ce813c7bd9879a8a4"
     },
     {
-      "path": "src/elpis_reference/vendor/sparse_embedding.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/vendor/sparse_embedding.py",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "1ecdf8b2f37976a1613fb1b9890887cb36fa18c4947593585bdba14fc8206c8c"
     },
     {
-      "path": "src/elpis_reference/vendor/trm.py",
       "classification": "ADDED",
+      "path": "src/elpis_reference/vendor/trm.py",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "ef7722409dffbdd946d40319fc2d3627b0122beb58a0a0e8a074d71183e11a0b"
     },
     {
-      "path": "tests/run_c2r3_feedback_e2e.py",
       "classification": "ADDED",
+      "path": "tests/run_c2r3_feedback_e2e.py",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "77756c261ddf0f05bffe28afd885a3244b4128e91b76da197220e45031560ee6"
     },
     {
-      "path": "tests/run_c2r4_p0_validator_ingress_e2e.py",
       "classification": "ADDED",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "b3d7d28b8336c55dc274c476788fb3be26584e16e9b1eca8ee60b21c00dd1cbf"
+      "path": "tests/run_c2r4_p0_validator_ingress_e2e.py",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "1621abde663d97b7a6821d645f70b92f94e4a3e02da87f1b793b8f0ba83432f0"
     },
     {
-      "path": "tests/run_model_integrity_redteam.py",
       "classification": "ADDED",
+      "path": "tests/run_c2r5_artifact_proposal_lineage_e2e.py",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "eccd3378b75572e83f3fb16574eb42444461034a1755e3d8d47cb450aa095c7c"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tests/run_model_integrity_redteam.py",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "4023d026d03c3124154807664254ea8857a18a53cdc98a1bdc4fb013e29359a2"
     },
     {
-      "path": "tests/test_feedback_refinement.py",
       "classification": "ADDED",
+      "path": "tests/test_feedback_refinement.py",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "2cedc9b18c15d7ed4a3860895fab819acf51fc27cae0974f18dbd5acbc46005e"
     },
     {
-      "path": "tests/test_p0_validator_ingress.py",
       "classification": "ADDED",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "13eb0c571567a330ddc510290420e44cab1d52f2187193b8ae990971d099d7d5"
+      "path": "tests/test_p0_artifact_lineage.py",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
+      "sha256": "db0db7bae75aee6c5c7de93a28e3b8bf35ace8c69b8c2c4dd18492806d9af9e4"
     },
     {
-      "path": "tests/test_platform_setup.py",
       "classification": "ADDED",
+      "path": "tests/test_p0_validator_ingress.py",
+      "reason": "C2R5 artifact-to-structural-proposal lineage binding and exact validator-evidence qualification; refreshed after deterministic EOF normalization",
+      "sha256": "9c765775ab64c32c2bc82c7d33f6b3ad046f8ba6e47cb26c0e9a8e371c880399"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tests/test_platform_setup.py",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "8ed01c44a0a49afeff0e6d894eeccb9937edc87bb08ed7605e7d243f31459ae7"
     },
     {
-      "path": "tests/test_projector_release_adapter.py",
       "classification": "ADDED",
+      "path": "tests/test_projector_release_adapter.py",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "4beda4fd4ec8c05f48f99afcbde5719ebf569d55e5ca0425182617caabd8bde4"
     },
     {
-      "path": "tests/test_reference_runtime.py",
       "classification": "ADDED",
+      "path": "tests/test_reference_runtime.py",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "792ec817f9f04c3e1be19878849c1d93f3a83d13e79f0c97ae269bd180180da1"
     },
     {
-      "path": "tests/test_semantic_refinement_contract.py",
       "classification": "ADDED",
+      "path": "tests/test_semantic_refinement_contract.py",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "735fdeb8a49845f3a14b2126a31690f9962c296547f81ca2301a93e0406da148"
     },
     {
-      "path": "tools/setup.py",
       "classification": "ADDED",
+      "path": "tools/setup.py",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "2563aa877dec0803c9fe9fde2991b7a328c1b9e280e928609d69479f02408bd6"
     },
     {
-      "path": "tools/verify_canonical_assembly.py",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "tools/verify_canonical_assembly.py",
       "reason": "Public assembly verification now resolves canonical component identities through PUBLIC_COMPONENT_REGISTRY public_path mappings.",
       "sha256": "31dab4b4c7f1f4441d0d24f677115c72a6cf5f75d0103cf37043e98aba207553"
     },
     {
-      "path": "tools/verify_public_release.py",
       "classification": "POST_RELEASE_MODIFIED",
+      "path": "tools/verify_public_release.py",
       "reason": "Verifier extended to preserve the immutable v1.1.2 seal while validating explicit post-release overlays.",
       "sha256": "65700ed1284dcf5b0106d5cb1654c619ab8473800db575be97b51fbb17cff16d"
     }
-  ]
+  ],
+  "policy": "Historical release digests remain authoritative except for paths explicitly declared here. New top-level roots require explicit declaration.",
+  "repository": "abraxis717/Elpis0.1",
+  "runtime_admission": false,
+  "schema": "elpis.public-post-release-overlay.v1"
 }

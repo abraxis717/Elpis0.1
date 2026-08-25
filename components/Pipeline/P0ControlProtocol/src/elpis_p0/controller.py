@@ -458,6 +458,7 @@ class P0Controller:
             context,
             projection.digest,
             selected_experts,
+            structural_proposal_digest=trm_proposal.digest,
         )
 
         self._trace(
@@ -603,6 +604,8 @@ class P0Controller:
             str,
             ...,
         ],
+        *,
+        structural_proposal_digest: str = "",
     ) -> DecoderControlPlan:
         function_name = safe_identifier(
             context.entrypoint,
@@ -653,6 +656,9 @@ class P0Controller:
             "structural_digest": (
                 structural_digest
             ),
+            "structural_proposal_digest": (
+                structural_proposal_digest
+            ),
         }
 
         return DecoderControlPlan(
@@ -677,6 +683,9 @@ class P0Controller:
             ),
             plan_digest=digest(
                 payload
+            ),
+            structural_proposal_digest=(
+                structural_proposal_digest
             ),
         )
 

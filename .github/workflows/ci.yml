@@ -182,8 +182,8 @@ jobs:
       - name: Installed C2R3 feedback tests
         run: PYTHONPATH="" python -m pytest -q -p no:cacheprovider tests/test_feedback_refinement.py
 
-  c2r4-p0-validator-ingress:
-    name: C2R4 P0 validator ingress
+  c2r5-p0-artifact-proposal-lineage:
+    name: C2R5 P0 artifact proposal lineage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -193,6 +193,6 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install . pytest==9.0.2
       - name: Production P0 validator ingress tests
-        run: PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python -m pytest -q -p no:cacheprovider tests/test_p0_validator_ingress.py
+        run: PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python -m pytest -q -p no:cacheprovider tests/test_p0_validator_ingress.py tests/test_p0_artifact_lineage.py
       - name: Red-team release and feedback regressions
         run: PYTHONPATH="" python -m pytest -q -p no:cacheprovider tests/test_projector_release_adapter.py tests/test_feedback_refinement.py

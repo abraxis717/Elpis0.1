@@ -49,6 +49,85 @@ class P0RefinementValidationLike(Protocol):
     validation_digest: str
 
 
+P0_ARTIFACT_PROPOSAL_LINEAGE_DOMAIN = "elpis.p0-artifact-proposal-lineage.c2r5.v1"
+P0_VALIDATOR_EVIDENCE_DOMAIN = "elpis.p0-validator-evidence-binding.c2r5.v1"
+
+
+class P0ArtifactProposalLineageLike(Protocol):
+    request_id: str
+    p0_result_digest: str
+    projection_digest: str
+    structural_proposal_digest: str
+    decoder_plan_digest: str
+    artifact_digest: str
+    validator_index: int
+    validator_evidence_digest: str
+    validator_id: str
+    validator_code: str
+    lineage_digest: str
+
+
+def _lineage_payload(lineage: P0ArtifactProposalLineageLike) -> dict[str, object]:
+    return {
+        "artifact_digest": lineage.artifact_digest,
+        "decoder_plan_digest": lineage.decoder_plan_digest,
+        "p0_result_digest": lineage.p0_result_digest,
+        "projection_digest": lineage.projection_digest,
+        "request_id": lineage.request_id,
+        "structural_proposal_digest": lineage.structural_proposal_digest,
+        "validator_code": lineage.validator_code,
+        "validator_evidence_digest": lineage.validator_evidence_digest,
+        "validator_id": lineage.validator_id,
+        "validator_index": lineage.validator_index,
+    }
+
+
+def _verify_lineage_binding(
+    *,
+    task_scope_id: str,
+    artifact_digest: str,
+    evidence: P0ValidatorEvidenceLike,
+    projection_trace: "P0ProjectionTraceV1",
+    lineage: P0ArtifactProposalLineageLike,
+) -> None:
+    for name in (
+        "p0_result_digest",
+        "projection_digest",
+        "structural_proposal_digest",
+        "decoder_plan_digest",
+        "artifact_digest",
+        "validator_evidence_digest",
+        "lineage_digest",
+    ):
+        require_digest(name, getattr(lineage, name))
+    if lineage.request_id != task_scope_id:
+        raise ValueError("task scope does not match P0 lineage")
+    if lineage.artifact_digest != artifact_digest:
+        raise ValueError("artifact digest does not match P0 lineage")
+    if lineage.projection_digest != projection_trace.projection_digest:
+        raise ValueError("projection trace does not match P0 lineage")
+    if lineage.validator_id != evidence.validator_id or lineage.validator_code != evidence.code:
+        raise ValueError("validator evidence identity does not match P0 lineage")
+    actual_evidence_digest = domain_digest(
+        P0_VALIDATOR_EVIDENCE_DOMAIN,
+        {
+            "code": evidence.code,
+            "details": [[str(key), value] for key, value in evidence.details],
+            "message": evidence.message,
+            "passed": bool(evidence.passed),
+            "validator_id": evidence.validator_id,
+        },
+    )
+    if actual_evidence_digest != lineage.validator_evidence_digest:
+        raise ValueError("validator evidence payload does not match P0 lineage")
+    expected = domain_digest(
+        P0_ARTIFACT_PROPOSAL_LINEAGE_DOMAIN,
+        _lineage_payload(lineage),
+    )
+    if expected != lineage.lineage_digest:
+        raise ValueError("P0 artifact/proposal lineage digest mismatch")
+
+
 @dataclass(frozen=True)
 class P0ProjectionTraceV1:
     projection_digest: str
@@ -188,9 +267,17 @@ def task_diagnostic_from_p0_validator_failure(
     artifact_digest: str,
     evidence: P0ValidatorEvidenceLike,
     projection_trace: P0ProjectionTraceV1,
+    lineage: P0ArtifactProposalLineageLike,
 ) -> TaskDiagnosticV1:
     """Convert one real P0 task-validator failure into a typed task diagnostic."""
     require_digest("artifact_digest", artifact_digest)
+    _verify_lineage_binding(
+        task_scope_id=task_scope_id,
+        artifact_digest=artifact_digest,
+        evidence=evidence,
+        projection_trace=projection_trace,
+        lineage=lineage,
+    )
 
     if evidence.passed:
         raise ValueError("validator evidence must be a rejection")
@@ -207,6 +294,11 @@ def task_diagnostic_from_p0_validator_failure(
         "elpis.p0-validator-failure-details.c2r4.v1",
         {
             "artifact_digest": artifact_digest,
+            "artifact_proposal_lineage_digest": lineage.lineage_digest,
+            "decoder_plan_digest": lineage.decoder_plan_digest,
+            "p0_result_digest": lineage.p0_result_digest,
+            "structural_proposal_digest": lineage.structural_proposal_digest,
+            "validator_evidence_digest": lineage.validator_evidence_digest,
             "code": evidence.code,
             "details": [
                 [str(key), value]

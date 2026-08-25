@@ -160,6 +160,7 @@ class DecoderControlPlan:
     body_lines: tuple[str, ...]
     structural_digest: str
     plan_digest: str
+    structural_proposal_digest: str = ""
 
 
 @dataclass(frozen=True, slots=True)

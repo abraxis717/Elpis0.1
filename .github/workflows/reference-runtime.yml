@@ -49,5 +49,5 @@ jobs:
         run: PYTHONPATH="" python tests/run_c2r3_feedback_e2e.py --model "$RUNNER_TEMP/elpis-model/model.safetensors" --device cpu
       - name: Run converted-model integrity red-team
         run: PYTHONPATH="" python tests/run_model_integrity_redteam.py --model "$RUNNER_TEMP/elpis-model/model.safetensors"
-      - name: Run C2R4 production validator ingress E2E
-        run: PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r4_p0_validator_ingress_e2e.py
+      - name: Run C2R5 artifact-proposal lineage E2E
+        run: PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r5_artifact_proposal_lineage_e2e.py
