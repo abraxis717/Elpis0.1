@@ -1,3 +1,13 @@
+## 1.2.2 — Platform-agnostic refinement foundation
+
+- Added a pure-Python platform discovery/build-plan boundary and portable setup entry point.
+- Added macOS/Linux/Windows CI for platform/bootstrap and semantic refinement contracts.
+- Promoted the qualified R7A task diagnostic, task residual, and semantic/topology reverse-trace contracts.
+- Reproduced the exact frozen R7CR3R1 diagnostic, residual, and resolution digests in public tests.
+- Kept the pinned Samsung MLP-T TRM as the current learned reference; no model-agnostic runtime claim is made.
+- Canonical DarwinianMatrix Projector mutation remains the next promotion gate.
+- Runtime admission remains false.
+
 ## 1.2.1 — NumPy ABI compatibility hardening
 
 - Constrained NumPy to `>=1.26,<2` because the supported PyTorch 2.2 Intel-macOS wheel is built against the NumPy 1.x ABI.

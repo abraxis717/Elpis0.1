@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.1 — Public Reference Runtime R1
+## Release: v1.2.2 — Platform-Agnostic Refinement Foundation
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -54,6 +54,36 @@ Sudoku givens
 The guard **rejects** a proposal that changes a given. It never repairs or rewrites the model output and then attributes the repaired result to the model.
 
 Validation controls only accept/continue in this reference path. It does not select a Grid81 cell/value or inject task semantics into the learned model. The qualified task-residual → semantic/topology → Projector re-projection mechanism is being consolidated separately into the production refinement seam.
+
+## Platform portability
+
+The Elpis runtime architecture is platform-neutral. Operating-system,
+accelerator, and native-build detection are isolated in
+`elpis_reference.platform_setup` and `tools/setup.py`.
+
+The current learned reference remains the pinned Samsung MLP-T TRM. This
+release does **not** introduce a model-backend abstraction and does not claim
+model agnosticism.
+
+```bash
+python tools/setup.py --profile reference --dry-run
+python tools/setup.py --profile reference
+```
+
+Use `--profile full` to request the native HACF build where it is qualified.
+macOS and Linux native paths are supported by the existing CMake boundary;
+Windows keeps the portable Python/reference surface while native HACF remains
+explicitly unqualified.
+
+## Task-residual refinement foundation
+
+The qualified R7A task diagnostic/residual and semantic/topology reverse-trace
+contracts are now present in the public package. Their domain-separated digests
+reproduce the frozen R7CR3R1 mechanism-control evidence.
+
+This release deliberately stops before applying the resolved residual to the
+canonical DarwinianMatrix Projector. The next promotion gate is the existing
+Projector RELEASE adapter, followed by learned re-proposal.
 
 ## Existing qualified structural stack
 

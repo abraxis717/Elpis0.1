@@ -13,6 +13,12 @@
   "runtime_admission": false,
   "paths": [
     {
+      "path": ".github/workflows/platform-matrix.yml",
+      "classification": "ADDED",
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "fab415afcd864fea9d6ac9734eed85e8843ccfd6509ba31850465f03641ede84"
+    },
+    {
       "path": ".github/workflows/reference-runtime.yml",
       "classification": "ADDED",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
@@ -21,8 +27,8 @@
     {
       "path": "CHANGELOG.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Records NumPy ABI compatibility hardening.",
-      "sha256": "998c131098edad46332e2a60f84c9b9c212eedaea0d7ced5c02193e093c89d7a"
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "90a4a02ebaa6d6baaf6eb98191d64bb58dcf32b1262075d11d8efc0cb420ecb6"
     },
     {
       "path": "LICENSES/Samsung-TinyRecursiveModels-MIT.txt",
@@ -33,8 +39,8 @@
     {
       "path": "README.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public Reference Runtime compatibility release identity.",
-      "sha256": "3a3284c0f1f02de056683ade866447c823661a04df39d95d77e446c278ddbaa3"
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "840b9946c4d918cbb328ba69c306ace5aadfebb838e8c5d07f68d27095c6c397"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -45,8 +51,14 @@
     {
       "path": "VERSION",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public Reference Runtime compatibility release version.",
-      "sha256": "6cf4e084b47f33c9b02ef79279d157833868f8f70514169a768be353ee328fea"
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "c62a5cc61ac4525935753f5ec284c0a052a4b1da4b3a3580dce2b7d77a2154ae"
+    },
+    {
+      "path": "docs/PLATFORM_PORTABILITY.md",
+      "classification": "ADDED",
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "27f47a2528bed3df846718d943f08311c2a66546ea6146b759009f06ad1b76a0"
     },
     {
       "path": "docs/PUBLICATION_RECONCILIATION.md",
@@ -59,6 +71,12 @@
       "classification": "ADDED",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "961f7cc29304b47aa34ca8edf64977766059ac0b6f8bfa762c8388cd5a279a9c"
+    },
+    {
+      "path": "docs/REFINEMENT_SEAM_PROVENANCE.md",
+      "classification": "ADDED",
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "fe5b35e73a2cb4d23f24b0955b9cb8551dce51592838805d19004221bb79c551"
     },
     {
       "path": "docs/TRM_REFERENCE_REPRODUCTION.md",
@@ -75,8 +93,8 @@
     {
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
       "classification": "ADDED",
-      "reason": "Records Public Reference Runtime v1.2.1 compatibility state.",
-      "sha256": "0f3f7741ed49d4e4af3a5d6cea163661ca41e99f630f436090cc7f82dce2018c"
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "cc61303330b1cd78c1a7728aaea5d17c13b7d7808dd8ba5b9bd119b6858a5c61"
     },
     {
       "path": "health/PUBLICATION_AUTHORITY.json",
@@ -105,14 +123,14 @@
     {
       "path": "pyproject.toml",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "v1.2.1 constrains NumPy to the supported 1.x ABI.",
-      "sha256": "f7635702ac91dbd1f8c59709ed22e806d7f874370466f01bf9c14767b2f73553"
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "58e9c7e8392d620b3009f5a419eed44803e31226f27706ff067f19200ac9d3c6"
     },
     {
       "path": "src/elpis_reference/__init__.py",
       "classification": "ADDED",
-      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
-      "sha256": "4f5b8b2c58b4677fe7201e8ae0a34a89edd4ab430b6f81e27f2230c86acddd0e"
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "b90eaa3304dae7563b0d4e2118ffd1c740885a4cc94349d8d4ede5e8a8267e57"
     },
     {
       "path": "src/elpis_reference/cli.py",
@@ -127,10 +145,22 @@
       "sha256": "6c4ff9520b518c3600a4aef06ed520567f040130ec94d8aea07e9c2b7836e2d3"
     },
     {
+      "path": "src/elpis_reference/platform_setup.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "a15ce9f74d42fb75dac51d0fa5cc9c4d453ce907717485e682a6d4a85cfd3a51"
+    },
+    {
       "path": "src/elpis_reference/refinement.py",
       "classification": "ADDED",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "1cc582a008d3278c4f10fe16fe1cc13330460044bfa7ab622e4c6ef5489b1370"
+    },
+    {
+      "path": "src/elpis_reference/semantic_refinement.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "239c6cc1ac6e2f3c673b9dd8c5baf46ef482bd8865b117f09f5d7ef2a1092b1e"
     },
     {
       "path": "src/elpis_reference/sudoku.py",
@@ -169,10 +199,28 @@
       "sha256": "ef7722409dffbdd946d40319fc2d3627b0122beb58a0a0e8a074d71183e11a0b"
     },
     {
+      "path": "tests/test_platform_setup.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "8ed01c44a0a49afeff0e6d894eeccb9937edc87bb08ed7605e7d243f31459ae7"
+    },
+    {
       "path": "tests/test_reference_runtime.py",
       "classification": "ADDED",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "792ec817f9f04c3e1be19878849c1d93f3a83d13e79f0c97ae269bd180180da1"
+    },
+    {
+      "path": "tests/test_semantic_refinement_contract.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "735fdeb8a49845f3a14b2126a31690f9962c296547f81ca2301a93e0406da148"
+    },
+    {
+      "path": "tools/setup.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
+      "sha256": "2563aa877dec0803c9fe9fde2991b7a328c1b9e280e928609d69479f02408bd6"
     },
     {
       "path": "tools/verify_canonical_assembly.py",
