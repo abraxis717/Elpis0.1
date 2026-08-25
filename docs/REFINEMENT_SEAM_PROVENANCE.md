@@ -40,7 +40,9 @@ retain that per-cell evidence digest.
 C2R3 composes this already-promoted RELEASE boundary with the existing pinned
 Samsung reference runtime. `execute_samsung_feedback_step` accepts a
 structurally valid prior proposal, a typed task diagnostic, a pre-existing
-reverse-trace index, and canonical ClampState. It executes at most one
+reverse-trace index, and canonical ClampState. The diagnostic subject digest
+must bind to the exact prior proposal digest before reverse tracing or any
+Projector mutation. It executes at most one
 task-derived RELEASE transaction and at most one learned re-proposal call.
 
 The learned call receives only the revised Sudoku support tuple derived from

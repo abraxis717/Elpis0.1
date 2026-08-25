@@ -59,10 +59,11 @@ def sudoku_input_from_clamp_state(
     )
 
 
-def _proposal_digest(values: tuple[int, ...]) -> str:
+def samsung_proposal_digest(values: Sequence[int]) -> str:
+    proposal = _grid_tuple(values)
     return domain_digest(
         "elpis.samsung-feedback-proposal.c2r3.v1",
-        {"values": list(values)},
+        {"values": list(proposal)},
     )
 
 
@@ -112,6 +113,13 @@ def execute_samsung_feedback_step(
         raise ValueError("task diagnostic frame does not match refinement step")
 
     prior = _grid_tuple(prior_proposal)
+    prior_digest = samsung_proposal_digest(prior)
+
+    if diagnostic.subject_digest != prior_digest:
+        raise ValueError(
+            "task diagnostic subject does not match prior proposal"
+        )
+
     before_input = sudoku_input_from_clamp_state(clamp_state)
     prior_verdict = validate(before_input, prior)
 
@@ -134,7 +142,7 @@ def execute_samsung_feedback_step(
     common = {
         "run_id": run_id,
         "refinement_step_index": refinement_step_index,
-        "prior_proposal_digest": _proposal_digest(prior),
+        "prior_proposal_digest": samsung_proposal_digest(prior),
         "diagnostic_digest": diagnostic.digest(),
         "residual_digest": residual.digest(),
         "resolution_digest": resolved.resolution_digest,
@@ -242,7 +250,7 @@ def execute_samsung_feedback_step(
                     )
 
     learned_solution_digest = (
-        _proposal_digest(learned_solution)
+        samsung_proposal_digest(learned_solution)
         if learned_solution is not None
         else None
     )

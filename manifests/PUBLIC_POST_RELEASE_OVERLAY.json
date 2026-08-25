@@ -33,8 +33,8 @@
     {
       "path": "CHANGELOG.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
-      "sha256": "85e6f03ded0a49246453fa2733d58af0839e956d5937ed641b5316834a3f8bb8"
+      "reason": "Public v1.2.4 C2R3 R1: bind task diagnostic subject identity to the exact prior learned proposal before residual resolution or Projector mutation.",
+      "sha256": "c312c02b5427d6dfea15f596c8d81c3d15c8838beddbcee7697c9f2bf5d8f2b7"
     },
     {
       "path": "LICENSES/Samsung-TinyRecursiveModels-MIT.txt",
@@ -45,8 +45,8 @@
     {
       "path": "README.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
-      "sha256": "c2ccfd7f296427ee39f887a9d92da3f6ade4796cff6b712578c61667019adc06"
+      "reason": "Public v1.2.4 C2R3 R1: bind task diagnostic subject identity to the exact prior learned proposal before residual resolution or Projector mutation.",
+      "sha256": "0e164f073f743dffb5a645c58841e1dbc13fa28fd4a92a25cedab4a42ab1b94f"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -99,8 +99,8 @@
     {
       "path": "docs/REFINEMENT_SEAM_PROVENANCE.md",
       "classification": "ADDED",
-      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
-      "sha256": "0bb3912fd1546f366d4dc1559c87309d6821cc0130064cdb65ab3a2147c56871"
+      "reason": "Public v1.2.4 C2R3 R1: bind task diagnostic subject identity to the exact prior learned proposal before residual resolution or Projector mutation.",
+      "sha256": "f5f60f1ee2c5f73178a93206aa7fa9bd8af574ae29f2c795071465f22c958ce1"
     },
     {
       "path": "docs/TRM_REFERENCE_REPRODUCTION.md",
@@ -117,8 +117,8 @@
     {
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
       "classification": "ADDED",
-      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
-      "sha256": "1df3332493de944cee7e5f5c7141b4caf59e639edfbff888c896f2505f2ca948"
+      "reason": "Public v1.2.4 C2R3 R1: bind task diagnostic subject identity to the exact prior learned proposal before residual resolution or Projector mutation.",
+      "sha256": "59fb9fe780628b78bbf9c602ddb01f0db542e2e5628203ba177b6f33a78d670a"
     },
     {
       "path": "health/PUBLICATION_AUTHORITY.json",
@@ -189,8 +189,8 @@
     {
       "path": "src/elpis_reference/feedback_refinement.py",
       "classification": "ADDED",
-      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
-      "sha256": "620c06ebc818c9a309d8a45b7bc1998ef5eeff0b9c5c3b47073f23cf2b319397"
+      "reason": "Public v1.2.4 C2R3 R1: bind task diagnostic subject identity to the exact prior learned proposal before residual resolution or Projector mutation; digest refreshed after fail-closed dirty-state symbol repair.",
+      "sha256": "5b98350b0c6cfaebe3a2b82450cb33f27e0be9d62e45f052686817207ed88f40"
     },
     {
       "path": "src/elpis_reference/model.py",
@@ -261,14 +261,14 @@
     {
       "path": "tests/run_c2r3_feedback_e2e.py",
       "classification": "ADDED",
-      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
-      "sha256": "d5ed9cba72057bacc8d55ef886578719a5dfc60bdc16c1e7a5006a78f51aeb56"
+      "reason": "Public v1.2.4 C2R3 R1: bind task diagnostic subject identity to the exact prior learned proposal before residual resolution or Projector mutation.",
+      "sha256": "5f95609e78b8b3ae4fd798f78111990204b408ac381f3993316fc0150fc928d7"
     },
     {
       "path": "tests/test_feedback_refinement.py",
       "classification": "ADDED",
-      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
-      "sha256": "6b5c3e48dd21ccb49df98847933a9acf6c15476e8ee750cd13e83db3ee5ae658"
+      "reason": "Public v1.2.4 C2R3 R1: preserve separate proposal/diagnostic mismatch and invalid-prior structural-validation gates under exact subject binding.",
+      "sha256": "1078465a729413272da310f3c01679e9f1f19e8faa1a71439c286e2578f0dbe3"
     },
     {
       "path": "tests/test_platform_setup.py",

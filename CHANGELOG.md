@@ -6,6 +6,7 @@
 - Task-derived structural mutation remains RELEASE-only; ASSERT/REPLACE remain outside the task-error path.
 - Added local and hosted real-checkpoint CPU E2E coverage for RELEASE → revised support → learned re-proposal → validation.
 - Preserved surviving clamps and deterministic `run_id + refinement_step_index` traversal identity.
+- Bound every task diagnostic `subject_digest` to the exact prior learned proposal digest before residual resolution or structural mutation.
 - This remains a mechanism-composition control: generalized task improvement, production validator ingress, production P5/P6/P7 binding, and runtime admission remain unproven/false.
 
 ## 1.2.3 — Canonical Projector release adapter

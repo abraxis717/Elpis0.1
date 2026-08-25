@@ -15,6 +15,7 @@ from DarwinianMatrix.projector.constraints import (
 from elpis_reference.feedback_refinement import (
     FEEDBACK_REPROPOSED,
     execute_samsung_feedback_step,
+    samsung_proposal_digest,
 )
 from elpis_reference.refinement import solve_sudoku
 from elpis_reference.semantic_refinement import (
@@ -96,7 +97,7 @@ def main() -> int:
         diagnostic_class=TASK_REJECTION,
         task_scope_id=state_0.episode_id,
         frame_index=0,
-        subject_digest=h("c2r3-prior-learned-proposal"),
+        subject_digest=samsung_proposal_digest(prior),
         producer_id="c2r3.generic-task-validator.v1",
         locus_namespace=SEMANTIC_OBJECT,
         locus_identity=semantic_digest,
@@ -164,6 +165,11 @@ def main() -> int:
             "producer_id": diagnostic.producer_id,
             "reason_codes": list(diagnostic.reason_codes),
             "diagnostic_digest": diagnostic.digest(),
+            "subject_digest": diagnostic.subject_digest,
+            "prior_proposal_digest": samsung_proposal_digest(prior),
+            "subject_matches_prior_proposal": (
+                diagnostic.subject_digest == samsung_proposal_digest(prior)
+            ),
             "contains_grid81_cell": False,
             "contains_grid81_value": False,
             "contains_sudoku_error": False,

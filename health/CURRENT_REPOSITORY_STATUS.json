@@ -18,6 +18,7 @@
     "The current learned reference remains the pinned Samsung MLP-T TRM; model agnosticism is not claimed.",
     "C2R2 derives RELEASE owners from current ClampState and preserves canonical stale-state and owner enforcement; no task-derived ASSERT/REPLACE path is admitted.",
     "Release proposal evidence binds to the originating task diagnostic and is not claimed as proof of the historical evidence that created the clamp.",
-    "C2R3 remains mechanism-control only: generalized task improvement, production validator ingress, production P5/P6/P7 binding, and runtime admission are not established."
+    "C2R3 remains mechanism-control only: generalized task improvement, production validator ingress, production P5/P6/P7 binding, and runtime admission are not established.",
+    "C2R3 task diagnostics must bind subject_digest to the exact prior proposal digest before reverse trace or Projector mutation."
   ]
 }

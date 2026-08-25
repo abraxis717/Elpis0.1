@@ -75,7 +75,7 @@ def _diagnostic(
         diagnostic_class=diagnostic_class,
         task_scope_id="c2r3-episode",
         frame_index=frame_index,
-        subject_digest=_h("prior-proposal"),
+        subject_digest=feedback.samsung_proposal_digest(SOLVED),
         producer_id="c2r3.generic-task-validator.v1",
         locus_namespace=SEMANTIC_OBJECT,
         locus_identity=locus or _h("semantic-cell-0"),
@@ -278,6 +278,50 @@ def test_unknown_semantic_locus_fails_before_model_call(monkeypatch):
         )
 
 
+def test_diagnostic_subject_must_bind_exact_prior_proposal(monkeypatch):
+    def forbidden(*args, **kwargs):
+        raise AssertionError(
+            "learned model must not run for proposal/diagnostic mismatch"
+        )
+
+    monkeypatch.setattr(
+        feedback,
+        "solve_sudoku",
+        forbidden,
+    )
+
+    original = _diagnostic()
+    mismatched = TaskDiagnosticV1(
+        diagnostic_class=original.diagnostic_class,
+        task_scope_id=original.task_scope_id,
+        frame_index=original.frame_index,
+        subject_digest=_h("different-prior-proposal"),
+        producer_id=original.producer_id,
+        locus_namespace=original.locus_namespace,
+        locus_identity=original.locus_identity,
+        reason_codes=original.reason_codes,
+        details_digest=original.details_digest,
+    )
+
+    state = _state()
+    state_before = state.digest()
+
+    with pytest.raises(
+        ValueError,
+        match="task diagnostic subject does not match prior proposal",
+    ):
+        feedback.execute_samsung_feedback_step(
+            run_id="run-a",
+            refinement_step_index=0,
+            prior_proposal=SOLVED,
+            diagnostic=mismatched,
+            reverse_trace=_index(),
+            clamp_state=state,
+        )
+
+    assert state.digest() == state_before
+
+
 def test_prior_proposal_must_be_structurally_valid(monkeypatch):
     invalid = list(SOLVED)
     invalid[1] = 9
@@ -299,7 +343,19 @@ def test_prior_proposal_must_be_structurally_valid(monkeypatch):
             run_id="run-a",
             refinement_step_index=0,
             prior_proposal=tuple(invalid),
-            diagnostic=_diagnostic(),
+            diagnostic=TaskDiagnosticV1(
+                diagnostic_class=TASK_REJECTION,
+                task_scope_id="c2r3-episode",
+                frame_index=0,
+                subject_digest=feedback.samsung_proposal_digest(
+                    tuple(invalid)
+                ),
+                producer_id="c2r3.generic-task-validator.v1",
+                locus_namespace=SEMANTIC_OBJECT,
+                locus_identity=_h("semantic-cell-0"),
+                reason_codes=("TASK_REQUIREMENT_UNSATISFIED",),
+                details_digest=_h("generic-task-evidence"),
+            ),
             reverse_trace=_index(),
             clamp_state=_state(),
         )

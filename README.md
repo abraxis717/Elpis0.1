@@ -88,8 +88,10 @@ task failure cannot ASSERT or REPLACE structural claims.
 
 C2R3 adds one bounded, deterministic composition step in
 `elpis_reference.feedback_refinement`. A structurally valid prior proposal and
-typed task rejection are bound to `run_id + refinement_step_index`; reverse
-trace resolves pre-existing support, the canonical Projector applies RELEASE,
+typed task rejection are bound to `run_id + refinement_step_index`, and the
+diagnostic `subject_digest` must equal the exact prior proposal digest before
+any residual resolution or Projector mutation; reverse trace then resolves
+pre-existing support and the canonical Projector applies RELEASE,
 and only the revised clamp-derived Sudoku grid is passed to the pinned Samsung
 MLP-T reference for re-proposal and validation.
 
