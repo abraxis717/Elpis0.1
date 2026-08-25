@@ -6,21 +6,47 @@
   "created_from_main_commit": "45cf7feef522e7dd0fd05fd4c82747e06cbd910b",
   "policy": "Historical release digests remain authoritative except for paths explicitly declared here. New top-level roots require explicit declaration.",
   "allowed_new_roots": [
-    "health"
+    "examples",
+    "health",
+    "src"
   ],
   "runtime_admission": false,
   "paths": [
     {
-      "path": "README.md",
-      "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Repository display identity renamed from Elpis-Canonical to Elpis0.1.",
-      "sha256": "46117474be31ffb5b3b17e951429c804e75dfe83952820cb51c39422f2b18791"
+      "path": ".github/workflows/reference-runtime.yml",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "e89169a7a23510971dc3e6310ffc5e04bbba825785cae7edf0709ce75c3feedd"
     },
     {
-      "path": "tools/verify_public_release.py",
+      "path": "CHANGELOG.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Verifier extended to preserve the immutable v1.1.2 seal while validating explicit post-release overlays.",
-      "sha256": "65700ed1284dcf5b0106d5cb1654c619ab8473800db575be97b51fbb17cff16d"
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "4be26fc860bdb2425e193967c3511e1a48779abd407aad403e7b8e5b62a2bf2f"
+    },
+    {
+      "path": "LICENSES/Samsung-TinyRecursiveModels-MIT.txt",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "9ff72affa71f471f2ee3262b3aa49646788d1df76155ed61dd87b16e4e68d950"
+    },
+    {
+      "path": "README.md",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "32dff813f6132aa74e4ddb1148422eee9a477c8714410c0182fc41abad68b2ec"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "42759593bab45765e461a5dfa81eb126a0b59bdfa0207097a53a157818e10d0d"
+    },
+    {
+      "path": "VERSION",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "1e5b51cde515396a9fa762909cf8ca6584ccc564b325d2eebeea76175fe95c4d"
     },
     {
       "path": "docs/PUBLICATION_RECONCILIATION.md",
@@ -29,16 +55,28 @@
       "sha256": "0e5c0253ac3ca634723e0b488cd2665f1a209d1e97d7e18ca59da261f6053624"
     },
     {
+      "path": "docs/REFERENCE_RUNTIME_PROVENANCE.md",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "961f7cc29304b47aa34ca8edf64977766059ac0b6f8bfa762c8388cd5a279a9c"
+    },
+    {
       "path": "docs/TRM_REFERENCE_REPRODUCTION.md",
       "classification": "ADDED",
       "reason": "Documents clean upstream TRM Sudoku reference reproduction policy.",
       "sha256": "dd1fe93ca064c891b5c425702deea47281d7f4aa869221e6dd6fb00516667ce3"
     },
     {
+      "path": "examples/sudoku_one_blank.txt",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "278db3b14502fe30ab56d88dd4da863d12aa4dac9acb928fb9d44beab5d50fda"
+    },
+    {
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
       "classification": "ADDED",
-      "reason": "Current repository status overlay.",
-      "sha256": "1e0570b6c565bf33b0e222192edeb2d1e62ce9e72039099e7317a91f17e03c99"
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "478e9a5cc62355abf4c533e8ef8602165603bea6c2a8c133bb4342df0900dda7"
     },
     {
       "path": "health/PUBLICATION_AUTHORITY.json",
@@ -49,8 +87,8 @@
     {
       "path": "health/TRM_LINEAGE_STATUS.json",
       "classification": "ADDED",
-      "reason": "TRM lineage status and ACTV1 retirement record.",
-      "sha256": "7a0ec97bca7252b183e1ef4411231767f6502e9f5cedd03a102735becac1dd6a"
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "e191c01a566378f7ccc0fecb9dd476bab702c1c3ce756ea657785bfe930e3ff2"
     },
     {
       "path": "health/UPSTREAM_PINS.json",
@@ -59,16 +97,94 @@
       "sha256": "9879cfdea6a9cb33591ee8f8d0fd896db4df1d30c5217c0058f6f765a6ef17d2"
     },
     {
+      "path": "native/hacf_bridge/CMakeLists.txt",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "HACF bridge linking is portable across GNU/Linux and macOS and no longer declares an unused Python development dependency.",
+      "sha256": "5d64e130843b5d4895c8fb41e047e28ac024287b7ce94da9890a0959987646b7"
+    },
+    {
+      "path": "pyproject.toml",
+      "classification": "POST_RELEASE_MODIFIED",
+      "reason": "Public Reference Runtime R1 consolidation: runtime dependencies include NumPy required by safetensors conversion on supported clean Python installations.",
+      "sha256": "79d8e5078bb2c4e24ac40f5cbc5facfd41bef6355b4ac5361edf5269be6c8f7d"
+    },
+    {
+      "path": "src/elpis_reference/__init__.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "4f5b8b2c58b4677fe7201e8ae0a34a89edd4ab430b6f81e27f2230c86acddd0e"
+    },
+    {
+      "path": "src/elpis_reference/cli.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "060b46b1bade39cef9764f6a598cbbd94d3984c0b6f4f1c5c8675361350c55e1"
+    },
+    {
+      "path": "src/elpis_reference/model.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "6c4ff9520b518c3600a4aef06ed520567f040130ec94d8aea07e9c2b7836e2d3"
+    },
+    {
+      "path": "src/elpis_reference/refinement.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "1cc582a008d3278c4f10fe16fe1cc13330460044bfa7ab622e4c6ef5489b1370"
+    },
+    {
+      "path": "src/elpis_reference/sudoku.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "d5c3108055061254fbeab636711937bff772404488b2866a7b3f3608014c966c"
+    },
+    {
+      "path": "src/elpis_reference/vendor/__init__.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "1072c442c5f6064e236ecd70e74115bd8920a58dbc8cca9fedfecd43a7a2e2df"
+    },
+    {
+      "path": "src/elpis_reference/vendor/common.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "b1f0e597d25e4f24027f0bfcd67101dfb4a701e599b8d3377bfc914721afe6ea"
+    },
+    {
+      "path": "src/elpis_reference/vendor/layers.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "25c7d281cce7358d8deed3dd95bbe7bce9ca39d2326c644ce813c7bd9879a8a4"
+    },
+    {
+      "path": "src/elpis_reference/vendor/sparse_embedding.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "1ecdf8b2f37976a1613fb1b9890887cb36fa18c4947593585bdba14fc8206c8c"
+    },
+    {
+      "path": "src/elpis_reference/vendor/trm.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "ef7722409dffbdd946d40319fc2d3627b0122beb58a0a0e8a074d71183e11a0b"
+    },
+    {
+      "path": "tests/test_reference_runtime.py",
+      "classification": "ADDED",
+      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
+      "sha256": "792ec817f9f04c3e1be19878849c1d93f3a83d13e79f0c97ae269bd180180da1"
+    },
+    {
       "path": "tools/verify_canonical_assembly.py",
       "classification": "POST_RELEASE_MODIFIED",
       "reason": "Public assembly verification now resolves canonical component identities through PUBLIC_COMPONENT_REGISTRY public_path mappings.",
       "sha256": "31dab4b4c7f1f4441d0d24f677115c72a6cf5f75d0103cf37043e98aba207553"
     },
     {
-      "path": "native/hacf_bridge/CMakeLists.txt",
+      "path": "tools/verify_public_release.py",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "HACF bridge linking is portable across GNU/Linux and macOS and no longer declares an unused Python development dependency.",
-      "sha256": "5d64e130843b5d4895c8fb41e047e28ac024287b7ce94da9890a0959987646b7"
+      "reason": "Verifier extended to preserve the immutable v1.1.2 seal while validating explicit post-release overlays.",
+      "sha256": "65700ed1284dcf5b0106d5cb1654c619ab8473800db575be97b51fbb17cff16d"
     }
   ]
 }

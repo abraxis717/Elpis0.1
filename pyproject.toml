@@ -1,15 +1,29 @@
 [project]
 name = "elpis-canonical"
-version = "1.1.1"
-description = "Deterministic structural AI core with Grid81 semantics, HACF retrieval, and qualified offline runtime transactions"
+version = "1.2.0"
+description = "Deterministic Elpis structural core with a runnable TRM Sudoku reference runtime"
 requires-python = ">=3.11"
 license = {text = "MIT"}
-dependencies = ["pytest>=7.0"]
+dependencies = [
+  "numpy>=1.26",
+  "einops>=0.7",
+  "huggingface-hub>=0.25",
+  "pydantic>=2.0",
+  "safetensors>=0.4",
+  "torch>=2.2",
+]
+
+[project.scripts]
+elpis = "elpis_reference.cli:main"
 
 [build-system]
 requires = ["setuptools>=68"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["elpis_reference*"]
 
 [tool.pytest.ini_options]
-testpaths = []
-addopts = "-v"
+testpaths = ["tests"]
+addopts = "-q"

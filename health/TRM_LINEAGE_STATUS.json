@@ -1,6 +1,18 @@
 {
   "schema": "elpis.trm-lineage-status.v1",
   "active_runtime_model": null,
+  "public_reference_model": {
+    "id": "samsung_trm_mlpt_sudoku_reference",
+    "architecture": "TinyRecursiveReasoningModel_ACTV1",
+    "status": "RUNNABLE_REFERENCE_NON_AUTHORITY",
+    "upstream_commit": "c01103738605ba39d1430519b1ee0c62f4c707f8d",
+    "checkpoint_revision": "256f32fcbe7123e8bf8c449410773a5ad311dbc5",
+    "checkpoint_sha256": "20e9dc7ebf83b9b41a8b3f58f5fd94ee3a7eb0b0d245bdeeb14e2f1488d1daaf",
+    "parameter_count": 5028866,
+    "task": "Sudoku-Extreme reference inference",
+    "authority": "CAPABILITY_CONTROL_ONLY",
+    "runtime_admission": false
+  },
   "runtime_admission": false,
   "lineages": [
     {
@@ -22,12 +34,15 @@
     {
       "id": "trm_reference_reproduction",
       "architecture": "SamsungSAILMontreal TinyRecursiveModels TRM",
-      "status": "PLANNED_CLEAN_REFERENCE_LANE",
-      "upstream_commit": "c01103738605ba39d1430519b1ee0c62f4c707f8",
+      "status": "PROMOTED_TO_RUNNABLE_PUBLIC_REFERENCE",
+      "upstream_commit": "c01103738605ba39d1430519b1ee0c62f4c707f8d",
+      "checkpoint_revision": "256f32fcbe7123e8bf8c449410773a5ad311dbc5",
+      "checkpoint_sha256": "20e9dc7ebf83b9b41a8b3f58f5fd94ee3a7eb0b0d245bdeeb14e2f1488d1daaf",
       "target_task": "Sudoku-Extreme",
-      "target_metric": "exact-grid accuracy",
-      "expected_upstream_reference": "approximately 87 percent for the documented MLP-T configuration",
-      "runtime_admission": false
+      "registered_parameter_count": 5028866,
+      "runtime_admission": false,
+      "task_authority": false,
+      "structural_authority": false
     }
   ]
 }

@@ -1,85 +1,89 @@
 # Elpis0.1
 
-Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and qualified offline runtime transactions.
+Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-Elpis is a qualified deterministic structural-core and offline runtime milestone. This release contains Runtime R0 and bounded pre-refinement Retrieval R1. It does not contain a complete online serving runtime. Runtime admission is FALSE.
+## Release: v1.2.0 — Public Reference Runtime R1
 
-## Release: v1.1.1 (Grid81 Structural Semantics R1.1.1)
+The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
-### Qualified capability path
+This does **not** mean full Elpis runtime admission. Governance, persistent authority, online serving, and generalized semantic re-projection remain disabled. `runtime_admission` remains `false`.
 
-```
-RequestContext → bounded deterministic HACF retrieval → evidence-bound projection
-→ canonical Grid81 generation 000001 → StructuralOracle → deterministic structural
-adjudication → Darwinian episode → deterministic decoder → AST validation
-→ immutable receipt
-```
-
-### Scope
-
-- **17 canonical components** — structural core with deterministic D4 pair-orbit semantics, receipt-bound lifecycle, and canonical promotion gates
-- **Grid81 Structural Semantics R1.1.1** — qualified direct test suite (122/122), 3 consumer compatibility tests, fresh-process determinism (5/5)
-- **Runtime R0** — deterministic transaction qualified (26/26), negative cases (13/13), behavioral equivalence (5/5 fresh-process determinism)
-- **Runtime R1** — bounded pre-refinement retrieval qualified (24/24), HACF native wrapper build and ABI tests, negative cases (12/12), behavioral equivalence (5/5 fresh-process determinism)
-- **HACF R3** — hybrid adaptive content filter: exact dense retrieval, context graph fusion, FMS memory accounting, deterministic retrieval bundles
-- **Darwinian Matrix** — deterministic episode lifecycle, genotype/phenotype selection, ecology transaction, ledger replay
-
-### Explicit exclusions
-
-This release does NOT include:
-- Runtime Integration R2 or post-selection retrieval
-- Learned TRM execution or expert loading
-- Model weights, checkpoint files, or GGUF assets
-- Governance activation or Constitution ratification
-- Persistent memory writes or AffineL0 activation
-- Online serving endpoint
-- Sandbox execution environment
-
-### Runtime admission
-
-Runtime admission remains **FALSE**. This is a structural core and offline runtime milestone. The system produces receipt-bound execution traces suitable for deterministic verification but does not yet support online serving.
-
-### Building
-
-See `docs/BUILD.md` for instructions on building the HACF native library, R1 wrapper, and running the full test suite.
-
-### Quick start
+## Quick start
 
 ```bash
-# Install Python test dependencies
-pip install pytest
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e .
+elpis model fetch
+elpis sudoku solve --file examples/sudoku_one_blank.txt
+```
 
-# Run Grid81 semantics tests
-PYTHONPATH=components/Grid81StructuralSemantics/src:components/Grid81TypedProjectionCompiler/src:components/Grid81StructuralGroupProjectionCompiler/src:components/Grid81DeterministicStructuralAdjudicator/src \
-  pytest components/Grid81StructuralSemantics/tests/
+The first `elpis model fetch` downloads the upstream checkpoint, verifies its exact SHA-256 before deserialization, performs a strict model-state ABI normalization, and writes a local `model.safetensors` cache. Model weights are never repository authority.
 
-# Run Runtime R0 tests
-PYTHONPATH=runtime/R0/src:components/Grid81StructuralSemantics/src \
-  pytest runtime/R0/tests/
+## Pinned TRM
 
-# Run Runtime R1 tests (requires built HACF wrapper)
-PYTHONPATH=runtime/R1/src:components/Grid81StructuralSemantics/src \
-  HACF_WRAPPER_LIB=path/to/libr1_hacf_wrapper.so \
-  pytest runtime/R1/tests/
+- Architecture source: `SamsungSAILMontreal/TinyRecursiveModels`
+- Architecture commit: `c01103738605ba39d1430519b1ee0c62f4c707f8d`
+- Model repository: `Sanjin2024/TinyRecursiveModels-Sudoku-Extreme-mlp`
+- Model revision: `256f32fcbe7123e8bf8c449410773a5ad311dbc5`
+- Upstream checkpoint: `step_16275`
+- Checkpoint SHA-256: `20e9dc7ebf83b9b41a8b3f58f5fd94ee3a7eb0b0d245bdeeb14e2f1488d1daaf`
+- Registered parameters: `5,028,866`
+- Sequence length: `81`
+- Vocabulary: `11`
+- Recursive budget: `16`
 
-# Verify the public release
+See `docs/REFERENCE_RUNTIME_PROVENANCE.md` for third-party and checkpoint provenance.
+
+## Reference proposal/validation loop
+
+The public reference runtime keeps the learned model low-authority:
+
+```text
+Sudoku givens
+  → deterministic token encoding
+  → TRM recursive carry update
+  → numeric proposal
+  → given-preservation structural guard
+  → Sudoku validator
+  → accept if valid, otherwise continue bounded recursive carry
+  → solved or bounded exhaustion
+```
+
+The guard **rejects** a proposal that changes a given. It never repairs or rewrites the model output and then attributes the repaired result to the model.
+
+Validation controls only accept/continue in this reference path. It does not select a Grid81 cell/value or inject task semantics into the learned model. The qualified task-residual → semantic/topology → Projector re-projection mechanism is being consolidated separately into the production refinement seam.
+
+## Existing qualified structural stack
+
+The canonical structural components remain available under `components/`, including Grid81 semantics, TRMFractalSpine structural contracts, deterministic adjudication, DarwinianMatrix, P0 control, HACF retrieval, and Runtime R0/R1 qualification material.
+
+The legacy qualification commands documented under `docs/BUILD.md` and `docs/TESTING.md` remain applicable to those component paths.
+
+## Explicit exclusions
+
+This release still does **not** activate:
+
+- authoritative SR01 validator admission
+- governance or Constitution ratification
+- persistent memory writes or AffineL0
+- online serving
+- SAM integration
+- arbitrary-task production semantic re-projection
+- persistent cross-reboot logical chronology
+
+## Verification
+
+```bash
+pytest -q tests/test_reference_runtime.py
 python tools/verify_public_release.py
 ```
 
-### Documentation
+On pushes to `main`, the reference-runtime workflow also fetches the pinned checkpoint, verifies/converts it, and executes the real learned Sudoku reference path on CPU.
 
-- `docs/ARCHITECTURE.md` — System architecture and component interaction
-- `docs/COMPONENTS.md` — Component catalog and dependency graph
-- `docs/AUTHORITY_BOUNDARIES.md` — Authority, scope, and jurisdiction
-- `docs/BUILD.md` — Build instructions for all components
-- `docs/TESTING.md` — Test strategy and execution
-- `docs/DETERMINISM.md` — Determinism guarantees and verification
-- `docs/RETRIEVAL.md` — HACF retrieval architecture
-- `docs/KNOWN_LIMITATIONS.md` — Current limitations and exclusions
-- `docs/QUALIFICATION.md` — Qualification evidence and methodology
+## License
 
-### License
-
-See `LICENSE` and `THIRD_PARTY_NOTICES.md`. Component-level license information is available in `manifests/FILE_LICENSE_MAP.json`.
+Elpis code is MIT unless otherwise noted. The inference-only TRM namespace adaptation is derived from MIT-licensed upstream code; see `docs/REFERENCE_RUNTIME_PROVENANCE.md` and `THIRD_PARTY_NOTICES.md`.
 
 Christ is King -Alpharius

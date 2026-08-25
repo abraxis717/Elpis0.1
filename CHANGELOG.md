@@ -1,3 +1,12 @@
+## 1.2.0 — Public Reference Runtime R1
+
+- Added a runnable, non-authoritative Samsung MLP-T Sudoku reference runtime.
+- Pinned architecture, checkpoint revision, and raw checkpoint SHA-256.
+- Added strict checkpoint normalization and safetensors conversion.
+- Added fail-closed proposal validation: model outputs are never post-hoc repaired and re-attributed to the model.
+- Added CPU/CUDA/MPS runtime selection, CLI, tests, clean-clone packaging, health-state reconciliation, and main-branch learned-reference CI.
+- Runtime admission remains false; generalized semantic Projector re-projection remains a separate consolidation seam.
+
 # Changelog
 
 ## v1.1.1 (2026-08-04)

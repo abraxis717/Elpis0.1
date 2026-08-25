@@ -1,0 +1,45 @@
+name: reference-runtime
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  reference-runtime-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python tools/verify_public_release.py
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e . pytest
+      - run: pytest -q -p no:cacheprovider tests/test_reference_runtime.py
+      - run: |
+          python - <<'PY'
+          import torch
+          from elpis_reference.model import REGISTERED_PARAMETER_COUNT, model_config
+          from elpis_reference.vendor.trm import TinyRecursiveReasoningModel_ACTV1
+          model = TinyRecursiveReasoningModel_ACTV1(model_config(torch.device('cpu')))
+          count = sum(p.numel() for p in model.parameters())
+          if count != REGISTERED_PARAMETER_COUNT:
+              raise SystemExit(f'parameter ABI mismatch: {count}')
+          print(f'parameter_abi={count}')
+          PY
+
+  reference-runtime-e2e:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --upgrade pip
+      - run: pip install .
+      - run: elpis model fetch --cache-dir "$RUNNER_TEMP/elpis-model" --force
+      - run: elpis model verify --path "$RUNNER_TEMP/elpis-model/model.safetensors"
+      - run: elpis sudoku solve --file examples/sudoku_one_blank.txt --model "$RUNNER_TEMP/elpis-model/model.safetensors" --device cpu --max-steps 16

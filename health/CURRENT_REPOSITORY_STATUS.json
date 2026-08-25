@@ -1,13 +1,16 @@
 {
   "schema": "elpis.repository-status.v1",
   "repository": "abraxis717/Elpis0.1",
-  "status": "PUBLIC_PRESERVATION_AUTHORITY",
-  "published_main_basis": "723dc8f8a3cd0839943245c60b11add92c4db2e5",
+  "status": "PUBLIC_REFERENCE_RUNTIME_R1",
+  "published_main_basis": "10c57ac009d6a3df53623b1be79aa9b62066f5e0",
   "qualified_release_baseline": "v1.1.2",
+  "reference_runtime": "RUNNABLE",
+  "reference_runtime_version": "1.2.0",
   "runtime_admission": false,
   "notes": [
-    "Existing published files are preservation authority and must not be reconstructed wholesale from incomplete local copies.",
-    "Repository reconciliation after v1.1.2 is additive-first.",
-    "Learned TRM execution remains non-admitted."
+    "Historical v1.1.2 release digests remain preservation authority except for explicitly declared post-release overlay paths.",
+    "The public reference runtime can fetch, verify, strictly load, and execute the pinned Samsung MLP-T Sudoku checkpoint.",
+    "Learned reference execution is runnable but remains non-authoritative and non-admitted.",
+    "Generalized task-residual to semantic/topology Projector re-projection remains a separate consolidation seam."
   ]
 }
