@@ -21,8 +21,8 @@
     {
       "path": "CHANGELOG.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
-      "sha256": "4be26fc860bdb2425e193967c3511e1a48779abd407aad403e7b8e5b62a2bf2f"
+      "reason": "Records NumPy ABI compatibility hardening.",
+      "sha256": "998c131098edad46332e2a60f84c9b9c212eedaea0d7ced5c02193e093c89d7a"
     },
     {
       "path": "LICENSES/Samsung-TinyRecursiveModels-MIT.txt",
@@ -33,20 +33,20 @@
     {
       "path": "README.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
-      "sha256": "32dff813f6132aa74e4ddb1148422eee9a477c8714410c0182fc41abad68b2ec"
+      "reason": "Public Reference Runtime compatibility release identity.",
+      "sha256": "3a3284c0f1f02de056683ade866447c823661a04df39d95d77e446c278ddbaa3"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
-      "sha256": "42759593bab45765e461a5dfa81eb126a0b59bdfa0207097a53a157818e10d0d"
+      "reason": "Adds the declared NumPy runtime dependency.",
+      "sha256": "7415ce168c11b34d26540ed425931fcfeb32196a5fbe493cab476b3b290702bf"
     },
     {
       "path": "VERSION",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
-      "sha256": "1e5b51cde515396a9fa762909cf8ca6584ccc564b325d2eebeea76175fe95c4d"
+      "reason": "Public Reference Runtime compatibility release version.",
+      "sha256": "6cf4e084b47f33c9b02ef79279d157833868f8f70514169a768be353ee328fea"
     },
     {
       "path": "docs/PUBLICATION_RECONCILIATION.md",
@@ -75,8 +75,8 @@
     {
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
       "classification": "ADDED",
-      "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
-      "sha256": "478e9a5cc62355abf4c533e8ef8602165603bea6c2a8c133bb4342df0900dda7"
+      "reason": "Records Public Reference Runtime v1.2.1 compatibility state.",
+      "sha256": "0f3f7741ed49d4e4af3a5d6cea163661ca41e99f630f436090cc7f82dce2018c"
     },
     {
       "path": "health/PUBLICATION_AUTHORITY.json",
@@ -105,8 +105,8 @@
     {
       "path": "pyproject.toml",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public Reference Runtime R1 consolidation: runtime dependencies include NumPy required by safetensors conversion on supported clean Python installations.",
-      "sha256": "79d8e5078bb2c4e24ac40f5cbc5facfd41bef6355b4ac5361edf5269be6c8f7d"
+      "reason": "v1.2.1 constrains NumPy to the supported 1.x ABI.",
+      "sha256": "f7635702ac91dbd1f8c59709ed22e806d7f874370466f01bf9c14767b2f73553"
     },
     {
       "path": "src/elpis_reference/__init__.py",

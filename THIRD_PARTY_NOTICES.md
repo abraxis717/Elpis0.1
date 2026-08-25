@@ -9,6 +9,7 @@ This project includes or depends on third-party software.
 
 ## Python dependencies
 
+- **NumPy**
 - **PyTorch**
 - **einops**
 - **huggingface-hub**

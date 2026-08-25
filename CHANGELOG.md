@@ -1,3 +1,10 @@
+## 1.2.1 — NumPy ABI compatibility hardening
+
+- Constrained NumPy to `>=1.26,<2` because the supported PyTorch 2.2 Intel-macOS wheel is built against the NumPy 1.x ABI.
+- Qualified the dependency range through a clean install, strict checkpoint conversion/load, and real learned CPU Sudoku execution.
+- Added NumPy to the public third-party dependency inventory.
+- Runtime admission remains false.
+
 ## 1.2.0 — Public Reference Runtime R1
 
 - Added a runnable, non-authoritative Samsung MLP-T Sudoku reference runtime.

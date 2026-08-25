@@ -1,11 +1,11 @@
 [project]
 name = "elpis-canonical"
-version = "1.2.0"
+version = "1.2.1"
 description = "Deterministic Elpis structural core with a runnable TRM Sudoku reference runtime"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 dependencies = [
-  "numpy>=1.26",
+  "numpy>=1.26,<2",
   "einops>=0.7",
   "huggingface-hub>=0.25",
   "pydantic>=2.0",

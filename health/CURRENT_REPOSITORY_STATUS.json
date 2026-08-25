@@ -5,12 +5,13 @@
   "published_main_basis": "10c57ac009d6a3df53623b1be79aa9b62066f5e0",
   "qualified_release_baseline": "v1.1.2",
   "reference_runtime": "RUNNABLE",
-  "reference_runtime_version": "1.2.0",
+  "reference_runtime_version": "1.2.1",
   "runtime_admission": false,
   "notes": [
     "Historical v1.1.2 release digests remain preservation authority except for explicitly declared post-release overlay paths.",
     "The public reference runtime can fetch, verify, strictly load, and execute the pinned Samsung MLP-T Sudoku checkpoint.",
     "Learned reference execution is runnable but remains non-authoritative and non-admitted.",
-    "Generalized task-residual to semantic/topology Projector re-projection remains a separate consolidation seam."
+    "Generalized task-residual to semantic/topology Projector re-projection remains a separate consolidation seam.",
+    "NumPy is constrained to the 1.x ABI for compatibility with the supported PyTorch 2.2 Intel-macOS runtime."
   ]
 }
