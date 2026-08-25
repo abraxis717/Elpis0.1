@@ -168,3 +168,16 @@ jobs:
         run: PYTHONPATH="" python -m pytest -q -p no:cacheprovider tests/test_semantic_refinement_contract.py tests/test_projector_release_adapter.py
       - name: Canonical Projector source tests
         run: PYTHONPATH=components python -m pytest -q -p no:cacheprovider components/DarwinianMatrix/tests/test_projector_constraints.py
+
+  c2r3-bounded-feedback:
+    name: C2R3 bounded learned feedback
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install . pytest==9.0.2
+      - name: Installed C2R3 feedback tests
+        run: PYTHONPATH="" python -m pytest -q -p no:cacheprovider tests/test_feedback_refinement.py

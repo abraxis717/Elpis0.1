@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.3 — Canonical Projector Release Adapter
+## Release: v1.2.4 — Bounded Learned Feedback Traversal
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -53,7 +53,7 @@ Sudoku givens
 
 The guard **rejects** a proposal that changes a given. It never repairs or rewrites the model output and then attributes the repaired result to the model.
 
-Validation controls only accept/continue in this reference path. It does not select a Grid81 cell/value or inject task semantics into the learned model. Separately, the qualified task-residual and semantic/topology reverse-trace path can now construct a canonical DarwinianMatrix RELEASE transaction for resolved active support. Learned re-proposal remains a later bounded-loop gate.
+Validation controls only accept/continue inside the learned Sudoku path; they do not select a Grid81 cell/value or inject task semantics into the model. C2R3 now composes one bounded external feedback traversal: a typed task rejection resolves through pre-existing semantic/topology trace, canonical Projector RELEASE reopens implicated active support, and the pinned Samsung TRM re-proposes from the revised support grid.
 
 ## Platform portability
 
@@ -86,15 +86,25 @@ to the existing canonical `DarwinianMatrix.projector.constraints` authority.
 Resolved support may release a currently active clamp using its current owner;
 task failure cannot ASSERT or REPLACE structural claims.
 
+C2R3 adds one bounded, deterministic composition step in
+`elpis_reference.feedback_refinement`. A structurally valid prior proposal and
+typed task rejection are bound to `run_id + refinement_step_index`; reverse
+trace resolves pre-existing support, the canonical Projector applies RELEASE,
+and only the revised clamp-derived Sudoku grid is passed to the pinned Samsung
+MLP-T reference for re-proposal and validation.
+
+Task diagnostics, task residuals, semantic sidecars, reverse-trace records, and
+Projector receipts are not model inputs. The learned model remains
+proposal-only and receives no task or structural authority.
+
+This is still a mechanism-composition control. It does not prove generalized
+task improvement, production validator ingress, production P5/P6/P7 binding,
+arbitrary-task semantic resolution, or runtime admission.
+
 The adapter's proposal evidence digest binds the release request to the task
 diagnostic. The current ClampState does not retain the historical evidence
 digest that originally created each clamp, so this release makes no stronger
 historical-evidence provenance claim.
-
-The distribution includes only the canonical DarwinianMatrix package surface
-needed by this Projector boundary. This does not admit the broader
-DarwinianMatrix runtime. Learned re-proposal and the bounded semantic feedback
-loop remain the next promotion gate.
 
 ## Existing qualified structural stack
 

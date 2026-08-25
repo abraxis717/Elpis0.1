@@ -37,6 +37,25 @@ digest. It binds the release request but is not a historical proof of the
 evidence that originally created the active clamp because ClampState does not
 retain that per-cell evidence digest.
 
+C2R3 composes this already-promoted RELEASE boundary with the existing pinned
+Samsung reference runtime. `execute_samsung_feedback_step` accepts a
+structurally valid prior proposal, a typed task diagnostic, a pre-existing
+reverse-trace index, and canonical ClampState. It executes at most one
+task-derived RELEASE transaction and at most one learned re-proposal call.
+
+The learned call receives only the revised Sudoku support tuple derived from
+ClampState. Active clamps become givens; inactive/released cells become zero
+before the existing deterministic Sudoku token encoder maps them into model
+tokens. The task diagnostic, residual, reverse trace, and Projector receipt are
+not arguments to the learned solver.
+
+The public C2R3 E2E is deliberately a mechanism-composition control. It uses the
+real pinned checkpoint and proves that a predeclared task residual can reopen
+one existing support cell and trigger a validated learned re-proposal while
+surviving clamps remain preserved. It does not claim that the generic task
+failure is a production validator ingress or that the resulting proposal is a
+generalized task improvement.
+
 Invariant boundary:
 
 - structural rejection does not become a task residual;
@@ -44,6 +63,9 @@ Invariant boundary:
 - reverse trace may resolve a semantic/topology locus to structural support;
 - task failure may RELEASE implicated existing support;
 - task failure may not ASSERT or REPLACE structural claims;
-- the learned TRM does not receive task semantics or task diagnostics;
-- learned re-proposal remains outside C2R2;
+- learned input is derived only from revised canonical clamp support;
+- the learned TRM does not receive task semantics, task diagnostics, residuals,
+  reverse-trace records, semantic sidecars, or Projector receipts;
+- one C2R3 feedback traversal is bounded by `run_id + refinement_step_index`;
+- generalized task improvement and production validator ingress remain unproven;
 - runtime admission remains false.

@@ -15,8 +15,8 @@
     {
       "path": ".github/workflows/ci.yml",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.3 C2R2 R1: isolate installed semantic/adapter tests from the canonical DarwinianMatrix source test package so hosted CI exercises the same qualified package boundary as local preflight.",
-      "sha256": "88deac76e8856a2388c51a149aa89534ad5e313a5bae7644f8db3238f429a345"
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "4f97252478c480dae9dfca135e0d6a0a5c4adb0d5dc61bd33b3fe9d0e360769a"
     },
     {
       "path": ".github/workflows/platform-matrix.yml",
@@ -27,14 +27,14 @@
     {
       "path": ".github/workflows/reference-runtime.yml",
       "classification": "ADDED",
-      "reason": "Documentation reconciliation plus immutable ci/** preflight: full CI, learned reference E2E, and Linux/macOS/Windows portable-contract qualification before main promotion.",
-      "sha256": "966f1ba7d138cbc9851612013de6d25af8186d659f20c130956d1069216de187"
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "72ad8db823d3d9dee7500404368f4558d9a5304581eb0beca7115845d6761a12"
     },
     {
       "path": "CHANGELOG.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
-      "sha256": "9dd7e912b37e2967d5cebf4c1a055d387fbf843c88d83bd33bdf35a02b949d2d"
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "85e6f03ded0a49246453fa2733d58af0839e956d5937ed641b5316834a3f8bb8"
     },
     {
       "path": "LICENSES/Samsung-TinyRecursiveModels-MIT.txt",
@@ -45,8 +45,8 @@
     {
       "path": "README.md",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
-      "sha256": "da0aa4116640a6f7bbd138d7e07790ff7699effef0b22e06d5151752ac78e9e1"
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "c2ccfd7f296427ee39f887a9d92da3f6ade4796cff6b712578c61667019adc06"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -57,14 +57,14 @@
     {
       "path": "VERSION",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
-      "sha256": "d82f34ae9aa41bc4a0cb529a1ac0898fed09d6b479fb1cc44cb66c34f15ee84d"
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "563a0b4eec3c77bbc34ac630d4fa5214f5c6726ae01468404fd704473110084e"
     },
     {
       "path": "components/DarwinianMatrix/README.md",
       "classification": "ADDED",
-      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
-      "sha256": "8747b785b1174774216dc61aeb33a27e1c880502bef394a31acec8244517ad60"
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "503f11dcc5f12d9c54ed347068d9dba6d02f3108dd3cf9f0a40383ad80f8b656"
     },
     {
       "path": "components/Pipeline/P0ControlProtocol/README.md",
@@ -99,8 +99,8 @@
     {
       "path": "docs/REFINEMENT_SEAM_PROVENANCE.md",
       "classification": "ADDED",
-      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
-      "sha256": "3e0ec22d7276e6805f0cdd5aaa2b2a1b62fc71e61965798bffb999d806337e76"
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "0bb3912fd1546f366d4dc1559c87309d6821cc0130064cdb65ab3a2147c56871"
     },
     {
       "path": "docs/TRM_REFERENCE_REPRODUCTION.md",
@@ -117,8 +117,8 @@
     {
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
       "classification": "ADDED",
-      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
-      "sha256": "0a1f8820c50772c81c4b7c0720324a1a5673d94e32b5715c036334fd519db75c"
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "1df3332493de944cee7e5f5c7141b4caf59e639edfbff888c896f2505f2ca948"
     },
     {
       "path": "health/PUBLICATION_AUTHORITY.json",
@@ -153,8 +153,8 @@
     {
       "path": "pyproject.toml",
       "classification": "POST_RELEASE_MODIFIED",
-      "reason": "Public v1.2.3 C2R2: qualified R7A semantic residual to canonical DarwinianMatrix RELEASE adapter with clean-wheel Projector packaging; learned re-proposal remains unpromoted.",
-      "sha256": "9a8142f90a338b198fc545893d69a8ed8933dbb02cc3262b08109f1df4463d60"
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "2075a9a0d17035c80ecf3f658abacee25fddde50e53693b2604cc1cea28450f9"
     },
     {
       "path": "runtime/R0/README.md",
@@ -185,6 +185,12 @@
       "classification": "ADDED",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "060b46b1bade39cef9764f6a598cbbd94d3984c0b6f4f1c5c8675361350c55e1"
+    },
+    {
+      "path": "src/elpis_reference/feedback_refinement.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "620c06ebc818c9a309d8a45b7bc1998ef5eeff0b9c5c3b47073f23cf2b319397"
     },
     {
       "path": "src/elpis_reference/model.py",
@@ -251,6 +257,18 @@
       "classification": "ADDED",
       "reason": "Public Reference Runtime R1 consolidation: pinned strict TRM loader, fail-closed Sudoku proposal guard, bounded learned reference path, clean-clone packaging, provenance, health state, tests and CI.",
       "sha256": "ef7722409dffbdd946d40319fc2d3627b0122beb58a0a0e8a074d71183e11a0b"
+    },
+    {
+      "path": "tests/run_c2r3_feedback_e2e.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "d5ed9cba72057bacc8d55ef886578719a5dfc60bdc16c1e7a5006a78f51aeb56"
+    },
+    {
+      "path": "tests/test_feedback_refinement.py",
+      "classification": "ADDED",
+      "reason": "Public v1.2.4 C2R3: one bounded task-residual to canonical RELEASE to pinned Samsung learned re-proposal traversal; no generalized task improvement or runtime admission claim.",
+      "sha256": "6b5c3e48dd21ccb49df98847933a9acf6c15476e8ee750cd13e83db3ee5ae658"
     },
     {
       "path": "tests/test_platform_setup.py",

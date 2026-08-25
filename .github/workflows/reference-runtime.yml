@@ -45,3 +45,5 @@ jobs:
       - run: elpis model fetch --cache-dir "$RUNNER_TEMP/elpis-model" --force
       - run: elpis model verify --path "$RUNNER_TEMP/elpis-model/model.safetensors"
       - run: elpis sudoku solve --file examples/sudoku_one_blank.txt --model "$RUNNER_TEMP/elpis-model/model.safetensors" --device cpu --max-steps 16
+      - name: Run C2R3 bounded feedback E2E
+        run: PYTHONPATH="" python tests/run_c2r3_feedback_e2e.py --model "$RUNNER_TEMP/elpis-model/model.safetensors" --device cpu

@@ -5,18 +5,19 @@
   "published_main_basis": "10c57ac009d6a3df53623b1be79aa9b62066f5e0",
   "qualified_release_baseline": "v1.1.2",
   "reference_runtime": "RUNNABLE",
-  "reference_runtime_version": "1.2.3",
+  "reference_runtime_version": "1.2.4",
   "runtime_admission": false,
   "notes": [
     "Historical v1.1.2 release digests remain preservation authority except for explicitly declared post-release overlay paths.",
     "The public reference runtime can fetch, verify, strictly load, and execute the pinned Samsung MLP-T Sudoku checkpoint.",
     "Learned reference execution is runnable but remains non-authoritative and non-admitted.",
-    "The qualified task-residual and semantic/topology reverse-trace path can construct canonical RELEASE transactions for resolved active support; learned re-proposal remains a separate consolidation gate.",
+    "C2R3 composes typed task residual resolution and canonical RELEASE with one bounded re-proposal through the pinned Samsung MLP-T reference; learned input is derived only from revised clamp support.",
     "NumPy is constrained to the 1.x ABI for compatibility with the supported PyTorch 2.2 Intel-macOS runtime.",
     "Platform-specific discovery and native build policy are isolated behind the public setup boundary; semantic refinement contracts remain platform-neutral.",
     "The public package now carries the qualified R7A task-residual and semantic/topology reverse-trace contract with frozen R7CR3R1 digest reproduction.",
     "The current learned reference remains the pinned Samsung MLP-T TRM; model agnosticism is not claimed.",
     "C2R2 derives RELEASE owners from current ClampState and preserves canonical stale-state and owner enforcement; no task-derived ASSERT/REPLACE path is admitted.",
-    "Release proposal evidence binds to the originating task diagnostic and is not claimed as proof of the historical evidence that created the clamp."
+    "Release proposal evidence binds to the originating task diagnostic and is not claimed as proof of the historical evidence that created the clamp.",
+    "C2R3 remains mechanism-control only: generalized task improvement, production validator ingress, production P5/P6/P7 binding, and runtime admission are not established."
   ]
 }
