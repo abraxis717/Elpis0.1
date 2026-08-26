@@ -1,3 +1,19 @@
+## 1.2.7 — Round-2 red-team corrections
+
+- Correct the C2R3 mechanism-control claim: the released value is fixture-derived rather than model-derived; the control is not an independent competence test.
+- Clarify that C2R5 `lineage_digest` is a deterministic lineage-record digest, not caller-independent provenance attestation.
+- Record the open validation-row granularity mismatch: semantic resolution spans nine cells while task-derived RELEASE remains capped at one.
+- Run the learned reference-runtime E2E on pull requests as well as branch/main pushes, with a model cache keyed by the pinned raw and converted tensor-state identities; verification remains mandatory on cache hits.
+- Reject non-canonical validator-evidence details through typed contract/ingress errors instead of leaking raw JSON serialization exceptions.
+- Held-out competence evaluation, external lineage authority, production learned re-proposal, and runtime admission remain separate gates.
+
+## 1.2.6 — P0 artifact/proposal lineage
+
+- Bind controller-produced P0 result contents through projection, structural proposal, decoder plan, artifact, and exact rejecting validator evidence into a deterministic lineage record.
+- Require validator ingress records to match the exact artifact, projection, validator identity, and validator evidence payload.
+- Keep `cryptographic_external_attestation = false`; the lineage record is an integrity commitment inside the current authority chain, not an independent trust root.
+- Production learned re-proposal, generalized semantic feedback, held-out competence, and runtime admission remain false.
+
 ## 1.2.5 — Production P0 validator ingress + red-team hardening
 
 - Require exact-state pre-validation release bindings; release owner is no longer copied from live state as its own authorization input.

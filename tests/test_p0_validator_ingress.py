@@ -9,7 +9,7 @@ from elpis_p0.contracts import RequestContext
 from elpis_p0.projector import DeterministicPythonProjector
 from elpis_p0.refinement_validation import RefinementValidationRecordV1
 from elpis_runtime_r0.adapters import run_ast_validator_evidence
-from elpis_reference.p0_validator_ingress import P0_ARTIFACT_PROPOSAL_LINEAGE_DOMAIN,P0_VALIDATION_SEMANTIC_ROW,P0_VALIDATOR_EVIDENCE_DOMAIN,build_p0_projection_trace,structural_diagnostic_from_p0_refinement_rejection,task_diagnostic_from_p0_validator_failure
+from elpis_reference.p0_validator_ingress import P0_ARTIFACT_PROPOSAL_LINEAGE_DOMAIN,P0_VALIDATION_SEMANTIC_ROW,P0_VALIDATOR_EVIDENCE_DOMAIN,P0ValidatorIngressContractError,build_p0_projection_trace,structural_diagnostic_from_p0_refinement_rejection,task_diagnostic_from_p0_validator_failure
 from elpis_reference.projector_release import ReleaseBindingTableV1,ReleaseBindingTargetV1,build_release_transaction
 from elpis_reference.semantic_refinement import SEMANTIC_OBJECT,STRUCTURAL_REJECTION,TASK_REJECTION,domain_digest
 
@@ -109,3 +109,24 @@ def test_exact_validator_evidence_payload_must_match_lineage():
     bad=SimpleNamespace(validator_id=e.validator_id,passed=e.passed,code=e.code,message=e.message+" tampered",details=e.details)
     with pytest.raises(ValueError,match="validator evidence payload does not match P0 lineage"):
         task_diagnostic_from_p0_validator_failure(task_scope_id=ctx.request_id,frame_index=0,artifact_digest=digest,evidence=bad,projection_trace=t,lineage=good)
+
+
+def test_noncanonical_validator_details_raise_typed_ingress_error():
+    ctx,p=projection(); t=trace(p); _,digest,e=rejected(ctx)
+    good=lineage(ctx,p,digest,e)
+    bad=SimpleNamespace(
+        validator_id=e.validator_id,
+        passed=e.passed,
+        code=e.code,
+        message=e.message,
+        details=(("opaque", object()),),
+    )
+    with pytest.raises(P0ValidatorIngressContractError,match="not canonical JSON data"):
+        task_diagnostic_from_p0_validator_failure(
+            task_scope_id=ctx.request_id,
+            frame_index=0,
+            artifact_digest=digest,
+            evidence=bad,
+            projection_trace=t,
+            lineage=good,
+        )

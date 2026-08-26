@@ -170,6 +170,12 @@ class ArtifactCandidate:
     digest: str
 
 
+class ValidatorEvidenceContractError(ValueError):
+    """Validator evidence cannot enter P0 unless its details are canonical JSON data."""
+
+    pass
+
+
 @dataclass(frozen=True, slots=True)
 class ValidatorEvidence:
     validator_id: str
@@ -177,6 +183,36 @@ class ValidatorEvidence:
     code: str
     message: str
     details: tuple[tuple[str, Any], ...] = ()
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.validator_id, str) or not self.validator_id:
+            raise ValidatorEvidenceContractError("validator_id must be a non-empty string")
+        if not isinstance(self.passed, bool):
+            raise ValidatorEvidenceContractError("passed must be bool")
+        if not isinstance(self.code, str) or not self.code:
+            raise ValidatorEvidenceContractError("code must be a non-empty string")
+        if not isinstance(self.message, str):
+            raise ValidatorEvidenceContractError("message must be a string")
+
+        canonical_details: list[list[Any]] = []
+        for index, item in enumerate(self.details):
+            if not isinstance(item, (tuple, list)) or len(item) != 2:
+                raise ValidatorEvidenceContractError(
+                    f"details[{index}] must be a key/value pair"
+                )
+            key, value = item
+            if not isinstance(key, str) or not key:
+                raise ValidatorEvidenceContractError(
+                    f"details[{index}] key must be a non-empty string"
+                )
+            canonical_details.append([key, value])
+
+        try:
+            _p0_canonical_bytes(canonical_details)
+        except (TypeError, ValueError) as exc:
+            raise ValidatorEvidenceContractError(
+                "validator evidence details are not canonical JSON data"
+            ) from exc
 
 
 @dataclass(frozen=True, slots=True)

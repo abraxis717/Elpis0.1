@@ -24,6 +24,7 @@ from .semantic_refinement import (
     ReverseTraceIndex,
     StructuralObservationRecord,
     TaskDiagnosticV1,
+    canonical_bytes,
     domain_digest,
     require_digest,
 )
@@ -47,6 +48,36 @@ class P0RefinementValidationLike(Protocol):
     scope_validity: str
     status: str
     validation_digest: str
+
+
+class P0ValidatorIngressContractError(ValueError):
+    """Raised when validator evidence cannot be canonically committed."""
+
+    pass
+
+
+def _validated_evidence_details(
+    evidence: P0ValidatorEvidenceLike,
+) -> list[list[object]]:
+    details: list[list[object]] = []
+    for index, item in enumerate(evidence.details):
+        if not isinstance(item, (tuple, list)) or len(item) != 2:
+            raise P0ValidatorIngressContractError(
+                f"validator evidence details[{index}] must be a key/value pair"
+            )
+        key, value = item
+        if not isinstance(key, str) or not key:
+            raise P0ValidatorIngressContractError(
+                f"validator evidence details[{index}] key must be a non-empty string"
+            )
+        details.append([key, value])
+    try:
+        canonical_bytes(details)
+    except (TypeError, ValueError) as exc:
+        raise P0ValidatorIngressContractError(
+            "validator evidence details are not canonical JSON data"
+        ) from exc
+    return details
 
 
 P0_ARTIFACT_PROPOSAL_LINEAGE_DOMAIN = "elpis.p0-artifact-proposal-lineage.c2r5.v1"
@@ -112,7 +143,7 @@ def _verify_lineage_binding(
         P0_VALIDATOR_EVIDENCE_DOMAIN,
         {
             "code": evidence.code,
-            "details": [[str(key), value] for key, value in evidence.details],
+            "details": _validated_evidence_details(evidence),
             "message": evidence.message,
             "passed": bool(evidence.passed),
             "validator_id": evidence.validator_id,
@@ -300,10 +331,7 @@ def task_diagnostic_from_p0_validator_failure(
             "structural_proposal_digest": lineage.structural_proposal_digest,
             "validator_evidence_digest": lineage.validator_evidence_digest,
             "code": evidence.code,
-            "details": [
-                [str(key), value]
-                for key, value in evidence.details
-            ],
+            "details": _validated_evidence_details(evidence),
             "message": evidence.message,
             "projection_trace_digest": projection_trace.trace_digest,
             "validator_id": evidence.validator_id,

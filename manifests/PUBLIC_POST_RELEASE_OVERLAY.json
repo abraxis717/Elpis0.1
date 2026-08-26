@@ -23,14 +23,14 @@
     {
       "classification": "ADDED",
       "path": ".github/workflows/reference-runtime.yml",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "8deedfc55363df868d7f150c279e920e4d88ae48dfbecfe84a88872707f2ef52"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "590a902ee04142251d3aaf3ceb4030a6a9644d42a5612db7bbbde7c0df5e8481"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "CHANGELOG.md",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "a5ccdf1eca2dc0a607134e0432784a3b95a8fdeef7940cd35069f390c4484709"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "7cab59305fad1c27ed976a6931287aace41e1e259b345a4e9116e36c78d08681"
     },
     {
       "classification": "ADDED",
@@ -41,8 +41,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "README.md",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "8248a514bbd625b89c4a1d648fe779ba8cbe7fbc420cb348fc9b2641ba7dd4c3"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "e673125ba71453ad80b9a13a1223f2b9e8ea83177ad647336321174789aae880"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -53,8 +53,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "VERSION",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "5844ffcc346f89c07b13ba7596bfb3788ed73f4755e541182d7822d43b7c7a24"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "d9e8e8429c6a7d0b965e4fac26a5efff7103f055faa98cceb5bd4731fd24603a"
     },
     {
       "classification": "ADDED",
@@ -71,14 +71,14 @@
     {
       "classification": "ADDED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/artifact_lineage.py",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "db83e5fc2fa0aabd0b692f41c6bc39be3ac6c910fe3cc85a31a92b1f9b4d2b4d"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "ab45a46813cacda83c3f7eb8db2d857c31ba4e1eaab0171ed3614acfb45f2c31"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/contracts.py",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "0f058c92483efb31eed25f3863dcc7a4d1632c5103310269d3f996f7e0bb65c2"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "0ce191601a7b46a56711b333913e4da0ef56a602c222e0b8fe06c1010bf3db49"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -131,8 +131,8 @@
     {
       "classification": "ADDED",
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "ac6800f3cfb474b63554d9e3f5ac8a6fe64849ef570b9e0eb032146951b4b8d5"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "b722d8e693ccd992129b6acd8fe93f371c7d1fe8d7fd42a8592c1852756bb60c"
     },
     {
       "classification": "ADDED",
@@ -167,8 +167,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "pyproject.toml",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "22d3db4baa4edfcc0f12fc9da2cd39253a9f9b9070b3e7029eefd675b1ed2cda"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "d8f1cb437e5604262db3df34fc4d2ba324168dc188bb7dc704c0b2dcf70fecfa"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -221,8 +221,8 @@
     {
       "classification": "ADDED",
       "path": "src/elpis_reference/p0_validator_ingress.py",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "d72c2770f26763296eae2dcd51ace2b8a9257861bbcab983e7ecc0acad1bda7d"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "d99c7d17b4b92532057a5b492100e61ff34454d753339d1b8e2e042d25345c71"
     },
     {
       "classification": "ADDED",
@@ -287,8 +287,8 @@
     {
       "classification": "ADDED",
       "path": "tests/run_c2r3_feedback_e2e.py",
-      "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
-      "sha256": "77756c261ddf0f05bffe28afd885a3244b4128e91b76da197220e45031560ee6"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "f06378bfaa1e9dbffa482323f911fe5c9e3f24140f9ad843aeab89097ed5b093"
     },
     {
       "classification": "ADDED",
@@ -299,8 +299,8 @@
     {
       "classification": "ADDED",
       "path": "tests/run_c2r5_artifact_proposal_lineage_e2e.py",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "eccd3378b75572e83f3fb16574eb42444461034a1755e3d8d47cb450aa095c7c"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "e22c0ddd53b3af8943cd9b5bd3f07231a4943a2d60e506c2ec40f074c30ea19a"
     },
     {
       "classification": "ADDED",
@@ -317,14 +317,14 @@
     {
       "classification": "ADDED",
       "path": "tests/test_p0_artifact_lineage.py",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "db0db7bae75aee6c5c7de93a28e3b8bf35ace8c69b8c2c4dd18492806d9af9e4"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "d9484920067785ec7a280af86918c5265f0277679e4df7190a8ef0a642dceca2"
     },
     {
       "classification": "ADDED",
       "path": "tests/test_p0_validator_ingress.py",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and exact validator-evidence qualification; refreshed after deterministic EOF normalization",
-      "sha256": "9c765775ab64c32c2bc82c7d33f6b3ad046f8ba6e47cb26c0e9a8e371c880399"
+      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
+      "sha256": "7f009f7c465000feb37a28052550e60c279d72f2930f559f2b6a2c6e7f96d8cf"
     },
     {
       "classification": "ADDED",

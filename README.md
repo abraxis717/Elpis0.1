@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.5 — Production P0 Validator Ingress
+## Release: v1.2.7 — Round-2 red-team corrections
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -135,11 +135,32 @@ The C2R4 candidate also hardens defects found by adversarial review before publi
 
 For the Sudoku reference traversal, original puzzle givens are immutable hard support. They must be present in the pre-release clamp state, may not be RELEASE targets, and remain the validator input for the final learned proposal. RELEASE is therefore described as bounded search-space widening of a retractable hypothesis, not as intrinsically fail-closed.
 
-The C2R3 learned E2E no longer installs a model-produced solution as the support it later releases. The released one-cell hypothesis comes from an independent fixture; the learned call occurs only after that hypothesis is removed. This remains a mechanism control, not a competence evaluation.
+The C2R3 learned E2E no longer installs model-produced output as the support it later releases. Its retractable one-cell value is derived from the deterministic solved-board fixture used by the mechanism control, not from the learned model. The release/revised-input assertions therefore verify feedback plumbing only; they are intentionally not evidence of model competence or independent problem-solving.
 
 The converted safetensors tensor state is now pinned by a canonical tensor-state SHA-256 derived from the raw checkpoint after its existing raw SHA verification. `verify_model` and `load_model` reject tensor or metadata tampering.
 
 Generic reverse-trace records remain deterministic records rather than signed attestations; repository text must not treat `trace_proof_digests` as cryptographic proof. A held-out competence evaluation remains a separate gate.
+
+
+### C2R5 artifact/proposal lineage boundary
+
+C2R5 adds deterministic integrity checks across the P0 result, projection, structural proposal,
+decoder control plan, artifact, and selected validator evidence. The resulting `lineage_digest`
+is a **lineage record digest**: it detects mutation/substitution inside a supplied record, but it is
+not a signature, controller-issued capability, temporal precommitment, or independent provenance
+attestation. The current validator ingress externally rechecks the artifact, projection, and exact
+validator evidence against that record; the proposal/plan/result identities inside the record are
+not yet anchored to a caller-independent controller registry.
+
+The production validator diagnostic still names the projection's semantic `validation` object.
+That semantic object reverse-resolves to the full nine-cell validation row. Because task-derived
+RELEASE remains hard-capped at one active target, a state with multiple active validation-row
+supports rejects rather than choosing among them. This is fail-closed, but it is also an open
+granularity/authorization gate for C2R6; v1.2.7 does not claim that production feedback topology is
+generalized.
+
+Held-out learned competence, paired feedback improvement, an external provenance trust root,
+production learned re-proposal, and runtime admission remain unproven.
 
 ## Existing qualified structural stack
 

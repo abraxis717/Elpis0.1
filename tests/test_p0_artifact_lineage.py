@@ -3,9 +3,9 @@ from __future__ import annotations
 from dataclasses import replace
 import pytest
 
-from elpis_p0.artifact_lineage import build_artifact_proposal_lineage
+from elpis_p0.artifact_lineage import P0ArtifactLineageContractError, build_artifact_proposal_lineage
 from elpis_p0.canonical import digest
-from elpis_p0.contracts import ArtifactCandidate, RequestContext
+from elpis_p0.contracts import ArtifactCandidate, RequestContext, ValidatorEvidence, ValidatorEvidenceContractError
 from elpis_p0.factory import build_default_controller
 
 
@@ -91,4 +91,30 @@ def test_tampered_result_receipt_fails_closed():
     result = rejected_result()
     tampered = replace(result, result_digest="f" * 64)
     with pytest.raises(ValueError, match="P0 result digest does not match result contents"):
+        build_artifact_proposal_lineage(tampered, validator_index=0)
+
+
+def test_validator_evidence_rejects_noncanonical_details_at_contract_boundary():
+    with pytest.raises(ValidatorEvidenceContractError,match="not canonical JSON data"):
+        ValidatorEvidence(
+            validator_id="python.ast.v1",
+            passed=False,
+            code="OPAQUE_DETAILS",
+            message="fixture",
+            details=(("opaque", object()),),
+        )
+
+
+def test_artifact_lineage_wraps_noncanonical_evidence_as_typed_error():
+    result = rejected_result()
+
+    class OpaqueEvidence:
+        validator_id = result.evidence[0].validator_id
+        passed = False
+        code = result.evidence[0].code
+        message = result.evidence[0].message
+        details = (("opaque", object()),)
+
+    tampered = replace(result, evidence=(OpaqueEvidence(),))
+    with pytest.raises(P0ArtifactLineageContractError,match="not canonical JSON data"):
         build_artifact_proposal_lineage(tampered, validator_index=0)

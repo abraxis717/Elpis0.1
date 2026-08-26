@@ -33,16 +33,19 @@ jobs:
           PY
 
   reference-runtime-e2e:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/elpis-model
+          key: elpis-trm-${{ runner.os }}-${{ runner.arch }}-py311-20e9dc7ebf83b9b41a8b3f58f5fd94ee3a7eb0b0d245bdeeb14e2f1488d1daaf-225db649e70bcca706b06a5fc6f72c97d6585ebde9b1bb90de35d3991dadb37a
       - run: python -m pip install --upgrade pip
       - run: pip install .
-      - run: elpis model fetch --cache-dir "$RUNNER_TEMP/elpis-model" --force
+      - run: elpis model fetch --cache-dir "$RUNNER_TEMP/elpis-model"
       - run: elpis model verify --path "$RUNNER_TEMP/elpis-model/model.safetensors"
       - run: elpis sudoku solve --file examples/sudoku_one_blank.txt --model "$RUNNER_TEMP/elpis-model/model.safetensors" --device cpu --max-steps 16
       - name: Run C2R4 hardened feedback mechanism control

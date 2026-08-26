@@ -28,18 +28,45 @@ def _domain_digest(domain: str, payload: object) -> str:
     ).hexdigest()
 
 
+class P0ArtifactLineageContractError(ValueError):
+    """Artifact lineage inputs must be canonically serializable P0 evidence."""
+
+    pass
+
+
+def _validator_evidence_payload(evidence) -> dict[str, object]:
+    details: list[list[object]] = []
+    for index, item in enumerate(evidence.details):
+        if not isinstance(item, (tuple, list)) or len(item) != 2:
+            raise P0ArtifactLineageContractError(
+                f"validator evidence details[{index}] must be a key/value pair"
+            )
+        key, value = item
+        if not isinstance(key, str) or not key:
+            raise P0ArtifactLineageContractError(
+                f"validator evidence details[{index}] key must be a non-empty string"
+            )
+        details.append([key, value])
+    payload = {
+        "code": evidence.code,
+        "details": details,
+        "message": evidence.message,
+        "passed": bool(evidence.passed),
+        "validator_id": evidence.validator_id,
+    }
+    try:
+        _canonical_bytes(payload)
+    except (TypeError, ValueError) as exc:
+        raise P0ArtifactLineageContractError(
+            "validator evidence is not canonical JSON data"
+        ) from exc
+    return payload
 
 
 def _validator_evidence_binding_digest(evidence) -> str:
     return _domain_digest(
         _VALIDATOR_EVIDENCE_DOMAIN,
-        {
-            "code": evidence.code,
-            "details": [[str(key), value] for key, value in evidence.details],
-            "message": evidence.message,
-            "passed": bool(evidence.passed),
-            "validator_id": evidence.validator_id,
-        },
+        _validator_evidence_payload(evidence),
     )
 
 def _result_payload(result: P0Result) -> dict[str, object]:
@@ -111,6 +138,9 @@ def build_artifact_proposal_lineage(
 ) -> P0ArtifactProposalLineageV1:
     if not result.request_id:
         raise ValueError("P0 result request_id cannot be empty")
+
+    for evidence_item in result.evidence:
+        _validator_evidence_payload(evidence_item)
 
     if digest(_result_payload(result)) != result.result_digest:
         raise ValueError("P0 result digest does not match result contents")
