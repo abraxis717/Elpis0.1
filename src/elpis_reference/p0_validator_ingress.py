@@ -98,6 +98,38 @@ class P0ArtifactProposalLineageLike(Protocol):
     lineage_digest: str
 
 
+class P0LineageAuthorityReceiptLike(Protocol):
+    authority_instance_id: str
+    capability_id: str
+    lineage_digest: str
+    p0_result_digest: str
+    request_id: str
+    validator_index: int
+    validator_evidence_digest: str
+    receipt_digest: str
+
+
+class P0AuthorizedArtifactLineageLike(Protocol):
+    lineage: P0ArtifactProposalLineageLike
+    receipt: P0LineageAuthorityReceiptLike
+
+
+class P0LineageAuthorityConsumptionLike(Protocol):
+    authority_instance_id: str
+    capability_id: str
+    lineage_digest: str
+    receipt_digest: str
+    consumption_digest: str
+
+
+class P0ControllerAuthorityConsumerLike(Protocol):
+    def consume_authorized_artifact_lineage(
+        self,
+        authorized: P0AuthorizedArtifactLineageLike,
+    ) -> P0LineageAuthorityConsumptionLike:
+        ...
+
+
 def _lineage_payload(lineage: P0ArtifactProposalLineageLike) -> dict[str, object]:
     return {
         "artifact_digest": lineage.artifact_digest,
@@ -337,25 +369,12 @@ def build_p0_projection_trace(
     )
 
 
-def task_diagnostic_from_p0_validator_failure(
+def validator_failure_locus_from_p0_evidence(
     *,
-    task_scope_id: str,
-    frame_index: int,
-    artifact_digest: str,
     evidence: P0ValidatorEvidenceLike,
     projection_trace: P0ProjectionTraceV1,
-    lineage: P0ArtifactProposalLineageLike,
-) -> TaskDiagnosticV1:
-    """Convert one real P0 task-validator failure into a typed task diagnostic."""
-    require_digest("artifact_digest", artifact_digest)
-    _verify_lineage_binding(
-        task_scope_id=task_scope_id,
-        artifact_digest=artifact_digest,
-        evidence=evidence,
-        projection_trace=projection_trace,
-        lineage=lineage,
-    )
-
+) -> tuple[str, str]:
+    # Pure semantic-locus validation; no authority is consumed here.
     if evidence.passed:
         raise ValueError("validator evidence must be a rejection")
     if not evidence.validator_id:
@@ -365,6 +384,7 @@ def task_diagnostic_from_p0_validator_failure(
 
     try:
         from elpis_p0.semantic_space import validator_failure_role
+
         failure_role = validator_failure_role(
             evidence.validator_id,
             evidence.code,
@@ -374,38 +394,166 @@ def task_diagnostic_from_p0_validator_failure(
             "unsupported P0 validator failure locus"
         ) from exc
 
-    locus_identity = projection_trace.semantic_digest_for_role(
-        failure_role
+    return (
+        failure_role,
+        projection_trace.semantic_digest_for_role(failure_role),
     )
 
-    details_digest = domain_digest(
-        "elpis.p0-validator-failure-details.c2r4.v1",
-        {
-            "artifact_digest": artifact_digest,
-            "artifact_proposal_lineage_digest": lineage.lineage_digest,
-            "decoder_plan_digest": lineage.decoder_plan_digest,
-            "p0_result_digest": lineage.p0_result_digest,
-            "structural_proposal_digest": lineage.structural_proposal_digest,
-            "validator_evidence_digest": lineage.validator_evidence_digest,
-            "code": evidence.code,
-            "details": _validated_evidence_details(evidence),
-            "message": evidence.message,
-            "projection_trace_digest": projection_trace.trace_digest,
-            "validator_failure_role": failure_role,
-            "validator_id": evidence.validator_id,
-        },
-    )
 
-    return TaskDiagnosticV1(
-        diagnostic_class=TASK_REJECTION,
-        task_scope_id=task_scope_id,
-        frame_index=frame_index,
-        subject_digest=artifact_digest,
-        producer_id=evidence.validator_id,
-        locus_namespace=SEMANTIC_OBJECT,
-        locus_identity=locus_identity,
-        reason_codes=(evidence.code,),
-        details_digest=details_digest,
+class P0ValidatorIngressV1:
+    # Bound once at trusted composition; request calls cannot select authority.
+    __slots__ = ("__controller",)
+
+    def __init__(self, *args, **kwargs):
+        raise TypeError(
+            "P0ValidatorIngressV1 requires trusted composition binding"
+        )
+
+    @classmethod
+    def _from_trusted_controller(
+        cls,
+        controller: P0ControllerAuthorityConsumerLike,
+    ) -> "P0ValidatorIngressV1":
+        instance = object.__new__(cls)
+        instance.__controller = controller
+        return instance
+
+    def task_diagnostic_from_validator_failure(
+        self,
+        *,
+        task_scope_id: str,
+        frame_index: int,
+        artifact_digest: str,
+        evidence: P0ValidatorEvidenceLike,
+        projection_trace: P0ProjectionTraceV1,
+        authorized: P0AuthorizedArtifactLineageLike,
+    ) -> TaskDiagnosticV1:
+        require_digest("artifact_digest", artifact_digest)
+
+        # These checks happen before one-shot authority consumption.
+        failure_role, locus_identity = (
+            validator_failure_locus_from_p0_evidence(
+                evidence=evidence,
+                projection_trace=projection_trace,
+            )
+        )
+
+        lineage = authorized.lineage
+        _verify_lineage_binding(
+            task_scope_id=task_scope_id,
+            artifact_digest=artifact_digest,
+            evidence=evidence,
+            projection_trace=projection_trace,
+            lineage=lineage,
+        )
+
+        receipt = authorized.receipt
+        require_digest(
+            "authority_instance_id",
+            receipt.authority_instance_id,
+        )
+        require_digest("capability_id", receipt.capability_id)
+        require_digest("receipt_digest", receipt.receipt_digest)
+
+        consumption = (
+            self.__controller.consume_authorized_artifact_lineage(
+                authorized
+            )
+        )
+        for name in (
+            "authority_instance_id",
+            "capability_id",
+            "lineage_digest",
+            "receipt_digest",
+            "consumption_digest",
+        ):
+            require_digest(name, getattr(consumption, name))
+
+        if (
+            consumption.authority_instance_id
+            != receipt.authority_instance_id
+        ):
+            raise P0ValidatorIngressContractError(
+                "authority consumption instance mismatch"
+            )
+        if consumption.capability_id != receipt.capability_id:
+            raise P0ValidatorIngressContractError(
+                "authority consumption capability mismatch"
+            )
+        if consumption.lineage_digest != lineage.lineage_digest:
+            raise P0ValidatorIngressContractError(
+                "authority consumption lineage mismatch"
+            )
+        if consumption.receipt_digest != receipt.receipt_digest:
+            raise P0ValidatorIngressContractError(
+                "authority consumption receipt mismatch"
+            )
+
+        details_digest = domain_digest(
+            "elpis.p0-validator-failure-details.c2r6cb.v1",
+            {
+                "artifact_digest": artifact_digest,
+                "artifact_proposal_lineage_digest": (
+                    lineage.lineage_digest
+                ),
+                "authority_capability_id": receipt.capability_id,
+                "authority_consumption_digest": (
+                    consumption.consumption_digest
+                ),
+                "authority_instance_id": (
+                    receipt.authority_instance_id
+                ),
+                "authority_receipt_digest": receipt.receipt_digest,
+                "decoder_plan_digest": lineage.decoder_plan_digest,
+                "p0_result_digest": lineage.p0_result_digest,
+                "structural_proposal_digest": (
+                    lineage.structural_proposal_digest
+                ),
+                "validator_evidence_digest": (
+                    lineage.validator_evidence_digest
+                ),
+                "code": evidence.code,
+                "details": _validated_evidence_details(evidence),
+                "message": evidence.message,
+                "projection_trace_digest": (
+                    projection_trace.trace_digest
+                ),
+                "validator_failure_role": failure_role,
+                "validator_id": evidence.validator_id,
+            },
+        )
+
+        return TaskDiagnosticV1(
+            diagnostic_class=TASK_REJECTION,
+            task_scope_id=task_scope_id,
+            frame_index=frame_index,
+            subject_digest=artifact_digest,
+            producer_id=evidence.validator_id,
+            locus_namespace=SEMANTIC_OBJECT,
+            locus_identity=locus_identity,
+            reason_codes=(evidence.code,),
+            details_digest=details_digest,
+        )
+
+
+def bind_p0_validator_ingress_to_controller(
+    controller: object,
+) -> P0ValidatorIngressV1:
+    # Composition operation, never request input.
+    try:
+        from elpis_p0.controller import P0Controller
+    except ImportError as exc:
+        raise P0ValidatorIngressContractError(
+            "P0Controller is unavailable for ingress composition"
+        ) from exc
+
+    if type(controller) is not P0Controller:
+        raise P0ValidatorIngressContractError(
+            "trusted ingress binding requires exact P0Controller"
+        )
+
+    return P0ValidatorIngressV1._from_trusted_controller(
+        controller
     )
 
 

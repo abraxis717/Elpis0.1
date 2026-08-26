@@ -9,7 +9,6 @@ from DarwinianMatrix.projector.constraints import (
     ClampTransaction,
     apply_clamp_transaction,
 )
-from elpis_p0.artifact_lineage import build_artifact_proposal_lineage
 from elpis_p0.canonical import digest
 from elpis_p0.contracts import ArtifactCandidate, RequestContext
 from elpis_p0.factory import build_default_controller
@@ -22,8 +21,8 @@ from elpis_p0.semantic_space import (
     validator_failure_role,
 )
 from elpis_reference.p0_validator_ingress import (
+    bind_p0_validator_ingress_to_controller,
     build_p0_projection_trace,
-    task_diagnostic_from_p0_validator_failure,
 )
 from elpis_reference.projector_release import (
     MAX_RELEASE_CELLS_PER_TRAVERSAL,
@@ -54,6 +53,7 @@ def main():
     )
     controller = build_default_controller()
     controller.decoder = RejectingDecoder()
+    ingress = bind_p0_validator_ingress_to_controller(controller)
     result = controller.run(ctx)
 
     if result.accepted:
@@ -67,7 +67,9 @@ def main():
     if MAX_RELEASE_CELLS_PER_TRAVERSAL != 1:
         raise RuntimeError("release cardinality widened")
 
-    lineage = build_artifact_proposal_lineage(result, validator_index=0)
+    authorized = controller.authorized_artifact_lineage(
+        result, validator_index=0
+    )
     trace = build_p0_projection_trace(
         projection_digest=result.projection.digest,
         grid81=result.projection.grid81,
@@ -137,13 +139,13 @@ def main():
     )
 
     evidence = result.evidence[0]
-    diagnostic = task_diagnostic_from_p0_validator_failure(
+    diagnostic = ingress.task_diagnostic_from_validator_failure(
         task_scope_id=ctx.request_id,
         frame_index=0,
         artifact_digest=result.artifact.digest,
         evidence=evidence,
         projection_trace=trace,
-        lineage=lineage,
+        authorized=authorized,
     )
     residual = diagnostic.to_task_residual()
     resolved = trace.reverse_trace_index().resolve(residual)
@@ -204,6 +206,7 @@ def main():
             "validator_code_selects_predeclared_sublocus": True,
             "multi_active_validation_support_resolvable": True,
             "release_cap_remains_one": True,
+            "controller_associated_ingress_authority_required": True,
             "external_lineage_authority_root": False,
             "semantic_decomposition_improved": False,
             "production_learned_reproposal": False,

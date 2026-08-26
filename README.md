@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.10 — Controller-associated lineage issuance registry
+## Release: v1.2.11 — Trusted-controller validator ingress
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -195,11 +195,19 @@ reflection can still reach implementation-private state, so hostile same-process
 claimed. Strong-reference tombstones also retain rejecting `P0Result` graphs for the controller
 lifetime and remain an explicit prototype lifecycle limitation.
 
-C2R6C-B must consume authority through trusted controller/runtime composition; production ingress
-must not accept a caller-selected verifier or authority root. External attestation, cross-process
-durability, independent release-binding issuance, relational/ECS decomposition, semantic
-reconstruction quality, learned re-proposal, competence, feedback efficacy, and runtime admission
-remain unproven.
+C2R6C-B now binds production P0 validator ingress once to an exact `P0Controller` during trusted
+composition. Per-request ingress accepts no controller, verifier, authority root, or consumption
+callback: it accepts only the controller-produced authorization plus evidence/trace inputs. Passed
+or unsupported evidence and lineage mismatches fail before capability consumption; after those
+checks pass, the bound controller consumes registry membership exactly once and the diagnostic
+details digest binds the authority instance, capability, receipt, and consumption digests.
+
+This closes the caller-supplied-lineage N2 defect at the production P0 validator ingress API under
+the declared process-local composition trust model. It does **not** establish hostile same-process
+isolation, cross-process durability, external cryptographic attestation, independent temporal
+ReleaseBinding issuance, relational/ECS decomposition, semantic reconstruction quality, learned
+re-proposal, competence, feedback efficacy, or runtime admission. Strong-reference authority
+tombstones remain an explicit lifecycle limitation.
 
 ## Existing qualified structural stack
 

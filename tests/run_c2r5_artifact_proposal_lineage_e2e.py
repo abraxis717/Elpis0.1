@@ -9,7 +9,6 @@ from DarwinianMatrix.projector.constraints import (
     ClampTransaction,
     apply_clamp_transaction,
 )
-from elpis_p0.artifact_lineage import build_artifact_proposal_lineage
 from elpis_p0.canonical import digest
 from elpis_p0.contracts import ArtifactCandidate, RequestContext
 from elpis_p0.factory import build_default_controller
@@ -18,8 +17,8 @@ from elpis_p0.semantic_space import (
     validator_failure_role,
 )
 from elpis_reference.p0_validator_ingress import (
+    bind_p0_validator_ingress_to_controller,
     build_p0_projection_trace,
-    task_diagnostic_from_p0_validator_failure,
 )
 from elpis_reference.projector_release import (
     ReleaseBindingTableV1,
@@ -49,11 +48,15 @@ def main():
     )
     controller = build_default_controller()
     controller.decoder = RejectingDecoder()
+    ingress = bind_p0_validator_ingress_to_controller(controller)
     result = controller.run(ctx)
     if result.accepted or len(result.evidence) != 1 or result.evidence[0].passed:
         raise RuntimeError("fixture did not produce one rejected production P0 result")
 
-    lineage = build_artifact_proposal_lineage(result, validator_index=0)
+    authorized = controller.authorized_artifact_lineage(
+        result, validator_index=0
+    )
+    lineage = authorized.lineage
     if lineage.structural_proposal_digest != result.trm_proposal.digest:
         raise RuntimeError("lineage lost structural proposal identity")
     if result.decoder_plan.structural_proposal_digest != result.trm_proposal.digest:
@@ -115,13 +118,13 @@ def main():
         ),
     )
 
-    diagnostic = task_diagnostic_from_p0_validator_failure(
+    diagnostic = ingress.task_diagnostic_from_validator_failure(
         task_scope_id=ctx.request_id,
         frame_index=0,
         artifact_digest=result.artifact.digest,
         evidence=evidence,
         projection_trace=trace,
-        lineage=lineage,
+        authorized=authorized,
     )
     residual = diagnostic.to_task_residual()
     resolved = trace.reverse_trace_index().resolve(residual)
@@ -167,6 +170,7 @@ def main():
             "artifact_bound_to_decoder_plan": True,
             "exact_validator_evidence_bound": True,
             "validator_ingress_requires_self_consistent_lineage_record": True,
+            "validator_ingress_requires_controller_authorization": True,
             "validator_failure_sublocus_cardinality_one": True,
             "lineage_digest_is_external_attestation": False,
             "cryptographic_external_attestation": False,

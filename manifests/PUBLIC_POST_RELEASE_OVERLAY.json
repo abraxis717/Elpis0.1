@@ -11,8 +11,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": ".github/workflows/ci.yml",
-      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
-      "sha256": "cdfeb25558a82619a586bc024ee60ef8da3d4578d95191f7ebe4fe9b4c552331"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "1fc3f9187949688846e8423b7208d2887ea3a02cd8656743d6d7b17f2d16482d"
     },
     {
       "classification": "ADDED",
@@ -23,14 +23,14 @@
     {
       "classification": "ADDED",
       "path": ".github/workflows/reference-runtime.yml",
-      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
-      "sha256": "fe5c5c36ef28e816f385b9c4ba39b576594b16c08b9d536aae971ba024726e04"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "ea72740bc9b36d103af3f580fdbf79d5b6143ccc629521b2172d6d1bc5b55d7a"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "CHANGELOG.md",
-      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
-      "sha256": "dee5b8dc935be77050db77da4e6f309faf8236117501180f4cbe72927d7d744f"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "a2a754cad18179cf1dc407d0e477c594128eab10dff26a6ecc98fece889e3793"
     },
     {
       "classification": "ADDED",
@@ -41,8 +41,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "README.md",
-      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
-      "sha256": "cd0b053859ac7343e4b57ea12bf3f75cd0de7fa38b56bbf9df993c51cd7e05a1"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "4412b69f947aaced500b0558afdf431bec2c5208e2a8ce9cccdf6b6390ebe116"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -53,8 +53,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "VERSION",
-      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
-      "sha256": "4304275f30e076c76abdc0f280f0fdd5537f1ac700953ba1908e29a64d531919"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "37310c7f348165122ccb9f4a854c29485395bb3af0659ba5a77be066c1511679"
     },
     {
       "classification": "ADDED",
@@ -167,8 +167,8 @@
     {
       "classification": "ADDED",
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
-      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
-      "sha256": "7e326cf8566ec814ffd7761e3a79c9beb91f2dd0ec43521bdfb3946bc7b934c6"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "ec1c565c3c7bb2a25241fc1a01a4e55b1d554a00b4cc22584ed9dbf55cd7362c"
     },
     {
       "classification": "ADDED",
@@ -203,8 +203,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "pyproject.toml",
-      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
-      "sha256": "d6d78bb065a87581062e9f7006303f21a539e4af81ebdfbedc88c4b83593d363"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "969d93aeef7f39dd510b16747ba09553d30084837b73246feff96b3887e95d77"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -257,8 +257,8 @@
     {
       "classification": "ADDED",
       "path": "src/elpis_reference/p0_validator_ingress.py",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "bb4532232041182d4422c2da31622b1153f22027e28a4b4eb9584c5e8d25646e"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "5a00b2414017a5fd6a4471ad6f0477df77501d8a7e581384148231811d96976f"
     },
     {
       "classification": "ADDED",
@@ -335,20 +335,26 @@
     {
       "classification": "ADDED",
       "path": "tests/run_c2r5_artifact_proposal_lineage_e2e.py",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "1ccd6c2dee89ac82c49d6b74a1f638b99d5ba1b61db5d960e7dc40e7c0aa348b"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "ec7e52ea5bb4186cf083ceab29512ab350362c38877776c0a9512b654fda94d3"
     },
     {
       "classification": "ADDED",
       "path": "tests/run_c2r6b_p0_semantic_topology_e2e.py",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "7be656224b3fbdde8cb4e3a39a4f3db9154311c4b1a8811e1fc7fd64842df6fe"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "bf71bdd5b902632a3bae9d60892355376fa80150588b82d571c736bdd11c7d7f"
     },
     {
       "classification": "ADDED",
       "path": "tests/run_c2r6ca_controller_authority_e2e.py",
       "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
       "sha256": "6b710a26651e105eba7920e577001e5df3f1b40449b230cee4500a0c29b33082"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tests/run_c2r6cb_trusted_ingress_e2e.py",
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "14451f724a5c080f2f5d6bac7ddc8e5f31bebf9443dc93ac63e71c84dd5862f5"
     },
     {
       "classification": "ADDED",
@@ -371,8 +377,8 @@
     {
       "classification": "ADDED",
       "path": "tests/test_p0_validator_ingress.py",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "af3768bdeb75a3e3d2b8bb8d338529e68de51db1b6160333d03892ca49eb1896"
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "5c105cec6421ef1de596acc674b652a14ee26a755ee96e52f24d746700b7b318"
     },
     {
       "classification": "ADDED",
@@ -403,6 +409,12 @@
       "path": "tools/redteam_c2r6ca_lineage_authority.py",
       "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
       "sha256": "26c57e9f247ab31d604c0e9c99b93b8067373582e5af7d96d44212a7e87713b9"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tools/redteam_c2r6cb_ingress_authority.py",
+      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
+      "sha256": "853843a831bcf4b1e3d98db27e1ccefab7366112e8b302fad5bfc72e4c6932cf"
     },
     {
       "classification": "ADDED",

@@ -5,7 +5,7 @@
   "published_main_basis": "10c57ac009d6a3df53623b1be79aa9b62066f5e0",
   "qualified_release_baseline": "v1.1.2",
   "reference_runtime": "RUNNABLE",
-  "reference_runtime_version": "1.2.10",
+  "reference_runtime_version": "1.2.11",
   "runtime_admission": false,
   "notes": [
     "Historical v1.1.2 release digests remain preservation authority except for explicitly declared post-release overlay paths.",
@@ -34,6 +34,9 @@
     "The authority primitive is not external attestation or cross-process durable provenance.",
     "The canonical C2R6C-A Claude red-team reproduced five ownership-surface exploits in v1.2.9; v1.2.10 removes supported caller authority injection, standalone issuance and verifier selection.",
     "The bounded primitive is now a controller-associated in-memory issuance registry. Hostile same-process isolation and bounded long-lived retention are not claimed.",
-    "C2R6C-B must resolve authority from trusted controller/runtime composition; request input must never select its authority root."
+    "C2R6C-B must resolve authority from trusted controller/runtime composition; request input must never select its authority root.",
+    "C2R6C-B binds production validator ingress once to trusted P0Controller composition and removes the bare-lineage production entrypoint.",
+    "Per-request ingress cannot select controller/verifier/authority; controller registry consumption occurs only after semantic and lineage validation.",
+    "N2 is closed only for the process-local production P0 validator ingress API. External attestation, cross-process durability and hostile same-process isolation remain unclaimed."
   ]
 }

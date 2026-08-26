@@ -1,3 +1,14 @@
+## 1.2.11 — Trusted-controller validator ingress
+
+- Bind production P0 validator ingress once to an exact `P0Controller` during trusted composition.
+- Remove the legacy production entrypoint that accepted a bare caller-supplied lineage record.
+- Per-request ingress accepts no controller, verifier, authority root, or consumption callback.
+- Require controller-produced authorization and consume its registry capability exactly once after semantic/evidence/lineage checks pass.
+- Fail passed evidence, unsupported validator codes, noncanonical evidence, and lineage mismatches before capability consumption.
+- Bind authority instance, capability, receipt, and consumption digests into the emitted diagnostic details digest.
+- Add a C2R6C-B adversarial ingress diagnostic and hosted CI/E2E coverage.
+- Preserve process-local trust boundaries: hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.
+
 ## 1.2.10 — Controller-associated lineage issuance registry
 
 - Correct C2R6C-A ownership topology after the canonical Claude red-team reproduced five supported-surface exploits.
