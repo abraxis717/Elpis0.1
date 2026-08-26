@@ -66,6 +66,67 @@ def grid_tensor(grid):
     )
 
 
+def mismatched_within_declared(
+    declared,
+    active,
+):
+    """Wrong residual with matched support/count.
+
+    The returned vector:
+      - activates only constraints declared by this same fixture;
+      - preserves the number of active residual features;
+      - differs from the matched residual whenever the declared graph has
+        enough inactive constraints to construct a distinct subset.
+    """
+    declared_indices = [
+        i for i, value in enumerate(declared)
+        if value
+    ]
+    active_indices = [
+        i for i, value in enumerate(active)
+        if value
+    ]
+    inactive_declared = [
+        i for i in declared_indices
+        if not active[i]
+    ]
+
+    count = len(active_indices)
+
+    if count == 0:
+        return tuple(active), False
+
+    candidates = (
+        inactive_declared
+        + active_indices
+    )
+
+    selected = candidates[:count]
+
+    if set(selected) == set(active_indices):
+        return tuple(active), False
+
+    out = [0] * FEATURE_WIDTH
+
+    for index in selected:
+        out[index] = 1
+
+    if sum(out) != sum(active):
+        raise RuntimeError(
+            "mismatched residual cardinality changed"
+        )
+
+    if any(
+        out[i] and not declared[i]
+        for i in range(FEATURE_WIDTH)
+    ):
+        raise RuntimeError(
+            "mismatched residual escaped declared graph"
+        )
+
+    return tuple(out), True
+
+
 def load_model(checkpoint_path: Path):
     checkpoint = torch.load(
         checkpoint_path,
@@ -111,7 +172,6 @@ def run_trm(
     is_resolved_fn,
     validate_transition_fn,
     mode,
-    mismatched_active,
     max_steps,
 ):
     current = schema.initial_grid
@@ -139,17 +199,22 @@ def run_trm(
         if not current_residual:
             break
 
+        _, matched_active = encode_constraint_state(
+            schema.invariants,
+            current_residual,
+        )
+
         if mode == "matched":
-            _, active = encode_constraint_state(
-                schema.invariants,
-                current_residual,
-            )
+            active = matched_active
 
         elif mode == "zero":
             active = (0,) * FEATURE_WIDTH
 
         elif mode == "mismatched":
-            active = mismatched_active
+            active, _ = mismatched_within_declared(
+                declared,
+                matched_active,
+            )
 
         else:
             raise ValueError(
@@ -379,23 +444,6 @@ def main() -> int:
         flush=True,
     )
 
-    initial_active = []
-
-    for schema in fixtures:
-        ids = residual_fn(
-            schema.initial_grid,
-            schema.invariants,
-        )
-
-        _, active = encode_constraint_state(
-            schema.invariants,
-            ids,
-        )
-
-        initial_active.append(
-            active
-        )
-
     if args.dry_run:
         for index, schema in enumerate(
             fixtures
@@ -412,11 +460,31 @@ def main() -> int:
                 )
             )
 
+            mismatch, distinct = (
+                mismatched_within_declared(
+                    declared,
+                    active,
+                )
+            )
+
+            mismatch_declared_only = all(
+                not mismatch[i] or declared[i]
+                for i in range(FEATURE_WIDTH)
+            )
+
+            if sum(mismatch) != sum(active):
+                raise RuntimeError(
+                    "dry-run mismatch cardinality failure"
+                )
+
             print(
                 f"TRM_GEN_DRY case={index + 1}/{args.cases} "
                 f"invariants={sum(declared)} "
                 f"initial_residual={len(ids)} "
                 f"active_features={sum(active)} "
+                f"mismatch_distinct={str(distinct).lower()} "
+                f"mismatch_declared_only="
+                f"{str(mismatch_declared_only).lower()} "
                 f"writable={sum(schema.writable_mask)}",
                 flush=True,
             )
@@ -543,14 +611,6 @@ def main() -> int:
                 ]
             )
 
-        donor_index = (
-            index + 1
-        ) % len(fixtures)
-
-        mismatched = initial_active[
-            donor_index
-        ]
-
         for arm_name, mode in (
             (
                 "trm_matched",
@@ -576,9 +636,6 @@ def main() -> int:
                     validate_transition_fn
                 ),
                 mode=mode,
-                mismatched_active=(
-                    mismatched
-                ),
                 max_steps=args.trm_steps,
             )
 
