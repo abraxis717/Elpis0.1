@@ -10,8 +10,12 @@ import os
 from pathlib import Path
 import runpy
 import sys
+import threading
+import time
 import types
 from typing import Any
+
+C2R7C_R6_PROGRESS_V1 = True
 
 HERE = Path(__file__).resolve().parent
 PROBE = HERE / "source" / "redteam_c2r7c_residual_probe.py"
@@ -262,6 +266,43 @@ def main() -> None:
         )
 
     call_records: list[dict[str, Any]] = []
+    progress_counts: dict[str, int] = {}
+
+    def _run_with_progress(label: str, fn: Any, *args: Any, **kwargs: Any) -> Any:
+        index = progress_counts.get(label, 0) + 1
+        progress_counts[label] = index
+        started = time.monotonic()
+        done = threading.Event()
+
+        print(
+            f"R6_PROGRESS arm={label} case={index}/40 phase=begin",
+            file=sys.stderr,
+            flush=True,
+        )
+
+        def heartbeat() -> None:
+            while not done.wait(5.0):
+                elapsed = time.monotonic() - started
+                print(
+                    f"R6_HEARTBEAT arm={label} case={index}/40 "
+                    f"elapsed_s={elapsed:.1f}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+
+        thread = threading.Thread(target=heartbeat, daemon=True)
+        thread.start()
+        try:
+            return fn(*args, **kwargs)
+        finally:
+            done.set()
+            elapsed = time.monotonic() - started
+            print(
+                f"R6_PROGRESS arm={label} case={index}/40 "
+                f"phase=end elapsed_s={elapsed:.3f}",
+                file=sys.stderr,
+                flush=True,
+            )
 
     def capability_guard(*args: Any, **kwargs: Any) -> Any:
         hits: list[str] = []
@@ -274,7 +315,9 @@ def main() -> None:
                 "PROHIBITED_CAPABILITY_PRESENT_IN_CALL:" + ",".join(sorted(set(hits)))
             )
 
-        result = restricted_search(*args, **kwargs)
+        result = _run_with_progress(
+            "search", restricted_search, *args, **kwargs
+        )
         call_records.append(
             {
                 "argc": len(args),
@@ -293,6 +336,24 @@ def main() -> None:
         raise SystemExit("unexpected runpy global identity")
     main_globals["refine_search"] = capability_guard
 
+    for _arm_name in ("refine_null", "refine_shadow", "refine_random"):
+        _original = main_globals[_arm_name]
+
+        def _make_wrapper(name: str, fn: Any) -> Any:
+            def _wrapped(*args: Any, **kwargs: Any) -> Any:
+                return _run_with_progress(
+                    name.removeprefix("refine_"), fn, *args, **kwargs
+                )
+            return _wrapped
+
+        main_globals[_arm_name] = _make_wrapper(_arm_name, _original)
+
+    print(
+        "R6_PROGRESS campaign=40_cases phase=begin",
+        file=sys.stderr,
+        flush=True,
+    )
+
     # Poison hidden-answer-looking module globals as an additional dynamic tripwire.
     prior = {}
     for name in PROHIBITED_GLOBAL_NAMES:
@@ -310,6 +371,12 @@ def main() -> None:
                 main_globals.pop(name, None)
             else:
                 main_globals[name] = value
+
+    print(
+        "R6_PROGRESS campaign=40_cases phase=end",
+        file=sys.stderr,
+        flush=True,
+    )
 
     text = buf.getvalue().strip()
     if not text:
