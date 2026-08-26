@@ -20,6 +20,7 @@ from structural_trm_features import FEATURE_WIDTH
 
 GRID_SIZE = 81
 TOKEN_VOCAB = 10
+EDIT_VOCAB = 11  # KEEP + SET(BasisToken 0..9)
 HIDDEN_SIZE = 64
 
 
@@ -123,7 +124,7 @@ class StructuralTRM64(nn.Module):
         )
 
         self.out_norm = RMSNorm()
-        self.lm_head = nn.Linear(hidden, TOKEN_VOCAB)
+        self.edit_head = nn.Linear(hidden, EDIT_VOCAB)
         self.q_head = nn.Linear(hidden, 2)
 
     @staticmethod
@@ -211,7 +212,7 @@ class StructuralTRM64(nn.Module):
             z_h=z_h.detach(),
             z_l=z_l.detach(),
         ), {
-            "logits": self.lm_head(state),
+            "edit_logits": self.edit_head(state),
             "q_logits": self.q_head(state.mean(dim=1)),
         }
 
@@ -232,11 +233,20 @@ class StructuralTRM64(nn.Module):
             carry,
         )
 
-        prediction = output["logits"].argmax(dim=-1)
+        action = output["edit_logits"].argmax(dim=-1)
+
+        should_edit = (
+            writable_mask81.bool()
+            & action.ne(0)
+        )
+
+        replacement = (
+            action - 1
+        ).clamp_min(0)
 
         proposed = torch.where(
-            writable_mask81.bool(),
-            prediction,
+            should_edit,
+            replacement,
             grid81.long(),
         )
 
@@ -272,12 +282,12 @@ def self_test():
         residual,
     )
 
-    assert output["logits"].shape == (2, 81, 10)
+    assert output["edit_logits"].shape == (2, 81, 11)
     assert carry.z_h.shape == (2, 81, 64)
     assert carry.z_l.shape == (2, 81, 64)
 
     delta = (
-        output["logits"][0] - output["logits"][1]
+        output["edit_logits"][0] - output["edit_logits"][1]
     ).abs().max().item()
     assert delta > 1e-7
 
@@ -298,7 +308,7 @@ def self_test():
         "TRM0_MODEL_SELFTEST=PASS "
         f"hidden=64 "
         f"params={params} "
-        f"logits={tuple(output['logits'].shape)} "
+        f"edit_logits={tuple(output['edit_logits'].shape)} "
         f"context_delta={delta:.8f} "
         "frozen_invariant=PASS"
     )
