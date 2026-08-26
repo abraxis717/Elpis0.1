@@ -11,8 +11,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": ".github/workflows/ci.yml",
-      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
-      "sha256": "1fc3f9187949688846e8423b7208d2887ea3a02cd8656743d6d7b17f2d16482d"
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "93b8871cf58d54f63fcf04dbf1898ec28d2b811703b822a54332110d97279ace"
     },
     {
       "classification": "ADDED",
@@ -23,14 +23,14 @@
     {
       "classification": "ADDED",
       "path": ".github/workflows/reference-runtime.yml",
-      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
-      "sha256": "ea72740bc9b36d103af3f580fdbf79d5b6143ccc629521b2172d6d1bc5b55d7a"
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "b0cf7939f25f7b215a05fa3d4b193528ce8b1afea1345d45fbe0898ee45d3568"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "CHANGELOG.md",
-      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
-      "sha256": "a2a754cad18179cf1dc407d0e477c594128eab10dff26a6ecc98fece889e3793"
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "0ddee5e75ddef26d35ded65698bc2278a4a51106bfb5e7aaa7a9d6b60150ed66"
     },
     {
       "classification": "ADDED",
@@ -41,8 +41,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "README.md",
-      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
-      "sha256": "4412b69f947aaced500b0558afdf431bec2c5208e2a8ce9cccdf6b6390ebe116"
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "ea4609ed68649e5278020c241ae5b7d80c2493548c78c64570b96bac0bc1eac8"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -53,8 +53,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "VERSION",
-      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
-      "sha256": "37310c7f348165122ccb9f4a854c29485395bb3af0659ba5a77be066c1511679"
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "c808fbaccc0ce69f91e3a684328fc872f2212b4233fbd81c40a076e8032e1236"
     },
     {
       "classification": "ADDED",
@@ -69,6 +69,12 @@
       "sha256": "b0438601e976f22dc662ae9144513967e1cceef6f3a19d69f979eb9f553c9671"
     },
     {
+      "classification": "POST_RELEASE_MODIFIED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/__init__.py",
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "2da67abd9ddd956dd4b110309550db5a4f5deee2f0070333f920fe6c9f48b1fa"
+    },
+    {
       "classification": "ADDED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/artifact_lineage.py",
       "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
@@ -77,8 +83,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/contracts.py",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "c16620cf19194f7f83dfd7edfddafd929d84a4b6e502f1fe88a60bce3fb71a93"
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "0de6cd4cba3c413c01fbe5196b08b85a42846503bf1e101c8aff3878580af2d1"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -101,8 +107,14 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/projector.py",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "867bc54a02d9215a98ac825e6324b24dfb5f806e7009f2e2191ce903342c00c8"
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "5b413975f5faa423ff07eed681832843bdaaa4cddde4ea14ddc7dcd495008adb"
+    },
+    {
+      "classification": "ADDED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/semantic_ir.py",
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "d4c44e586c7869ff1ab8621e0f0ddd638784951f2583b847b75efc07f788f519"
     },
     {
       "classification": "ADDED",
@@ -115,6 +127,12 @@
       "path": "components/Pipeline/P0ControlProtocol/tests/test_lineage_authority.py",
       "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
       "sha256": "46ff20e576eb7de20dc626e3efc74430bdaeefe25d4ef0d6dcf5ad4d4f7b2230"
+    },
+    {
+      "classification": "ADDED",
+      "path": "components/Pipeline/P0ControlProtocol/tests/test_semantic_ir.py",
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "ad9364fb232647cddadaeba9b30a7df7cfd5e497410c99392e5c2b51dff97422"
     },
     {
       "classification": "ADDED",
@@ -167,8 +185,8 @@
     {
       "classification": "ADDED",
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
-      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
-      "sha256": "ec1c565c3c7bb2a25241fc1a01a4e55b1d554a00b4cc22584ed9dbf55cd7362c"
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "9d8a70f81d5e48a349688545ce3a4978cbd353fa61d2f85ed59e923eeb85da86"
     },
     {
       "classification": "ADDED",
@@ -203,8 +221,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "pyproject.toml",
-      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
-      "sha256": "969d93aeef7f39dd510b16747ba09553d30084837b73246feff96b3887e95d77"
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "cff8a94f040af9e98b494be91933e4410ea13f77e5aebc49f2bcd5ded3ad5c02"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -358,6 +376,12 @@
     },
     {
       "classification": "ADDED",
+      "path": "tests/run_c2r7a_relational_semantic_ir_e2e.py",
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "5a8d2ade4f666ee2c98c37b239eea40861e381e8015df28b02825d5890adafc4"
+    },
+    {
+      "classification": "ADDED",
       "path": "tests/run_model_integrity_redteam.py",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "4023d026d03c3124154807664254ea8857a18a53cdc98a1bdc4fb013e29359a2"
@@ -415,6 +439,12 @@
       "path": "tools/redteam_c2r6cb_ingress_authority.py",
       "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
       "sha256": "853843a831bcf4b1e3d98db27e1ccefab7366112e8b302fad5bfc72e4c6932cf"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tools/redteam_c2r7a_semantic_ir.py",
+      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
+      "sha256": "788ff743f294cff20c04b8c94aa7259a4d13f6b7577647dc33bd5725cca0763d"
     },
     {
       "classification": "ADDED",

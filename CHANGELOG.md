@@ -1,3 +1,14 @@
+## 1.2.12 — Relational semantic request contract
+
+- Add `P0SemanticRequestV1`, a canonical graph contract independent of Grid81.
+- Represent explicit entities/types, operations with ordered arguments, negatable constraints, directed relations, directed operation dependencies, integer quantities, and output identities.
+- Canonicalize declaration order while preserving argument order, relation direction, dependency direction, negation, type identity, and quantity values in the semantic-request digest.
+- Fail closed on dangling references, duplicate node/edge identities, dependency cycles, unsupported quantity comparators, and semantic-request digest tampering.
+- Extend `RequestContext` with an optional structured semantic request without changing existing positional argument order.
+- Require the legacy keyword projector to reject structured semantic input until C2R7-B explicitly binds the graph to the structural-control path.
+- Add C2R7-A E2E and adversarial metamorphic coverage; keep the existing Grid81 semantic-compiler red-team unchanged as evidence that free-prose semantic compilation has not yet improved.
+- Natural-language extraction, graph/Grid81 sidecar binding, semantic reconstruction quality, relational ECS decomposition, learned semantic compilation, competence, and runtime admission remain open.
+
 ## 1.2.11 — Trusted-controller validator ingress
 
 - Bind production P0 validator ingress once to an exact `P0Controller` during trusted composition.

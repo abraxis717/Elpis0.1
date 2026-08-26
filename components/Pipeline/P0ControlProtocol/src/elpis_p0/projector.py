@@ -40,6 +40,21 @@ class DeterministicPythonProjector:
                 "supports python only"
             )
 
+        if context.semantic_request is not None:
+            context.semantic_request.validate()
+            if (
+                context.semantic_request.request_id
+                != context.request_id
+            ):
+                raise ValueError(
+                    "structured semantic request_id does not match "
+                    "RequestContext.request_id"
+                )
+            raise ValueError(
+                "legacy keyword projector refuses structured semantic "
+                "request until C2R7-B graph binding is qualified"
+            )
+
         words = tuple(
             word.lower()
             for word in _WORD.findall(

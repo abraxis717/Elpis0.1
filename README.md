@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.11 — Trusted-controller validator ingress
+## Release: v1.2.12 — Relational semantic request contract
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -208,6 +208,26 @@ isolation, cross-process durability, external cryptographic attestation, indepen
 ReleaseBinding issuance, relational/ECS decomposition, semantic reconstruction quality, learned
 re-proposal, competence, feedback efficacy, or runtime admission. Strong-reference authority
 tombstones remain an explicit lifecycle limitation.
+
+### C2R7-A relational semantic request contract
+
+P0 now has a canonical typed semantic request graph independent of Grid81. The graph preserves
+explicit entity identity/type, operation identity and ordered arguments, constraints with negation,
+directed relations, directed operation dependencies, integer quantities beyond the old four-parameter
+cell limit, and explicit output identities. Declaration order is canonicalized while argument and
+edge direction remain semantic. Referential integrity, globally unique node identities, digest
+integrity, and acyclic operation dependencies fail closed.
+
+This is a **representation contract**, not a natural-language semantic compiler. The existing
+`DeterministicPythonProjector` remains the same word-set/complexity heuristic for legacy
+`RequestContext` values. If a `P0SemanticRequestV1` is present, that projector now rejects instead of
+silently dropping the graph. C2R7-B must explicitly bind the semantic graph identity to the
+structural-control path; it must not imply that the arbitrary graph has been losslessly stuffed into
+81 cells.
+
+Natural-language extraction, paraphrase normalization, semantic reconstruction quality,
+semantic-graph/Grid81 sidecar binding, relational ECS dynamics, learned semantic compilation,
+held-out competence, and runtime admission remain unproven.
 
 ## Existing qualified structural stack
 

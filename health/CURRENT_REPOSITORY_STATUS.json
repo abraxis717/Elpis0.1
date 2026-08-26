@@ -5,7 +5,7 @@
   "published_main_basis": "10c57ac009d6a3df53623b1be79aa9b62066f5e0",
   "qualified_release_baseline": "v1.1.2",
   "reference_runtime": "RUNNABLE",
-  "reference_runtime_version": "1.2.11",
+  "reference_runtime_version": "1.2.12",
   "runtime_admission": false,
   "notes": [
     "Historical v1.1.2 release digests remain preservation authority except for explicitly declared post-release overlay paths.",
@@ -37,6 +37,9 @@
     "C2R6C-B must resolve authority from trusted controller/runtime composition; request input must never select its authority root.",
     "C2R6C-B binds production validator ingress once to trusted P0Controller composition and removes the bare-lineage production entrypoint.",
     "Per-request ingress cannot select controller/verifier/authority; controller registry consumption occurs only after semantic and lineage validation.",
-    "N2 is closed only for the process-local production P0 validator ingress API. External attestation, cross-process durability and hostile same-process isolation remain unclaimed."
+    "N2 is closed only for the process-local production P0 validator ingress API. External attestation, cross-process durability and hostile same-process isolation remain unclaimed.",
+    "C2R7-A adds a canonical relational semantic request graph that preserves entity/type identity, ordered operation arguments, negation, directed relations/dependencies, quantities and outputs.",
+    "The C2R7-A graph is independent of Grid81. The legacy keyword projector rejects structured semantic requests rather than silently discarding them.",
+    "Natural-language semantic extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition and learned semantic compilation remain open."
   ]
 }

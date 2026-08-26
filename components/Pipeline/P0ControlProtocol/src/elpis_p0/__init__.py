@@ -12,6 +12,18 @@ from .contracts import (
     P0RefinementError,
     build_refinement_input,
 )
+from .semantic_ir import (
+    P0_SEMANTIC_REQUEST_SCHEMA,
+    P0SemanticRequestContractError,
+    P0SemanticRequestV1,
+    SemanticConstraintV1,
+    SemanticDependencyV1,
+    SemanticEntityV1,
+    SemanticOperationV1,
+    SemanticQuantityV1,
+    SemanticRelationV1,
+    build_semantic_request_v1,
+)
 from .factory import (
     build_default_controller,
 )
@@ -91,6 +103,16 @@ __all__ = [
     "StructuralProjection",
     "TRMRefinementProposal",
     "ValidatorEvidence",
+    "P0_SEMANTIC_REQUEST_SCHEMA",
+    "P0SemanticRequestContractError",
+    "P0SemanticRequestV1",
+    "SemanticConstraintV1",
+    "SemanticDependencyV1",
+    "SemanticEntityV1",
+    "SemanticOperationV1",
+    "SemanticQuantityV1",
+    "SemanticRelationV1",
+    "build_semantic_request_v1",
     "build_default_controller",
     "P0Controller",
     # P0.2 exports

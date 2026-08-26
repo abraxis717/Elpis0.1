@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from enum import Enum, IntEnum
 from typing import Any
 
+from .semantic_ir import P0SemanticRequestV1
+
 from elpis_fractal_spine.structural_refinement import (
     StructuralRefinementInputV1,
     StructuralRefinementError,
@@ -71,6 +73,7 @@ class RequestContext:
     )
     max_tokens: int = 512
     budget_units: int = 32
+    semantic_request: P0SemanticRequestV1 | None = None
 
     def hint(self, key: str, default: str = "") -> str:
         return dict(self.decoder_hints).get(key, default)

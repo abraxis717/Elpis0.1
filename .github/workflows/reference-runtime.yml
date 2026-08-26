@@ -64,5 +64,9 @@ jobs:
         run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r6cb_trusted_ingress_e2e.py
       - name: Run C2R6C-B ingress red-team regression
         run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_c2r6cb_ingress_authority.py --quiet
+      - name: Run C2R7-A relational semantic IR E2E
+        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r7a_relational_semantic_ir_e2e.py
+      - name: Run C2R7-A semantic IR red-team regression
+        run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_c2r7a_semantic_ir.py --quiet
       - name: Run offline Grid81 semantic compiler red-team
         run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_grid81_semantic_compiler.py --out "$RUNNER_TEMP/grid81-semantic-diagnostic.json" --quiet
