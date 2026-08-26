@@ -348,6 +348,16 @@ def main() -> None:
 
         main_globals[_arm_name] = _make_wrapper(_arm_name, _original)
 
+    # R6_REFINER_TABLE_BINDING_V1
+    # Claude's driver dispatches through REFINERS, whose function objects were
+    # captured at module definition time. Rebind that actual dispatch table.
+    _refiners = dict(main_globals["REFINERS"])
+    _refiners["search"] = capability_guard
+    _refiners["null"] = main_globals["refine_null"]
+    _refiners["shadow"] = main_globals["refine_shadow"]
+    _refiners["random"] = main_globals["refine_random"]
+    main_globals["REFINERS"] = _refiners
+
     print(
         "R6_PROGRESS campaign=40_cases phase=begin",
         file=sys.stderr,
