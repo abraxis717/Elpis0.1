@@ -5,7 +5,7 @@
   "published_main_basis": "10c57ac009d6a3df53623b1be79aa9b62066f5e0",
   "qualified_release_baseline": "v1.1.2",
   "reference_runtime": "RUNNABLE",
-  "reference_runtime_version": "1.2.8",
+  "reference_runtime_version": "1.2.9",
   "runtime_admission": false,
   "notes": [
     "Historical v1.1.2 release digests remain preservation authority except for explicitly declared post-release overlay paths.",
@@ -29,6 +29,8 @@
     "Reference-runtime learned E2E is enabled for pull requests with content-keyed model caching; checkpoint and converted-state verification remain mandatory.",
     "P0 fixed-position semantics now use grid81.p0-semantic.v1 with digest-bound BasisToken/row/column meaning and identity-only semantic D4 symmetry; generic grid81.structural.v1 remains a separate coarse structural space.",
     "The heuristic row formerly called decomposition is now named complexity_flags; relational/ECS semantic decomposition is not yet implemented.",
-    "External caller-independent lineage authority remains open after C2R6B; lineage_record_digest remains an integrity record rather than attestation."
+    "External caller-independent lineage authority remains open after C2R6B; lineage_record_digest remains an integrity record rather than attestation.",
+    "C2R6C-A lands a controller-precommitted process-local one-shot lineage authority primitive; production validator ingress does not require it until C2R6C-B.",
+    "The authority primitive is not external attestation or cross-process durable provenance."
   ]
 }

@@ -1,3 +1,12 @@
+## 1.2.9 — Controller lineage authority primitive
+
+- Add an isolated controller-owned process-local lineage authority primitive.
+- Precommit rejecting-validator receipts before `P0Controller.run()` returns.
+- Reveal each precommitted receipt at most once and consume each bearer capability at most once.
+- Reject replay, cross-controller verification, and self-consistent unissued receipts.
+- Production validator ingress does not require the receipt yet; C2R6C-B remains open.
+- External attestation, cross-process durability, release-binding authority, semantic decomposition, learned re-proposal, competence, and runtime admission remain open.
+
 ## 1.2.8 — P0 semantic topology
 
 - Split fixed-position P0 semantics into `grid81.p0-semantic.v1`; generic `grid81.structural.v1` remains the coarse structural/D4 space.

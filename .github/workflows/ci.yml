@@ -213,3 +213,18 @@ jobs:
         run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r6b_p0_semantic_topology_e2e.py
       - name: Offline Grid81 semantic compiler red-team
         run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_grid81_semantic_compiler.py --out /tmp/grid81-semantic-diagnostic.json --quiet
+
+  c2r6ca-controller-authority-primitive:
+    name: C2R6C-A controller authority primitive
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install . pytest==9.0.2
+      - name: Authority primitive tests
+        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python -m pytest -q -p no:cacheprovider components/Pipeline/P0ControlProtocol/tests/test_lineage_authority.py
+      - name: Authority primitive E2E
+        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r6ca_controller_authority_e2e.py

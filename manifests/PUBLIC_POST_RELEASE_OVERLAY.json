@@ -11,8 +11,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": ".github/workflows/ci.yml",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "8574edfc1912fe7d841eac55b084f0fe0916fd05a386a66f57929a5ce0ae419b"
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "219250366c43971f6a3525893e2eb724d976db29db55904788ab591097b64d0c"
     },
     {
       "classification": "ADDED",
@@ -23,14 +23,14 @@
     {
       "classification": "ADDED",
       "path": ".github/workflows/reference-runtime.yml",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "59f75781d1b4e590413ff78b31c929edb71ecc5e00c716cfdf1c9525a93e6a33"
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "d5fcdc93ff752aa227254f11f847ecf184baff914e907c3561666d4b41ae9cb8"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "CHANGELOG.md",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "e927158615824d56a8d42fd4158ec36fa51a375666636fe65972420572ed9c2b"
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "d109c276a966eb74a06aacf1f756eb6395116dc8c66a1d891adc3cb05327922f"
     },
     {
       "classification": "ADDED",
@@ -41,8 +41,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "README.md",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "c9f365219d906601d1acd2157013eadcc335b41b19580f88bbdaaf34e4409815"
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "dc25a88a7cf14fb56a16123f172b6f8f07fbf4e076100939d300fc787f5ed859"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -53,8 +53,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "VERSION",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "d2d31534641da01801512a3ec793bc8d57132d4cefa19a5fb503e8995f39eb8f"
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "c8d83c2672c5e397ce16a2ee275ac45917002b9b36765f77d99f31bdf81ee828"
     },
     {
       "classification": "ADDED",
@@ -83,14 +83,20 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/controller.py",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "e261eb05e0d373ddd27ae2832ca0af83461a56fa7482e16cbd300489dbf36275"
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "c3f832d53068059539d6940cdde873bdccded6e2f041a60d272fddb536f9455b"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/expansion.py",
       "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
       "sha256": "b2f69f2f1b210f4cbeb532f5bfcd11db669c64e39b9ba6a032e4a401483e96bb"
+    },
+    {
+      "classification": "ADDED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/lineage_authority.py",
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "abc83c1fc4dd2b74dae912e0e1e6a1796e36b8194a6a210df080ccc484ef96ef"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -103,6 +109,12 @@
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/semantic_space.py",
       "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
       "sha256": "8da9f3e8fd545c66bbe83b18b08293329395f30df78f96f4c3d73a4af406c64d"
+    },
+    {
+      "classification": "ADDED",
+      "path": "components/Pipeline/P0ControlProtocol/tests/test_lineage_authority.py",
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "42f68424d9fa2bd537145c1c85665430cc87998865caee1f268b75b3bcfc3a44"
     },
     {
       "classification": "ADDED",
@@ -155,8 +167,8 @@
     {
       "classification": "ADDED",
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "dbc6e06a46ebde5d49ed3431ef3cd4c2d7f48ded19b7449162a76dcf5776097e"
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "2474adcc27ee46021469d6292697bd997c39b397d2dc80ab3507fe04a8074b52"
     },
     {
       "classification": "ADDED",
@@ -191,8 +203,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "pyproject.toml",
-      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
-      "sha256": "48fd259771fd31b686542a712228d6085555230c970f1fa0a984d2d89f16a649"
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "59f6f8faf560ab81bc907d3fe4a68e4e6396bcd40d30dcb917fa39fd4442ec8c"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -331,6 +343,12 @@
       "path": "tests/run_c2r6b_p0_semantic_topology_e2e.py",
       "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
       "sha256": "7be656224b3fbdde8cb4e3a39a4f3db9154311c4b1a8811e1fc7fd64842df6fe"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tests/run_c2r6ca_controller_authority_e2e.py",
+      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
+      "sha256": "e03ddfd849a63112991972ec27250805047f38202e168c40952aa11af25fb96d"
     },
     {
       "classification": "ADDED",

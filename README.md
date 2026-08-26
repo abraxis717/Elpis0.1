@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.8 — P0 semantic topology
+## Release: v1.2.9 — Controller lineage authority primitive
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -173,10 +173,22 @@ failure to exactly one pre-validation cell even when every validator repair supp
 The global task-derived RELEASE cap remains exactly one; unrelated validator repair loci and
 unrelated structural support remain clamped.
 
-This closes the C2R6B granularity deadlock and semantic-space aliasing at the canonical P0 run
-boundary. It does **not** establish caller-independent lineage authority, temporal precommitment,
-relational/ECS task decomposition, semantic reconstruction quality, learned structural proposer
-admission, held-out competence, feedback improvement, or runtime admission.
+C2R6B closes the granularity deadlock and semantic-space aliasing at the canonical P0 run
+boundary.
+
+### C2R6C-A controller lineage authority primitive
+
+`P0Controller` now owns an isolated process-local authority primitive. Before a rejecting
+`P0Result` escapes from `run()`, the controller validates its real lineage and precommits a
+one-shot registry-backed bearer receipt for each rejecting validator index. Later reveal only
+discloses that already-created receipt. The verifier consumes it once; replay, cross-controller
+verification, and canonically self-consistent but unissued receipts reject.
+
+This phase intentionally does **not** wire the receipt into production validator ingress yet.
+C2R6C-B is the integration gate. External attestation, cross-process durability, OS/hardware
+isolation, independent release-binding issuance, relational/ECS decomposition, semantic
+reconstruction quality, learned re-proposal, competence, feedback efficacy, and runtime admission
+remain unproven.
 
 ## Existing qualified structural stack
 

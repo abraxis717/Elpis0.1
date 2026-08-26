@@ -56,5 +56,7 @@ jobs:
         run: PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r5_artifact_proposal_lineage_e2e.py
       - name: Run C2R6B P0 semantic topology E2E
         run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r6b_p0_semantic_topology_e2e.py
+      - name: Run C2R6C-A controller authority primitive E2E
+        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r6ca_controller_authority_e2e.py
       - name: Run offline Grid81 semantic compiler red-team
         run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_grid81_semantic_compiler.py --out "$RUNNER_TEMP/grid81-semantic-diagnostic.json" --quiet

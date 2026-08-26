@@ -18,6 +18,11 @@ from .initial_void_scope_provider import (
     InitialVoidScopeProvider,
     ScopeDerivationRecordV1,
 )
+from .lineage_authority import (
+    P0AuthorizedArtifactLineageV1,
+    P0LineageAuthorityV1,
+    P0LineageAuthorityVerifierV1,
+)
 from .ports import (
     DecoderPort,
     ExpertProposalPort,
@@ -80,6 +85,7 @@ class P0Controller:
             ...],
         refinement_proposer: RefinementProposerPort | None = None,
         scope_provider: RefinementScopeProvider | None = None,
+        lineage_authority: P0LineageAuthorityV1 | None = None,
     ):
         if not validators:
             raise ValueError(
@@ -99,6 +105,26 @@ class P0Controller:
             else DeterministicShadowRefinementProposer()
         )
         self.scope_provider = scope_provider
+        self._lineage_authority = (
+            lineage_authority
+            if lineage_authority is not None
+            else P0LineageAuthorityV1()
+        )
+
+    def authorized_artifact_lineage(
+        self,
+        result: P0Result,
+        *,
+        validator_index: int,
+    ) -> P0AuthorizedArtifactLineageV1:
+        return self._lineage_authority.reveal(
+            result, validator_index=validator_index
+        )
+
+    def lineage_authority_verifier(
+        self,
+    ) -> P0LineageAuthorityVerifierV1:
+        return self._lineage_authority.verifier()
 
     # ------------------------------------------------------------------
     # G3.0 — derive_and_propose_refinement
@@ -574,7 +600,7 @@ class P0Controller:
             "governance_invoked": False,
         }
 
-        return P0Result(
+        result = P0Result(
             request_id=context.request_id,
             accepted=accepted,
             projection=projection,
@@ -598,6 +624,8 @@ class P0Controller:
                 result_payload
             ),
         )
+        self._lineage_authority.precommit_result(result)
+        return result
 
     @staticmethod
     def _compile_plan(
