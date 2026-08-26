@@ -5,7 +5,7 @@
   "published_main_basis": "10c57ac009d6a3df53623b1be79aa9b62066f5e0",
   "qualified_release_baseline": "v1.1.2",
   "reference_runtime": "RUNNABLE",
-  "reference_runtime_version": "1.2.9",
+  "reference_runtime_version": "1.2.10",
   "runtime_admission": false,
   "notes": [
     "Historical v1.1.2 release digests remain preservation authority except for explicitly declared post-release overlay paths.",
@@ -31,6 +31,9 @@
     "The heuristic row formerly called decomposition is now named complexity_flags; relational/ECS semantic decomposition is not yet implemented.",
     "External caller-independent lineage authority remains open after C2R6B; lineage_record_digest remains an integrity record rather than attestation.",
     "C2R6C-A lands a controller-precommitted process-local one-shot lineage authority primitive; production validator ingress does not require it until C2R6C-B.",
-    "The authority primitive is not external attestation or cross-process durable provenance."
+    "The authority primitive is not external attestation or cross-process durable provenance.",
+    "The canonical C2R6C-A Claude red-team reproduced five ownership-surface exploits in v1.2.9; v1.2.10 removes supported caller authority injection, standalone issuance and verifier selection.",
+    "The bounded primitive is now a controller-associated in-memory issuance registry. Hostile same-process isolation and bounded long-lived retention are not claimed.",
+    "C2R6C-B must resolve authority from trusted controller/runtime composition; request input must never select its authority root."
   ]
 }

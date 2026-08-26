@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.9 — Controller lineage authority primitive
+## Release: v1.2.10 — Controller-associated lineage issuance registry
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -176,17 +176,28 @@ unrelated structural support remain clamped.
 C2R6B closes the granularity deadlock and semantic-space aliasing at the canonical P0 run
 boundary.
 
-### C2R6C-A controller lineage authority primitive
+### C2R6C-A controller-associated lineage issuance registry
 
-`P0Controller` now owns an isolated process-local authority primitive. Before a rejecting
-`P0Result` escapes from `run()`, the controller validates its real lineage and precommits a
-one-shot registry-backed bearer receipt for each rejecting validator index. Later reveal only
-discloses that already-created receipt. The verifier consumes it once; replay, cross-controller
-verification, and canonically self-consistent but unissued receipts reject.
+The first C2R6C-A candidate passed its registry mechanics but failed adversarial ownership review:
+the issuer was publicly constructible, `P0Controller` accepted a caller-supplied authority, and a
+public verifier selector made an unsafe future ingress topology too easy to construct.
 
-This phase intentionally does **not** wire the receipt into production validator ingress yet.
-C2R6C-B is the integration gate. External attestation, cross-process durability, OS/hardware
-isolation, independent release-binding issuance, relational/ECS decomposition, semantic
+v1.2.10 closes those supported-surface defects. Supported `P0Controller` construction creates one
+internal issuance/consumption registry and accepts no authority injection. The old public standalone
+issuer and public verifier selector are removed. Rejecting-validator receipts are still precommitted
+before `run()` returns; one-shot membership, replay rejection, distinct-authority-instance rejection,
+and rejection of self-consistent but unissued receipts remain. Concurrent reveal/consume transitions
+are serialized and fail with typed authority errors, and the receipt digest uses the repository NUL
+domain-separator convention.
+
+The strongest current phrase is **controller-associated in-memory issuance registry**. Python
+reflection can still reach implementation-private state, so hostile same-process isolation is not
+claimed. Strong-reference tombstones also retain rejecting `P0Result` graphs for the controller
+lifetime and remain an explicit prototype lifecycle limitation.
+
+C2R6C-B must consume authority through trusted controller/runtime composition; production ingress
+must not accept a caller-selected verifier or authority root. External attestation, cross-process
+durability, independent release-binding issuance, relational/ECS decomposition, semantic
 reconstruction quality, learned re-proposal, competence, feedback efficacy, and runtime admission
 remain unproven.
 

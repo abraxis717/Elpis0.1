@@ -1,3 +1,15 @@
+## 1.2.10 — Controller-associated lineage issuance registry
+
+- Correct C2R6C-A ownership topology after the canonical Claude red-team reproduced five supported-surface exploits.
+- Remove public standalone issuer construction, caller authority injection, and public verifier selection.
+- Bind issuance/reveal/consume to one controller-associated in-memory registry created by supported controller construction.
+- Preserve the exact invariant: a distinct authority instance rejects the receipt; hostile same-process isolation is not claimed.
+- Serialize reveal and consume transitions so concurrent losers fail with typed `P0LineageAuthorityError`.
+- Correct accepted-validator and out-of-range reveal semantics.
+- Restore the repository NUL domain-separator convention and bump authority digest domains to `c2r6ca.v2`.
+- Track `tools/redteam_c2r6ca_lineage_authority.py` as a regression instrument that must report zero supported-surface exploits.
+- Keep O(rejecting-runs) tombstone retention, production ingress integration, external attestation, cross-process durability, semantic decomposition, competence, and runtime admission open.
+
 ## 1.2.9 — Controller lineage authority primitive
 
 - Add an isolated controller-owned process-local lineage authority primitive.

@@ -20,8 +20,8 @@ from .initial_void_scope_provider import (
 )
 from .lineage_authority import (
     P0AuthorizedArtifactLineageV1,
-    P0LineageAuthorityV1,
-    P0LineageAuthorityVerifierV1,
+    P0LineageAuthorityConsumptionV1,
+    _new_controller_lineage_authority,
 )
 from .ports import (
     DecoderPort,
@@ -85,7 +85,6 @@ class P0Controller:
             ...],
         refinement_proposer: RefinementProposerPort | None = None,
         scope_provider: RefinementScopeProvider | None = None,
-        lineage_authority: P0LineageAuthorityV1 | None = None,
     ):
         if not validators:
             raise ValueError(
@@ -105,11 +104,7 @@ class P0Controller:
             else DeterministicShadowRefinementProposer()
         )
         self.scope_provider = scope_provider
-        self._lineage_authority = (
-            lineage_authority
-            if lineage_authority is not None
-            else P0LineageAuthorityV1()
-        )
+        self.__lineage_authority = _new_controller_lineage_authority()
 
     def authorized_artifact_lineage(
         self,
@@ -117,14 +112,17 @@ class P0Controller:
         *,
         validator_index: int,
     ) -> P0AuthorizedArtifactLineageV1:
-        return self._lineage_authority.reveal(
-            result, validator_index=validator_index
+        return self.__lineage_authority._reveal_from_controller(
+            result,
+            validator_index=validator_index,
         )
 
-    def lineage_authority_verifier(
+    def consume_authorized_artifact_lineage(
         self,
-    ) -> P0LineageAuthorityVerifierV1:
-        return self._lineage_authority.verifier()
+        authorized: P0AuthorizedArtifactLineageV1,
+    ) -> P0LineageAuthorityConsumptionV1:
+        """Consume one receipt against this controller's trusted registry."""
+        return self.__lineage_authority._consume_from_controller(authorized)
 
     # ------------------------------------------------------------------
     # G3.0 — derive_and_propose_refinement
@@ -624,7 +622,7 @@ class P0Controller:
                 result_payload
             ),
         )
-        self._lineage_authority.precommit_result(result)
+        self.__lineage_authority._issue_from_run(result)
         return result
 
     @staticmethod

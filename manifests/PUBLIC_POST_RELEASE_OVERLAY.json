@@ -11,8 +11,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": ".github/workflows/ci.yml",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "219250366c43971f6a3525893e2eb724d976db29db55904788ab591097b64d0c"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "cdfeb25558a82619a586bc024ee60ef8da3d4578d95191f7ebe4fe9b4c552331"
     },
     {
       "classification": "ADDED",
@@ -23,14 +23,14 @@
     {
       "classification": "ADDED",
       "path": ".github/workflows/reference-runtime.yml",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "d5fcdc93ff752aa227254f11f847ecf184baff914e907c3561666d4b41ae9cb8"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "fe5c5c36ef28e816f385b9c4ba39b576594b16c08b9d536aae971ba024726e04"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "CHANGELOG.md",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "d109c276a966eb74a06aacf1f756eb6395116dc8c66a1d891adc3cb05327922f"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "dee5b8dc935be77050db77da4e6f309faf8236117501180f4cbe72927d7d744f"
     },
     {
       "classification": "ADDED",
@@ -41,8 +41,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "README.md",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "dc25a88a7cf14fb56a16123f172b6f8f07fbf4e076100939d300fc787f5ed859"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "cd0b053859ac7343e4b57ea12bf3f75cd0de7fa38b56bbf9df993c51cd7e05a1"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -53,8 +53,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "VERSION",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "c8d83c2672c5e397ce16a2ee275ac45917002b9b36765f77d99f31bdf81ee828"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "4304275f30e076c76abdc0f280f0fdd5537f1ac700953ba1908e29a64d531919"
     },
     {
       "classification": "ADDED",
@@ -83,8 +83,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/controller.py",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "c3f832d53068059539d6940cdde873bdccded6e2f041a60d272fddb536f9455b"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "5849e622261d687d81066deba515e2bef5b814b193f1b0bfa3baf0d5ed78819d"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -95,8 +95,8 @@
     {
       "classification": "ADDED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/lineage_authority.py",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "abc83c1fc4dd2b74dae912e0e1e6a1796e36b8194a6a210df080ccc484ef96ef"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "e825720d64850bc727b428be061f888887688f5987c30efc758f01aef322ac17"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -113,8 +113,8 @@
     {
       "classification": "ADDED",
       "path": "components/Pipeline/P0ControlProtocol/tests/test_lineage_authority.py",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "42f68424d9fa2bd537145c1c85665430cc87998865caee1f268b75b3bcfc3a44"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "46ff20e576eb7de20dc626e3efc74430bdaeefe25d4ef0d6dcf5ad4d4f7b2230"
     },
     {
       "classification": "ADDED",
@@ -167,8 +167,8 @@
     {
       "classification": "ADDED",
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "2474adcc27ee46021469d6292697bd997c39b397d2dc80ab3507fe04a8074b52"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "7e326cf8566ec814ffd7761e3a79c9beb91f2dd0ec43521bdfb3946bc7b934c6"
     },
     {
       "classification": "ADDED",
@@ -203,8 +203,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "pyproject.toml",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "59f6f8faf560ab81bc907d3fe4a68e4e6396bcd40d30dcb917fa39fd4442ec8c"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "d6d78bb065a87581062e9f7006303f21a539e4af81ebdfbedc88c4b83593d363"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -347,8 +347,8 @@
     {
       "classification": "ADDED",
       "path": "tests/run_c2r6ca_controller_authority_e2e.py",
-      "reason": "Public v1.2.9 C2R6C-A: land and qualify the isolated controller-owned process-local lineage authority primitive. Production validator ingress does not yet require it; C2R6C-B remains the integration gate.",
-      "sha256": "e03ddfd849a63112991972ec27250805047f38202e168c40952aa11af25fb96d"
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "6b710a26651e105eba7920e577001e5df3f1b40449b230cee4500a0c29b33082"
     },
     {
       "classification": "ADDED",
@@ -397,6 +397,12 @@
       "path": "tests/test_semantic_refinement_contract.py",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "735fdeb8a49845f3a14b2126a31690f9962c296547f81ca2301a93e0406da148"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tools/redteam_c2r6ca_lineage_authority.py",
+      "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
+      "sha256": "26c57e9f247ab31d604c0e9c99b93b8067373582e5af7d96d44212a7e87713b9"
     },
     {
       "classification": "ADDED",
