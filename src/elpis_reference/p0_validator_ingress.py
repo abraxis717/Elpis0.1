@@ -30,7 +30,7 @@ from .semantic_refinement import (
 )
 
 
-P0_VALIDATION_SEMANTIC_ROW = "validation"
+P0_VALIDATION_SEMANTIC_ROW = "validation_repair_loci"
 
 
 class P0ValidatorEvidenceLike(Protocol):
@@ -164,6 +164,11 @@ class P0ProjectionTraceV1:
     projection_digest: str
     semantic_rows: tuple[str, ...]
     row_semantic_digests: tuple[str, ...]
+    semantic_space: str
+    semantic_abi_version: str
+    semantic_space_digest: str
+    semantic_cell_roles: tuple[str, ...]
+    cell_semantic_digests: tuple[str, ...]
     observations: tuple[StructuralObservationRecord, ...]
     trace_digest: str
 
@@ -179,6 +184,18 @@ class P0ProjectionTraceV1:
             )
         return self.row_semantic_digests[matches[0]]
 
+    def semantic_digest_for_role(self, role: str) -> str:
+        matches = tuple(
+            index
+            for index, name in enumerate(self.semantic_cell_roles)
+            if name == role
+        )
+        if len(matches) != 1:
+            raise LookupError(
+                f"semantic cell role must resolve exactly once: {role}"
+            )
+        return self.cell_semantic_digests[matches[0]]
+
     def reverse_trace_index(self) -> ReverseTraceIndex:
         return ReverseTraceIndex(self.observations)
 
@@ -189,8 +206,21 @@ def build_p0_projection_trace(
     grid81: Sequence[int],
     semantic_rows: Sequence[str],
 ) -> P0ProjectionTraceV1:
-    """Freeze semantic/topology/P7 trace from an actual P0 projection."""
+    """Freeze fixed-position P0 semantic/topology/P7 trace pre-validation."""
     require_digest("projection_digest", projection_digest)
+
+    try:
+        from elpis_p0.semantic_space import (
+            P0_CELL_ROLES,
+            P0_SEMANTIC_ABI_VERSION,
+            P0_SEMANTIC_ROWS,
+            P0_SEMANTIC_SPACE,
+            P0_SEMANTIC_SPACE_DIGEST,
+        )
+    except ImportError as exc:
+        raise P0ValidatorIngressContractError(
+            "P0 semantic schema is unavailable"
+        ) from exc
 
     grid = tuple(int(value) for value in grid81)
     rows = tuple(str(name) for name in semantic_rows)
@@ -199,68 +229,75 @@ def build_p0_projection_trace(
         raise ValueError("P0 projection grid81 must contain 81 cells")
     if any(value < 0 or value > 9 for value in grid):
         raise ValueError("P0 projection grid81 values must remain in 0..9")
-    if len(rows) != 9:
-        raise ValueError("P0 projection requires exactly nine semantic rows")
-    if any(not name for name in rows):
-        raise ValueError("P0 semantic row names cannot be empty")
-    if len(set(rows)) != len(rows):
-        raise ValueError("P0 semantic row names must be unique")
+    if rows != tuple(P0_SEMANTIC_ROWS):
+        raise ValueError("P0 projection semantic row schema mismatch")
 
     row_digests: list[str] = []
+    cell_digests: list[str] = []
     observations: list[StructuralObservationRecord] = []
 
     for row_index, row_name in enumerate(rows):
         start = row_index * 9
         row_tokens = grid[start : start + 9]
-
-        semantic_digest = domain_digest(
-            "elpis.p0-projection-semantic-object.c2r4.v1",
+        row_semantic_digest = domain_digest(
+            "elpis.p0-projection-semantic-row.c2r6b.v1",
             {
                 "projection_digest": projection_digest,
                 "row_index": row_index,
                 "row_name": row_name,
                 "row_tokens": list(row_tokens),
+                "semantic_space_digest": P0_SEMANTIC_SPACE_DIGEST,
             },
         )
-        row_digests.append(semantic_digest)
+        row_digests.append(row_semantic_digest)
 
         for column_index, token in enumerate(row_tokens):
             cell_index = start + column_index
-
-            topology_digest = domain_digest(
-                "elpis.p0-projection-topology-vertex.c2r4.v1",
+            role = P0_CELL_ROLES[cell_index]
+            cell_semantic_digest = domain_digest(
+                "elpis.p0-projection-semantic-cell.c2r6b.v1",
                 {
+                    "cell_index": cell_index,
                     "column_index": column_index,
                     "projection_digest": projection_digest,
+                    "role": role,
                     "row_index": row_index,
-                    "source_semantic_object_digest": semantic_digest,
+                    "row_name": row_name,
+                    "semantic_space_digest": P0_SEMANTIC_SPACE_DIGEST,
+                    "token": token,
                 },
             )
-
+            cell_digests.append(cell_semantic_digest)
+            topology_digest = domain_digest(
+                "elpis.p0-projection-topology-vertex.c2r6b.v1",
+                {
+                    "cell_index": cell_index,
+                    "projection_digest": projection_digest,
+                    "source_semantic_object_digest": cell_semantic_digest,
+                },
+            )
             capsule_digest = domain_digest(
-                "elpis.p0-projection-p7-capsule.c2r4.v1",
+                "elpis.p0-projection-p7-capsule.c2r6b.v1",
                 {
                     "cell_index": cell_index,
                     "token": token,
                     "topology_vertex_digest": topology_digest,
                 },
             )
-
             observation_payload = {
                 "P7_capsule_digest": capsule_digest,
                 "P7_primary_cell_index": cell_index,
-                "source_semantic_object_digest": semantic_digest,
+                "source_semantic_object_digest": cell_semantic_digest,
                 "topology_vertex_digest": topology_digest,
             }
-
             observations.append(
                 StructuralObservationRecord(
-                    source_semantic_object_digest=semantic_digest,
+                    source_semantic_object_digest=cell_semantic_digest,
                     topology_vertex_digest=topology_digest,
                     P7_capsule_digest=capsule_digest,
                     P7_primary_cell_index=cell_index,
                     observation_digest=domain_digest(
-                        "elpis.p0-projection-structural-observation.c2r4.v1",
+                        "elpis.p0-projection-structural-observation.c2r6b.v1",
                         observation_payload,
                     ),
                 )
@@ -268,24 +305,33 @@ def build_p0_projection_trace(
 
     frozen_observations = tuple(observations)
     frozen_row_digests = tuple(row_digests)
-
+    frozen_cell_digests = tuple(cell_digests)
+    frozen_roles = tuple(P0_CELL_ROLES)
     trace_digest = domain_digest(
-        "elpis.p0-projection-trace.c2r4.v1",
+        "elpis.p0-projection-trace.c2r6b.v1",
         {
+            "cell_semantic_digests": list(frozen_cell_digests),
             "observation_digests": [
-                record.observation_digest
-                for record in frozen_observations
+                record.observation_digest for record in frozen_observations
             ],
             "projection_digest": projection_digest,
             "row_semantic_digests": list(frozen_row_digests),
+            "semantic_abi_version": P0_SEMANTIC_ABI_VERSION,
+            "semantic_cell_roles": list(frozen_roles),
             "semantic_rows": list(rows),
+            "semantic_space": P0_SEMANTIC_SPACE,
+            "semantic_space_digest": P0_SEMANTIC_SPACE_DIGEST,
         },
     )
-
     return P0ProjectionTraceV1(
         projection_digest=projection_digest,
         semantic_rows=rows,
         row_semantic_digests=frozen_row_digests,
+        semantic_space=P0_SEMANTIC_SPACE,
+        semantic_abi_version=P0_SEMANTIC_ABI_VERSION,
+        semantic_space_digest=P0_SEMANTIC_SPACE_DIGEST,
+        semantic_cell_roles=frozen_roles,
+        cell_semantic_digests=frozen_cell_digests,
         observations=frozen_observations,
         trace_digest=trace_digest,
     )
@@ -317,8 +363,19 @@ def task_diagnostic_from_p0_validator_failure(
     if not evidence.code:
         raise ValueError("validator failure code cannot be empty")
 
-    locus_identity = projection_trace.semantic_digest_for_row(
-        P0_VALIDATION_SEMANTIC_ROW
+    try:
+        from elpis_p0.semantic_space import validator_failure_role
+        failure_role = validator_failure_role(
+            evidence.validator_id,
+            evidence.code,
+        )
+    except (ImportError, ValueError) as exc:
+        raise P0ValidatorIngressContractError(
+            "unsupported P0 validator failure locus"
+        ) from exc
+
+    locus_identity = projection_trace.semantic_digest_for_role(
+        failure_role
     )
 
     details_digest = domain_digest(
@@ -334,6 +391,7 @@ def task_diagnostic_from_p0_validator_failure(
             "details": _validated_evidence_details(evidence),
             "message": evidence.message,
             "projection_trace_digest": projection_trace.trace_digest,
+            "validator_failure_role": failure_role,
             "validator_id": evidence.validator_id,
         },
     )

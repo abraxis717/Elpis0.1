@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.7 — Round-2 red-team corrections
+## Release: v1.2.8 — P0 semantic topology
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -152,15 +152,31 @@ attestation. The current validator ingress externally rechecks the artifact, pro
 validator evidence against that record; the proposal/plan/result identities inside the record are
 not yet anchored to a caller-independent controller registry.
 
-The production validator diagnostic still names the projection's semantic `validation` object.
-That semantic object reverse-resolves to the full nine-cell validation row. Because task-derived
-RELEASE remains hard-capped at one active target, a state with multiple active validation-row
-supports rejects rather than choosing among them. This is fail-closed, but it is also an open
-granularity/authorization gate for C2R6; v1.2.7 does not claim that production feedback topology is
-generalized.
+v1.2.7 left the production validator diagnostic at row granularity: one semantic
+`validation` object reverse-resolved to nine cells while task-derived RELEASE remained capped at
+one. C2R6B replaces that row-wide task locus with fixed pre-validation cell-role semantics.
 
-Held-out learned competence, paired feedback improvement, an external provenance trust root,
-production learned re-proposal, and runtime admission remain unproven.
+### C2R6B P0 semantic topology
+
+P0 now declares a distinct fixed-position semantic space, `grid81.p0-semantic.v1`, rather than
+sharing the generic `grid81.structural.v1` identity used by the coarse structural/D4 substrate.
+The P0 schema digest commits the BasisToken id-to-name mapping, every semantic row and column role,
+the coarse structural bridge, the validator-failure repair-role map, and the fact that the only
+admitted P0 semantic D4 element is `IDENTITY`. The generic structural-space digest separately
+commits its `StructuralOpcode` mapping.
+
+The former `decomposition` row is renamed `complexity_flags`: its behavior is unchanged and is not
+claimed as genuine task decomposition. The former `validation` row becomes
+`validation_repair_loci`. Each supported `PythonASTValidator` rejection code deterministically
+selects one predeclared semantic repair role. Reverse trace therefore resolves a task-validator
+failure to exactly one pre-validation cell even when every validator repair support is active.
+The global task-derived RELEASE cap remains exactly one; unrelated validator repair loci and
+unrelated structural support remain clamped.
+
+This closes the C2R6B granularity deadlock and semantic-space aliasing at the canonical P0 run
+boundary. It does **not** establish caller-independent lineage authority, temporal precommitment,
+relational/ECS task decomposition, semantic reconstruction quality, learned structural proposer
+admission, held-out competence, feedback improvement, or runtime admission.
 
 ## Existing qualified structural stack
 

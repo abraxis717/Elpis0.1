@@ -5,7 +5,7 @@
   "published_main_basis": "10c57ac009d6a3df53623b1be79aa9b62066f5e0",
   "qualified_release_baseline": "v1.1.2",
   "reference_runtime": "RUNNABLE",
-  "reference_runtime_version": "1.2.7",
+  "reference_runtime_version": "1.2.8",
   "runtime_admission": false,
   "notes": [
     "Historical v1.1.2 release digests remain preservation authority except for explicitly declared post-release overlay paths.",
@@ -25,7 +25,10 @@
     "C2R4 red-team hardening: one-cell state-bound release bindings, immutable Sudoku givens, and converted tensor-state verification; generic trace records are not cryptographic attestation.",
     "C2R5 integrity-binds the P0 result/projection/proposal/decoder-plan/artifact/validator record, but lineage_digest remains a deterministic record digest rather than caller-independent provenance attestation.",
     "Round-2 red-team correction: the C2R3 released hypothesis is explicitly fixture-derived rather than model-derived; that path is mechanism control only, not competence evidence.",
-    "Open C2R6 gate: the P0 validation semantic object reverse-resolves to a nine-cell row while task-derived RELEASE remains capped at one active target; multi-active-row support therefore fails closed pending a principled authority/granularity design.",
-    "Reference-runtime learned E2E is enabled for pull requests with content-keyed model caching; checkpoint and converted-state verification remain mandatory."
+    "C2R6B closes the row-granularity feedback deadlock: P0 validator failure codes now resolve to one fixed pre-validation repair sub-locus while the global task-derived RELEASE cap remains one.",
+    "Reference-runtime learned E2E is enabled for pull requests with content-keyed model caching; checkpoint and converted-state verification remain mandatory.",
+    "P0 fixed-position semantics now use grid81.p0-semantic.v1 with digest-bound BasisToken/row/column meaning and identity-only semantic D4 symmetry; generic grid81.structural.v1 remains a separate coarse structural space.",
+    "The heuristic row formerly called decomposition is now named complexity_flags; relational/ECS semantic decomposition is not yet implemented.",
+    "External caller-independent lineage authority remains open after C2R6B; lineage_record_digest remains an integrity record rather than attestation."
   ]
 }

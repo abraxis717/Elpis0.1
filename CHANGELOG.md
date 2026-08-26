@@ -1,3 +1,13 @@
+## 1.2.8 — P0 semantic topology
+
+- Split fixed-position P0 semantics into `grid81.p0-semantic.v1`; generic `grid81.structural.v1` remains the coarse structural/D4 space.
+- Bind BasisToken and StructuralOpcode meanings into their respective semantic-space digests.
+- Rename the heuristic `decomposition` row to `complexity_flags`; no semantic-decomposition improvement is claimed.
+- Replace row-wide task-validator resolution with six predeclared `validation_repair_loci` keyed deterministically by `PythonASTValidator` failure code.
+- Keep the global task-derived RELEASE cap at exactly one while allowing all validator repair supports to be active and prebound simultaneously.
+- Track the offline Grid81 semantic compiler red-team instrument and run it in qualification/CI.
+- External lineage authority, relational task representation, learned re-proposal, held-out competence, and runtime admission remain open.
+
 ## 1.2.7 — Round-2 red-team corrections
 
 - Correct the C2R3 mechanism-control claim: the released value is fixture-derived rather than model-derived; the control is not an independent competence test.

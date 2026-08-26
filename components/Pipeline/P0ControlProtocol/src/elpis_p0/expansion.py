@@ -11,9 +11,11 @@ Uses admitted BudgetVector axes (steps, depth) for ranking.
 from __future__ import annotations
 
 import hashlib
+import json
 from typing import Optional, Tuple
 
 from elpis.contracts.budget import BudgetVector, Charge
+from elpis_fractal_spine.structural_semantics import StructuralOpcode
 
 from .expansion_contracts import (
     ExpansionProposalEvidence,
@@ -52,12 +54,37 @@ MAX_DEPTH = 1
 # ---------------------------------------------------------------------------
 
 def make_semantic_space_digest() -> str:
-    """Produce a deterministic digest for the P0.2 semantic space identity."""
-    payload = (
-        f"{SEMANTIC_SPACE}|{ABI_VERSION}|"
-        f"{','.join(str(s) for s in SHAPE)}|{DTYPE}|{VOCABULARY_SIZE}"
+    """Digest generic structural identity including opcode meaning."""
+    payload = {
+        "abi_version": ABI_VERSION,
+        "dtype": DTYPE,
+        "semantic_space": SEMANTIC_SPACE,
+        "shape": list(SHAPE),
+        "token_semantics": [
+            {
+                "coarse_class": (
+                    "void"
+                    if opcode == StructuralOpcode.VOID
+                    else "expansion"
+                    if opcode == StructuralOpcode.EXPANSION
+                    else "terminal"
+                ),
+                "id": int(opcode),
+                "name": opcode.name,
+            }
+            for opcode in StructuralOpcode
+        ],
+        "vocabulary_size": VOCABULARY_SIZE,
+    }
+    return _sha256_hex(
+        json.dumps(
+            payload,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+            allow_nan=False,
+        )
     )
-    return _sha256_hex(payload)
 
 
 def validate_semantic_space(

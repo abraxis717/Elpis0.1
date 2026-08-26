@@ -82,6 +82,9 @@ class StructuralProjection:
     semantic_rows: tuple[str, ...]
     features: tuple[tuple[str, float], ...]
     digest: str
+    semantic_space: str = ""
+    semantic_abi_version: str = ""
+    semantic_space_digest: str = ""
 
     def validate(self) -> None:
         if len(self.grid81) != 81:
@@ -98,6 +101,27 @@ class StructuralProjection:
             raise ValueError(
                 "StructuralProjection cells must be in [0, 9]"
             )
+
+        identity = (
+            self.semantic_space,
+            self.semantic_abi_version,
+            self.semantic_space_digest,
+        )
+        if any(identity):
+            if not all(identity):
+                raise ValueError(
+                    "StructuralProjection semantic identity must be complete"
+                )
+            if len(self.semantic_space_digest) != 64:
+                raise ValueError(
+                    "StructuralProjection semantic_space_digest must be SHA-256"
+                )
+            try:
+                int(self.semantic_space_digest, 16)
+            except ValueError as exc:
+                raise ValueError(
+                    "StructuralProjection semantic_space_digest must be hexadecimal"
+                ) from exc
 
 
 @dataclass(frozen=True, slots=True)

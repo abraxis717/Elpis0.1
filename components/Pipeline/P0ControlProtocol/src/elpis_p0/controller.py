@@ -50,6 +50,7 @@ from .refinement_validation import (
 from .scoped_refinement_result import (
     ScopedRefinementControllerResultV1,
 )
+from .semantic_space import validate_p0_projection_identity
 
 
 class P0Controller:
@@ -386,6 +387,8 @@ class P0Controller:
                 context
             )
         )
+        projection.validate()
+        validate_p0_projection_identity(projection)
 
         self._trace(
             trace,

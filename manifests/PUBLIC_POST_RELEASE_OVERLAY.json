@@ -11,8 +11,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": ".github/workflows/ci.yml",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "e384e1acddd43b4f4d3f93c65051dc596e1f099a8c7ff718f54e0d53d625ef20"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "8574edfc1912fe7d841eac55b084f0fe0916fd05a386a66f57929a5ce0ae419b"
     },
     {
       "classification": "ADDED",
@@ -23,14 +23,14 @@
     {
       "classification": "ADDED",
       "path": ".github/workflows/reference-runtime.yml",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "590a902ee04142251d3aaf3ceb4030a6a9644d42a5612db7bbbde7c0df5e8481"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "59f75781d1b4e590413ff78b31c929edb71ecc5e00c716cfdf1c9525a93e6a33"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "CHANGELOG.md",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "7cab59305fad1c27ed976a6931287aace41e1e259b345a4e9116e36c78d08681"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "e927158615824d56a8d42fd4158ec36fa51a375666636fe65972420572ed9c2b"
     },
     {
       "classification": "ADDED",
@@ -41,8 +41,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "README.md",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "e673125ba71453ad80b9a13a1223f2b9e8ea83177ad647336321174789aae880"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "c9f365219d906601d1acd2157013eadcc335b41b19580f88bbdaaf34e4409815"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -53,8 +53,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "VERSION",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "d9e8e8429c6a7d0b965e4fac26a5efff7103f055faa98cceb5bd4731fd24603a"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "d2d31534641da01801512a3ec793bc8d57132d4cefa19a5fb503e8995f39eb8f"
     },
     {
       "classification": "ADDED",
@@ -77,14 +77,38 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/contracts.py",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "0ce191601a7b46a56711b333913e4da0ef56a602c222e0b8fe06c1010bf3db49"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "c16620cf19194f7f83dfd7edfddafd929d84a4b6e502f1fe88a60bce3fb71a93"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/controller.py",
-      "reason": "C2R5 artifact-to-structural-proposal lineage binding and qualification",
-      "sha256": "88060984fee391dab08db6ae3267d923d12d7bc038d9e528ac211506188a45a1"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "e261eb05e0d373ddd27ae2832ca0af83461a56fa7482e16cbd300489dbf36275"
+    },
+    {
+      "classification": "POST_RELEASE_MODIFIED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/expansion.py",
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "b2f69f2f1b210f4cbeb532f5bfcd11db669c64e39b9ba6a032e4a401483e96bb"
+    },
+    {
+      "classification": "POST_RELEASE_MODIFIED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/projector.py",
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "867bc54a02d9215a98ac825e6324b24dfb5f806e7009f2e2191ce903342c00c8"
+    },
+    {
+      "classification": "ADDED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/semantic_space.py",
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "8da9f3e8fd545c66bbe83b18b08293329395f30df78f96f4c3d73a4af406c64d"
+    },
+    {
+      "classification": "ADDED",
+      "path": "components/Pipeline/P0ControlProtocol/tests/test_semantic_space.py",
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "fffe531811337809412164132957c8f4661cbc2203609955a444ad9f02fe5dfc"
     },
     {
       "classification": "ADDED",
@@ -131,8 +155,8 @@
     {
       "classification": "ADDED",
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "b722d8e693ccd992129b6acd8fe93f371c7d1fe8d7fd42a8592c1852756bb60c"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "dbc6e06a46ebde5d49ed3431ef3cd4c2d7f48ded19b7449162a76dcf5776097e"
     },
     {
       "classification": "ADDED",
@@ -167,8 +191,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "pyproject.toml",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "d8f1cb437e5604262db3df34fc4d2ba324168dc188bb7dc704c0b2dcf70fecfa"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "48fd259771fd31b686542a712228d6085555230c970f1fa0a984d2d89f16a649"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -221,8 +245,8 @@
     {
       "classification": "ADDED",
       "path": "src/elpis_reference/p0_validator_ingress.py",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "d99c7d17b4b92532057a5b492100e61ff34454d753339d1b8e2e042d25345c71"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "bb4532232041182d4422c2da31622b1153f22027e28a4b4eb9584c5e8d25646e"
     },
     {
       "classification": "ADDED",
@@ -299,8 +323,14 @@
     {
       "classification": "ADDED",
       "path": "tests/run_c2r5_artifact_proposal_lineage_e2e.py",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "e22c0ddd53b3af8943cd9b5bd3f07231a4943a2d60e506c2ec40f074c30ea19a"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "1ccd6c2dee89ac82c49d6b74a1f638b99d5ba1b61db5d960e7dc40e7c0aa348b"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tests/run_c2r6b_p0_semantic_topology_e2e.py",
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "7be656224b3fbdde8cb4e3a39a4f3db9154311c4b1a8811e1fc7fd64842df6fe"
     },
     {
       "classification": "ADDED",
@@ -323,8 +353,8 @@
     {
       "classification": "ADDED",
       "path": "tests/test_p0_validator_ingress.py",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "7f009f7c465000feb37a28052550e60c279d72f2930f559f2b6a2c6e7f96d8cf"
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "af3768bdeb75a3e3d2b8bb8d338529e68de51db1b6160333d03892ca49eb1896"
     },
     {
       "classification": "ADDED",
@@ -349,6 +379,12 @@
       "path": "tests/test_semantic_refinement_contract.py",
       "reason": "Public v1.2.2 platform-agnostic refinement foundation: platform/bootstrap isolation plus qualified R7A task-residual and semantic/topology reverse-trace contracts.",
       "sha256": "735fdeb8a49845f3a14b2126a31690f9962c296547f81ca2301a93e0406da148"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tools/redteam_grid81_semantic_compiler.py",
+      "reason": "Public v1.2.8 C2R6B: split fixed-position P0 semantic identity from generic D4 structural Grid81, bind token/row/column meaning into semantic-space digests, and narrow task-validator failures to one predeclared repair sub-locus while retaining the one-cell RELEASE cap. External lineage authority, relational decomposition, learned re-proposal, competence, and runtime admission remain open.",
+      "sha256": "2c97aca369fb820e74cc55cf20bf67dfd0363c3f381688883d25a1f60c6d6a40"
     },
     {
       "classification": "ADDED",

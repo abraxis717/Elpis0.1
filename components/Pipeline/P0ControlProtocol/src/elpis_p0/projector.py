@@ -8,6 +8,12 @@ from .contracts import (
     RequestContext,
     StructuralProjection,
 )
+from .semantic_space import (
+    P0_SEMANTIC_ABI_VERSION,
+    P0_SEMANTIC_ROWS,
+    P0_SEMANTIC_SPACE,
+    P0_SEMANTIC_SPACE_DIGEST,
+)
 
 
 _WORD = re.compile(
@@ -22,17 +28,7 @@ class DeterministicPythonProjector:
     structural projector is admitted.
     """
 
-    semantic_rows = (
-        "request_contract",
-        "input_shape",
-        "requested_transform",
-        "output_shape",
-        "constraints",
-        "decomposition",
-        "expert_interfaces",
-        "validation",
-        "resolution_control",
-    )
+    semantic_rows = P0_SEMANTIC_ROWS
 
     def project(
         self,
@@ -83,14 +79,14 @@ class DeterministicPythonProjector:
             self._constraint_row(
                 word_set
             ),
-            self._decomposition_row(
+            self._complexity_flags_row(
                 complexity,
                 word_set,
             ),
             self._interface_row(
                 word_set
             ),
-            self._validation_row(
+            self._validation_repair_row(
                 word_set
             ),
             self._resolution_row(
@@ -140,6 +136,9 @@ class DeterministicPythonProjector:
                 "grid81": grid,
                 "semantic_rows": self.semantic_rows,
                 "features": features,
+                "semantic_space": P0_SEMANTIC_SPACE,
+                "semantic_abi_version": P0_SEMANTIC_ABI_VERSION,
+                "semantic_space_digest": P0_SEMANTIC_SPACE_DIGEST,
             }
         )
 
@@ -148,6 +147,9 @@ class DeterministicPythonProjector:
             semantic_rows=self.semantic_rows,
             features=features,
             digest=projection_digest,
+            semantic_space=P0_SEMANTIC_SPACE,
+            semantic_abi_version=P0_SEMANTIC_ABI_VERSION,
+            semantic_space_digest=P0_SEMANTIC_SPACE_DIGEST,
         )
 
         projection.validate()
@@ -319,7 +321,7 @@ class DeterministicPythonProjector:
         ]
 
     @staticmethod
-    def _decomposition_row(
+    def _complexity_flags_row(
         complexity: int,
         words: set[str],
     ) -> list[int]:
@@ -378,30 +380,22 @@ class DeterministicPythonProjector:
         ]
 
     @staticmethod
-    def _validation_row(
+    def _validation_repair_row(
         words: set[str],
     ) -> list[int]:
+        del words
+
         row = [
+            BasisToken.TRANSFORM,   # SYNTAX_ERROR
+            BasisToken.INTERFACE,   # ENTRYPOINT_MISSING
+            BasisToken.CONSTRAINT,  # IMPORT_FORBIDDEN
+            BasisToken.CONSTRAINT,  # SCOPE_MUTATION_FORBIDDEN
+            BasisToken.CONSTRAINT,  # BANNED_CALL
+            BasisToken.INTERFACE,   # LANGUAGE_MISMATCH
+            BasisToken.VOID,        # reserved
             BasisToken.CONSTRAINT,
-            BasisToken.INTERFACE,
-            BasisToken.CONSTRAINT,
+            BasisToken.RESOLUTION,
         ]
-
-        row += [
-            BasisToken.VOID
-        ] * 6
-
-        if (
-            "ast" in words
-            or "python" in words
-        ):
-            row[3] = BasisToken.INTERFACE
-
-        if "test" in words:
-            row[4] = BasisToken.CONSTRAINT
-
-        row[7] = BasisToken.CONSTRAINT
-        row[8] = BasisToken.RESOLUTION
 
         return [
             int(value)
