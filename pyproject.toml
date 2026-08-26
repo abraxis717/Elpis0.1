@@ -1,6 +1,6 @@
 [project]
 name = "elpis-canonical"
-version = "1.2.12"
+version = "1.2.13"
 description = "Deterministic Elpis structural core with a runnable TRM Sudoku reference runtime"
 requires-python = ">=3.11"
 license = {text = "MIT"}

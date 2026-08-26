@@ -10,8 +10,8 @@ from .experts import (
 from .initial_void_scope_provider import (
     InitialVoidScopeProvider,
 )
-from .projector import (
-    DeterministicPythonProjector,
+from .semantic_binding import (
+    SemanticSidecarPythonProjector,
 )
 from .refinement_proposer import (
     DeterministicShadowRefinementProposer,
@@ -26,7 +26,7 @@ def build_default_controller(
 ) -> P0Controller:
     return P0Controller(
         projector=(
-            DeterministicPythonProjector()
+            SemanticSidecarPythonProjector()
         ),
         trm=ShadowTRMProposer(),
         expert_proposer=(

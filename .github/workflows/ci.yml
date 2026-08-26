@@ -266,3 +266,24 @@ jobs:
         run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_c2r7a_semantic_ir.py --quiet
       - name: Legacy Grid81 semantic compiler diagnostic remains active
         run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_grid81_semantic_compiler.py --out /tmp/grid81-semantic-diagnostic.json --quiet
+
+  c2r7b-semantic-sidecar-binding:
+    name: C2R7-B semantic sidecar binding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install . pytest==9.0.2
+      - name: Semantic sidecar binding tests
+        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python -m pytest -q -p no:cacheprovider components/Pipeline/P0ControlProtocol/tests/test_semantic_binding.py
+      - name: C2R7-B semantic sidecar E2E
+        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r7b_semantic_sidecar_e2e.py
+      - name: C2R7-B sidecar red-team regression
+        run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_c2r7b_semantic_sidecar.py --quiet
+      - name: C2R7-A representation red-team remains green
+        run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_c2r7a_semantic_ir.py --quiet
+      - name: Legacy Grid81 semantic compiler diagnostic remains active
+        run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_grid81_semantic_compiler.py --out /tmp/grid81-semantic-diagnostic.json --quiet

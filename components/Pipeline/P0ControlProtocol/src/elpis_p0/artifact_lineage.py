@@ -9,6 +9,9 @@ from .contracts import P0Result
 
 
 _LINEAGE_DOMAIN = "elpis.p0-artifact-proposal-lineage.c2r5.v1"
+_SIDECAR_LINEAGE_DOMAIN = (
+    "elpis.p0-artifact-proposal-lineage.c2r7b.v1"
+)
 
 _VALIDATOR_EVIDENCE_DOMAIN = "elpis.p0-validator-evidence-binding.c2r5.v1"
 
@@ -129,6 +132,7 @@ class P0ArtifactProposalLineageV1:
     validator_id: str
     validator_code: str
     lineage_digest: str
+    semantic_request_digest: str = ""
 
 
 def build_artifact_proposal_lineage(
@@ -138,6 +142,8 @@ def build_artifact_proposal_lineage(
 ) -> P0ArtifactProposalLineageV1:
     if not result.request_id:
         raise ValueError("P0 result request_id cannot be empty")
+
+    result.projection.validate()
 
     for evidence_item in result.evidence:
         _validator_evidence_payload(evidence_item)
@@ -180,6 +186,11 @@ def build_artifact_proposal_lineage(
         raise ValueError("validator evidence identity is incomplete")
 
     evidence_digest = _validator_evidence_binding_digest(evidence)
+    semantic_request_digest = getattr(
+        result.projection,
+        "semantic_request_digest",
+        "",
+    )
     payload = {
         "artifact_digest": result.artifact.digest,
         "decoder_plan_digest": plan.plan_digest,
@@ -192,7 +203,24 @@ def build_artifact_proposal_lineage(
         "validator_id": evidence.validator_id,
         "validator_index": validator_index,
     }
-    lineage_digest = _domain_digest(_LINEAGE_DOMAIN, payload)
+    lineage_domain = _LINEAGE_DOMAIN
+    if semantic_request_digest:
+        if len(semantic_request_digest) != 64:
+            raise ValueError(
+                "semantic request digest must be SHA-256 hex"
+            )
+        try:
+            int(semantic_request_digest, 16)
+        except ValueError as exc:
+            raise ValueError(
+                "semantic request digest must be SHA-256 hex"
+            ) from exc
+        payload["semantic_request_digest"] = (
+            semantic_request_digest
+        )
+        lineage_domain = _SIDECAR_LINEAGE_DOMAIN
+
+    lineage_digest = _domain_digest(lineage_domain, payload)
 
     return P0ArtifactProposalLineageV1(
         request_id=result.request_id,
@@ -206,4 +234,5 @@ def build_artifact_proposal_lineage(
         validator_id=evidence.validator_id,
         validator_code=evidence.code,
         lineage_digest=lineage_digest,
+        semantic_request_digest=semantic_request_digest,
     )

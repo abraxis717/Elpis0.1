@@ -2,7 +2,7 @@
 
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
-## Release: v1.2.12 — Relational semantic request contract
+## Release: v1.2.13 — Semantic graph sidecar binding
 
 The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
 
@@ -228,6 +228,26 @@ structural-control path; it must not imply that the arbitrary graph has been los
 Natural-language extraction, paraphrase normalization, semantic reconstruction quality,
 semantic-graph/Grid81 sidecar binding, relational ECS dynamics, learned semantic compilation,
 held-out competence, and runtime admission remain unproven.
+
+### C2R7-B semantic graph sidecar binding
+
+The default P0 composition now uses an explicit `SemanticSidecarPythonProjector`. For graphless
+requests it returns the exact legacy projection unchanged. For a structured semantic request it
+first produces the unchanged legacy Grid81/feature payload with the graph removed, then binds the
+canonical semantic-request digest to that structural identity as a sidecar. The bound projection
+therefore changes identity when the semantic graph changes even when every Grid81 cell remains
+identical.
+
+The binding is identity-only. Semantic entities, relations, dependencies, constraints and quantities
+are **not** mapped into Grid81 cells, do not acquire structural write authority, and do not alter the
+legacy Grid81 payload. The bound projection digest propagates through TRM input identity, decoder-plan
+structural binding, artifact/result identity, controller authority lineage, and validator projection
+trace. Sidecar lineage and trace substitution fail before one-shot authority consumption.
+
+This still does not prove that a supplied semantic graph correctly represents the natural-language
+prompt. Natural-language extraction, prompt/graph semantic consistency, paraphrase normalization,
+semantic reconstruction, relational ECS dynamics, learned semantic compilation, competence and
+runtime admission remain open.
 
 ## Existing qualified structural stack
 

@@ -1,3 +1,15 @@
+## 1.2.13 — Semantic graph sidecar binding
+
+- Add `SemanticSidecarPythonProjector`, an explicit wrapper around the unchanged legacy Grid81 projector.
+- Preserve exact legacy projection output for graphless requests.
+- For structured requests, preserve the exact legacy Grid81 and feature payload while binding the canonical semantic-request digest to structural projection identity.
+- Add fail-closed sidecar validation covering graph digest, retained legacy projection digest, structural payload, binding digest, and bound projection digest.
+- Propagate bound projection identity through existing TRM, decoder plan, artifact and P0 result identities.
+- Extend artifact-proposal lineage with explicit semantic-request identity only for sidecar-bound runs while preserving the C2R5 lineage domain for legacy graphless runs.
+- Extend P0 projection traces with optional semantic-request identity and require sidecar lineage/trace equality before controller authority consumption.
+- Add C2R7-B E2E and adversarial coverage for same-Grid/different-graph identity, sidecar tampering, downstream propagation, and trace substitution.
+- Do not claim graph-to-cell encoding, natural-language extraction, prompt/graph semantic consistency, semantic reconstruction, relational ECS decomposition, learned compilation, competence, or runtime admission.
+
 ## 1.2.12 — Relational semantic request contract
 
 - Add `P0SemanticRequestV1`, a canonical graph contract independent of Grid81.

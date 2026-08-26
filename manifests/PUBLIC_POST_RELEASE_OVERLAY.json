@@ -11,8 +11,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": ".github/workflows/ci.yml",
-      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
-      "sha256": "93b8871cf58d54f63fcf04dbf1898ec28d2b811703b822a54332110d97279ace"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "b212744d0b8e1cd93613694fe7d2663d73f35567ff938c10b1cd588d0a68efa4"
     },
     {
       "classification": "ADDED",
@@ -23,14 +23,14 @@
     {
       "classification": "ADDED",
       "path": ".github/workflows/reference-runtime.yml",
-      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
-      "sha256": "b0cf7939f25f7b215a05fa3d4b193528ce8b1afea1345d45fbe0898ee45d3568"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "b8c63822774f4a98011f7f9e07fb6ec9db1464bbff16bdac4ea56349507d8f1c"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "CHANGELOG.md",
-      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
-      "sha256": "0ddee5e75ddef26d35ded65698bc2278a4a51106bfb5e7aaa7a9d6b60150ed66"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "a545854d4e459c3e4c649811c9cbadd7b40157f36888e82a494fb43d0177f789"
     },
     {
       "classification": "ADDED",
@@ -41,8 +41,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "README.md",
-      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
-      "sha256": "ea4609ed68649e5278020c241ae5b7d80c2493548c78c64570b96bac0bc1eac8"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "dd7d8c00013efccde73ef156e6d4d3ba299d75f935c95a5dc490c636713aee86"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -53,8 +53,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "VERSION",
-      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
-      "sha256": "c808fbaccc0ce69f91e3a684328fc872f2212b4233fbd81c40a076e8032e1236"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "c21698334b1e2308b8556ac1d10402342b8d3e837f65fa1c431eb23392824b1d"
     },
     {
       "classification": "ADDED",
@@ -71,20 +71,20 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/__init__.py",
-      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
-      "sha256": "2da67abd9ddd956dd4b110309550db5a4f5deee2f0070333f920fe6c9f48b1fa"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "6b6c7997c70bb0d1dd7562777a6c5c61deb166c1ff08eb0af5a5f0c42c75602c"
     },
     {
       "classification": "ADDED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/artifact_lineage.py",
-      "reason": "Public v1.2.7 round-2 red-team corrections: truthful mechanism-control provenance language, explicit non-attesting lineage-record boundary, pull-request learned-runtime coverage, and typed validator-evidence serialization errors; runtime admission remains false.",
-      "sha256": "ab45a46813cacda83c3f7eb8db2d857c31ba4e1eaab0171ed3614acfb45f2c31"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "b9d73db62644ec6a85321d156d9fcdef9b565d3111d88de40a9a060d7a432770"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/contracts.py",
-      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
-      "sha256": "0de6cd4cba3c413c01fbe5196b08b85a42846503bf1e101c8aff3878580af2d1"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "face8a09f0ad76a0e34cd4544a805302502ebb70ff8b7517934521d85ed8266a"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -99,6 +99,12 @@
       "sha256": "b2f69f2f1b210f4cbeb532f5bfcd11db669c64e39b9ba6a032e4a401483e96bb"
     },
     {
+      "classification": "POST_RELEASE_MODIFIED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/factory.py",
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "88310b222d2c1dfd4c9801c60bb7e7d6192d6c31bab6f3598bfd65734c5d87fc"
+    },
+    {
       "classification": "ADDED",
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/lineage_authority.py",
       "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
@@ -109,6 +115,12 @@
       "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/projector.py",
       "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
       "sha256": "5b413975f5faa423ff07eed681832843bdaaa4cddde4ea14ddc7dcd495008adb"
+    },
+    {
+      "classification": "ADDED",
+      "path": "components/Pipeline/P0ControlProtocol/src/elpis_p0/semantic_binding.py",
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "c212368355a79e813b1be7eedd235852ecb211a68d9ba8abe27c1b3e2d2f78ff"
     },
     {
       "classification": "ADDED",
@@ -127,6 +139,12 @@
       "path": "components/Pipeline/P0ControlProtocol/tests/test_lineage_authority.py",
       "reason": "Public v1.2.10 C2R6C-A ownership-topology correction after the canonical Claude red-team reproduced five supported-surface exploits. Remove caller authority injection/public verifier selection, bind issuance and consumption to one controller-associated in-memory registry, serialize one-shot state transitions, correct domain separation, and retain the red-team as a canonical regression instrument. Production ingress remains deferred to C2R6C-B.",
       "sha256": "46ff20e576eb7de20dc626e3efc74430bdaeefe25d4ef0d6dcf5ad4d4f7b2230"
+    },
+    {
+      "classification": "ADDED",
+      "path": "components/Pipeline/P0ControlProtocol/tests/test_semantic_binding.py",
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "e7f6e2f74b484c5994247b27d7d13ce6bf8b55125531006564f05370e4892172"
     },
     {
       "classification": "ADDED",
@@ -185,8 +203,8 @@
     {
       "classification": "ADDED",
       "path": "health/CURRENT_REPOSITORY_STATUS.json",
-      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
-      "sha256": "9d8a70f81d5e48a349688545ce3a4978cbd353fa61d2f85ed59e923eeb85da86"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "bb6881e94953c7d3b0323ce504c0c9fc8f675f2b6a5d046baf28c3ec2e31e028"
     },
     {
       "classification": "ADDED",
@@ -221,8 +239,8 @@
     {
       "classification": "POST_RELEASE_MODIFIED",
       "path": "pyproject.toml",
-      "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
-      "sha256": "cff8a94f040af9e98b494be91933e4410ea13f77e5aebc49f2bcd5ded3ad5c02"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "4547b4971a108ce8267fd120ef40d538171680ea45a86b023c215e7ea509e1c0"
     },
     {
       "classification": "POST_RELEASE_MODIFIED",
@@ -275,8 +293,8 @@
     {
       "classification": "ADDED",
       "path": "src/elpis_reference/p0_validator_ingress.py",
-      "reason": "Public v1.2.11 C2R6C-B trusted-controller ingress integration. Bind production validator ingress once to an exact trusted P0Controller during composition; remove the bare-lineage production entrypoint; require controller-issued authorization and one-shot registry consumption only after evidence, semantic-locus and lineage validation. Bind receipt and consumption identity into diagnostic details. Hostile same-process isolation, cross-process durability, external attestation, ReleaseBinding temporal authority, semantic decomposition, competence, and runtime admission remain open.",
-      "sha256": "5a00b2414017a5fd6a4471ad6f0477df77501d8a7e581384148231811d96976f"
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "a3311a2626c28221e23ad924521f7bfcba9ce05d3d32c2a75f8b96b2e68b2708"
     },
     {
       "classification": "ADDED",
@@ -382,6 +400,12 @@
     },
     {
       "classification": "ADDED",
+      "path": "tests/run_c2r7b_semantic_sidecar_e2e.py",
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "616659b83b7e130e74c45a0432dcfae09c0dedacd50277e9feaa12ae8572fb77"
+    },
+    {
+      "classification": "ADDED",
       "path": "tests/run_model_integrity_redteam.py",
       "reason": "Public v1.2.5 C2R4 validator ingress plus red-team hardening: state-bound one-cell RELEASE bindings, immutable Sudoku givens, and converted tensor-state verification; runtime admission remains false.",
       "sha256": "4023d026d03c3124154807664254ea8857a18a53cdc98a1bdc4fb013e29359a2"
@@ -445,6 +469,12 @@
       "path": "tools/redteam_c2r7a_semantic_ir.py",
       "reason": "Public v1.2.12 C2R7-A relational semantic IR contract. Add a canonical typed semantic request graph for entities, operations, constraints, relations, dependency direction, quantities and outputs. Keep the graph independent of Grid81 and require the legacy keyword projector to reject structured semantic input rather than silently discard it. Natural-language extraction, semantic-graph/Grid81 binding, reconstruction quality, relational ECS decomposition, learned semantic compilation and runtime admission remain open.",
       "sha256": "788ff743f294cff20c04b8c94aa7259a4d13f6b7577647dc33bd5725cca0763d"
+    },
+    {
+      "classification": "ADDED",
+      "path": "tools/redteam_c2r7b_semantic_sidecar.py",
+      "reason": "Public v1.2.13 C2R7-B semantic sidecar binding. Keep the relational semantic graph external to Grid81 while binding its canonical digest to the structural projection identity, downstream controller chain, artifact lineage and validator projection trace. Preserve graphless legacy projection identity and preserve Grid81/feature payloads for structured requests. Natural-language extraction, prompt/graph semantic consistency, lossless graph-to-Grid81 encoding, semantic reconstruction, relational ECS decomposition, learned compilation and runtime admission remain open.",
+      "sha256": "e0056cf4bd067a38f192a396b047531559f63df1ee17f5462445115f5446771e"
     },
     {
       "classification": "ADDED",

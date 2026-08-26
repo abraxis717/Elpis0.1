@@ -81,6 +81,9 @@ def _validated_evidence_details(
 
 
 P0_ARTIFACT_PROPOSAL_LINEAGE_DOMAIN = "elpis.p0-artifact-proposal-lineage.c2r5.v1"
+P0_ARTIFACT_PROPOSAL_SIDECAR_LINEAGE_DOMAIN = (
+    "elpis.p0-artifact-proposal-lineage.c2r7b.v1"
+)
 P0_VALIDATOR_EVIDENCE_DOMAIN = "elpis.p0-validator-evidence-binding.c2r5.v1"
 
 
@@ -96,6 +99,7 @@ class P0ArtifactProposalLineageLike(Protocol):
     validator_id: str
     validator_code: str
     lineage_digest: str
+    semantic_request_digest: str
 
 
 class P0LineageAuthorityReceiptLike(Protocol):
@@ -131,7 +135,7 @@ class P0ControllerAuthorityConsumerLike(Protocol):
 
 
 def _lineage_payload(lineage: P0ArtifactProposalLineageLike) -> dict[str, object]:
-    return {
+    payload = {
         "artifact_digest": lineage.artifact_digest,
         "decoder_plan_digest": lineage.decoder_plan_digest,
         "p0_result_digest": lineage.p0_result_digest,
@@ -143,6 +147,16 @@ def _lineage_payload(lineage: P0ArtifactProposalLineageLike) -> dict[str, object
         "validator_id": lineage.validator_id,
         "validator_index": lineage.validator_index,
     }
+    semantic_request_digest = getattr(
+        lineage,
+        "semantic_request_digest",
+        "",
+    )
+    if semantic_request_digest:
+        payload["semantic_request_digest"] = (
+            semantic_request_digest
+        )
+    return payload
 
 
 def _verify_lineage_binding(
@@ -169,6 +183,36 @@ def _verify_lineage_binding(
         raise ValueError("artifact digest does not match P0 lineage")
     if lineage.projection_digest != projection_trace.projection_digest:
         raise ValueError("projection trace does not match P0 lineage")
+
+    lineage_semantic_request_digest = getattr(
+        lineage,
+        "semantic_request_digest",
+        "",
+    )
+    trace_semantic_request_digest = getattr(
+        projection_trace,
+        "semantic_request_digest",
+        "",
+    )
+    if lineage_semantic_request_digest:
+        require_digest(
+            "semantic_request_digest",
+            lineage_semantic_request_digest,
+        )
+        if (
+            lineage_semantic_request_digest
+            != trace_semantic_request_digest
+        ):
+            raise ValueError(
+                "projection trace semantic request does not match "
+                "P0 lineage"
+            )
+    elif trace_semantic_request_digest:
+        raise ValueError(
+            "projection trace carries semantic request identity "
+            "absent from P0 lineage"
+        )
+
     if lineage.validator_id != evidence.validator_id or lineage.validator_code != evidence.code:
         raise ValueError("validator evidence identity does not match P0 lineage")
     actual_evidence_digest = domain_digest(
@@ -183,8 +227,13 @@ def _verify_lineage_binding(
     )
     if actual_evidence_digest != lineage.validator_evidence_digest:
         raise ValueError("validator evidence payload does not match P0 lineage")
+    lineage_domain = P0_ARTIFACT_PROPOSAL_LINEAGE_DOMAIN
+    if lineage_semantic_request_digest:
+        lineage_domain = (
+            P0_ARTIFACT_PROPOSAL_SIDECAR_LINEAGE_DOMAIN
+        )
     expected = domain_digest(
-        P0_ARTIFACT_PROPOSAL_LINEAGE_DOMAIN,
+        lineage_domain,
         _lineage_payload(lineage),
     )
     if expected != lineage.lineage_digest:
@@ -203,6 +252,7 @@ class P0ProjectionTraceV1:
     cell_semantic_digests: tuple[str, ...]
     observations: tuple[StructuralObservationRecord, ...]
     trace_digest: str
+    semantic_request_digest: str = ""
 
     def semantic_digest_for_row(self, row_name: str) -> str:
         matches = tuple(
@@ -237,9 +287,15 @@ def build_p0_projection_trace(
     projection_digest: str,
     grid81: Sequence[int],
     semantic_rows: Sequence[str],
+    semantic_request_digest: str = "",
 ) -> P0ProjectionTraceV1:
     """Freeze fixed-position P0 semantic/topology/P7 trace pre-validation."""
     require_digest("projection_digest", projection_digest)
+    if semantic_request_digest:
+        require_digest(
+            "semantic_request_digest",
+            semantic_request_digest,
+        )
 
     try:
         from elpis_p0.semantic_space import (
@@ -339,21 +395,30 @@ def build_p0_projection_trace(
     frozen_row_digests = tuple(row_digests)
     frozen_cell_digests = tuple(cell_digests)
     frozen_roles = tuple(P0_CELL_ROLES)
+    trace_payload = {
+        "cell_semantic_digests": list(frozen_cell_digests),
+        "observation_digests": [
+            record.observation_digest for record in frozen_observations
+        ],
+        "projection_digest": projection_digest,
+        "row_semantic_digests": list(frozen_row_digests),
+        "semantic_abi_version": P0_SEMANTIC_ABI_VERSION,
+        "semantic_cell_roles": list(frozen_roles),
+        "semantic_rows": list(rows),
+        "semantic_space": P0_SEMANTIC_SPACE,
+        "semantic_space_digest": P0_SEMANTIC_SPACE_DIGEST,
+    }
+    trace_domain = "elpis.p0-projection-trace.c2r6b.v1"
+    if semantic_request_digest:
+        trace_payload["semantic_request_digest"] = (
+            semantic_request_digest
+        )
+        trace_domain = (
+            "elpis.p0-projection-trace.c2r7b.v1"
+        )
     trace_digest = domain_digest(
-        "elpis.p0-projection-trace.c2r6b.v1",
-        {
-            "cell_semantic_digests": list(frozen_cell_digests),
-            "observation_digests": [
-                record.observation_digest for record in frozen_observations
-            ],
-            "projection_digest": projection_digest,
-            "row_semantic_digests": list(frozen_row_digests),
-            "semantic_abi_version": P0_SEMANTIC_ABI_VERSION,
-            "semantic_cell_roles": list(frozen_roles),
-            "semantic_rows": list(rows),
-            "semantic_space": P0_SEMANTIC_SPACE,
-            "semantic_space_digest": P0_SEMANTIC_SPACE_DIGEST,
-        },
+        trace_domain,
+        trace_payload,
     )
     return P0ProjectionTraceV1(
         projection_digest=projection_digest,
@@ -366,6 +431,7 @@ def build_p0_projection_trace(
         cell_semantic_digests=frozen_cell_digests,
         observations=frozen_observations,
         trace_digest=trace_digest,
+        semantic_request_digest=semantic_request_digest,
     )
 
 

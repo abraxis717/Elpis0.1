@@ -24,6 +24,13 @@ from .semantic_ir import (
     SemanticRelationV1,
     build_semantic_request_v1,
 )
+from .semantic_binding import (
+    P0_SEMANTIC_SIDECAR_BINDING_SCHEMA,
+    P0SemanticSidecarBindingError,
+    SemanticSidecarPythonProjector,
+    semantic_sidecar_binding_digest,
+    validate_semantic_sidecar_projection,
+)
 from .factory import (
     build_default_controller,
 )
@@ -113,6 +120,11 @@ __all__ = [
     "SemanticQuantityV1",
     "SemanticRelationV1",
     "build_semantic_request_v1",
+    "P0_SEMANTIC_SIDECAR_BINDING_SCHEMA",
+    "P0SemanticSidecarBindingError",
+    "SemanticSidecarPythonProjector",
+    "semantic_sidecar_binding_digest",
+    "validate_semantic_sidecar_projection",
     "build_default_controller",
     "P0Controller",
     # P0.2 exports

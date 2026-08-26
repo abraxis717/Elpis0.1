@@ -88,6 +88,9 @@ class StructuralProjection:
     semantic_space: str = ""
     semantic_abi_version: str = ""
     semantic_space_digest: str = ""
+    semantic_request_digest: str = ""
+    structural_projection_digest: str = ""
+    semantic_binding_digest: str = ""
 
     def validate(self) -> None:
         if len(self.grid81) != 81:
@@ -125,6 +128,21 @@ class StructuralProjection:
                 raise ValueError(
                     "StructuralProjection semantic_space_digest must be hexadecimal"
                 ) from exc
+
+        sidecar_identity = (
+            self.semantic_request_digest,
+            self.structural_projection_digest,
+            self.semantic_binding_digest,
+        )
+        if any(sidecar_identity):
+            if not all(sidecar_identity):
+                raise ValueError(
+                    "StructuralProjection semantic sidecar identity must be complete"
+                )
+            from .semantic_binding import (
+                validate_semantic_sidecar_projection,
+            )
+            validate_semantic_sidecar_projection(self)
 
 
 @dataclass(frozen=True, slots=True)
