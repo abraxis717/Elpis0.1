@@ -7,13 +7,10 @@ import guided_search_generalization_r0_2 as h
 
 
 def _prereg():
-    root = Path(__file__).resolve().parents[2]
-    p = (
-        root
-        / "work"
-        / "C2R7C_TRM0_GUIDED_SEARCH_R0_2"
-        / "PREREGISTRATION_R0_2.json"
-    )
+    # Tracked archival mirror of the preregistration that was frozen
+    # before R0.2 development/final execution. Its content SHA-256 is
+    # identical to the original evidence copy under work/.
+    p = Path(__file__).with_name("PREREGISTRATION_R0_2.json")
     return json.loads(p.read_text())
 
 

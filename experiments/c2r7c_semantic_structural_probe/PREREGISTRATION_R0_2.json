@@ -1,0 +1,67 @@
+{
+  "arms": [
+    "plain_search",
+    "search_trm_matched",
+    "search_trm_zero_residual",
+    "search_trm_mismatched_residual"
+  ],
+  "budget_selection": {
+    "cases": 128,
+    "plain_search_resolved": 70,
+    "rate": 0.546875,
+    "reason": "approximately balanced non-saturated operating point",
+    "source": "already-open R0.1 final evidence"
+  },
+  "causal_controls": [
+    "search_trm_matched vs search_trm_zero_residual",
+    "search_trm_matched vs paired evaluable search_trm_mismatched_residual"
+  ],
+  "development_population": {
+    "base_seed": 227919084,
+    "cases": 128,
+    "seed_count": 8,
+    "seed_derivation_sha256": "0d95c4ec7878bbf0ba44728d39458bf8b15d81d1600f45a84f657f0484ad8ac3"
+  },
+  "final_population": {
+    "base_seed": 712394309,
+    "cases": 128,
+    "seed_count": 8,
+    "seed_derivation_sha256": "aa764645af4944a0a7e2b06127c5b9d36460abcffc9080b6c0f744e2b6aeef5f",
+    "status": "UNOPENED"
+  },
+  "hard_invariants": [
+    "same legal candidate multiset across all arms",
+    "same 128-iteration budget across all arms",
+    "same deterministic residual cost function",
+    "same frozen-cell restrictions",
+    "same RNG seed per fixture across paired arms",
+    "TRM proposal cannot add, delete, or directly execute a move",
+    "TRM checkpoint remains frozen",
+    "no retraining",
+    "mismatched residual must be distinct and same-cardinality or fail closed",
+    "future R0.2 final population remains unopened until harness and tests freeze"
+  ],
+  "intervention": {
+    "acceptance_objective": "unchanged deterministic predecessor _cost; TRM score is never part of candidate cost",
+    "authority": "TRM proposal is never applied; only externally legal moves may be applied",
+    "base_order": "identical rng.shuffle(moves)",
+    "baseline_algorithm": "R0.1 refine_search",
+    "candidate_set": "identical _legal_moves output",
+    "guided_order": "stable descending sort after shuffle by fraction of cells changed by a legal move that agree with the TRM proposal",
+    "plateau_escape": "unchanged predecessor random perturbation path"
+  },
+  "predecessor": {
+    "checkpoint_sha256": "e58e44c9227d68971d0ab5f5e4f0eaf2e05d4faa97ec8232108aa73898273129",
+    "r0_1_report_sha256": "d9f9d1c6a8e932e9268c705750bb93a5a537ef21933dc5924c92f3abd936c913",
+    "training_corpus_sha256": "952d3bff676fd4c74f0bb1684ec23e70f261025d8ffb9adca59cf3a7850f1230"
+  },
+  "primary_endpoint": {
+    "comparison": "search_trm_matched vs plain_search",
+    "metric": "resolved_count_at_128_search_iterations"
+  },
+  "schema": "elpis.c2r7c.trm0-guided-search.r0-2-preregistration.v1",
+  "scientific_question": "Does the frozen TRM-0 structural signal improve bounded legal search when used only as an equal-cost candidate tie-breaker?",
+  "search_budget": 128,
+  "secondary_endpoint": "steps-to-resolution on fixtures jointly resolved by compared arms",
+  "status": "FROZEN_BEFORE_R0_2_DEVELOPMENT_EXECUTION"
+}
