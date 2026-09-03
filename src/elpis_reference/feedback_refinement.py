@@ -97,7 +97,7 @@ def execute_samsung_feedback_step(
     evidence_slots: Sequence[EvidenceSlotLike] = (),
     model_path: Path | None = None,
     device: str = "auto",
-    max_model_steps: int = 16,
+    max_model_steps: int = 1000,
 ) -> SamsungFeedbackTraversalV1:
     if not run_id:
         raise ValueError("run_id cannot be empty")
@@ -227,6 +227,10 @@ def execute_samsung_feedback_step(
         if learned.solution is not None
         else None
     )
+    learned_iteration_count = sum(
+        int(step.step)
+        for step in learned.steps
+    )
     if learned_solution is not None:
         hard_verdict = validate(hard_givens, learned_solution)
         if not hard_verdict.valid:
@@ -252,7 +256,7 @@ def execute_samsung_feedback_step(
         "learned_input": list(learned_input),
         "learned_status": learned.status,
         "learned_solution_digest": learned_solution_digest,
-        "learned_iteration_count": len(learned.steps),
+        "learned_iteration_count": learned_iteration_count,
     }
     return SamsungFeedbackTraversalV1(
         run_id=run_id,
@@ -273,7 +277,7 @@ def execute_samsung_feedback_step(
         learned_input=learned_input,
         learned_status=learned.status,
         learned_solution=learned_solution,
-        learned_iteration_count=len(learned.steps),
+        learned_iteration_count=learned_iteration_count,
         traversal_digest=domain_digest(
             "elpis.samsung-feedback-traversal.c2r4.v1", payload
         ),

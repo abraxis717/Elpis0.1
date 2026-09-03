@@ -2,23 +2,42 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import shutil
 from pathlib import Path
 
 import torch
-from torch import nn
 from huggingface_hub import hf_hub_download
-from safetensors import safe_open
-from safetensors.torch import load_file, save_file
 
-from .vendor.trm import TinyRecursiveReasoningModel_ACTV1
+from .vendor.fprm.models.fixed_point_reasoning.fp_trm_singlez import (
+    FPTinyRecursiveReasoningModelSingleZ_ACTV1,
+)
 
-MODEL_REPO = "Sanjin2024/TinyRecursiveModels-Sudoku-Extreme-mlp"
-MODEL_REVISION = "256f32fcbe7123e8bf8c449410773a5ad311dbc5"
-MODEL_FILENAME = "step_16275"
-MODEL_SHA256 = "20e9dc7ebf83b9b41a8b3f58f5fd94ee3a7eb0b0d245bdeeb14e2f1488d1daaf"
-CONVERTED_STATE_SHA256 = "225db649e70bcca706b06a5fc6f72c97d6585ebde9b1bb90de35d3991dadb37a"
-UPSTREAM_TRM_COMMIT = "c01103738605ba39d1430519b1ee0c62f4c707f8d"
-REGISTERED_PARAMETER_COUNT = 5_028_866
+
+MODEL_REPO = "fixed-point-reasoners/fprm"
+
+# Canonical Elpis runtime name. Do not rename this to the upstream filename.
+MODEL_FILENAME = "FPRM.Samsung_TRM"
+
+# Provenance only. This is never the local/runtime filename.
+UPSTREAM_MODEL_FILENAME = "sudoku/step_78120"
+
+MODEL_SHA256 = (
+    "6daec5f499d115beb14e23f3a9cf56d1166b99c1ccd36b185a19ea5dfec9a137"
+)
+
+QUALIFICATION_RUNTIME_HEAD = "d0be6fc2311f69a9f39964f21ecb0c50ac425b97"
+
+STATE_KEY_COUNT = 26
+STATE_ELEMENTS = 13_656_578
+REGISTERED_PARAMETER_COUNT = 6_833_666
+
+FPRM_MAX_ITER = 1000
+FPRM_STEPSIZE_DECAY = 0.997
+FPRM_DECAY_PATIENCE = 10
+FPRM_RETRY_SEEDS = (0, 1)
+
+_PREFIX = "_orig_mod.model."
 
 
 def _sha256(path: Path) -> str:
@@ -29,290 +48,263 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def _state_sha256(state: dict[str, torch.Tensor]) -> str:
-    h = hashlib.sha256()
-    h.update(b"elpis.converted-tensor-state.v1\x00")
-    for name in sorted(state):
-        tensor = state[name].detach().cpu().contiguous()
-        meta = json.dumps(
-            {"dtype": str(tensor.dtype), "name": name, "shape": list(tensor.shape)},
-            sort_keys=True, separators=(",", ":"), allow_nan=False,
-        ).encode("utf-8")
-        raw = tensor.view(torch.uint8).numpy().tobytes(order="C")
-        h.update(len(meta).to_bytes(8, "big"))
-        h.update(meta)
-        h.update(len(raw).to_bytes(8, "big"))
-        h.update(raw)
-    return h.hexdigest()
-
-
-def _expected_metadata() -> dict[str, str]:
-    return {
-        "source_repo": MODEL_REPO,
-        "source_revision": MODEL_REVISION,
-        "source_sha256": MODEL_SHA256,
-        "upstream_trm_commit": UPSTREAM_TRM_COMMIT,
-        "registered_parameter_count": str(REGISTERED_PARAMETER_COUNT),
-    }
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
 
 
 def default_cache_dir() -> Path:
-    return Path.home() / ".cache" / "elpis" / "models" / "trm-sudoku-extreme-mlp"
+    override = os.environ.get("ELPIS_FPRM_MODEL_DIR")
+    if override:
+        return Path(override)
+    return _repo_root() / "models"
 
 
-def _ensure_torch_buffer_compat() -> None:
-    if hasattr(nn, "Buffer"):
-        return
-
-    def _buffer_compat(data, persistent=True):
-        del persistent
-        return data
-
-    nn.Buffer = _buffer_compat  # type: ignore[attr-defined]
+def default_model_path() -> Path:
+    override = os.environ.get("ELPIS_FPRM_MODEL")
+    if override:
+        return Path(override)
+    return default_cache_dir() / MODEL_FILENAME
 
 
-def _register_existing_buffer(module: nn.Module, name: str, persistent: bool) -> None:
-    if name in module._buffers:
-        return
-    value = getattr(module, name, None)
-    if value is None:
-        raise RuntimeError(f"required compatibility buffer {name!r} absent")
-    delattr(module, name)
-    module.register_buffer(name, value, persistent=persistent)
+def _config_path() -> Path:
+    return (
+        Path(__file__).resolve().parent
+        / "vendor"
+        / "fprm"
+        / "sudoku_inference_config.json"
+    )
 
 
-def _repair_torch_buffers(model: TinyRecursiveReasoningModel_ACTV1) -> None:
-    inner = model.inner
-    _register_existing_buffer(inner, "H_init", True)
-    _register_existing_buffer(inner, "L_init", True)
+def _model_config(device: torch.device) -> dict[str, object]:
+    cfg = json.loads(_config_path().read_text())
 
-    if inner.config.puzzle_emb_ndim > 0:
-        sparse = inner.puzzle_emb
-        _register_existing_buffer(sparse, "weights", True)
-        _register_existing_buffer(sparse, "local_weights", False)
-        _register_existing_buffer(sparse, "local_ids", False)
+    # Preserve the qualified FPRM inference configuration.
+    # Runtime batches may contain fewer puzzles, but the model-side
+    # batch_size remains 32 exactly as in fprm_eval32 qualification.
+    cfg["batch_size"] = 32
+    cfg["seq_len"] = 81
+    cfg["vocab_size"] = 11
+    cfg["num_puzzle_identifiers"] = 1
+    cfg["max_iter_eval"] = FPRM_MAX_ITER
+
+    if device.type == "cuda":
+        cfg["forward_dtype"] = "bfloat16"
+    else:
+        cfg["forward_dtype"] = "float32"
+
+    return cfg
+
+
+def _device_from_name(name: str) -> torch.device:
+    if name != "auto":
+        return torch.device(name)
+
+    configured = os.environ.get("ELPIS_FPRM_DEVICE")
+    if configured:
+        return torch.device(configured)
+
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+
+    return torch.device("cpu")
 
 
 def _extract_state_dict(payload: object) -> dict[str, torch.Tensor]:
     if not isinstance(payload, dict):
-        raise RuntimeError("checkpoint root is not a mapping")
+        raise RuntimeError("FPRM checkpoint root is not a mapping")
 
     for key in ("model", "model_state_dict", "state_dict"):
         nested = payload.get(key)
         if (
             isinstance(nested, dict)
             and nested
-            and all(isinstance(name, str) and torch.is_tensor(value) for name, value in nested.items())
+            and all(
+                isinstance(name, str) and torch.is_tensor(value)
+                for name, value in nested.items()
+            )
         ):
-            return dict(nested)
+            payload = nested
+            break
 
-    if payload and all(
-        isinstance(name, str) and torch.is_tensor(value)
-        for name, value in payload.items()
+    if not (
+        isinstance(payload, dict)
+        and payload
+        and all(
+            isinstance(name, str) and torch.is_tensor(value)
+            for name, value in payload.items()
+        )
     ):
-        return dict(payload)
+        raise RuntimeError("FPRM checkpoint does not contain a pure tensor state")
 
-    raise RuntimeError("no pure tensor state dictionary found in checkpoint")
+    state = dict(payload)
 
+    if state and all(name.startswith(_PREFIX) for name in state):
+        state = {
+            name[len(_PREFIX):]: value
+            for name, value in state.items()
+        }
 
-def _strip_prefix(
-    state: dict[str, torch.Tensor],
-    prefix: str,
-) -> dict[str, torch.Tensor]:
-    if state and all(key.startswith(prefix) for key in state):
-        return {key[len(prefix):]: value for key, value in state.items()}
     return state
 
 
-def _state_variants(
-    state: dict[str, torch.Tensor],
-) -> tuple[dict[str, torch.Tensor], ...]:
-    variants: list[dict[str, torch.Tensor]] = []
-    queue = [state]
-    seen: set[tuple[str, ...]] = set()
+def _load_checkpoint_state(path: Path) -> dict[str, torch.Tensor]:
+    observed = _sha256(path)
+    if observed != MODEL_SHA256:
+        raise RuntimeError(
+            f"FPRM checkpoint SHA-256 mismatch: {observed} != {MODEL_SHA256}"
+        )
 
-    while queue:
-        candidate = queue.pop(0)
-        signature = tuple(sorted(candidate))
-        if signature in seen:
-            continue
+    payload = torch.load(path, map_location="cpu", weights_only=True)
+    state = _extract_state_dict(payload)
 
-        seen.add(signature)
-        variants.append(candidate)
+    if len(state) != STATE_KEY_COUNT:
+        raise RuntimeError(
+            f"FPRM state-key ABI mismatch: {len(state)} != {STATE_KEY_COUNT}"
+        )
 
-        for prefix in ("_orig_mod.", "module.", "model."):
-            stripped = _strip_prefix(candidate, prefix)
-            if tuple(sorted(stripped)) != signature:
-                queue.append(stripped)
+    elements = sum(int(tensor.numel()) for tensor in state.values())
+    if elements != STATE_ELEMENTS:
+        raise RuntimeError(
+            f"FPRM state-element ABI mismatch: {elements} != {STATE_ELEMENTS}"
+        )
 
-        if candidate and not all(key.startswith("inner.") for key in candidate):
-            queue.append({"inner." + key: value for key, value in candidate.items()})
-
-    return tuple(variants)
+    return state
 
 
-def _device_from_name(name: str) -> torch.device:
-    if name != "auto":
-        return torch.device(name)
-    if torch.cuda.is_available():
-        return torch.device("cuda")
-    if getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
-        return torch.device("mps")
-    return torch.device("cpu")
+def _new_model(device: torch.device) -> FPTinyRecursiveReasoningModelSingleZ_ACTV1:
+    cfg = _model_config(device)
 
+    # Match the qualified FPRM evaluator: construct directly on the target
+    # device. The vendored Turing-compatible initializer handles GPU1.
+    with torch.device(device):
+        model = FPTinyRecursiveReasoningModelSingleZ_ACTV1(cfg)
 
-def model_config(device: torch.device) -> dict[str, object]:
-    forward_dtype = "bfloat16" if device.type == "cuda" else "float32"
-    return {
-        "batch_size": 1,
-        "seq_len": 81,
-        "puzzle_emb_ndim": 512,
-        "num_puzzle_identifiers": 1,
-        "vocab_size": 11,
-        "H_cycles": 3,
-        "L_cycles": 6,
-        "H_layers": 0,
-        "L_layers": 2,
-        "hidden_size": 512,
-        "expansion": 4.0,
-        "num_heads": 8,
-        "pos_encodings": "none",
-        "halt_max_steps": 16,
-        "halt_exploration_prob": 0.1,
-        "forward_dtype": forward_dtype,
-        "mlp_t": True,
-        "puzzle_emb_len": 16,
-        "no_ACT_continue": True,
-    }
-
-
-def _new_model(device: torch.device) -> TinyRecursiveReasoningModel_ACTV1:
-    _ensure_torch_buffer_compat()
-    torch.manual_seed(0)
-    model = TinyRecursiveReasoningModel_ACTV1(model_config(device))
-    _repair_torch_buffers(model)
     count = sum(int(parameter.numel()) for parameter in model.parameters())
     if count != REGISTERED_PARAMETER_COUNT:
         raise RuntimeError(
-            f"registered parameter ABI mismatch: {count} != {REGISTERED_PARAMETER_COUNT}"
+            "FPRM registered-parameter ABI mismatch: "
+            f"{count} != {REGISTERED_PARAMETER_COUNT}"
         )
+
     return model
 
 
-def _select_strict_state(
-    raw_state: dict[str, torch.Tensor],
-    model: TinyRecursiveReasoningModel_ACTV1,
-) -> dict[str, torch.Tensor]:
-    expected_keys = set(model.state_dict())
+def verify_model(path: Path) -> dict[str, object]:
+    path = Path(path)
 
-    for candidate in _state_variants(raw_state):
-        if set(candidate) == expected_keys:
-            return {
-                key: value.detach().cpu().contiguous()
-                for key, value in candidate.items()
-            }
+    if path.name != MODEL_FILENAME:
+        raise RuntimeError(
+            f"canonical FPRM checkpoint filename must be {MODEL_FILENAME!r}; "
+            f"got {path.name!r}"
+        )
 
-    raw_keys = set(raw_state)
-    raise RuntimeError(
-        "no strict checkpoint normalization matched model state: "
-        f"raw={len(raw_keys)} expected={len(expected_keys)} "
-        f"missing={sorted(expected_keys - raw_keys)[:8]} "
-        f"unexpected={sorted(raw_keys - expected_keys)[:8]}"
-    )
+    state = _load_checkpoint_state(path)
+    model = _new_model(torch.device("cpu"))
+
+    expected = set(model.state_dict())
+    observed = set(state)
+
+    missing = sorted(expected - observed)
+    unexpected = sorted(observed - expected)
+
+    if missing or unexpected:
+        raise RuntimeError(
+            "strict FPRM checkpoint ABI mismatch: "
+            f"missing={missing[:8]} unexpected={unexpected[:8]}"
+        )
+
+    model.load_state_dict(state, strict=True)
+
+    return {
+        "path": str(path),
+        "filename": MODEL_FILENAME,
+        "sha256": _sha256(path),
+        "source_repo": MODEL_REPO,
+        "upstream_checkpoint": UPSTREAM_MODEL_FILENAME,
+        "qualification_runtime_head": QUALIFICATION_RUNTIME_HEAD,
+        "state_keys": len(state),
+        "state_elements": STATE_ELEMENTS,
+        "registered_parameters": REGISTERED_PARAMETER_COUNT,
+        "strict_load": True,
+    }
 
 
-def fetch_model(cache_dir: Path | None = None, force: bool = False) -> Path:
+def fetch_model(
+    cache_dir: Path | None = None,
+    force: bool = False,
+) -> Path:
     cache_dir = Path(cache_dir or default_cache_dir())
     cache_dir.mkdir(parents=True, exist_ok=True)
-    target = cache_dir / "model.safetensors"
+
+    target = cache_dir / MODEL_FILENAME
 
     if target.exists() and not force:
         verify_model(target)
         return target
 
+    hf_cache = cache_dir / ".hf-cache"
+    hf_cache.mkdir(parents=True, exist_ok=True)
+
     raw = Path(
         hf_hub_download(
             repo_id=MODEL_REPO,
-            filename=MODEL_FILENAME,
-            revision=MODEL_REVISION,
+            filename=UPSTREAM_MODEL_FILENAME,
+            cache_dir=str(hf_cache),
         )
     )
 
     observed = _sha256(raw)
     if observed != MODEL_SHA256:
         raise RuntimeError(
-            f"checkpoint SHA-256 mismatch: {observed} != {MODEL_SHA256}"
+            "downloaded FPRM authority mismatch: "
+            f"{observed} != {MODEL_SHA256}"
         )
 
-    payload = torch.load(raw, map_location="cpu", weights_only=True)
-    raw_state = _extract_state_dict(payload)
-
-    model = _new_model(torch.device("cpu"))
-    normalized = _select_strict_state(raw_state, model)
-
-    model.load_state_dict(normalized, strict=True)
-
-    save_file(
-        normalized,
-        str(target),
-        metadata={
-            "source_repo": MODEL_REPO,
-            "source_revision": MODEL_REVISION,
-            "source_sha256": MODEL_SHA256,
-            "upstream_trm_commit": UPSTREAM_TRM_COMMIT,
-            "registered_parameter_count": str(REGISTERED_PARAMETER_COUNT),
-        },
-    )
+    tmp = target.with_name(target.name + ".tmp")
+    shutil.copyfile(raw, tmp)
+    tmp.replace(target)
 
     verify_model(target)
     return target
 
 
-def verify_model(path: Path) -> dict[str, object]:
-    path = Path(path)
-    state = load_file(str(path), device="cpu")
-    observed_state_sha256 = _state_sha256(state)
-    if observed_state_sha256 != CONVERTED_STATE_SHA256:
-        raise RuntimeError(
-            "converted model state SHA-256 mismatch: "
-            f"{observed_state_sha256} != {CONVERTED_STATE_SHA256}"
-        )
-
-    with safe_open(str(path), framework="pt", device="cpu") as handle:
-        observed_metadata = handle.metadata() or {}
-    expected_metadata = _expected_metadata()
-    if observed_metadata != expected_metadata:
-        raise RuntimeError(
-            "converted model metadata mismatch: "
-            f"observed={observed_metadata!r} expected={expected_metadata!r}"
-        )
-
-    model = _new_model(torch.device("cpu"))
-    model.load_state_dict(state, strict=True)
-    return {
-        "path": str(path),
-        "sha256": _sha256(path),
-        "converted_state_sha256": observed_state_sha256,
-        "tensor_count": len(state),
-        "registered_parameters": REGISTERED_PARAMETER_COUNT,
-        "state_elements": sum(int(tensor.numel()) for tensor in state.values()),
-        "strict_load": True,
-        "metadata_verified": True,
-    }
-
-
 def load_model(
     model_path: Path | None = None,
     device: str = "auto",
-) -> tuple[TinyRecursiveReasoningModel_ACTV1, torch.device]:
-    model_path = Path(model_path or fetch_model())
-    verify_model(model_path)
+    seed: int | None = None,
+) -> tuple[FPTinyRecursiveReasoningModelSingleZ_ACTV1, torch.device]:
+    path = Path(model_path or default_model_path())
+
+    if not path.exists():
+        if model_path is not None:
+            raise FileNotFoundError(path)
+        path = fetch_model()
+
+    verify_model(path)
+
     target_device = _device_from_name(device)
+    state = _load_checkpoint_state(path)
+
+    # The official evaluator seeds BEFORE CUDA model construction. Model
+    # construction consumes RNG before initial_carry(), so seed placement is
+    # part of the reproducible FP-initialization contract.
+    if seed is not None:
+        torch.manual_seed(seed)
+        if target_device.type == "cuda":
+            torch.cuda.manual_seed_all(seed)
 
     model = _new_model(target_device)
-    state = load_file(str(model_path), device="cpu")
     model.load_state_dict(state, strict=True)
 
-    model.to(target_device)
+    # set_num_iters() selects train/eval budget from model.training.
+    # Enter eval mode FIRST so max_iter_eval=1000 is selected rather
+    # than the training max_iter=12.
     model.eval()
+    model.config.max_iter_eval = FPRM_MAX_ITER
+    model.set_num_iters()
+
+    inner = model.inner
+    inner.L_optimizer.stepsize_decay = FPRM_STEPSIZE_DECAY
+    inner.L_optimizer.decay_patience = FPRM_DECAY_PATIENCE
+
     return model, target_device

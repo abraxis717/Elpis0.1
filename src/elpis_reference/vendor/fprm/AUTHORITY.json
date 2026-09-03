@@ -1,0 +1,53 @@
+{
+  "checkpoint": {
+    "canonical_name": "FPRM.Samsung_TRM",
+    "sha256": "6daec5f499d115beb14e23f3a9cf56d1166b99c1ccd36b185a19ea5dfec9a137",
+    "size": 54637557,
+    "upstream_filename": "sudoku/step_78120",
+    "upstream_repo": "fixed-point-reasoners/fprm"
+  },
+  "config_sha256": "9d92242321769b8fcde8efb4408d1c35864f443ad926fddd8fef27f2f8c9b8d7",
+  "elpis_runtime": {
+    "canonical_checkpoint_name": "FPRM.Samsung_TRM",
+    "native_sudoku_only": true,
+    "qualified_batch_geometry": "1 real row + 31 zero-padding rows",
+    "semantic_input_forbidden": true
+  },
+  "qualification_runtime_head": "d0be6fc2311f69a9f39964f21ecb0c50ac425b97",
+  "qualified_runtime": {
+    "acceptance_authority": "external native Sudoku validator",
+    "decay_patience": 10,
+    "forward_dtype": "bfloat16",
+    "max_iter_eval": 1000,
+    "padding_input_token": 0,
+    "padding_rows": 31,
+    "real_rows": 1,
+    "retry_seeds": [
+      0,
+      1
+    ],
+    "runtime_batch_size": 32,
+    "stepsize_decay": 0.997
+  },
+  "schema": "elpis.fprm-sudoku-authority.v1",
+  "source_hashes": {
+    "models/common.py": "305fdd57fe1211dd7fbc85ebf3f6425944309efb76a8b85d833d9cb9a38ad183",
+    "models/config.py": "6fc4ad04c58f8bfab0e7ddba7249e746f95927918749ae95ce74c35751df0692",
+    "models/ema.py": "10f4dcbcda44dc044e51aeefa1344cc06e89b42c9d782d012dc018310e98c609",
+    "models/fixed_point_reasoning/fp_trm_config.py": "86c10c22af1e134ddcb087d46af74a4b60a572c9c7a5daad151c5d7a8a25cf23",
+    "models/fixed_point_reasoning/fp_trm_singlez.py": "9abbe4351eba2593c18fd19cfc95504ee2f8cef15f57a58926313d2950849f7f",
+    "models/fixed_point_reasoning/fprm.py": "b1a0a11e1f754de4fcf8619d12b3112e41973d6ca82a373db2eed005196c0e6f",
+    "models/fixed_point_reasoning/fprm_config.py": "ff2f51ca63e0cb81d36d904a101227ae96e277d05247a55ff31a96cc363e32ba",
+    "models/fixed_point_reasoning/model_utils.py": "9acc1e31581850611857cb8e998b92bf385b9779d8d8d9cf9fc8ea602b40c448",
+    "models/layers.py": "ddddfeb0cd3e3772437ea836b72915fd640f6c0ee40079437e29531d7d2f568d",
+    "models/loop_attnres.py": "ebc824238f4fec8c622cac508b95df75c30390c5f9d0af6a5a26a0677756a4c7",
+    "models/losses.py": "f473bed991a89798b8f2d34e2173d1be3e34e9cbc22c38d0902e34a06a0af9d1",
+    "models/recursive_reasoning/hrm.py": "ec3b2c636464554d666e7c1dc454d1f51e7fa80f4522fbcfeb999385ada9f50b",
+    "models/recursive_reasoning/transformers_baseline.py": "fcaa4ca0ec1046b8214e6b5494a9cfb548a04bd7747658e9f23a286b414500a8",
+    "models/recursive_reasoning/trm.py": "73ee7c6ff7e046f13bbcaee694dce04308f724d8cb43309f3712a571536c8975",
+    "models/recursive_reasoning/trm_hier6.py": "ac644845d08839c03e3dc7ca39f72d4e05dc8bf5293261a9bcfa1e4cb5013e69",
+    "models/recursive_reasoning/trm_singlez.py": "cf5e70a41b4342dba5648aa80f475165edf19396a0a2a480cdd0c796527e377a",
+    "models/sparse_embedding.py": "ba84b8c140687d1ef39bb7683c9d545f3f5cb8d72727382eabf5c261b6d48673",
+    "models/transformer.py": "26eb2c5018e74b3209349f0fca4e095c8b524e3cd27f4e42a8337b0ae360bc1e"
+  }
+}

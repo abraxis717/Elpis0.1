@@ -1,16 +1,22 @@
+from pathlib import Path
 from types import SimpleNamespace
 
 import torch
 
 import elpis_reference.refinement as refinement
-from elpis_reference.model import REGISTERED_PARAMETER_COUNT, model_config
+from elpis_reference.model import (
+    MODEL_FILENAME,
+    MODEL_SHA256,
+    REGISTERED_PARAMETER_COUNT,
+    load_model,
+    verify_model,
+)
 from elpis_reference.sudoku import (
     decode_model_ids,
     encode_model_input,
     parse_puzzle,
     validate,
 )
-from elpis_reference.vendor.trm import TinyRecursiveReasoningModel_ACTV1
 
 
 SOLVED = "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
@@ -28,41 +34,71 @@ def test_sudoku_codec_and_validator():
     assert verdict.complete
 
 
-def test_model_abi_constructs_on_cpu():
-    model = TinyRecursiveReasoningModel_ACTV1(
-        model_config(torch.device("cpu"))
+def test_fprm_model_abi_constructs_on_cpu():
+    root = Path(__file__).resolve().parents[1]
+    checkpoint = root / "models" / MODEL_FILENAME
+
+    authority = verify_model(checkpoint)
+
+    assert MODEL_FILENAME == "FPRM.Samsung_TRM"
+    assert authority["sha256"] == MODEL_SHA256
+    assert authority["strict_load"] is True
+    assert authority["registered_parameters"] == REGISTERED_PARAMETER_COUNT
+
+    model, device = load_model(
+        checkpoint,
+        device="cpu",
+        seed=0,
     )
 
+    assert device == torch.device("cpu")
+    assert model.training is False
     assert model.config.seq_len == 81
     assert model.config.vocab_size == 11
-    assert model.config.halt_max_steps == 16
-    assert model.config.mlp_t is True
-    assert sum(parameter.numel() for parameter in model.parameters()) == REGISTERED_PARAMETER_COUNT
+    assert model.config.conv_type == "conv2d"
+    assert model.config.conv_kernel_size == 3
+    assert model.max_iter == 1000
 
-    batch = {
-        "inputs": torch.ones((1, 81), dtype=torch.int64),
-        "puzzle_identifiers": torch.zeros((1,), dtype=torch.int64),
-    }
+    assert (
+        sum(parameter.numel() for parameter in model.parameters())
+        == REGISTERED_PARAMETER_COUNT
+    )
 
-    carry = model.initial_carry(batch)
-    assert tuple(carry.steps.shape) == (1,)
+    puzzle = parse_puzzle("." + SOLVED[1:])
+    batch = refinement._build_fprm_batch(
+        puzzle,
+        torch.device("cpu"),
+    )
+
+    assert batch["inputs"].shape == (32, 81)
+    assert batch["puzzle_identifiers"].shape == (32,)
+
+    with torch.device("cpu"):
+        carry = model.initial_carry(batch)
+
+    assert tuple(carry.halted.shape) == (32,)
 
 
 class _FakeModel:
     def __init__(self, token_ids):
         self._token_ids = tuple(token_ids)
+        self.max_iter = 1000
 
     def initial_carry(self, batch):
-        del batch
         return SimpleNamespace(
-            halted=torch.zeros((1,), dtype=torch.bool)
+            halted=torch.zeros(
+                (batch["inputs"].shape[0],),
+                dtype=torch.bool,
+            )
         )
 
     def __call__(self, carry, batch):
-        del carry, batch
+        del carry
+
+        rows = batch["inputs"].shape[0]
 
         logits = torch.zeros(
-            (1, 81, 11),
+            (rows, 81, 11),
             dtype=torch.float32,
         )
 
@@ -71,14 +107,29 @@ class _FakeModel:
 
         return (
             SimpleNamespace(
-                halted=torch.ones((1,), dtype=torch.bool)
+                halted=torch.ones(
+                    (rows,),
+                    dtype=torch.bool,
+                )
             ),
             {
                 "logits": logits,
-                "q_halt_logits": torch.zeros((1,)),
-                "q_continue_logits": torch.zeros((1,)),
+                "q_halt_logits": torch.zeros((rows,)),
+                "q_continue_logits": torch.zeros((rows,)),
             },
         )
+
+
+def _fake_loader(model):
+    def load_model(
+        model_path=None,
+        device="auto",
+        seed=None,
+    ):
+        del model_path, device, seed
+        return model, torch.device("cpu")
+
+    return load_model
 
 
 def test_runtime_rejects_given_violation_instead_of_rewriting(monkeypatch):
@@ -91,10 +142,7 @@ def test_runtime_rejects_given_violation_instead_of_rewriting(monkeypatch):
     monkeypatch.setattr(
         refinement,
         "load_model",
-        lambda model_path=None, device="auto": (
-            _FakeModel(token_ids),
-            torch.device("cpu"),
-        ),
+        _fake_loader(_FakeModel(token_ids)),
     )
 
     result = refinement.solve_sudoku(
@@ -115,10 +163,7 @@ def test_runtime_fails_closed_on_out_of_domain_model_token(monkeypatch):
     monkeypatch.setattr(
         refinement,
         "load_model",
-        lambda model_path=None, device="auto": (
-            _FakeModel(token_ids),
-            torch.device("cpu"),
-        ),
+        _fake_loader(_FakeModel(token_ids)),
     )
 
     result = refinement.solve_sudoku(
