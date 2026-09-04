@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-import ast
+from elpis.python_ast_policy import (
+    evaluate_python_ast_policy,
+    python_call_name,
+)
 
 from .contracts import (
     ArtifactCandidate,
@@ -26,7 +29,16 @@ class PythonASTValidator:
         context: RequestContext,
         artifact: ArtifactCandidate,
     ) -> ValidatorEvidence:
-        if artifact.language != "python":
+        decision = evaluate_python_ast_policy(
+            language=artifact.language,
+            source=artifact.source,
+            entrypoint=context.entrypoint,
+            banned_calls=frozenset(
+                self.banned_calls
+            ),
+        )
+
+        if decision.code == "LANGUAGE_MISMATCH":
             return ValidatorEvidence(
                 validator_id=self.validator_id,
                 passed=False,
@@ -37,157 +49,98 @@ class PythonASTValidator:
                 ),
             )
 
-        try:
-            tree = ast.parse(
-                artifact.source,
-                mode="exec",
-            )
-
-        except SyntaxError as exc:
+        if decision.code == "SYNTAX_ERROR":
             return ValidatorEvidence(
                 validator_id=self.validator_id,
                 passed=False,
                 code="SYNTAX_ERROR",
-                message=str(exc),
+                message=decision.syntax_message,
                 details=(
                     (
                         "lineno",
-                        exc.lineno or -1,
+                        decision.lineno,
                     ),
                     (
                         "offset",
-                        exc.offset or -1,
+                        decision.offset,
                     ),
                 ),
             )
 
-        expected = context.entrypoint
-
-        functions = {
-            node.name
-            for node in ast.walk(tree)
-            if isinstance(
-                node,
-                (
-                    ast.FunctionDef,
-                    ast.AsyncFunctionDef,
-                ),
-            )
-        }
-
-        if expected not in functions:
+        if decision.code == "ENTRYPOINT_MISSING":
             return ValidatorEvidence(
                 validator_id=self.validator_id,
                 passed=False,
                 code="ENTRYPOINT_MISSING",
                 message=(
                     "expected function "
-                    f"{expected!r} "
+                    f"{context.entrypoint!r} "
                     "was not defined"
                 ),
                 details=(
                     (
                         "functions",
-                        tuple(
-                            sorted(
-                                functions
-                            )
-                        ),
+                        decision.functions,
                     ),
                 ),
             )
 
-        for node in ast.walk(tree):
-            if isinstance(
-                node,
-                (
-                    ast.Import,
-                    ast.ImportFrom,
+        if decision.code == "IMPORT_FORBIDDEN":
+            return ValidatorEvidence(
+                validator_id=self.validator_id,
+                passed=False,
+                code="IMPORT_FORBIDDEN",
+                message=(
+                    "P0 template artifacts "
+                    "may not import modules"
                 ),
-            ):
-                return ValidatorEvidence(
-                    validator_id=(
-                        self.validator_id
+                details=(
+                    (
+                        "lineno",
+                        decision.lineno,
                     ),
-                    passed=False,
-                    code="IMPORT_FORBIDDEN",
-                    message=(
-                        "P0 template artifacts "
-                        "may not import modules"
-                    ),
-                    details=(
-                        (
-                            "lineno",
-                            getattr(
-                                node,
-                                "lineno",
-                                -1,
-                            ),
-                        ),
-                    ),
-                )
-
-            if isinstance(
-                node,
-                (
-                    ast.Global,
-                    ast.Nonlocal,
                 ),
-            ):
-                return ValidatorEvidence(
-                    validator_id=(
-                        self.validator_id
-                    ),
-                    passed=False,
-                    code=(
-                        "SCOPE_MUTATION_FORBIDDEN"
-                    ),
-                    message=(
-                        "global/nonlocal mutation "
-                        "is forbidden in P0"
-                    ),
-                    details=(
-                        (
-                            "lineno",
-                            getattr(
-                                node,
-                                "lineno",
-                                -1,
-                            ),
-                        ),
-                    ),
-                )
+            )
 
-            if isinstance(
-                node,
-                ast.Call,
-            ):
-                name = self._call_name(
-                    node.func
-                )
+        if decision.code == "SCOPE_MUTATION_FORBIDDEN":
+            return ValidatorEvidence(
+                validator_id=self.validator_id,
+                passed=False,
+                code="SCOPE_MUTATION_FORBIDDEN",
+                message=(
+                    "global/nonlocal mutation "
+                    "is forbidden in P0"
+                ),
+                details=(
+                    (
+                        "lineno",
+                        decision.lineno,
+                    ),
+                ),
+            )
 
-                if name in self.banned_calls:
-                    return ValidatorEvidence(
-                        validator_id=(
-                            self.validator_id
-                        ),
-                        passed=False,
-                        code="BANNED_CALL",
-                        message=(
-                            f"call to {name!r} "
-                            "is forbidden in P0"
-                        ),
-                        details=(
-                            (
-                                "lineno",
-                                getattr(
-                                    node,
-                                    "lineno",
-                                    -1,
-                                ),
-                            ),
-                        ),
-                    )
+        if decision.code == "BANNED_CALL":
+            return ValidatorEvidence(
+                validator_id=self.validator_id,
+                passed=False,
+                code="BANNED_CALL",
+                message=(
+                    f"call to {decision.call_name!r} "
+                    "is forbidden in P0"
+                ),
+                details=(
+                    (
+                        "lineno",
+                        decision.lineno,
+                    ),
+                ),
+            )
+
+        if decision.code != "AST_VALID" or not decision.passed:
+            raise RuntimeError(
+                "neutral Python AST policy returned "
+                "an unsupported decision"
+            )
 
         return ValidatorEvidence(
             validator_id=self.validator_id,
@@ -200,34 +153,15 @@ class PythonASTValidator:
             details=(
                 (
                     "entrypoint",
-                    expected,
+                    context.entrypoint,
                 ),
                 (
                     "node_count",
-                    sum(
-                        1
-                        for _ in ast.walk(
-                            tree
-                        )
-                    ),
+                    decision.node_count,
                 ),
             ),
         )
 
     @staticmethod
-    def _call_name(
-        node: ast.expr,
-    ) -> str | None:
-        if isinstance(
-            node,
-            ast.Name,
-        ):
-            return node.id
-
-        if isinstance(
-            node,
-            ast.Attribute,
-        ):
-            return node.attr
-
-        return None
+    def _call_name(node):
+        return python_call_name(node)
