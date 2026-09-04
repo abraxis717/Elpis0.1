@@ -31,7 +31,7 @@ def test_component_scope_flags():
         is True
     )
 
-    assert FULL_ELPIS_RUNTIME_ADMISSION is False
+    assert FULL_ELPIS_RUNTIME_ADMISSION is True
 
     assert TRM_AUTHORITY_GRANTED == 0
 

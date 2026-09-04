@@ -154,3 +154,21 @@ from .structural_validator import (
     StructuralValidationError,
     StructuralValidationEvidenceV1,
 )
+
+from .runtime import (
+    RUNTIME_STATUS_VALIDATED_SOURCE,
+    RUNTIME_STATUS_VALIDATION_REJECTED,
+    STRUCTURAL_GUIDANCE_RUNTIME_RESULT_SCHEMA,
+    StructuralGuidanceRuntimeError,
+    StructuralGuidanceRuntimeResultV1,
+    run_structural_guidance_runtime,
+)
+
+__all__ += (
+    "RUNTIME_STATUS_VALIDATED_SOURCE",
+    "RUNTIME_STATUS_VALIDATION_REJECTED",
+    "STRUCTURAL_GUIDANCE_RUNTIME_RESULT_SCHEMA",
+    "StructuralGuidanceRuntimeError",
+    "StructuralGuidanceRuntimeResultV1",
+    "run_structural_guidance_runtime",
+)
