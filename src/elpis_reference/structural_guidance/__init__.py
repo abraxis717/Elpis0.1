@@ -31,3 +31,10 @@ __all__ = (
     "project_and_admit",
     "project_semantic_request_and_admit",
 )
+
+from .resolved import (
+    RESOLVED_STRUCTURAL_TOPOLOGY_SCHEMA,
+    ResolvedStructuralTopologyError,
+    ResolvedStructuralTopologyV1,
+    build_resolved_structural_topology,
+)
