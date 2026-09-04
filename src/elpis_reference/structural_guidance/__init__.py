@@ -136,3 +136,12 @@ from .source_emitter import (
     DeterministicSourceEmitterV1,
     SourceEmitterError,
 )
+
+from .validation_authority import (
+    VALIDATION_AUTHORITY,
+    AuthorizedValidationV1,
+    ValidationAuthorizationIntentV1,
+    ValidationAuthorityError,
+    ValidationCapabilityReceiptV1,
+    ValidationConsumptionV1,
+)
