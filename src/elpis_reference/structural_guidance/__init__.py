@@ -103,3 +103,12 @@ from .decoding_authority import (
     DecodingCapabilityReceiptV1,
     DecodingConsumptionV1,
 )
+
+from .decoder_adapter import (
+    DECODER_SPECIFIC_PLAN_SCHEMA,
+    DETERMINISTIC_DECODER_ADAPTER_ID,
+    DETERMINISTIC_DECODER_ADAPTER_VERSION,
+    DecoderAdapterError,
+    DecoderSpecificPlanV1,
+    DeterministicDecoderAdapterV1,
+)
