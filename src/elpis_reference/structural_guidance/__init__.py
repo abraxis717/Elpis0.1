@@ -45,3 +45,8 @@ from .consumer import (
     ResolvedTopologyConsumerPort,
     ResolvedTopologyConsumerReceiptV1,
 )
+
+from .observer import (
+    DigestBoundResolvedTopologyObserverV1,
+    ResolvedTopologyObservationError,
+)
