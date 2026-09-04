@@ -50,3 +50,12 @@ from .observer import (
     DigestBoundResolvedTopologyObserverV1,
     ResolvedTopologyObservationError,
 )
+
+from .materialization_authority import (
+    STRUCTURAL_MATERIALIZATION_AUTHORITY,
+    AuthorizedResolvedTopologyMaterializationV1,
+    ResolvedTopologyMaterializationAuthorityError,
+    ResolvedTopologyMaterializationCapabilityReceiptV1,
+    ResolvedTopologyMaterializationConsumptionV1,
+    ResolvedTopologyMaterializationIntentV1,
+)
