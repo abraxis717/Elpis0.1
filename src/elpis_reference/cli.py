@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from .model import default_cache_dir, fetch_model, verify_model
+from .model import default_cache_dir, default_model_path, fetch_model, verify_model
 from .refinement import solve_sudoku
 from .sudoku import format_grid, parse_puzzle
 
@@ -17,7 +17,7 @@ def _model_fetch(args: argparse.Namespace) -> int:
 
 
 def _model_verify(args: argparse.Namespace) -> int:
-    path = Path(args.path) if args.path else default_cache_dir() / "model.safetensors"
+    path = Path(args.path) if args.path else default_model_path()
     print(json.dumps(verify_model(path), indent=2, sort_keys=True))
     return 0
 
@@ -55,11 +55,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     model = sub.add_parser("model", help="manage the pinned TRM checkpoint")
     model_sub = model.add_subparsers(dest="model_command", required=True)
-    fetch = model_sub.add_parser("fetch", help="download, verify and convert the pinned checkpoint")
+    fetch = model_sub.add_parser("fetch", help="download and verify the pinned FPRM checkpoint")
     fetch.add_argument("--cache-dir")
     fetch.add_argument("--force", action="store_true")
     fetch.set_defaults(func=_model_fetch)
-    verify = model_sub.add_parser("verify", help="verify a converted safetensors checkpoint")
+    verify = model_sub.add_parser("verify", help="verify the pinned FPRM checkpoint")
     verify.add_argument("--path")
     verify.set_defaults(func=_model_verify)
 
@@ -69,7 +69,7 @@ def build_parser() -> argparse.ArgumentParser:
     source = solve.add_mutually_exclusive_group(required=True)
     source.add_argument("--puzzle", help="81 characters; 0 or . means blank")
     source.add_argument("--file", help="text file containing an 81-cell puzzle")
-    solve.add_argument("--model", help="path to converted model.safetensors")
+    solve.add_argument("--model", help="path to FPRM.Samsung_TRM checkpoint")
     solve.add_argument("--device", default="auto", help="auto, cpu, cuda, mps")
     solve.add_argument("--max-steps", type=int, default=16)
     solve.set_defaults(func=_sudoku_solve)

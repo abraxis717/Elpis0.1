@@ -1,5 +1,47 @@
 ## 1.2.13 — Semantic graph sidecar binding
 
+
+## Elpis2.0.0 — Primitive End-to-End Runtime Closure
+
+Elpis2.0.0 establishes the first closed end-to-end Elpis
+structural-guidance primitive.
+
+### Production path
+
+Signed semantic request
+→ production C2R6 Projector
+→ bounded TRM0 structural guidance
+→ resolved structural topology
+→ structural materialization
+→ planning
+→ decoder adaptation
+→ deterministic source emission
+→ canonical Python AST validation
+→ `VALIDATED_SOURCE`.
+
+### Runtime authority boundary
+
+- `FULL_ELPIS_RUNTIME_ADMISSION=True`.
+- Learned structural guidance remains request-opt-in and default-OFF.
+- Frozen TRM0 guidance retains authority zero.
+- Only admitted cost-zero structural state crosses the resolved boundary.
+- Terminal output grants zero authority.
+- Validation authority does not propagate.
+- Generated source is not compiled or executed.
+- `execution_authorized=False`.
+
+### Public boundary
+
+Elpis2.0.0 publishes the portable Elpis primitive.
+
+The top-level qualification/experiment corpus and the machine-specific
+Nanbeige host adapter are not part of this public release. Their historical
+Git provenance remains available in earlier history, but they are not live
+Elpis2.0.0 components.
+
+The v1.x release manifests remain immutable historical records.
+Elpis2.0.0 has its own release manifest and verifier.
+
 - Add `SemanticSidecarPythonProjector`, an explicit wrapper around the unchanged legacy Grid81 projector.
 - Preserve exact legacy projection output for graphless requests.
 - For structured requests, preserve the exact legacy Grid81 and feature payload while binding the canonical semantic-request digest to structural projection identity.

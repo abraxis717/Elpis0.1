@@ -1,5 +1,0 @@
-base_sha=6cd8b4c7d09678215718356282cca5c73ccbe098
-branch=exp/c2r7c-semantic-structural-probe
-experiment_only=true
-pushed=false
-runtime_admission=false

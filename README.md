@@ -1,5 +1,21 @@
 # Elpis0.1
 
+
+## Elpis2.0.0 runtime status
+
+Elpis2.0.0 closes the portable structural-guidance primitive end-to-end
+through a digest-bound `VALIDATED_SOURCE` terminal result.
+
+`FULL_ELPIS_RUNTIME_ADMISSION=True` denotes availability of the complete
+validated-source composition path. Learned structural guidance remains
+request-opt-in by default.
+
+Generated source is not executed and receives no execution authority:
+`execution_authorized=False`.
+
+The current public release authority is
+`manifests/Elpis2.0.0.RELEASE_MANIFEST.json`.
+
 Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
 
 ## Release: v1.2.13 — Semantic graph sidecar binding

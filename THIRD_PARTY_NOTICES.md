@@ -27,3 +27,7 @@ All native code (HACF R3, Semantic Structural Spine V1, elpis-header) is first-p
 ## Component licenses
 
 See `manifests/FILE_LICENSE_MAP.json` for historical component-level mapping. First-party Elpis code remains MIT unless otherwise noted. Third-party adapted reference-runtime files retain their upstream MIT notice.
+
+## SciPy
+
+SciPy is a runtime dependency of the vendored FPRM implementation for statistical distributions. SciPy is distributed under the BSD 3-Clause license.

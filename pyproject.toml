@@ -1,7 +1,7 @@
 [project]
-name = "elpis-canonical"
-version = "1.2.13"
-description = "Deterministic Elpis structural core with a runnable TRM Sudoku reference runtime"
+name = "elpis"
+version = "2.0.0"
+description = "Elpis structural-guidance primitive with an end-to-end validated-source runtime"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 dependencies = [
@@ -11,6 +11,7 @@ dependencies = [
   "pydantic>=2.0",
   "safetensors>=0.4",
   "torch>=2.2",
+  "scipy>=1.11,<2",
 ]
 
 [project.scripts]

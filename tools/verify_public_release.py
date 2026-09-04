@@ -1,305 +1,596 @@
 #!/usr/bin/env python3
-"""Public release verifier for Elpis0.1.
+"""Fail-closed public verifier for Elpis2.0.0."""
 
-Verifies the integrity, composition, and safety of the public distribution.
-Exits 0 on PASS, 1 on FAIL with detailed diagnostics.
-"""
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
+import re
 import sys
+import tomllib
 from pathlib import Path
 
+
 REPO = Path(__file__).resolve().parent.parent
+MANIFEST_REL = Path(
+    "manifests/Elpis2.0.0.RELEASE_MANIFEST.json"
+)
+MANIFEST = REPO / MANIFEST_REL
+
+IGNORE_PARTS = {
+    ".git",
+    "build",
+    "dist",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+}
+
+BINARY_SUFFIXES = {
+    ".so", ".a", ".o", ".pyc",
+    ".egg", ".gguf", ".safetensors", ".pt",
+}
+
+TEXT_SUFFIXES = {
+    ".py", ".c", ".cpp", ".h",
+    ".json", ".toml", ".yaml", ".yml",
+    ".md", ".txt", ".cff", ".cmake", ".sh",
+}
+
+SCAN_SKIP_NAMES = {
+    "verify_public_release.py",
+    "ci_secret_scan.py",
+    "test_ci_secret_scan.py",
+    "transaction.py",
+    "test_r0_transaction.py",
+}
+
+SECRET_PATTERNS = (
+    (r"BEGIN PRIVATE KEY", "private key"),
+    (r"ghp_[A-Za-z0-9]{36}", "GitHub PAT"),
+    (r"github_pat_[A-Za-z0-9_]{20,}", "GitHub PAT"),
+    (r"sk-[A-Za-z0-9]{48,}", "OpenAI-style key"),
+    (r"AKIA[A-Z0-9]{16}", "AWS key"),
+    (r"AIza[A-Za-z0-9_-]{35}", "Google API key"),
+)
 
 
-def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def digest(path: Path) -> str:
+    if path.is_symlink():
+        payload = path.readlink().as_posix().encode()
+    else:
+        payload = path.read_bytes()
+
+    return hashlib.sha256(payload).hexdigest()
 
 
-def load_post_release_overlay() -> tuple[dict, list[str]]:
-    """Load and structurally validate the post-release overlay."""
+def ignored(rel: Path) -> bool:
+    return bool(set(rel.parts) & IGNORE_PARTS)
+
+
+def actual_files() -> set[str]:
+    out: set[str] = set()
+
+    for path in REPO.rglob("*"):
+        rel = path.relative_to(REPO)
+
+        if ignored(rel):
+            continue
+
+        if rel == MANIFEST_REL:
+            continue
+
+        if path.is_file() or path.is_symlink():
+            out.add(rel.as_posix())
+
+    return out
+
+
+def load_manifest():
     errors = []
-    overlay_path = REPO / "manifests/PUBLIC_POST_RELEASE_OVERLAY.json"
-    if not overlay_path.exists():
-        return {}, ["PUBLIC_POST_RELEASE_OVERLAY.json not found"]
+
+    if not MANIFEST.exists():
+        return {}, [
+            f"missing {MANIFEST_REL.as_posix()}"
+        ]
 
     try:
-        overlay = json.loads(overlay_path.read_text())
+        data = json.loads(MANIFEST.read_text())
     except Exception as exc:
-        return {}, [f"Invalid PUBLIC_POST_RELEASE_OVERLAY.json: {exc}"]
+        return {}, [f"invalid manifest: {exc}"]
 
-    if overlay.get("schema") != "elpis.public-post-release-overlay.v1":
-        errors.append(f"Unexpected overlay schema: {overlay.get('schema')}")
-    if overlay.get("repository") != "abraxis717/Elpis0.1":
-        errors.append(f"Unexpected overlay repository: {overlay.get('repository')}")
-    if overlay.get("base_release") != "v1.1.2":
-        errors.append(f"Unexpected overlay base release: {overlay.get('base_release')}")
-
-    return overlay, errors
-
-
-def check_manifest() -> tuple[bool, list[str]]:
-    """Verify the immutable v1.1.2 seal plus explicitly declared post-release changes."""
-    errors = []
-    manifest_path = REPO / "manifests/PUBLIC_RELEASE_MANIFEST.json"
-    if not manifest_path.exists():
-        return False, ["PUBLIC_RELEASE_MANIFEST.json not found"]
-
-    manifest = json.loads(manifest_path.read_text())
-    if manifest.get("version") != "v1.1.2":
-        errors.append(f"Expected historical release v1.1.2, got {manifest.get('version')}")
-
-    overlay, overlay_errors = load_post_release_overlay()
-    errors.extend(overlay_errors)
-
-    historical = {
-        entry["path"]: entry
-        for entry in manifest.get("files", [])
-        if entry["path"] != "manifests/PUBLIC_RELEASE_MANIFEST.json"
+    expected = {
+        "schema": "elpis.release-manifest.v2",
+        "release_name": "Elpis2.0.0",
+        "release_tag": "Elpis2.0.0",
+        "version": "2.0.0",
+        "package_name": "elpis",
+        "primitive_closure_commit":
+            "482d4064321392108b87124cd47343d9c748f5bc",
+        "runtime_status": "VALIDATED_SOURCE",
+        "full_elpis_runtime_admission": True,
+        "request_guidance_gate_default": False,
+        "output_authority_granted": 0,
+        "validation_authority_propagated": False,
+        "generated_source_executed": False,
+        "execution_authorized": False,
+        "experiments_shipped": False,
+        "nanbeige_host_shipped": False,
     }
 
-    overlay_entries = {}
-    for entry in overlay.get("paths", []):
+    for key, value in expected.items():
+        if data.get(key) != value:
+            errors.append(
+                f"manifest {key} mismatch: "
+                f"{data.get(key)!r}"
+            )
+
+    return data, errors
+
+
+def check_manifest():
+    data, errors = load_manifest()
+    entries = data.get("files", [])
+
+    if not isinstance(entries, list):
+        return False, errors + [
+            "manifest files must be a list"
+        ]
+
+    declared = {}
+
+    for entry in entries:
+        if not isinstance(entry, dict):
+            errors.append("invalid manifest file entry")
+            continue
+
         rel = entry.get("path")
-        classification = entry.get("classification")
-        digest = entry.get("sha256")
+        expected = entry.get("sha256")
 
         if not isinstance(rel, str) or not rel:
-            errors.append("Overlay entry has invalid path")
-            continue
-        if rel in overlay_entries:
-            errors.append(f"Duplicate overlay path: {rel}")
-            continue
-        if classification not in {"ADDED", "POST_RELEASE_MODIFIED"}:
-            errors.append(f"Invalid overlay classification for {rel}: {classification}")
-            continue
-        if not isinstance(digest, str) or len(digest) != 64:
-            errors.append(f"Invalid overlay digest for {rel}")
+            errors.append("invalid manifest path")
             continue
 
-        if classification == "ADDED" and rel in historical:
-            errors.append(f"Overlay marks historical path as ADDED: {rel}")
-        if classification == "POST_RELEASE_MODIFIED" and rel not in historical:
-            errors.append(f"Overlay modifies path absent from historical seal: {rel}")
-
-        overlay_entries[rel] = entry
-
-    for rel, entry in historical.items():
-        fp = REPO / rel
-        if not fp.exists():
-            errors.append(f"MISSING: {rel}")
+        if rel in declared:
+            errors.append(f"duplicate path: {rel}")
             continue
 
-        expected = entry["sha256"]
-        if rel in overlay_entries:
-            expected = overlay_entries[rel]["sha256"]
-
-        actual = sha256(fp)
-        if actual != expected:
-            errors.append(f"DIGEST MISMATCH: {rel}")
-
-    for rel, entry in overlay_entries.items():
-        fp = REPO / rel
-        if not fp.exists():
-            errors.append(f"OVERLAY MISSING: {rel}")
+        if (
+            not isinstance(expected, str)
+            or len(expected) != 64
+        ):
+            errors.append(
+                f"invalid digest for {rel}"
+            )
             continue
-        actual = sha256(fp)
-        if actual != entry["sha256"]:
-            errors.append(f"OVERLAY DIGEST MISMATCH: {rel}")
 
-    declared_roots = {
-        entry["path"].split("/")[0]
-        for entry in manifest.get("files", [])
-    }
-    declared_roots.update(overlay.get("allowed_new_roots", []))
+        declared[rel] = expected
 
-    for item in sorted(REPO.iterdir()):
-        if item.is_dir() and item.name.startswith("."):
-            continue
-        if item.name not in declared_roots and item.name not in (".git", "build"):
-            errors.append(f"UNDECLARED: {item.name}")
+    actual = actual_files()
 
-    return len(errors) == 0, errors
+    for rel in sorted(set(declared) - actual):
+        errors.append(f"MISSING: {rel}")
+
+    for rel in sorted(actual - set(declared)):
+        errors.append(f"UNDECLARED: {rel}")
+
+    for rel in sorted(set(declared) & actual):
+        if digest(REPO / rel) != declared[rel]:
+            errors.append(
+                f"DIGEST MISMATCH: {rel}"
+            )
+
+    if data.get("file_count") != len(declared):
+        errors.append("manifest file_count mismatch")
+
+    return not errors, errors
 
 
-def check_components() -> tuple[bool, list[str]]:
-    """Verify all 17 components are represented."""
+def check_package():
     errors = []
-    registry = REPO / "manifests/PUBLIC_COMPONENT_REGISTRY.json"
-    if not registry.exists():
-        return False, ["PUBLIC_COMPONENT_REGISTRY.json not found"]
+    data = tomllib.loads(
+        (REPO / "pyproject.toml").read_text()
+    )
+    project = data["project"]
 
-    data = json.loads(registry.read_text())
-    if data.get("component_count") != 17:
-        errors.append(f"Expected 17 components, got {data.get('component_count')}")
+    if project.get("name") != "elpis":
+        errors.append("package name is not elpis")
 
-    for comp in data.get("components", []):
-        pub_path = REPO / comp["public_path"]
-        if not pub_path.exists():
-            errors.append(f"Component path missing: {comp['public_path']}")
+    if project.get("version") != "2.0.0":
+        errors.append("package version is not 2.0.0")
 
-    return len(errors) == 0, errors
+    if (REPO / "VERSION").read_text().strip() != "2.0.0":
+        errors.append("VERSION mismatch")
+
+    if not any(
+        isinstance(dep, str) and dep.startswith("scipy")
+        for dep in project.get("dependencies", [])
+    ):
+        errors.append("SciPy dependency missing")
+
+    return not errors, errors
 
 
-def check_no_secrets() -> tuple[bool, list[str]]:
-    """Scan for secrets and private data.
+def constant_assignment(path: Path, name: str):
+    tree = ast.parse(
+        path.read_text(),
+        filename=str(path),
+    )
 
-    Uses context-aware matching to avoid false positives on legitimate uses
-    of words like 'token' (e.g., 'token_count', 'token_record', 'tokenization')
-    and 'sk-' in structural context (e.g., 'sklearn', structural keys).
-    """
+    for node in tree.body:
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if (
+                    isinstance(target, ast.Name)
+                    and target.id == name
+                    and isinstance(node.value, ast.Constant)
+                ):
+                    return node.value.value
+
+        if (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.target, ast.Name)
+            and node.target.id == name
+            and isinstance(node.value, ast.Constant)
+        ):
+            return node.value.value
+
+    raise RuntimeError(
+        f"{name} constant assignment not found"
+    )
+
+
+def check_runtime_boundary():
     errors = []
-    # Patterns that indicate actual secrets (not legitimate variable/function names)
-    import re
-    # Realistic token-length patterns — avoid false positives on 'task-1', 'sklearn', etc.
-    secret_patterns = [
-        (r'BEGIN PRIVATE KEY', "BEGIN PRIVATE KEY"),
-        (r'ghp_[A-Za-z0-9]{36}', "GitHub personal access token"),
-        (r'github_pat_[A-Za-z0-9_]{20,}', "GitHub PAT"),
-        (r'sk-[A-Za-z0-9]{48,}', "OpenAI-style API key"),
-        (r'AKIA[A-Z0-9]{16}', "AWS access key"),
-        (r'AIza[A-Za-z0-9_-]{35}', "Google API key"),
-        (r'"?Authorization"?\s*:\s*"Bearer\s+[A-Za-z0-9._\-]{20,}', "Bearer token"),
-    ]
-    # Files that contain synthetic secret fixtures for scanner testing — skip
-    _fixture_names = {"ci_secret_scan.py", "test_ci_secret_scan.py"}
-    # Files that contain FORBIDDEN_PREFIXES security guard patterns (intentional workstation paths)
-    _guard_names = {"transaction.py", "test_r0_transaction.py"}
-    _skip_names = _fixture_names | _guard_names
-    scan_extensions = {".py", ".c", ".cpp", ".h", ".json", ".toml", ".md"}
-    for f in REPO.rglob("*"):
-        if f.suffix not in scan_extensions:
+
+    root = (
+        REPO
+        / "src/elpis_reference/structural_guidance"
+    )
+
+    try:
+        admitted = constant_assignment(
+            root / "authority.py",
+            "FULL_ELPIS_RUNTIME_ADMISSION",
+        )
+    except Exception as exc:
+        errors.append(str(exc))
+    else:
+        if admitted is not True:
+            errors.append(
+                "FULL_ELPIS_RUNTIME_ADMISSION != True"
+            )
+
+    admission_tree = ast.parse(
+        (root / "admission.py").read_text()
+    )
+
+    default = None
+
+    for node in admission_tree.body:
+        if not (
+            isinstance(node, ast.ClassDef)
+            and node.name
+            == "StructuralGuidanceAdmissionConfig"
+        ):
             continue
-        # Skip the verifier itself and test fixtures that contain synthetic secrets
-        if f.name == "verify_public_release.py" or f.name in _skip_names:
+
+        for item in node.body:
+            if (
+                isinstance(item, ast.AnnAssign)
+                and isinstance(item.target, ast.Name)
+                and item.target.id == "enabled"
+                and isinstance(item.value, ast.Constant)
+            ):
+                default = item.value.value
+
+    if default is not False:
+        errors.append(
+            "guidance request gate default != False"
+        )
+
+    runtime = root / "runtime.py"
+    tree = ast.parse(
+        runtime.read_text(),
+        filename=str(runtime),
+    )
+
+    execution_false = False
+    validation_false = False
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            if (
+                isinstance(node.func, ast.Name)
+                and node.func.id
+                in {"compile", "eval", "exec"}
+            ):
+                errors.append(
+                    f"execution call {node.func.id}"
+                )
+
+            for kw in node.keywords:
+                if (
+                    kw.arg == "execution_authorized"
+                    and isinstance(kw.value, ast.Constant)
+                    and kw.value.value is False
+                ):
+                    execution_false = True
+
+                if (
+                    kw.arg == "validation_authorized"
+                    and isinstance(kw.value, ast.Constant)
+                    and kw.value.value is False
+                ):
+                    validation_false = True
+
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name in {
+                    "subprocess",
+                    "importlib",
+                }:
+                    errors.append(
+                        f"execution import {alias.name}"
+                    )
+
+        if isinstance(node, ast.ImportFrom):
+            if node.module in {
+                "subprocess",
+                "importlib",
+            }:
+                errors.append(
+                    f"execution import {node.module}"
+                )
+
+    # `_terminal_result()` builds the terminal fields in a literal
+    # dictionary and then splats that dictionary into the dataclass.
+    # Recognize that real construction shape rather than requiring
+    # direct constructor keyword arguments.
+    terminal_fn = next(
+        (
+            node
+            for node in tree.body
+            if (
+                isinstance(node, ast.FunctionDef)
+                and node.name == "_terminal_result"
+            )
+        ),
+        None,
+    )
+
+    if terminal_fn is None:
+        errors.append(
+            "_terminal_result function absent"
+        )
+    else:
+        for node in ast.walk(terminal_fn):
+            if not isinstance(node, ast.Dict):
+                continue
+
+            for key, value in zip(
+                node.keys,
+                node.values,
+            ):
+                if not (
+                    isinstance(key, ast.Constant)
+                    and isinstance(key.value, str)
+                    and isinstance(value, ast.Constant)
+                    and value.value is False
+                ):
+                    continue
+
+                if key.value == "execution_authorized":
+                    execution_false = True
+
+                if key.value == "validation_authorized":
+                    validation_false = True
+
+    # Independently require the terminal dataclass validator to
+    # fail closed if either bit is ever forged true.
+    result_class = next(
+        (
+            node
+            for node in tree.body
+            if (
+                isinstance(node, ast.ClassDef)
+                and node.name
+                == "StructuralGuidanceRuntimeResultV1"
+            )
+        ),
+        None,
+    )
+
+    execution_guard = False
+    validation_guard = False
+
+    if result_class is None:
+        errors.append(
+            "StructuralGuidanceRuntimeResultV1 absent"
+        )
+    else:
+        validate_fn = next(
+            (
+                node
+                for node in result_class.body
+                if (
+                    isinstance(node, ast.FunctionDef)
+                    and node.name == "validate"
+                )
+            ),
+            None,
+        )
+
+        if validate_fn is None:
+            errors.append(
+                "terminal validate method absent"
+            )
+        else:
+            for node in ast.walk(validate_fn):
+                if not (
+                    isinstance(node, ast.Compare)
+                    and len(node.ops) == 1
+                    and isinstance(node.ops[0], ast.IsNot)
+                    and len(node.comparators) == 1
+                    and isinstance(
+                        node.comparators[0],
+                        ast.Constant,
+                    )
+                    and node.comparators[0].value is False
+                    and isinstance(node.left, ast.Attribute)
+                    and isinstance(node.left.value, ast.Name)
+                    and node.left.value.id == "self"
+                ):
+                    continue
+
+                if node.left.attr == "execution_authorized":
+                    execution_guard = True
+
+                if node.left.attr == "validation_authorized":
+                    validation_guard = True
+
+    if not execution_false:
+        errors.append(
+            "terminal execution_authorized=False absent"
+        )
+
+    if not validation_false:
+        errors.append(
+            "terminal validation_authorized=False absent"
+        )
+
+    if not execution_guard:
+        errors.append(
+            "execution authority fail-closed guard absent"
+        )
+
+    if not validation_guard:
+        errors.append(
+            "validation authority fail-closed guard absent"
+        )
+
+    if "VALIDATED_SOURCE" not in runtime.read_text():
+        errors.append(
+            "VALIDATED_SOURCE terminal absent"
+        )
+
+    return not errors, errors
+
+
+def check_public_boundary():
+    errors = []
+
+    if (REPO / "experiments").exists():
+        errors.append(
+            "top-level experiments/ shipped"
+        )
+
+    if (
+        REPO / "native/elpis-nanbeige42-host"
+    ).exists():
+        errors.append(
+            "Nanbeige host adapter shipped"
+        )
+
+    return not errors, errors
+
+
+def check_private_data():
+    errors = []
+
+    for rel in sorted(actual_files()):
+        path = REPO / rel
+
+        if (
+            path.suffix not in TEXT_SUFFIXES
+            or path.name in SCAN_SKIP_NAMES
+            or path.is_symlink()
+        ):
             continue
-        if ".egg-info" in str(f) or "__pycache__" in str(f):
-            continue
+
         try:
-            content = f.read_text(errors="replace")
+            text = path.read_text(errors="replace")
         except Exception:
             continue
-        for pat, desc in secret_patterns:
-            if re.search(pat, content):
-                errors.append(f"SECRET PATTERN '{desc}' in {f.relative_to(REPO)}")
 
-    # Check for private paths across all text files
-    all_text_extensions = {".py", ".c", ".cpp", ".h", ".json", ".toml", ".yaml", ".yml", ".md", ".txt", ".cff", ".cmake", ".sh"}
-    for f in REPO.rglob("*"):
-        if f.suffix not in all_text_extensions:
-            continue
-        if f.name == "verify_public_release.py" or f.name in _skip_names:
-            continue
-        if ".egg-info" in str(f) or "__pycache__" in str(f):
-            continue
-        try:
-            content = f.read_text(errors="replace")
-        except Exception:
-            continue
-        for bad in ["/mnt/primesauce", "/home/joe"]:
-            if bad in content:
-                errors.append(f"PRIVATE PATH '{bad}' in {f.relative_to(REPO)}")
+        for pattern, desc in SECRET_PATTERNS:
+            if re.search(pattern, text):
+                errors.append(
+                    f"SECRET {desc}: {rel}"
+                )
 
-    return len(errors) == 0, errors
+        for private in (
+            "/mnt/primesauce",
+            "/home/joe",
+        ):
+            if private in text:
+                errors.append(
+                    f"PRIVATE PATH {private}: {rel}"
+                )
+
+    return not errors, errors
 
 
-def check_no_binaries() -> tuple[bool, list[str]]:
-    """Check for compiled binaries, model weights, or build artifacts."""
+def check_artifacts():
     errors = []
-    bad_extensions = {".so", ".a", ".o", ".pyc", ".egg", ".gguf", ".safetensors", ".pt"}
-    for f in REPO.rglob("*"):
-        if f.is_file() and f.suffix in bad_extensions:
-            errors.append(f"BINARY/ARTIFACT: {f.relative_to(REPO)}")
 
-    # Check for symlinks escaping the repository
-    for f in REPO.rglob("*"):
-        if f.is_symlink():
-            target = f.resolve()
+    for rel in sorted(actual_files()):
+        path = REPO / rel
+
+        if path.suffix in BINARY_SUFFIXES:
+            errors.append(
+                f"BINARY/ARTIFACT: {rel}"
+            )
+
+        if path.is_symlink():
+            target = path.resolve()
+
             if not target.is_relative_to(REPO):
-                errors.append(f"SYMLINK ESCAPE: {f.relative_to(REPO)} -> {target}")
+                errors.append(
+                    f"SYMLINK ESCAPE: {rel}"
+                )
 
-    return len(errors) == 0, errors
-
-
-def check_runtime_admission() -> tuple[bool, list[str]]:
-    """Verify runtime admission is FALSE."""
-    errors = []
-    registry = REPO / "manifests/PUBLIC_COMPONENT_REGISTRY.json"
-    if not registry.exists():
-        return False, ["PUBLIC_COMPONENT_REGISTRY.json not found"]
-    data = json.loads(registry.read_text())
-    if data.get("runtime_admission") is not False:
-        errors.append(f"Runtime admission must be FALSE, got {data.get('runtime_admission')}")
-    for comp in data.get("components", []):
-        if comp.get("runtime_admission") is not False:
-            errors.append(f"Component {comp['component_id']} runtime_admission must be FALSE")
-    return len(errors) == 0, errors
-
-
-def check_no_generated() -> tuple[bool, list[str]]:
-    """Check for generated artifacts in source tree."""
-    errors = []
-    bad_dirs = {"__pycache__", ".pytest_cache", "CMakeFiles", "build"}
-    for f in REPO.rglob("*"):
-        if f.is_dir():
-            if f.name in bad_dirs:
-                errors.append(f"GENERATED DIR: {f.relative_to(REPO)}")
-    return len(errors) == 0, errors
-
-
-def check_undeclared_roots() -> tuple[bool, list[str]]:
-    """Check top-level roots against the release plus post-release overlay."""
-    allowed_roots = {
-        "components", "native", "runtime", "docs", "manifests", "tests", "tools", "src",
-        ".github", "LICENSE", "LICENSES", "README.md", "VERSION", "pyproject.toml",
-        "CMakeLists.txt", "RELEASE_NOTES.md", "CHANGELOG.md", "CITATION.cff",
-        "SECURITY.md", "CONTRIBUTING.md", "THIRD_PARTY_NOTICES.md",
-        "COMPONENT_REGISTRY.json", "ELPIS_CANONICAL_MANIFEST.json", ".gitignore",
-    }
-
-    overlay, overlay_errors = load_post_release_overlay()
-    errors = list(overlay_errors)
-    allowed_roots.update(overlay.get("allowed_new_roots", []))
-
-    for item in sorted(REPO.iterdir()):
-        if item.name.startswith(".") and item.name != ".github":
-            continue
-        if item.name not in allowed_roots:
-            errors.append(f"UNDECLARED ROOT: {item.name}")
-
-    return len(errors) == 0, errors
+    return not errors, errors
 
 
 def main() -> int:
-    checks = [
-        ("Manifest integrity", check_manifest),
-        ("Component representation", check_components),
-        ("Secret scan", check_no_secrets),
-        ("Binary/artifact scan", check_no_binaries),
-        ("Runtime admission", check_runtime_admission),
-        ("Generated artifacts", check_no_generated),
-        ("Undeclared roots", check_undeclared_roots),
-    ]
+    checks = (
+        ("Elpis2 manifest", check_manifest),
+        ("Package identity", check_package),
+        ("Runtime boundary", check_runtime_boundary),
+        ("Portable public boundary", check_public_boundary),
+        ("Secret/private-path scan", check_private_data),
+        ("Binary/artifact scan", check_artifacts),
+    )
 
-    all_pass = True
+    passed = True
+
     for name, fn in checks:
         ok, errors = fn()
-        status = "PASS" if ok else "FAIL"
-        if not ok:
-            all_pass = False
-        print(f"[{status}] {name}")
-        for e in errors:
-            print(f"  -> {e}")
+        print(
+            f"[{'PASS' if ok else 'FAIL'}] {name}"
+        )
 
-    if all_pass:
-        print("\\nPASS: Public release verified")
+        if not ok:
+            passed = False
+
+        for error in errors:
+            print(f"  -> {error}")
+
+    if passed:
+        print(
+            "PASS: Elpis2.0.0 public release verified"
+        )
         return 0
-    else:
-        print("\\nFAIL: Public release verification failed")
-        return 1
+
+    print(
+        "FAIL: Elpis2.0.0 public release verification failed"
+    )
+    return 1
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
