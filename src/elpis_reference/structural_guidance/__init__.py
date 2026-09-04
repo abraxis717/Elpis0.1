@@ -94,3 +94,12 @@ from .planner import (
     StructuralPlanningArtifactV1,
     StructuralPlanningError,
 )
+
+from .decoding_authority import (
+    DECODING_AUTHORITY,
+    AuthorizedDecodingV1,
+    DecodingAuthorizationIntentV1,
+    DecodingAuthorityError,
+    DecodingCapabilityReceiptV1,
+    DecodingConsumptionV1,
+)
