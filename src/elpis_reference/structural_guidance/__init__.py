@@ -127,3 +127,12 @@ from .source_emission_authority import (
     SourceEmissionCapabilityReceiptV1,
     SourceEmissionConsumptionV1,
 )
+
+from .source_emitter import (
+    DECODED_SOURCE_ARTIFACT_SCHEMA,
+    DETERMINISTIC_SOURCE_EMITTER_ID,
+    DETERMINISTIC_SOURCE_EMITTER_VERSION,
+    DecodedSourceArtifactV1,
+    DeterministicSourceEmitterV1,
+    SourceEmitterError,
+)
