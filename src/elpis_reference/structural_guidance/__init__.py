@@ -119,3 +119,11 @@ from .source_input import (
     DecoderSourceInputV1,
     build_decoder_source_input,
 )
+
+from .source_emission_authority import (
+    AuthorizedSourceEmissionV1,
+    SourceEmissionAuthorizationIntentV1,
+    SourceEmissionAuthorityError,
+    SourceEmissionCapabilityReceiptV1,
+    SourceEmissionConsumptionV1,
+)
