@@ -32,7 +32,16 @@ from ..elpis_p0.structural_residual import (
     validate_transition,
 )
 
-from ..vendor_d01 import legal_decoder as _decoder_mod
+from ..vendor_d01 import legal_decoder as _legal_decoder
+
+
+def _decoder_mod():
+    """Return the frozen vendored D0.1 decoder module.
+
+    Preserves the original C2R6-P1 _vendored_authority.decoder()
+    accessor contract without ambient paths or dynamic loading.
+    """
+    return _legal_decoder
 from .contracts import (
     BridgeRejection,
     BridgeRejectionCode,
