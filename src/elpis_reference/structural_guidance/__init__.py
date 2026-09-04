@@ -38,3 +38,10 @@ from .resolved import (
     ResolvedStructuralTopologyV1,
     build_resolved_structural_topology,
 )
+
+from .consumer import (
+    RESOLVED_TOPOLOGY_CONSUMER_RECEIPT_SCHEMA,
+    ResolvedTopologyConsumerContractError,
+    ResolvedTopologyConsumerPort,
+    ResolvedTopologyConsumerReceiptV1,
+)
