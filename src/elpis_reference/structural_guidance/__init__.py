@@ -112,3 +112,10 @@ from .decoder_adapter import (
     DecoderSpecificPlanV1,
     DeterministicDecoderAdapterV1,
 )
+
+from .source_input import (
+    DECODER_SOURCE_INPUT_SCHEMA,
+    DecoderSourceInputError,
+    DecoderSourceInputV1,
+    build_decoder_source_input,
+)
