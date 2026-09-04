@@ -3856,7 +3856,7 @@
     },
     {
       "path": "pyproject.toml",
-      "sha256": "f91870d0e2d3699e2b1749023972cea42a639f2a6fd3e324764796ec86dc1da8"
+      "sha256": "722e3c5ad06b20022e099661464a004c01e77eafd50efbc4836930a79d95ebf2"
     },
     {
       "path": "runtime/R0/README.md",
@@ -4674,5 +4674,6 @@
   "schema": "elpis.distribution-manifest.v1",
   "tag_immutable": true,
   "validation_authority_propagated": false,
-  "version": "2.0.0"
+  "version": "2.0.0",
+  "wheel_includes_canonical_elpis_package": true
 }
