@@ -41,5 +41,7 @@ This bounded component admission does not imply full Elpis runtime
 admission. Repository-wide governance, serving, persistent authority, and
 generalized semantic runtime admission remain false.
 
-The live Projector caller hook is intentionally a separate gate and remains
-inactive until qualified.
+The public live composition hook is active through `project_and_admit()` and
+`project_semantic_request_and_admit()`. The learned-guidance request gate itself
+still defaults OFF. No ambient controller, Oracle, Sudoku, or CLI path invokes it
+implicitly.

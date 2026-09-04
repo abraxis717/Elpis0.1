@@ -28,7 +28,7 @@ def test_component_scope_flags():
 
     assert (
         STRUCTURAL_GUIDANCE_LIVE_HOOK_ACTIVE
-        is False
+        is True
     )
 
     assert FULL_ELPIS_RUNTIME_ADMISSION is False
@@ -166,3 +166,224 @@ def test_frozen_refiner_constructor_surface():
     )
 
     assert refiner is not None
+
+
+def test_live_public_hook_flag():
+    from elpis_reference.structural_guidance import (
+        STRUCTURAL_GUIDANCE_LIVE_HOOK_ACTIVE,
+    )
+
+    assert (
+        STRUCTURAL_GUIDANCE_LIVE_HOOK_ACTIVE
+        is True
+    )
+
+
+def test_project_and_admit_calls_projector_then_gate(
+    monkeypatch,
+):
+    import elpis_reference.structural_guidance.hook as hook
+
+    from elpis_reference.structural_guidance._authority.c2r6p0.contracts import (
+        ProjectionInputV1,
+        ProjectionResultV1,
+    )
+
+    pin = object.__new__(
+        ProjectionInputV1
+    )
+
+    projection = object.__new__(
+        ProjectionResultV1
+    )
+
+    object.__setattr__(
+        projection,
+        "projection_digest",
+        "7" * 64,
+    )
+
+    object.__setattr__(
+        projection,
+        "structural_input_fingerprint",
+        "8" * 64,
+    )
+
+    observed = []
+
+    def fake_project(value):
+        observed.append(
+            ("project", value)
+        )
+        return projection
+
+    monkeypatch.setattr(
+        hook,
+        "project",
+        fake_project,
+    )
+
+    result = hook.project_and_admit(
+        pin
+    )
+
+    assert observed == [
+        ("project", pin),
+    ]
+
+    assert result.projection is projection
+
+    assert (
+        result.admission.receipt.outcome
+        == "BYPASSED"
+    )
+
+    assert (
+        result.admission.receipt.projection_digest
+        == projection.projection_digest
+    )
+
+    assert result.admitted is False
+    assert result.fallback_required is False
+
+
+def test_project_and_admit_enabled_failure_is_explicit(
+    monkeypatch,
+):
+    import elpis_reference.structural_guidance.hook as hook
+
+    from elpis_reference.structural_guidance import (
+        StructuralGuidanceAdmissionConfig,
+    )
+
+    from elpis_reference.structural_guidance._authority.c2r6p0.contracts import (
+        ProjectionInputV1,
+        ProjectionResultV1,
+    )
+
+    pin = object.__new__(
+        ProjectionInputV1
+    )
+
+    projection = object.__new__(
+        ProjectionResultV1
+    )
+
+    object.__setattr__(
+        projection,
+        "projection_digest",
+        "9" * 64,
+    )
+
+    object.__setattr__(
+        projection,
+        "structural_input_fingerprint",
+        "a" * 64,
+    )
+
+    monkeypatch.setattr(
+        hook,
+        "project",
+        lambda value: projection,
+    )
+
+    result = hook.project_and_admit(
+        pin,
+        StructuralGuidanceAdmissionConfig(
+            enabled=True,
+            checkpoint_path="",
+        ),
+    )
+
+    assert result.admitted is False
+    assert result.fallback_required is True
+
+    assert (
+        result.admission.receipt.outcome
+        == "FALLBACK_REQUIRED"
+    )
+
+    assert (
+        result.admission.receipt.error_code
+        == "ValueError"
+    )
+
+    assert (
+        result.admission.receipt.authority_granted
+        == 0
+    )
+
+
+def test_semantic_request_public_wrapper(
+    monkeypatch,
+):
+    import elpis_reference.structural_guidance.hook as hook
+
+    from elpis_reference.structural_guidance._authority.c2r6p0.contracts import (
+        ProjectionInputV1,
+    )
+
+    from elpis_reference.structural_guidance._authority.elpis_p0.semantic_ir import (
+        P0SemanticRequestV1,
+    )
+
+    request = object.__new__(
+        P0SemanticRequestV1
+    )
+
+    sentinel = object()
+    observed = {}
+
+    def fake_project_and_admit(
+        projection_input,
+        config,
+    ):
+        observed["input"] = (
+            projection_input
+        )
+        observed["config"] = config
+        return sentinel
+
+    monkeypatch.setattr(
+        hook,
+        "project_and_admit",
+        fake_project_and_admit,
+    )
+
+    result = (
+        hook.project_semantic_request_and_admit(
+            request,
+            request_id="hook-test",
+            debug_tag="runtime-r0",
+        )
+    )
+
+    assert result is sentinel
+
+    pin = observed["input"]
+
+    assert isinstance(
+        pin,
+        ProjectionInputV1,
+    )
+
+    assert pin.semantic_graph is request
+
+    assert pin.request_id == "hook-test"
+    assert pin.debug_tag == "runtime-r0"
+
+
+def test_project_hook_rejects_wrong_input_type():
+    import pytest
+
+    from elpis_reference.structural_guidance import (
+        project_and_admit,
+    )
+
+    with pytest.raises(
+        TypeError,
+        match="ProjectionInputV1",
+    ):
+        project_and_admit(
+            object(),  # type: ignore[arg-type]
+        )
