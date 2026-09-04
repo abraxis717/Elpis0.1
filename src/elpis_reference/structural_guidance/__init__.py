@@ -59,3 +59,12 @@ from .materialization_authority import (
     ResolvedTopologyMaterializationConsumptionV1,
     ResolvedTopologyMaterializationIntentV1,
 )
+
+from .materializer import (
+    CANONICAL_STRUCTURAL_MATERIALIZER_ID,
+    CANONICAL_STRUCTURAL_MATERIALIZER_VERSION,
+    RESOLVED_STRUCTURAL_MATERIALIZATION_SCHEMA,
+    CanonicalResolvedTopologyMaterializerV1,
+    ResolvedStructuralMaterializationError,
+    ResolvedStructuralMaterializationV1,
+)
