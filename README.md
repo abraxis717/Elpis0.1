@@ -1,314 +1,523 @@
-# Elpis0.1
+# Elpis
 
+**Structural AI research for low-authority learned reasoning, explicit topology, and falsifiable alignment mechanisms.**
 
-## Elpis2.0.0 runtime status
+Current public release: **Elpis2.0.0**
 
-Elpis2.0.0 closes the portable structural-guidance primitive end-to-end
-through a digest-bound `VALIDATED_SOURCE` terminal result.
+## Abstract
 
-`FULL_ELPIS_RUNTIME_ADMISSION=True` denotes availability of the complete
-validated-source composition path. Learned structural guidance remains
-request-opt-in by default.
+Elpis is a research system for separating learned inference from the authority that defines computational state, legal transitions, validation, and execution. Its central hypothesis is that some alignment problems become more tractable when learned models operate inside explicit geometric and topological structures rather than implicitly owning the entire reasoning process.
 
-Generated source is not executed and receives no execution authority:
-`execution_authorized=False`.
+The current system combines typed semantic requests, deterministic projection into a bounded structural substrate, learned structural guidance, digest-bound authority transitions, deterministic materialization, source construction, and static validation. A separate public reference path runs a real pinned FPRM model on Sudoku.
 
-The current public release authority is
-`manifests/Elpis2.0.0.RELEASE_MANIFEST.json`.
+Elpis is not presented as a solved alignment system, a general intelligence, or an autonomous coding agent. The repository is organized so that working mechanisms, negative results, and unfinished research can be distinguished and independently tested.
 
-Deterministic structural AI core with Grid81 semantics, HACF retrieval, receipt-bound execution, and a runnable learned TRM Sudoku reference runtime.
+---
 
-## Release: v1.2.13 — Semantic graph sidecar binding
+## Current validated status
 
-The repository contains a clean-clone reference path that downloads and verifies the pinned 5,028,866-parameter Samsung TRM checkpoint, converts the exact checkpoint into `safetensors`, and runs bounded recursive Sudoku inference with a fail-closed given-preservation guard and task validation.
+The most important information is what works now.
 
-This does **not** mean full Elpis runtime admission. Governance, persistent authority, online serving, and generalized semantic re-projection remain disabled. `runtime_admission` remains `false`.
+| Surface | Current status | Direct falsifier |
+|---|---|---|
+| Elpis2.0.0 Python wheel | **Working** | Install outside the repository and import the runtime |
+| Public FPRM model bootstrap | **Working** | Fetch, hash-verify, strict-load |
+| Real FPRM Sudoku inference | **Working** | Run CPU inference and validate the board |
+| Typed semantic request graph | **Working** | Contract and digest tests |
+| Semantic structure → Grid81 Projector | **Working** | Projection, rejection, determinism tests |
+| Frozen structural TRM guidance path | **Working when checkpoint is supplied** | Admission and topology qualification |
+| Digest-bound validated-source runtime | **Working** | End-to-end structural runtime tests |
+| Canonical Python AST policy | **Working** | Positive/negative policy convergence tests |
+| Autonomous arbitrary Python synthesis | **Not working yet** | Blind `merge_intervals` test fails functionally |
+| Natural-language → trusted semantic graph | **Not implemented** | No production semantic compiler exists |
+| Generated-source execution | **Not implemented** | Runtime explicitly grants no execution authority |
+
+The working release therefore already contains a real structural system and real learned inference. The principal missing capability is not plumbing: it is autonomous implementation synthesis from the resolved structure.
+
+---
 
 ## Quick start
+
+### Install the published wheel
+
+The PyPI project name `elpis` is currently owned by an unrelated automatic-speech-recognition project. Do not use `pip install elpis` to install this repository.
+
+Install the Elpis2.0.0 GitHub release wheel instead:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-pip install -e .
-elpis model fetch
-elpis sudoku solve --file examples/sudoku_one_blank.txt
+
+python -m pip install \
+  https://github.com/abraxis717/Elpis0.1/releases/download/Elpis2.0.0/elpis-2.0.0-py3-none-any.whl
 ```
 
-The first `elpis model fetch` downloads the upstream checkpoint, verifies its exact SHA-256 before deserialization, performs a strict model-state ABI normalization, and writes a local `model.safetensors` cache. Model weights are never repository authority.
+Fetch the pinned public FPRM checkpoint:
 
-## Pinned TRM
+```bash
+elpis model fetch
+```
 
-- Architecture source: `SamsungSAILMontreal/TinyRecursiveModels`
-- Architecture commit: `c01103738605ba39d1430519b1ee0c62f4c707f8d`
-- Model repository: `Sanjin2024/TinyRecursiveModels-Sudoku-Extreme-mlp`
-- Model revision: `256f32fcbe7123e8bf8c449410773a5ad311dbc5`
-- Upstream checkpoint: `step_16275`
-- Checkpoint SHA-256: `20e9dc7ebf83b9b41a8b3f58f5fd94ee3a7eb0b0d245bdeeb14e2f1488d1daaf`
-- Registered parameters: `5,028,866`
-- Sequence length: `81`
-- Vocabulary: `11`
-- Recursive budget: `16`
+Verify it:
 
-See `docs/REFERENCE_RUNTIME_PROVENANCE.md` for third-party and checkpoint provenance.
+```bash
+elpis model verify
+```
 
-## Reference proposal/validation loop
+Run a real CPU inference:
 
-The public reference runtime keeps the learned model low-authority:
+```bash
+elpis sudoku solve \
+  --puzzle '.34678912672195348198342567859761423426853791713924856961537284287419635345286179' \
+  --device cpu
+```
+
+The model is loaded only after its pinned identity and state ABI are verified.
+
+The Sudoku reference model is deliberately narrow. Sudoku capability is evidence of Sudoku capability, not evidence of general reasoning.
+
+---
+
+# 1. Research premise
+
+## 1.1 Alignment through separation of authority
+
+A conventional learned system can collapse several roles into one model: interpretation, representation, planning, proposal, validation, and practical authority over the output.
+
+Elpis separates those roles.
+
+A learned model may propose a structural change without owning the rules that define the structure. A decoder may construct candidate source without acquiring execution authority. A validator may reject an artifact without gaining authority to repair arbitrary state. A terminal result may carry evidence without becoming a reusable capability.
+
+This produces a recurring architectural distinction:
 
 ```text
-Sudoku givens
-  → deterministic token encoding
-  → TRM recursive carry update
-  → numeric proposal
-  → given-preservation structural guard
-  → Sudoku validator
-  → accept if valid, otherwise continue bounded recursive carry
-  → solved or bounded exhaustion
+learned computation
+        |
+        v
+proposal
+
+deterministic contracts
+        |
+        +--> identity
+        +--> legal state
+        +--> transition rules
+        +--> authority
+        +--> validation boundary
 ```
 
-The guard **rejects** a proposal that changes a given. It never repairs or rewrites the model output and then attributes the repaired result to the model.
+The alignment hypothesis is modest but concrete: reducing the authority assigned to learned components may make their failures easier to contain, inspect, reproduce, and correct.
 
-Validation controls only accept/continue inside the learned Sudoku path; they do not select a Grid81 cell/value or inject task semantics into the model. C2R3 now composes one bounded external feedback traversal: a typed task rejection resolves through pre-existing semantic/topology trace, canonical Projector RELEASE reopens implicated active support, and the pinned Samsung TRM re-proposes from the revised support grid.
+This is an architectural hypothesis. Elpis does not claim that bounded authority alone solves alignment.
 
-## Platform portability
+## 1.2 Geometric and Topological Intelligence
 
-The Elpis runtime architecture is platform-neutral. Operating-system,
-accelerator, and native-build detection are isolated in
-`elpis_reference.platform_setup` and `tools/setup.py`.
+"Geometric/Topological Intelligence" is the project term for representing meaningful parts of a reasoning problem as explicit relational structure rather than leaving all structure latent inside model activations.
 
-The current learned reference remains the pinned Samsung MLP-T TRM. This
-release does **not** introduce a model-backend abstraction and does not claim
-model agnosticism.
+The current bounded substrate is Grid81. It provides an 81-cell structural control space with explicit lanes, ranks, masks, bindings, invariants, residuals, and transition rules.
 
-```bash
-python tools/setup.py --profile reference --dry-run
-python tools/setup.py --profile reference
+A typed semantic request may describe entities, operations, dependencies, relations, constraints, quantities, and outputs. The deterministic Projector maps the supported structural content of that graph into Grid81. A learned structural model can then operate on the resulting bounded topology.
+
+The present architecture is therefore approximately:
+
+```text
+task semantics
+     |
+     v
+typed semantic graph
+     |
+     v
+deterministic Projector
+     |
+     v
+Grid81 structural topology
+     |
+     v
+learned proposal / refinement
+     |
+     v
+resolved topology
+     |
+     v
+bounded downstream capabilities
 ```
 
-Use `--profile full` to request the native HACF build where it is qualified.
-macOS and Linux native paths are supported by the existing CMake boundary;
-Windows keeps the portable Python/reference surface while native HACF remains
-explicitly unqualified.
+The learned model does not silently define the topology it is asked to modify.
 
-## Task-residual refinement foundation
+Elpis does not claim that Grid81 is a universal representation or that intelligence is fundamentally geometric. It provides a concrete experimental substrate on which those claims can be tested.
 
-The qualified R7A task diagnostic/residual and semantic/topology reverse-trace
-contracts are present in the public package. Their domain-separated digests
-reproduce the frozen R7CR3R1 mechanism-control evidence.
+---
 
-C2R2 promotes the qualified R7A RELEASE-planning mechanism as a narrow adapter
-to the existing canonical `DarwinianMatrix.projector.constraints` authority.
-Resolved support may release a currently active clamp using its current owner;
-task failure cannot ASSERT or REPLACE structural claims.
+# 2. Working architecture
 
-C2R3 adds one bounded, deterministic composition step in
-`elpis_reference.feedback_refinement`. A structurally valid prior proposal and
-typed task rejection are bound to `run_id + refinement_step_index`, and the
-diagnostic `subject_digest` must equal the exact prior proposal digest before
-any residual resolution or Projector mutation; reverse trace then resolves
-pre-existing support and the canonical Projector applies RELEASE,
-and only the revised clamp-derived Sudoku grid is passed to the pinned Samsung
-MLP-T reference for re-proposal and validation.
+## 2.1 Semantic request graph
 
-Task diagnostics, task residuals, semantic sidecars, reverse-trace records, and
-Projector receipts are not model inputs. The learned model remains
-proposal-only and receives no task or structural authority.
+The structural path begins with `P0SemanticRequestV1`, a canonical relational task representation independent of Grid81.
 
-This is still a mechanism-composition control. It does not prove generalized
-task improvement, production validator ingress, production P5/P6/P7 binding,
-arbitrary-task semantic resolution, or runtime admission.
+It can encode explicit:
 
-The adapter's proposal evidence digest binds the release request to the task
-diagnostic. The current ClampState does not retain the historical evidence
-digest that originally created each clamp, so this release makes no stronger
-historical-evidence provenance claim.
+- entities and data types;
+- operations and ordered arguments;
+- constraints and negation;
+- directed relations;
+- directed dependencies;
+- integer quantities;
+- declared outputs.
 
-### C2R4 production P0 validator ingress
+The representation is deterministic and digest-bound. It enforces referential integrity and rejects malformed graphs rather than silently repairing them.
 
-C2R4 closes the first production feedback-boundary gap. The R0 AST adapter now
-exposes the actual typed `PythonASTValidator` evidence together with the exact
-artifact digest while preserving the existing transaction-facing validator ABI.
+Implementation:
 
-The public refinement seam freezes a semantic/topology/P7 reverse trace from
-the real P0 projection before validation. A failed task validator binds to the
-artifact digest and the projection's semantic `validation` object; it does not
-select a Grid81 cell or value. Reverse trace then resolves that pre-existing
-semantic support and the canonical DarwinianMatrix Projector may RELEASE only
-currently active support.
+```text
+src/elpis_reference/structural_guidance/_authority/elpis_p0/semantic_ir.py
+```
 
-P0 refinement scope/structural rejection remains `STRUCTURAL_REJECTION` and is
-still barred from task-residual conversion.
+This is a representation contract, not a natural-language parser.
 
-C2R4 does not claim production learned re-proposal. The production Python
-artifact currently lacks a qualified identity lineage back to a production
-learned structural proposal, so reconnecting a production proposer remains the
-next gate. Runtime admission remains false.
+## 2.2 Deterministic Projector
 
-### C2R4 red-team hardening
+The Projector converts the supported semantic structure into the bounded Grid81 substrate.
 
-The C2R4 candidate also hardens defects found by adversarial review before publication. RELEASE planning no longer copies the live owner out of `ClampState` as its own authorization input: it requires a state-bound, pre-validation release binding record whose owner and semantic locus must match the resolved active support. One traversal is hard-capped at one RELEASE target and rejects over-cardinality rather than truncating. The binding digest is a deterministic commitment, not a signature or independent attestation.
+Its output includes structural state, frozen/writable masks, semantic bindings, invariants, lane assignments, residual features, trace records, fingerprints, and content digests.
 
-For the Sudoku reference traversal, original puzzle givens are immutable hard support. They must be present in the pre-release clamp state, may not be RELEASE targets, and remain the validator input for the final learned proposal. RELEASE is therefore described as bounded search-space widening of a retractable hypothesis, not as intrinsically fail-closed.
+Unsupported, contradictory, or over-capacity inputs produce explicit typed rejection states.
 
-The C2R3 learned E2E no longer installs model-produced output as the support it later releases. Its retractable one-cell value is derived from the deterministic solved-board fixture used by the mechanism control, not from the learned model. The release/revised-input assertions therefore verify feedback plumbing only; they are intentionally not evidence of model competence or independent problem-solving.
+Implementation:
 
-The converted safetensors tensor state is now pinned by a canonical tensor-state SHA-256 derived from the raw checkpoint after its existing raw SHA verification. `verify_model` and `load_model` reject tensor or metadata tampering.
+```text
+src/elpis_reference/structural_guidance/_authority/c2r6p0/
+```
 
-Generic reverse-trace records remain deterministic records rather than signed attestations; repository text must not treat `trace_proof_digests` as cryptographic proof. A held-out competence evaluation remains a separate gate.
+The Projector owns semantic-to-structural assignment. The learned model does not.
 
+## 2.3 Learned structural guidance
 
-### C2R5 artifact/proposal lineage boundary
+Elpis contains a frozen structural TRM0 guidance path separate from the public Sudoku FPRM model.
 
-C2R5 adds deterministic integrity checks across the P0 result, projection, structural proposal,
-decoder control plan, artifact, and selected validator evidence. The resulting `lineage_digest`
-is a **lineage record digest**: it detects mutation/substitution inside a supplied record, but it is
-not a signature, controller-issued capability, temporal precommitment, or independent provenance
-attestation. The current validator ingress externally rechecks the artifact, projection, and exact
-validator evidence against that record; the proposal/plan/result identities inside the record are
-not yet anchored to a caller-independent controller registry.
+When guidance is explicitly enabled and the correct checkpoint is supplied, the path is:
 
-v1.2.7 left the production validator diagnostic at row granularity: one semantic
-`validation` object reverse-resolved to nine cells while task-derived RELEASE remained capped at
-one. C2R6B replaces that row-wide task locus with fixed pre-validation cell-role semantics.
+```text
+semantic request
+    → Projector
+    → structural admission
+    → frozen TRM0 refinement
+    → resolved structural topology
+```
 
-### C2R6B P0 semantic topology
+Guidance remains opt-in by default:
 
-P0 now declares a distinct fixed-position semantic space, `grid81.p0-semantic.v1`, rather than
-sharing the generic `grid81.structural.v1` identity used by the coarse structural/D4 substrate.
-The P0 schema digest commits the BasisToken id-to-name mapping, every semantic row and column role,
-the coarse structural bridge, the validator-failure repair-role map, and the fact that the only
-admitted P0 semantic D4 element is `IDENTITY`. The generic structural-space digest separately
-commits its `StructuralOpcode` mapping.
+```text
+enabled = false
+```
 
-The former `decomposition` row is renamed `complexity_flags`: its behavior is unchanged and is not
-claimed as genuine task decomposition. The former `validation` row becomes
-`validation_repair_loci`. Each supported `PythonASTValidator` rejection code deterministically
-selects one predeclared semantic repair role. Reverse trace therefore resolves a task-validator
-failure to exactly one pre-validation cell even when every validator repair support is active.
-The global task-derived RELEASE cap remains exactly one; unrelated validator repair loci and
-unrelated structural support remain clamped.
+The qualified structural checkpoint currently has SHA-256:
 
-C2R6B closes the granularity deadlock and semantic-space aliasing at the canonical P0 run
-boundary.
+```text
+e58e44c9227d68971d0ab5f5e4f0eaf2e05d4faa97ec8232108aa73898273129
+```
 
-### C2R6C-A controller-associated lineage issuance registry
+It is not yet distributed through the same public-bootstrap path as the FPRM Sudoku model.
 
-The first C2R6C-A candidate passed its registry mechanics but failed adversarial ownership review:
-the issuer was publicly constructible, `P0Controller` accepted a caller-supplied authority, and a
-public verifier selector made an unsafe future ingress topology too easy to construct.
+## 2.4 Authority and materialization
 
-v1.2.10 closes those supported-surface defects. Supported `P0Controller` construction creates one
-internal issuance/consumption registry and accepts no authority injection. The old public standalone
-issuer and public verifier selector are removed. Rejecting-validator receipts are still precommitted
-before `run()` returns; one-shot membership, replay rejection, distinct-authority-instance rejection,
-and rejection of self-consistent but unissued receipts remain. Concurrent reveal/consume transitions
-are serialized and fail with typed authority errors, and the receipt digest uses the repository NUL
-domain-separator convention.
+Elpis separates observation from permission to act.
 
-The strongest current phrase is **controller-associated in-memory issuance registry**. Python
-reflection can still reach implementation-private state, so hostile same-process isolation is not
-claimed. Strong-reference tombstones also retain rejecting `P0Result` graphs for the controller
-lifetime and remain an explicit prototype lifecycle limitation.
+Resolved topology, structural materialization, planning, decoding, source emission, and validation each have distinct contracts and one-shot authority transitions. Important artifacts are digest-bound to the exact upstream state they consume.
 
-C2R6C-B now binds production P0 validator ingress once to an exact `P0Controller` during trusted
-composition. Per-request ingress accepts no controller, verifier, authority root, or consumption
-callback: it accepts only the controller-produced authorization plus evidence/trace inputs. Passed
-or unsupported evidence and lineage mismatches fail before capability consumption; after those
-checks pass, the bound controller consumes registry membership exactly once and the diagnostic
-details digest binds the authority instance, capability, receipt, and consumption digests.
+A terminal structural runtime result carries:
 
-This closes the caller-supplied-lineage N2 defect at the production P0 validator ingress API under
-the declared process-local composition trust model. It does **not** establish hostile same-process
-isolation, cross-process durability, external cryptographic attestation, independent temporal
-ReleaseBinding issuance, relational/ECS decomposition, semantic reconstruction quality, learned
-re-proposal, competence, feedback efficacy, or runtime admission. Strong-reference authority
-tombstones remain an explicit lifecycle limitation.
+```text
+authority_granted = 0
+validation_authorized = false
+execution_authorized = false
+```
 
-### C2R7-A relational semantic request contract
+Authority is intentionally non-transitive.
 
-P0 now has a canonical typed semantic request graph independent of Grid81. The graph preserves
-explicit entity identity/type, operation identity and ordered arguments, constraints with negation,
-directed relations, directed operation dependencies, integer quantities beyond the old four-parameter
-cell limit, and explicit output identities. Declaration order is canonicalized while argument and
-edge direction remain semantic. Referential integrity, globally unique node identities, digest
-integrity, and acyclic operation dependencies fail closed.
+## 2.5 Validated-source runtime
 
-This is a **representation contract**, not a natural-language semantic compiler. The existing
-`DeterministicPythonProjector` remains the same word-set/complexity heuristic for legacy
-`RequestContext` values. If a `P0SemanticRequestV1` is present, that projector now rejects instead of
-silently dropping the graph. C2R7-B must explicitly bind the semantic graph identity to the
-structural-control path; it must not imply that the arbitrary graph has been losslessly stuffed into
-81 cells.
+The current production composition path is:
 
-Natural-language extraction, paraphrase normalization, semantic reconstruction quality,
-semantic-graph/Grid81 sidecar binding, relational ECS dynamics, learned semantic compilation,
-held-out competence, and runtime admission remain unproven.
+```text
+P0SemanticRequestV1
+    → Projector
+    → structural guidance
+    → ResolvedStructuralTopologyV1
+    → ResolvedStructuralMaterializationV1
+    → PlanningInputV1
+    → StructuralPlanningArtifactV1
+    → DecoderSpecificPlanV1
+    → DecoderSourceInputV1
+    → DecodedSourceArtifactV1
+    → StructuralValidationEvidenceV1
+    → StructuralGuidanceRuntimeResultV1
+```
 
-### C2R7-B semantic graph sidecar binding
+The terminal status is either:
 
-The default P0 composition now uses an explicit `SemanticSidecarPythonProjector`. For graphless
-requests it returns the exact legacy projection unchanged. For a structured semantic request it
-first produces the unchanged legacy Grid81/feature payload with the graph removed, then binds the
-canonical semantic-request digest to that structural identity as a sidecar. The bound projection
-therefore changes identity when the semantic graph changes even when every Grid81 cell remains
-identical.
+```text
+VALIDATED_SOURCE
+```
 
-The binding is identity-only. Semantic entities, relations, dependencies, constraints and quantities
-are **not** mapped into Grid81 cells, do not acquire structural write authority, and do not alter the
-legacy Grid81 payload. The bound projection digest propagates through TRM input identity, decoder-plan
-structural binding, artifact/result identity, controller authority lineage, and validator projection
-trace. Sidecar lineage and trace substitution fail before one-shot authority consumption.
+or:
 
-This still does not prove that a supplied semantic graph correctly represents the natural-language
-prompt. Natural-language extraction, prompt/graph semantic consistency, paraphrase normalization,
-semantic reconstruction, relational ECS dynamics, learned semantic compilation, competence and
-runtime admission remain open.
+```text
+VALIDATION_REJECTED
+```
 
-## Existing qualified structural stack
+Generated source is not compiled, imported, invoked, or executed by this runtime.
 
-The canonical structural components remain available under `components/`, including Grid81 semantics, TRMFractalSpine structural contracts, deterministic adjudication, DarwinianMatrix, P0 control, HACF retrieval, and Runtime R0/R1 qualification material.
+## 2.6 Canonical Python AST policy
 
-The legacy qualification commands documented under `docs/BUILD.md` and `docs/TESTING.md` remain applicable to those component paths.
+Python source is inspected through the canonical policy in:
 
-## Explicit exclusions
+```text
+src/elpis/python_ast_policy.py
+```
 
-This release still does **not** activate:
+The policy rejects malformed syntax, missing entrypoints, imports, scope mutation through `global` or `nonlocal`, and banned calls including `eval`, `exec`, `compile`, `open`, `__import__`, and `breakpoint`.
 
-- authoritative SR01 validator admission
-- governance or Constitution ratification
-- persistent memory writes or AffineL0
-- online serving
-- SAM integration
-- arbitrary-task production semantic re-projection
-- persistent cross-reboot logical chronology
+A successful policy decision is:
 
-## Verification
+```text
+passed = true
+code = AST_VALID
+```
+
+`AST_VALID` means the source satisfies the static policy. It does not mean the program is functionally correct.
+
+## 2.7 Public learned reference model
+
+The public FPRM path is independently useful and independently testable.
+
+The release model is:
+
+```text
+FPRM.Samsung_TRM
+```
+
+Pinned SHA-256:
+
+```text
+6daec5f499d115beb14e23f3a9cf56d1166b99c1ccd36b185a19ea5dfec9a137
+```
+
+The public wheel can fetch the checkpoint into a writable user cache, verify it, strict-load it, perform real CPU inference, and later reuse the verified cache offline.
+
+This reference path does not grant the model task authority beyond its native Sudoku domain.
+
+## 2.8 Feedback and bounded RELEASE
+
+The repository also contains qualified mechanisms for tracing typed task failures back to pre-existing structural support.
+
+A failure may identify support that is eligible for bounded `RELEASE`, widening an existing search space. It may not convert the failure into arbitrary authority to assert new structure.
+
+Relevant implementation includes:
+
+```text
+src/elpis_reference/feedback_refinement.py
+src/elpis_reference/projector_release.py
+components/DarwinianMatrix/
+```
+
+Mechanism correctness is tested. Generalized task-improvement efficacy remains a separate research question.
+
+---
+
+# 3. Reproduction and falsification
+
+Elpis is intended to be easier to disprove than to market.
+
+## 3.1 Release integrity
+
+From a source checkout:
 
 ```bash
-pytest -q tests/test_reference_runtime.py
 python tools/verify_public_release.py
+python tools/ci_secret_scan.py .
 ```
 
-On pushes to `main`, the reference-runtime workflow also fetches the pinned checkpoint, verifies/converts it, and executes the real learned Sudoku reference path on CPU.
+The release verifier should reject inconsistent tracked-file identities or malformed distribution authority.
 
-## License
+## 3.2 Real model integrity
 
-Elpis code is MIT unless otherwise noted. The inference-only TRM namespace adaptation is derived from MIT-licensed upstream code; see `docs/REFERENCE_RUNTIME_PROVENANCE.md` and `THIRD_PARTY_NOTICES.md`.
+From an installed Elpis2.0.0 wheel:
+
+```bash
+elpis model fetch
+elpis model verify
+```
+
+A modified or incompatible checkpoint should fail verification.
+
+## 3.3 Real Sudoku inference
+
+```bash
+elpis sudoku solve \
+  --puzzle '.34678912672195348198342567859761423426853791713924856961537284287419635345286179' \
+  --device cpu
+```
+
+The result is falsified if the runtime fails to solve the qualified case, alters a fixed given, or produces an invalid completed board.
+
+## 3.4 Structural runtime
+
+From the repository root:
+
+```bash
+export PYTHONPATH="$PWD/src:$PWD/components:$PWD/components/Pipeline/P0ControlProtocol/src:$PWD/components/TRMFractalSpine/src"
+
+python -m pytest -q \
+  tests/test_python_ast_policy_convergence.py \
+  tests/test_structural_guidance_structural_validator.py \
+  tests/test_structural_guidance_validated_source_runtime.py \
+  tests/test_structural_guidance_runtime_admission.py
+```
+
+These tests exercise canonical AST-policy convergence, terminal digest integrity, explicit guidance admission, authority-zero results, validation rejection, source tamper detection, and the prohibition on generated-source execution.
+
+Broader mechanism tests are under `tests/`.
+
+## 3.5 Current negative result: autonomous source synthesis
+
+The most useful recent test was intentionally allowed to fail.
+
+Elpis was given a typed semantic representation of `merge_intervals`, the natural-language task, the real frozen structural TRM0, and the complete validated-source runtime. No implementation body was supplied.
+
+The blind result was:
+
+```text
+runtime_status = VALIDATED_SOURCE
+validation_code = AST_VALID
+functional_pass = false
+functional_failures = 7 / 7
+```
+
+The emitted function contained `return None`.
+
+A positive-control arm used the same semantic input and the same resolved topology but supplied a known-correct body. The downstream source and functional-validation path passed.
+
+The result localizes the current boundary:
+
+```text
+semantic representation              working
+deterministic projection              working
+learned structural guidance           working
+resolved topology                     working
+materialization                       working
+planning transport                    working
+decoder normalization                 working
+source emission                       working
+static validation                     working
+autonomous implementation synthesis   not working
+```
+
+This negative result is part of the project status, not something to hide behind the successful AST validation.
+
+---
+
+# 4. Repository guide
+
+The front door is intentionally small. Historical milestone detail belongs in `CHANGELOG.md`.
+
+| Path | Purpose |
+|---|---|
+| `src/elpis_reference/` | Portable Elpis runtime and public model path |
+| `src/elpis/` | Canonical shared policies |
+| `src/elpis_reference/structural_guidance/` | End-to-end structural-guidance system |
+| `components/DarwinianMatrix/` | Structural clamp and Projector authority machinery |
+| `components/TRMFractalSpine/` | Structural TRM contracts |
+| `components/Pipeline/P0ControlProtocol/` | P0 control and validator mechanisms |
+| `tests/` | Direct, negative, determinism, integration, and red-team tests |
+| `manifests/` | Release and distribution integrity records |
+| `docs/` | Detailed build, testing, architecture, and provenance material |
+| `CHANGELOG.md` | Historical development and release chronology |
+
+If you are trying to understand the current system, start with `src/elpis_reference/structural_guidance/`, then read the tests that exercise the component you care about.
+
+---
+
+# 5. Development standard
+
+The repository is intentionally hostile to claims that exceed the evidence.
+
+A mechanism test proves the mechanism it exercises. It does not automatically prove intelligence, competence, alignment, generalization, or real-world utility.
+
+Generated code should be treated as untrusted code regardless of whether it was written by a human, an LLM, or another synthesis system. Important changes should have narrow scope, explicit contracts, negative tests, deterministic identities where claimed, and external validation of observable behavior.
+
+A demo should not be made to pass by quietly widening authority. In particular, convenience is not sufficient justification for adding hidden `eval`, `exec`, implicit subprocess execution, arbitrary imports, or automatic execution of generated artifacts.
+
+If source execution is added in the future, it should be a separately designed, separately authorized, and separately qualified boundary.
+
+---
+
+# 6. Still being developed
+
+## 6.1 Autonomous structural source synthesis
+
+This is the immediate engineering target.
+
+The present deterministic planner transports a supplied implementation body and otherwise falls back to `return None`. A real synthesizer must instead derive a candidate implementation from the semantic request, resolved topology, planning artifact, and source-input binding without being handed the answer.
+
+The first regression target remains the existing blind `merge_intervals` experiment. The target condition is simple:
+
+```text
+body_hint_supplied = false
+runtime_status = VALIDATED_SOURCE
+validation_code = AST_VALID
+functional_pass = true
+```
+
+After that, the synthesizer must survive unseen tasks rather than overfitting one benchmark.
+
+## 6.2 Natural-language semantic compilation
+
+The typed semantic graph exists. A production system that converts arbitrary language into a trustworthy semantic graph does not.
+
+Future work must address ambiguity, paraphrase invariance, prompt/graph consistency, unsupported semantics, uncertainty, and adversarial input without silently allowing the language model to redefine the Projector.
+
+## 6.3 Public structural-TRM bootstrap
+
+The FPRM Sudoku checkpoint has a qualified public bootstrap path. The frozen structural TRM0 does not yet.
+
+A public structural-guidance model path needs explicit provenance, pinned identity, strict loading, stable cache behavior, and cold-consumer qualification.
+
+## 6.4 Functional validation
+
+Static AST validation is intentionally narrow.
+
+Future generated-code work should use independent functional oracles such as unit tests, property tests, type checks, domain validators, or separately authorized sandboxes. Those systems should remain distinct from the learned proposer.
+
+## 6.5 Broader alignment architecture
+
+Persistent governance, persistent memory authority, generalized semantic re-projection, hostile same-process isolation, cross-process durable authority, external cryptographic attestation, SAM integration, generalized relational/ECS dynamics, autonomous agent operation, and arbitrary generated-source execution remain outside the currently qualified portable system.
+
+---
+
+# 7. Release, provenance, and license
+
+The current public release is `Elpis2.0.0`.
+
+The release tag is intentionally immutable. `main` may contain post-release packaging, testing, and documentation improvements while the tagged release remains fixed.
+
+Exact release identities belong in:
+
+```text
+manifests/
+```
+
+Model provenance and third-party notices are documented in:
+
+```text
+THIRD_PARTY_NOTICES.md
+LICENSES/
+docs/
+```
+
+Elpis code is MIT licensed unless a file or bundled third-party component states otherwise.
+
+The standard for the project is reproducibility: important claims should survive independent installation, deterministic identity checks, adversarial tests, real-model execution where relevant, and external functional oracles.
+
+---
 
 Christ is King
-
-## Elpis2.0.0 wheel distribution
-
-The Elpis2.0.0 Python wheel uses the same runtime and model ABI as the tagged
-Elpis2.0.0 release.
-
-For an installed wheel, the pinned FPRM checkpoint is stored in a writable
-per-user cache rather than inside site-packages or the Python environment.
-ELPIS_FPRM_MODEL and ELPIS_FPRM_MODEL_DIR remain explicit overrides.
-
-Bootstrap the checkpoint with `elpis model fetch`, or supply it explicitly.
-Every load verifies the pinned checkpoint SHA-256 before inference.
-
-The separately published Elpis2.0.0-FPRM.tar.gz remains the offline model
-payload for source/archive installations.
