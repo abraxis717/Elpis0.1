@@ -297,3 +297,18 @@ On pushes to `main`, the reference-runtime workflow also fetches the pinned chec
 Elpis code is MIT unless otherwise noted. The inference-only TRM namespace adaptation is derived from MIT-licensed upstream code; see `docs/REFERENCE_RUNTIME_PROVENANCE.md` and `THIRD_PARTY_NOTICES.md`.
 
 Christ is King
+
+## Elpis2.0.0 wheel distribution
+
+The Elpis2.0.0 Python wheel uses the same runtime and model ABI as the tagged
+Elpis2.0.0 release.
+
+For an installed wheel, the pinned FPRM checkpoint is stored in a writable
+per-user cache rather than inside site-packages or the Python environment.
+ELPIS_FPRM_MODEL and ELPIS_FPRM_MODEL_DIR remain explicit overrides.
+
+Bootstrap the checkpoint with `elpis model fetch`, or supply it explicitly.
+Every load verifies the pinned checkpoint SHA-256 before inference.
+
+The separately published Elpis2.0.0-FPRM.tar.gz remains the offline model
+payload for source/archive installations.

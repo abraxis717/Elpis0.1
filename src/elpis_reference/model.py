@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import shutil
+import sys
 from pathlib import Path
 
 import torch
@@ -48,21 +49,88 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+def _source_checkout_root() -> Path | None:
+    """Return the repository root only for a real src-layout checkout."""
+    package_dir = Path(__file__).resolve().parent
+    src_dir = package_dir.parent
+    root = src_dir.parent
+
+    if (
+        src_dir.name == "src"
+        and (root / "pyproject.toml").is_file()
+    ):
+        return root
+
+    return None
+
+
+def _installed_user_cache_root() -> Path:
+    """Portable writable cache root for an installed Elpis package."""
+    if os.name == "nt":
+        base = os.environ.get("LOCALAPPDATA")
+
+        if base:
+            return (
+                Path(base).expanduser()
+                / "Elpis"
+                / "Cache"
+            )
+
+        return (
+            Path.home()
+            / "AppData"
+            / "Local"
+            / "Elpis"
+            / "Cache"
+        )
+
+    if sys.platform == "darwin":
+        return (
+            Path.home()
+            / "Library"
+            / "Caches"
+            / "Elpis"
+        )
+
+    base = os.environ.get("XDG_CACHE_HOME")
+
+    if base:
+        return (
+            Path(base).expanduser()
+            / "elpis"
+        )
+
+    return (
+        Path.home()
+        / ".cache"
+        / "elpis"
+    )
 
 
 def default_cache_dir() -> Path:
     override = os.environ.get("ELPIS_FPRM_MODEL_DIR")
+
     if override:
-        return Path(override)
-    return _repo_root() / "models"
+        return Path(override).expanduser()
+
+    source_root = _source_checkout_root()
+
+    if source_root is not None:
+        # Source + FPRM release archives intentionally compose here:
+        # Elpis2.0.0/models/FPRM.Samsung_TRM
+        return source_root / "models"
+
+    # Installed wheels must never attempt to write into site-packages,
+    # the Python installation prefix, or the virtual environment.
+    return _installed_user_cache_root() / "models"
 
 
 def default_model_path() -> Path:
     override = os.environ.get("ELPIS_FPRM_MODEL")
+
     if override:
-        return Path(override)
+        return Path(override).expanduser()
+
     return default_cache_dir() / MODEL_FILENAME
 
 

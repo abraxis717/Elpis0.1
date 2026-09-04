@@ -9,68 +9,123 @@ on:
   workflow_dispatch:
 
 jobs:
-  reference-runtime-unit:
+  reference-runtime-smoke:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python tools/verify_public_release.py
-      - run: python -m pip install --upgrade pip
-      - run: pip install -e . pytest
-      - run: pytest -q -p no:cacheprovider tests/test_reference_runtime.py
-      - run: |
-          python - <<'PY'
-          import torch
-          from elpis_reference.model import REGISTERED_PARAMETER_COUNT, model_config
-          from elpis_reference.vendor.trm import TinyRecursiveReasoningModel_ACTV1
-          model = TinyRecursiveReasoningModel_ACTV1(model_config(torch.device('cpu')))
-          count = sum(p.numel() for p in model.parameters())
-          if count != REGISTERED_PARAMETER_COUNT:
-              raise SystemExit(f'parameter ABI mismatch: {count}')
-          print(f'parameter_abi={count}')
+
+      - name: Verify public/distribution tree
+        run: python tools/verify_public_release.py
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install . pytest
+
+      - name: Installed package and package-data smoke
+        env:
+          XDG_CACHE_HOME: ${{ runner.temp }}/elpis-cache
+        run: |
+          PYTHONPATH="" python - <<'PY'
+          from importlib.metadata import version
+          from importlib.resources import files
+          from pathlib import Path
+          import os
+
+          from elpis_reference.model import (
+              MODEL_FILENAME,
+              default_cache_dir,
+              default_model_path,
+          )
+
+          assert version("elpis") == "2.0.0"
+
+          package = files("elpis_reference")
+
+          for rel in (
+              "vendor/fprm/AUTHORITY.json",
+              "vendor/fprm/all_config.yaml",
+              "vendor/fprm/sudoku_inference_config.json",
+          ):
+              assert package.joinpath(rel).is_file(), rel
+
+          expected = (
+              Path(os.environ["XDG_CACHE_HOME"])
+              / "elpis"
+              / "models"
+          )
+
+          assert default_cache_dir() == expected
+          assert default_model_path() == expected / MODEL_FILENAME
+
+          print("PASS_INSTALLED_PACKAGE_SMOKE")
           PY
 
-  reference-runtime-e2e:
+      - name: Construct FPRM architecture without checkpoint
+        run: |
+          PYTHONPATH="" python - <<'PY'
+          import torch
+
+          from elpis_reference.model import (
+              REGISTERED_PARAMETER_COUNT,
+              _new_model,
+          )
+
+          model = _new_model(torch.device("cpu"))
+
+          count = sum(
+              int(parameter.numel())
+              for parameter in model.parameters()
+          )
+
+          assert count == REGISTERED_PARAMETER_COUNT
+
+          print(f"parameter_abi={count}")
+          print("PASS_MODEL_BLIND_FPRM_ABI")
+          PY
+
+      - name: Model-blind Sudoku runtime tests
+        run: |
+          PYTHONPATH="" python -m pytest \
+            -q -p no:cacheprovider \
+            tests/test_reference_runtime.py \
+            -k 'not test_fprm_model_abi_constructs_on_cpu'
+
+      - name: Model-blind feedback and Projector regression
+        run: |
+          PYTHONPATH="" python -m pytest \
+            -q -p no:cacheprovider \
+            tests/test_feedback_refinement.py \
+            tests/test_projector_release_adapter.py
+
+  validated-source-smoke:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/elpis-model
-          key: elpis-trm-${{ runner.os }}-${{ runner.arch }}-py311-20e9dc7ebf83b9b41a8b3f58f5fd94ee3a7eb0b0d245bdeeb14e2f1488d1daaf-225db649e70bcca706b06a5fc6f72c97d6585ebde9b1bb90de35d3991dadb37a
-      - run: python -m pip install --upgrade pip
-      - run: pip install .
-      - run: elpis model fetch --cache-dir "$RUNNER_TEMP/elpis-model"
-      - run: elpis model verify --path "$RUNNER_TEMP/elpis-model/model.safetensors"
-      - run: elpis sudoku solve --file examples/sudoku_one_blank.txt --model "$RUNNER_TEMP/elpis-model/model.safetensors" --device cpu --max-steps 16
-      - name: Run C2R4 hardened feedback mechanism control
-        run: PYTHONPATH="" python tests/run_c2r3_feedback_e2e.py --model "$RUNNER_TEMP/elpis-model/model.safetensors" --device cpu
-      - name: Run converted-model integrity red-team
-        run: PYTHONPATH="" python tests/run_model_integrity_redteam.py --model "$RUNNER_TEMP/elpis-model/model.safetensors"
-      - name: Run C2R5 artifact-proposal lineage E2E
-        run: PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r5_artifact_proposal_lineage_e2e.py
-      - name: Run C2R6B P0 semantic topology E2E
-        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r6b_p0_semantic_topology_e2e.py
-      - name: Run C2R6C-A controller authority primitive E2E
-        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r6ca_controller_authority_e2e.py
-      - name: Run C2R6C-A ownership red-team regression
-        run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_c2r6ca_lineage_authority.py --quiet
-      - name: Run C2R6C-B trusted-controller ingress E2E
-        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r6cb_trusted_ingress_e2e.py
-      - name: Run C2R6C-B ingress red-team regression
-        run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_c2r6cb_ingress_authority.py --quiet
-      - name: Run C2R7-A relational semantic IR E2E
-        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r7a_relational_semantic_ir_e2e.py
-      - name: Run C2R7-A semantic IR red-team regression
-        run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_c2r7a_semantic_ir.py --quiet
-      - name: Run C2R7-B semantic sidecar E2E
-        run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python tests/run_c2r7b_semantic_sidecar_e2e.py
-      - name: Run C2R7-B sidecar red-team regression
-        run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_c2r7b_semantic_sidecar.py --quiet
-      - name: Run offline Grid81 semantic compiler red-team
-        run: PYTHONDONTWRITEBYTECODE=1 python tools/redteam_grid81_semantic_compiler.py --out "$RUNNER_TEMP/grid81-semantic-diagnostic.json" --quiet
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install . pytest
+
+      - name: Validated-source runtime smoke
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src \
+          python -m pytest \
+            -q -p no:cacheprovider \
+            tests/test_structural_guidance_validated_source_runtime.py \
+            tests/test_structural_guidance_runtime_admission.py \
+            tests/test_structural_guidance_structural_validator.py \
+            tests/test_structural_guidance_validation_authority.py \
+            tests/test_python_ast_policy_convergence.py

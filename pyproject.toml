@@ -32,6 +32,13 @@ include = [
   "DarwinianMatrix.projector*",
 ]
 
+[tool.setuptools.package-data]
+elpis_reference = [
+  "vendor/fprm/AUTHORITY.json",
+  "vendor/fprm/all_config.yaml",
+  "vendor/fprm/sudoku_inference_config.json",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"

@@ -13,9 +13,21 @@ from pathlib import Path
 
 
 REPO = Path(__file__).resolve().parent.parent
-MANIFEST_REL = Path(
+
+RELEASE_MANIFEST_REL = Path(
     "manifests/Elpis2.0.0.RELEASE_MANIFEST.json"
 )
+
+DISTRIBUTION_MANIFEST_REL = Path(
+    "manifests/Elpis2.0.0.DISTRIBUTION_MANIFEST.json"
+)
+
+MANIFEST_REL = (
+    DISTRIBUTION_MANIFEST_REL
+    if (REPO / DISTRIBUTION_MANIFEST_REL).exists()
+    else RELEASE_MANIFEST_REL
+)
+
 MANIFEST = REPO / MANIFEST_REL
 
 IGNORE_PARTS = {
@@ -102,8 +114,14 @@ def load_manifest():
     except Exception as exc:
         return {}, [f"invalid manifest: {exc}"]
 
+    expected_schema = (
+        "elpis.distribution-manifest.v1"
+        if MANIFEST_REL == DISTRIBUTION_MANIFEST_REL
+        else "elpis.release-manifest.v2"
+    )
+
     expected = {
-        "schema": "elpis.release-manifest.v2",
+        "schema": expected_schema,
         "release_name": "Elpis2.0.0",
         "release_tag": "Elpis2.0.0",
         "version": "2.0.0",
@@ -120,6 +138,13 @@ def load_manifest():
         "experiments_shipped": False,
         "nanbeige_host_shipped": False,
     }
+
+    if MANIFEST_REL == DISTRIBUTION_MANIFEST_REL:
+        expected["base_release_commit"] = (
+            "c911af22e01ee35c441d65e8dbcad18694bdcb2a"
+        )
+        expected["distribution_version"] = "2.0.0"
+        expected["tag_immutable"] = True
 
     for key, value in expected.items():
         if data.get(key) != value:
