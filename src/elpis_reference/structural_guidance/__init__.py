@@ -145,3 +145,12 @@ from .validation_authority import (
     ValidationCapabilityReceiptV1,
     ValidationConsumptionV1,
 )
+
+from .structural_validator import (
+    STRUCTURAL_PYTHON_AST_VALIDATOR_ID,
+    STRUCTURAL_PYTHON_AST_VALIDATOR_VERSION,
+    STRUCTURAL_VALIDATION_EVIDENCE_SCHEMA,
+    StructuralPythonASTValidatorV1,
+    StructuralValidationError,
+    StructuralValidationEvidenceV1,
+)
