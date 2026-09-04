@@ -1,0 +1,137 @@
+{
+  "active_test_families": {
+    "CONSTRAINT_AFTER": [
+      513,
+      520
+    ],
+    "CROSS_LANE_ROUTE": [
+      65,
+      120
+    ],
+    "INTERFACE_TERMINAL": [
+      521,
+      528
+    ],
+    "MEMORY_SPAN": [
+      121,
+      176
+    ],
+    "PRECEDES": [
+      9,
+      64
+    ]
+  },
+  "arms": {
+    "per_family": {
+      "CONSTRAINT_AFTER": {
+        "ablation": "ablate_CONSTRAINT_AFTER",
+        "dose_control": "count_control_CONSTRAINT_AFTER"
+      },
+      "CROSS_LANE_ROUTE": {
+        "ablation": "ablate_CROSS_LANE_ROUTE",
+        "dose_control": "count_control_CROSS_LANE_ROUTE"
+      },
+      "INTERFACE_TERMINAL": {
+        "ablation": "ablate_INTERFACE_TERMINAL",
+        "dose_control": "count_control_INTERFACE_TERMINAL"
+      },
+      "MEMORY_SPAN": {
+        "ablation": "ablate_MEMORY_SPAN",
+        "dose_control": "count_control_MEMORY_SPAN"
+      },
+      "PRECEDES": {
+        "ablation": "ablate_PRECEDES",
+        "dose_control": "count_control_PRECEDES"
+      }
+    },
+    "reference": "matched"
+  },
+  "declared_but_residual_inactive_families": {
+    "LANE_SINGLE_OCCUPANCY": [
+      1,
+      8
+    ],
+    "MUTATION_HAZARD": [
+      177,
+      512
+    ],
+    "TERMINAL_RESOLUTION": [
+      0,
+      0
+    ]
+  },
+  "development_population": {
+    "base_seed": 562386460,
+    "cases": 32,
+    "role": "mechanism/integrity diagnostic only; no tuning permitted",
+    "seed_count": 8,
+    "seed_derivation_sha256": "a185561cd87cc190bc530a0faef83c4316cef00da4c21e80abc6eb8b8d46eba4"
+  },
+  "dose_control": {
+    "distinctness": "when another k-subset exists, selected removal subset must differ from exact target-family removal subset",
+    "operation": "remove exactly the same number k of currently-active residual bits as the target family ablation at that state",
+    "purpose": "separate family identity from generic loss of k active bits",
+    "selection": "deterministic SHA-256 ordering over active indices keyed by target family and current native grid"
+  },
+  "family_ablation": {
+    "declared_bits_changed": false,
+    "inactive_bits_activated": false,
+    "operation": "at every TRM guidance query, zero only currently-active matched residual bits whose signature kind equals target family",
+    "proposal_directly_executed": false
+  },
+  "final_population": {
+    "base_seed": 444400639,
+    "cases": 128,
+    "seed_count": 8,
+    "seed_derivation_sha256": "9a7d03ff69bc47b1457aa350e50a13e94b52dc53d4ea106d470088032c60029b",
+    "status": "UNOPENED"
+  },
+  "global_verdict_rule": "PASS if at least one preregistered active family satisfies the localization rule; otherwise NEGATIVE. Report all five families regardless of result.",
+  "hard_invariants": [
+    "checkpoint frozen",
+    "feature vocabulary frozen",
+    "training corpus frozen",
+    "no retraining",
+    "same legal candidate set",
+    "same deterministic search cost",
+    "same 128-step budget",
+    "same paired RNG state",
+    "declared residual universe unchanged",
+    "family ablation can only turn active matched residual bits off",
+    "dose control can only turn active matched residual bits off",
+    "TRM cannot apply a move directly",
+    "frozen cells remain externally enforced",
+    "authority_granted remains zero",
+    "R0.3 final population remains unopened until source/tests freeze"
+  ],
+  "inactive_family_policy": "not used as necessity arms because authority sampling observed zero active residual occurrences",
+  "localization_rule": "a family is localized as causally necessary only if both primary and specificity directional clauses hold on the frozen final population with integrity gates passing",
+  "predecessor": {
+    "checkpoint_sha256": "e58e44c9227d68971d0ab5f5e4f0eaf2e05d4faa97ec8232108aa73898273129",
+    "feature_vocabulary_sha256": "dff5506be69bec65e121778274ea59c9900d843c334588bc72854f40c98a94d0",
+    "r0_2_closure_sha256": "dd00faa5fd84f99b04ed094eebe7c90e93cc3681f7331be8f467c6e9cb433a78",
+    "training_corpus_sha256": "952d3bff676fd4c74f0bb1684ec23e70f261025d8ffb9adca59cf3a7850f1230"
+  },
+  "primary_family_clause": "family necessity direction: matched resolved_count > family-ablated resolved_count",
+  "schema": "elpis.c2r7c.trm0-family-necessity.r0-3-preregistration.v1",
+  "scientific_question": "Which native structural residual families are causally necessary for the R0.2 matched-guidance search advantage?",
+  "search_contract": {
+    "authority_granted": 0,
+    "budget": 128,
+    "candidate_cost": "unchanged predecessor _cost",
+    "candidate_set": "unchanged predecessor _legal_moves",
+    "declared529": "always unchanged",
+    "mechanism": "frozen R0.2 equal-cost legal-candidate tie-breaking",
+    "retraining": false,
+    "rng_pairing": "fresh identical Random(base_seed + fixture_index) per arm"
+  },
+  "secondary_endpoints": [
+    "paired steps-to-resolution on jointly resolved fixtures",
+    "mean final residual",
+    "number of TRM guidance choices actually altered",
+    "per-family removed-active-bit dose",
+    "dose-control overlap with target-family removal"
+  ],
+  "specificity_family_clause": "family specificity direction: count-control resolved_count > family-ablated resolved_count",
+  "status": "FROZEN_BEFORE_R0_3_DEVELOPMENT_EXECUTION"
+}
