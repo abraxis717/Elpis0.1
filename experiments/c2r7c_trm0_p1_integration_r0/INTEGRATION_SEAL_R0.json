@@ -1,0 +1,68 @@
+{
+  "canonical_base": "62f7ea9e7064861320edbaaa954460c125b5c212",
+  "canonical_integrated_head": "918fe79409cf6e7e8c4418d493bd18df2e6b0ef1",
+  "frozen_trm0": {
+    "authority_granted": 0,
+    "checkpoint_epoch": 320,
+    "checkpoint_path": "/mnt/primesauce/Elpis0.1/work/C2R7C_TRM0_FROZEN_952d3bff676f/best.pt",
+    "checkpoint_sha256": "e58e44c9227d68971d0ab5f5e4f0eaf2e05d4faa97ec8232108aa73898273129"
+  },
+  "lineage": {
+    "p0_integrated_commit": "08292a1c3b40b082876f4c9cfe4c04e751585b92",
+    "p0_source_commit": "565582c4c44aaef0fe3f5c8427a42b54bd7738c9",
+    "p1_integrated_commit": "240a2ace92c91addbd72d566ea0d3460aa22eb67",
+    "p1_source_commit": "3588c9f54eec757e575b720a1539ef35bae807dd",
+    "promotion_method": "git fast-forward",
+    "trm0_p1_integration_commit": "918fe79409cf6e7e8c4418d493bd18df2e6b0ef1"
+  },
+  "mechanism_contract": {
+    "authority_granted": 0,
+    "candidate_authority": "C2R6-P1 legal_candidates",
+    "guidance_effect": "equal-best deterministic-cost tie-breaking only",
+    "guidance_role": "stable candidate ordering before strict-improvement scan",
+    "legal_candidate_set_widened": false,
+    "objective_authority": "frozen R0.2 predecessor cost function",
+    "plateau_escape_guided": false,
+    "projector_mask_widened": false,
+    "residual_input": "full true matched 529-bit structural residual",
+    "semantic_sidecar_model_input": false,
+    "transition_authority": "C2R6-P1 apply_candidate / validate_transition"
+  },
+  "qualification": {
+    "c2r7c_fast_regression": "PASS",
+    "expensive_upstream_corpus_rerun": false,
+    "expensive_upstream_corpus_rerun_reason": "P0/P1 were fully qualified before freezing; their integrated patches are identity-preserving and their trees were not modified.",
+    "guided_refiner_contract": "PASS",
+    "live_frozen_checkpoint_smoke": "PASS",
+    "p0_fast_regression": "PASS",
+    "p1_fast_regression": "PASS",
+    "upstream_full_p0_p1_qualification_preexisting": true,
+    "upstream_patch_identity_preserved": true
+  },
+  "runtime_admission": false,
+  "schema": "elpis.c2r7c_trm0_p1.integration_seal.r0.v1",
+  "scientific_scope": {
+    "claim": "Frozen TRM0 is integrated as bounded non-authoritative structural candidate-ordering guidance through the qualified P1 ABI. It does not own candidate legality, deterministic objective, transition execution, Projector authority, or solution validation.",
+    "further_efficacy_experiment_required_now": false,
+    "static_family_pruning": false,
+    "universal_search_superiority_claimed": false
+  },
+  "separation_invariant": {
+    "structural_guided_refiner_lane": "C2R6-P0 -> C2R6-P1 -> frozen R0.2/TRM0 guidance",
+    "sudoku_release_reproposal_lane": "unchanged and separate"
+  },
+  "source_authority": {
+    "experiments/c2r7c_trm0_p1_integration_r0/guided_refiner.py": "82c798e955046cab0eba7fb42e97f90a28c0dedeccc3af0218b976d99857d0b3",
+    "experiments/c2r7c_trm0_p1_integration_r0/tests/conftest.py": "abf7174ce3f90c962dc3380869babbea9481d9aa817b1a7003c4164410ad7a08",
+    "experiments/c2r7c_trm0_p1_integration_r0/tests/test_guided_refiner_contract.py": "434e51e1176cf0450ee70a701b08b03a08c89aaf0f5404847e157fb42fb63254",
+    "experiments/c2r7c_trm0_p1_integration_r0/tests/test_live_checkpoint_smoke.py": "27a9345d4b98cab67795676c4ae0d827fd57077d838d511d3d134992342f6377"
+  },
+  "status": "CANONICAL_INTEGRATION_COMPLETE",
+  "unchanged_authorities": {
+    "c2r6_p0": true,
+    "c2r6_p1": true,
+    "frozen_c2r7c": true,
+    "structural_oracle": true,
+    "sudoku_solver": true
+  }
+}
