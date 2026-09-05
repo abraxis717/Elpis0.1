@@ -1,3 +1,39 @@
+## Elpis2.1.1 — Graph and View Correctness Hardening
+
+Elpis2.1.1 hardens semantic-spine persistence, identity, snapshot/view
+enumeration, and composed-view consistency without changing the public ABI
+or established v1 persisted-format semantics.
+
+### Persistence and identity
+
+- Enforce snapshot chain continuity and aggregate bounds.
+- Make snapshot reads transactional and exact-length.
+- Prevent replacement during immutable segment publication.
+- Validate snapshots before replacing published manifests.
+- Verify complete persisted segment payloads and HACF projection state.
+- Bound identity hashing inputs and HACF allocation arithmetic.
+
+### Snapshot and composed views
+
+- Honor pagination and output-capacity contracts across public view APIs.
+- Replace view storage transactionally in canonical order.
+- Enumerate actual referenced embedding nodes.
+- Align composed base/overlay enumeration with lookup precedence.
+
+### Qualification
+
+- Debug build: PASS.
+- Focused ASan/UBSan qualification: PASS.
+- Aggregate semantic-spine CTest: 94/96.
+- `embedding_boundary` and `context_boundaries` remain known stale
+  qualification/environment-path failures and are not counted as passing.
+- No performance claim.
+
+### Compatibility and authority
+
+Public C ABI, Basic Regex R1 semantics, v1 persisted-format semantics, and
+existing authority boundaries remain unchanged.
+
 ## Elpis2.1.0 — Bounded Basic Regex R1
 
 Elpis2.1.0 supersedes the Basic Regex R0 generalized streaming claim.
