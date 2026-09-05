@@ -43,7 +43,7 @@ jobs:
               default_model_path,
           )
 
-          assert version("elpis") == "2.0.0"
+          assert version("elpis") == "2.1.0"
 
           package = files("elpis_reference")
 

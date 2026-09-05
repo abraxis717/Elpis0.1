@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed public verifier for Elpis2.0.0."""
+"""Fail-closed public verifier for Elpis2.1.0."""
 
 from __future__ import annotations
 
@@ -15,11 +15,11 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 
 RELEASE_MANIFEST_REL = Path(
-    "manifests/Elpis2.0.0.RELEASE_MANIFEST.json"
+    "manifests/Elpis2.1.0.RELEASE_MANIFEST.json"
 )
 
 DISTRIBUTION_MANIFEST_REL = Path(
-    "manifests/Elpis2.0.0.DISTRIBUTION_MANIFEST.json"
+    "manifests/Elpis2.1.0.DISTRIBUTION_MANIFEST.json"
 )
 
 MANIFEST_REL = (
@@ -122,9 +122,9 @@ def load_manifest():
 
     expected = {
         "schema": expected_schema,
-        "release_name": "Elpis2.0.0",
-        "release_tag": "Elpis2.0.0",
-        "version": "2.0.0",
+        "release_name": "Elpis2.1.0",
+        "release_tag": "Elpis2.1.0",
+        "version": "2.1.0",
         "package_name": "elpis",
         "primitive_closure_commit":
             "482d4064321392108b87124cd47343d9c748f5bc",
@@ -143,7 +143,7 @@ def load_manifest():
         expected["base_release_commit"] = (
             "c911af22e01ee35c441d65e8dbcad18694bdcb2a"
         )
-        expected["distribution_version"] = "2.0.0"
+        expected["distribution_version"] = "2.1.0"
         expected["tag_immutable"] = True
 
     for key, value in expected.items():
@@ -224,10 +224,10 @@ def check_package():
     if project.get("name") != "elpis":
         errors.append("package name is not elpis")
 
-    if project.get("version") != "2.0.0":
-        errors.append("package version is not 2.0.0")
+    if project.get("version") != "2.1.0":
+        errors.append("package version is not 2.1.0")
 
-    if (REPO / "VERSION").read_text().strip() != "2.0.0":
+    if (REPO / "VERSION").read_text().strip() != "2.1.0":
         errors.append("VERSION mismatch")
 
     if not any(
@@ -607,12 +607,12 @@ def main() -> int:
 
     if passed:
         print(
-            "PASS: Elpis2.0.0 public release verified"
+            "PASS: Elpis2.1.0 public release verified"
         )
         return 0
 
     print(
-        "FAIL: Elpis2.0.0 public release verification failed"
+        "FAIL: Elpis2.1.0 public release verification failed"
     )
     return 1
 

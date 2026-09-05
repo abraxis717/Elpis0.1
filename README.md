@@ -2,7 +2,7 @@
 
 **Structural AI research for low-authority learned reasoning, explicit topology, and falsifiable alignment mechanisms.**
 
-Current public release: **Elpis2.0.0**
+Current public release: **Elpis2.1.0**
 
 ## Abstract
 
@@ -20,7 +20,7 @@ The most important information is what works now.
 
 | Surface | Current status | Direct falsifier |
 |---|---|---|
-| Elpis2.0.0 Python wheel | **Working** | Install outside the repository and import the runtime |
+| Elpis2.1.0 Python wheel | **Working** | Install outside the repository and import the runtime |
 | Public FPRM model bootstrap | **Working** | Fetch, hash-verify, strict-load |
 | Real FPRM Sudoku inference | **Working** | Run CPU inference and validate the board |
 | Typed semantic request graph | **Working** | Contract and digest tests |

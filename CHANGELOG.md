@@ -1,3 +1,28 @@
+## Elpis2.1.0 — Bounded Basic Regex R1
+
+Elpis2.1.0 supersedes the Basic Regex R0 generalized streaming claim.
+
+### Basic Regex shipment
+
+- Shipment: `BASIC_REGEX_SHIPMENT_R1`.
+- Supersedes: `BASIC_REGEX_SHIPMENT_R0`.
+- Supersession reason: `STREAMING_RETIREMENT_EVIDENCE_LOSS_B01`.
+- Historical R0 fixture evidence remains valid.
+- The generalized R0 arbitrary/current-length streaming claim is withdrawn.
+- StreamingRegexIngress v1 success requires `carry_bytes >= 256` and
+  `data_len <= carry_bytes`.
+- Inputs outside that profile fail closed with `E_RANGE` and publish no result.
+- Standalone file admission requires genuine EOF; non-EOF read failure cannot
+  publish lexical output.
+- Public ABI remains v1.
+- Arbitrary-length streaming is not claimed.
+
+### Authority
+
+Regex remains authority-zero lexical machinery. This release grants no new
+semantic, admission, execution, persistent-graph, P4, Grid81, model, embedding,
+or runtime authority.
+
 ## 1.2.13 — Semantic graph sidecar binding
 
 
