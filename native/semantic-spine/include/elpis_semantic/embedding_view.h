@@ -47,6 +47,11 @@ embedding_composed_view *embedding_composed_view_create(
 
 void embedding_composed_view_destroy(embedding_composed_view *view);
 
+/* Borrow reference storage; it must outlive queries. Invalid storage/count pairs
+ * preserve the previous binding. A zero count clears the binding. */
+void embedding_composed_view_set_refs(embedding_composed_view *view,
+    const elpis_semantic_embedding_ref_v1 *refs, uint32_t ref_count);
+
 /* Get the P0 composed view digest (identity unchanged). */
 int embedding_composed_view_digest(const embedding_composed_view *view, hacf_digest *out);
 
@@ -93,7 +98,9 @@ uint32_t embedding_composed_view_nodes_for_vector(
     hacf_digest *out_nodes,
     uint32_t out_capacity);
 
-/* Get all nodes in the view with their embedding references. */
+/* Enumerate distinct referenced nodes present in the base view, ordered by node
+ * identity. Filter and deduplicate before offset; return pointers placed, capped
+ * by limit and out_capacity. Null output or zero bounds write nothing. */
 uint32_t embedding_composed_view_enumerate_embedded_nodes(
     const embedding_composed_view *view,
     uint32_t offset, uint32_t limit,

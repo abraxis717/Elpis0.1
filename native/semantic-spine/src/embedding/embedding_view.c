@@ -23,6 +23,7 @@ embedding_composed_view *embedding_composed_view_create(
     const hacf_digest *policy_digest,
     const elpis_semantic_embedding_collection_v1 *collections,
     uint32_t col_count) {
+    if (col_count && !collections) return NULL;
     embedding_composed_view *view = calloc(1, sizeof(*view));
     if (!view) return NULL;
     view->base_view = base_view;
@@ -80,6 +81,7 @@ int embedding_composed_view_digest(const embedding_composed_view *view, hacf_dig
 void embedding_composed_view_set_refs(embedding_composed_view *view,
                                        const elpis_semantic_embedding_ref_v1 *refs,
                                        uint32_t ref_count) {
+    if (!view || (ref_count && !refs)) return;
     view->refs = refs;
     view->ref_count = ref_count;
 }
@@ -93,7 +95,7 @@ uint32_t embedding_composed_view_node_refs(
     const hacf_digest *node_digest,
     const elpis_semantic_embedding_ref_v1 **out_refs,
     uint32_t out_capacity) {
-    if (!view || !node_digest || !view->refs) return 0;
+    if (!view || !node_digest || !view->refs || !out_refs || !out_capacity) return 0;
 
     /* Collect matching references */
     uint32_t count = 0;
@@ -112,7 +114,7 @@ uint32_t embedding_composed_view_node_refs_by_profile(
     const hacf_digest *profile_digest,
     const elpis_semantic_embedding_ref_v1 **out_refs,
     uint32_t out_capacity) {
-    if (!view || !node_digest || !profile_digest || !view->refs) return 0;
+    if (!view || !node_digest || !profile_digest || !view->refs || !out_refs || !out_capacity) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->ref_count && count < out_capacity; i++) {
@@ -131,7 +133,7 @@ uint32_t embedding_composed_view_node_refs_by_authority(
     uint32_t min_authority,
     const elpis_semantic_embedding_ref_v1 **out_refs,
     uint32_t out_capacity) {
-    if (!view || !node_digest || !view->refs) return 0;
+    if (!view || !node_digest || !view->refs || !out_refs || !out_capacity) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->ref_count && count < out_capacity; i++) {
@@ -150,7 +152,7 @@ uint32_t embedding_composed_view_node_refs_by_provenance(
     const hacf_digest *provenance_digest,
     const elpis_semantic_embedding_ref_v1 **out_refs,
     uint32_t out_capacity) {
-    if (!view || !node_digest || !provenance_digest || !view->refs) return 0;
+    if (!view || !node_digest || !provenance_digest || !view->refs || !out_refs || !out_capacity) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->ref_count && count < out_capacity; i++) {
@@ -172,7 +174,7 @@ uint32_t embedding_composed_view_nodes_for_vector(
     const hacf_digest *vector_digest,
     hacf_digest *out_nodes,
     uint32_t out_capacity) {
-    if (!view || !vector_digest || !view->refs) return 0;
+    if (!view || !vector_digest || !view->refs || !out_nodes || !out_capacity) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->ref_count && count < out_capacity; i++) {
@@ -198,51 +200,38 @@ uint32_t embedding_composed_view_nodes_for_vector(
 /* Enumeration                                                           */
 /* ──────────────────────────────────────────────────────────────────── */
 
+static int node_pointer_cmp(const void *pa, const void *pb) {
+    const elpis_semantic_node_v1 *a = *(const elpis_semantic_node_v1 *const *)pa;
+    const elpis_semantic_node_v1 *b = *(const elpis_semantic_node_v1 *const *)pb;
+    return elpis_semantic_node_cmp(a, b);
+}
+
 uint32_t embedding_composed_view_enumerate_embedded_nodes(
     const embedding_composed_view *view,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_node_v1 **out_nodes,
     uint32_t out_capacity) {
-    /* Return nodes that have at least one embedding reference */
-    if (!view || !view->refs) return 0;
-
-    /* Collect unique node digests with references */
-    typedef struct {
-        hacf_digest digest;
-        int seen;
-    } node_seen;
-
-    /* For P1, we use the base_view's nodes and filter by refs */
-    uint32_t total = semantic_view_total_nodes(view->base_view);
-    if (offset >= total) return 0;
-
-    uint32_t remaining = total - offset;
-    uint32_t take = (remaining < limit) ? remaining : limit;
-
-    const elpis_semantic_node_v1 *all_nodes[1024];
-    uint32_t all_count = semantic_view_total_nodes(view->base_view);
-    /* In P0, enumerate through view */
-    /* For P1 stub, return 0 — full implementation requires iterating
-     * the P0 view's nodes and checking against refs */
-    (void)all_nodes;
-    (void)all_count;
-    (void)out_nodes;
-    (void)out_capacity;
-
-    /* Count nodes with refs */
-    uint32_t embedded_count = 0;
-    for (uint32_t i = 0; i < view->ref_count; i++) {
-        /* Dedup: check if this node digest was already counted */
-        int seen = 0;
-        for (uint32_t j = 0; j < i; j++) {
-            if (memcmp(&view->refs[j].semantic_node_digest, &view->refs[i].semantic_node_digest, sizeof(hacf_digest)) == 0) {
-                seen = 1;
-                break;
-            }
-        }
-        if (!seen) embedded_count++;
+    if (!view || !view->base_view || !view->refs || !view->ref_count ||
+        !out_nodes || !out_capacity || !limit) return 0;
+    if ((size_t)view->ref_count > SIZE_MAX / sizeof(*out_nodes)) return 0;
+    const elpis_semantic_node_v1 **nodes = malloc((size_t)view->ref_count * sizeof(*nodes));
+    if (!nodes) return 0;
+    uint32_t found = 0;
+    for (uint32_t i = 0; i < view->ref_count; ++i) {
+        const elpis_semantic_node_v1 *node = semantic_view_lookup_node(
+            view->base_view, &view->refs[i].semantic_node_digest);
+        if (node) nodes[found++] = node;
     }
-    return embedded_count;
+    qsort(nodes, found, sizeof(*nodes), node_pointer_cmp);
+    uint32_t placed = 0;
+    for (uint32_t i = 0; i < found; ++i) {
+        if (i && elpis_semantic_node_cmp(nodes[i - 1], nodes[i]) == 0) continue;
+        if (offset) { --offset; continue; }
+        out_nodes[placed++] = nodes[i];
+        if (placed == limit || placed == out_capacity) break;
+    }
+    free(nodes);
+    return placed;
 }
 
 /* ──────────────────────────────────────────────────────────────────── */
@@ -272,7 +261,7 @@ uint32_t embedding_composed_view_collections(
     uint32_t offset, uint32_t limit,
     const elpis_semantic_embedding_collection_v1 **out,
     uint32_t out_capacity) {
-    if (!view || !view->collections) return 0;
+    if (!view || !view->collections || !out || !out_capacity || !limit) return 0;
     if (offset >= view->col_count) return 0;
     uint32_t remaining = view->col_count - offset;
     uint32_t take = (remaining < limit) ? remaining : limit;
