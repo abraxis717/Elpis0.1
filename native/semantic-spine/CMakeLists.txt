@@ -124,7 +124,6 @@ add_library(elpis_semantic STATIC
   src/evidence/evidence_admission_policy.c
   src/evidence/evidence_adjudicator.c
   src/evidence/evidence_admission_receipt.c
-  src/evidence/evidence_semantic_builder.c
   src/evidence/evidence_admission_segment.c
   src/evidence/evidence_admission_layer.c
   src/evidence/typed_evidence_view.c
@@ -383,10 +382,8 @@ target_link_libraries(test_adjudicator PRIVATE elpis_semantic elpis_hash)
 sf_warnings(test_adjudicator)
 add_test(NAME adjudicator COMMAND test_adjudicator)
 
-add_executable(test_semantic_builder tests/evidence/test_semantic_builder.c)
-target_link_libraries(test_semantic_builder PRIVATE elpis_semantic elpis_hash)
-sf_warnings(test_semantic_builder)
-add_test(NAME semantic_builder COMMAND test_semantic_builder)
+# The P4 evidence_semantic_builder implementation and its test are absent
+# from the released source. Do not advertise a target or qualification for them.
 
 add_executable(test_admission_segment tests/evidence/test_admission_segment.c)
 target_link_libraries(test_admission_segment PRIVATE elpis_semantic elpis_hash)
