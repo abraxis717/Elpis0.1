@@ -1,0 +1,35 @@
+{
+  "admission_class": "QUERY_LOCAL_REPRESENTATION_ONLY",
+  "atomic_mutation_claimed": false,
+  "execution_authority": false,
+  "overlay_binding": {
+    "external_dependencies_in_canonical_order": [
+      "registry_contract_digest",
+      "native_registry_digest",
+      "proposal_digest",
+      "hacf_corpus_manifest_digest",
+      "hacf_context_graph_manifest_digest"
+    ],
+    "overlay_policy_digest": "policy_manifest_sha256"
+  },
+  "p4_evidence_admission": false,
+  "persistent_base_graph_admission": false,
+  "requirements": {
+    "all_authority_fields_zero": true,
+    "assertion_authority": 0,
+    "candidate_digest_nonzero": true,
+    "candidate_status": "PROPOSED_UNADMITTED",
+    "hacf_context_graph_manifest_digest_nonzero": true,
+    "hacf_corpus_manifest_digest_nonzero": true,
+    "native_registry_digest_exact_match": true,
+    "node_semantic_flags": "EXTERNAL_ONLY",
+    "policy_digest_exact_match": true,
+    "proposal_digest_nonzero": true,
+    "query_digest_exact_match": true,
+    "registry_contract_digest_exact_match": true
+  },
+  "runtime_admission": false,
+  "schema": "elpis.query-local-proposal-representation-policy.v1",
+  "semantic_truth_admission": false,
+  "status": "SUCCESSOR_CONTRACT_CANDIDATE_UNPROMOTED"
+}

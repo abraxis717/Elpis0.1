@@ -1,0 +1,10 @@
+{
+  "batch_receipt_identity": "e546206dfd9a4f97b6c8b9dc823a7cbf361c9974a8815a0c4eb99295537ac41e",
+  "fresh_process_runs": 4,
+  "overlay_identity": "76c8fc0c92f2d1296b815667cba82992ffd36d7f4c58427555732dd932a6c70a",
+  "predecessor_result_sha256": "249bd883828797357de3dcb86901910d3fc147cfddf36a2843582878f0acac55",
+  "proposal_set_digest": "6b0490266f150a85a29f14b0cb06504cb9573ba580d2ee5382ab99d5c39b308f",
+  "runtime_admission": false,
+  "schema": "elpis.query-local-proposal-ingress-r0.qualification-binding.v1",
+  "verdict": "PASS_ATOMIC_QUERY_LOCAL_PROPOSAL_BATCH_INGRESS_R1"
+}

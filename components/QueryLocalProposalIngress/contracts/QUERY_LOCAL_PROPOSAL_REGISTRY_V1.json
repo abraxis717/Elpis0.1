@@ -1,0 +1,20 @@
+{
+  "grid81_semantics": false,
+  "hyperedge_types": [],
+  "incidence_roles": [],
+  "node_types": [
+    {
+      "max_authority": 0,
+      "meaning": "Opaque provenance-bound query-local proposal envelope; representation is not semantic truth admission.",
+      "min_authority": 0,
+      "node_type_id": "0x1000f200",
+      "semantic_flag_mask": "SEMANTIC_NODE_FLAG_EXTERNAL",
+      "symbol": "QUERY_LOCAL_PROPOSAL_ENVELOPE_V1"
+    }
+  ],
+  "p4_relation_enum_extension": false,
+  "registry_scope": "QUERY_LOCAL_OVERLAY_ONLY",
+  "schema": "elpis.query-local-proposal-registry.v1",
+  "semantic_spine_v1_mutated": false,
+  "status": "SUCCESSOR_CONTRACT_CANDIDATE_UNPROMOTED"
+}

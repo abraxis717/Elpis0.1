@@ -1,0 +1,21 @@
+{
+  "atomicity": "construct-private-finalize-publish-or-nothing",
+  "component_content_digest": "e977ac61b2d93d1c14131cfa04d92a812e637f0b931d4f9fb2b720f0c864ebba",
+  "component_id": "QueryLocalProposalIngress_R0",
+  "display_name": "QueryLocalProposalIngress",
+  "grid81_semantics": false,
+  "native_registry_digest": "d2012aad35f795b9d798e5a3f0aeb685a4ac0ffafd9df71f6950ed0e35d87f15",
+  "node_type": "0x1000f200",
+  "p4_relation_enum_extension": false,
+  "persistent_base_graph_admission": false,
+  "pipeline_role": "Successor query-local proposal representation and atomic batch ingress",
+  "predecessor_result_sha256": "249bd883828797357de3dcb86901910d3fc147cfddf36a2843582878f0acac55",
+  "qualification_disposition": "QUALIFIED_SUCCESSOR_COMPONENT",
+  "qualified_producer_fixture": "bounded Regex+HACF R1",
+  "registry_contract_sha256": "9ac8ec7d88cad77f998e2552b4b72fb16042432025966d9abff6cca551bc5468",
+  "representation_policy_sha256": "8230edd0f653f9b55325766eb88f36ecda0c8c3573af74433dd3bd435e078bcd",
+  "runtime_admission": false,
+  "schema": "elpis.component_manifest.v1",
+  "sealed_semantic_spine_v1_mutation": false,
+  "semantic_truth_authority": false
+}
