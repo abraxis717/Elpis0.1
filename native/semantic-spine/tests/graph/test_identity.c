@@ -291,11 +291,58 @@ int test_fresh_process_determinism(void) {
     return 0;
 }
 
+static int test_identity_argument_boundaries(void) {
+#define ID_CHECK(expr) do { if (!(expr)) { \
+    fprintf(stderr, "FAIL identity boundary line %d\n", __LINE__); return 1; \
+} } while (0)
+    hacf_digest digest, sentinel;
+    memset(&digest, 0xa5, sizeof(digest));
+    sentinel = digest;
+    elpis_semantic_node_v1 node = {0};
+    elpis_semantic_assertion_v1 assertion = {0};
+    elpis_semantic_incidence_v1 incidence = {0};
+    elpis_semantic_hyperedge_v1 edge = {0};
+    ID_CHECK(elpis_semantic_node_identity(NULL, &digest) == SEMANTIC_E_INVAL);
+    ID_CHECK(elpis_semantic_node_identity(&node, NULL) == SEMANTIC_E_INVAL);
+    ID_CHECK(elpis_semantic_assertion_identity(NULL, &digest) == SEMANTIC_E_INVAL);
+    ID_CHECK(elpis_semantic_assertion_identity(&assertion, NULL) == SEMANTIC_E_INVAL);
+    ID_CHECK(elpis_semantic_incidence_identity(NULL, &digest) == SEMANTIC_E_INVAL);
+    ID_CHECK(elpis_semantic_incidence_identity(&incidence, NULL) == SEMANTIC_E_INVAL);
+    ID_CHECK(elpis_semantic_hyperedge_identity(NULL, &digest) == SEMANTIC_E_INVAL);
+    ID_CHECK(elpis_semantic_hyperedge_identity(&edge, NULL) == SEMANTIC_E_INVAL);
+    ID_CHECK(memcmp(&digest, &sentinel, sizeof(digest)) == 0);
+    const uint32_t counts[] = {0, 1, SEMANTIC_MAX_PARTICIPANTS - 1,
+        SEMANTIC_MAX_PARTICIPANTS, SEMANTIC_MAX_PARTICIPANTS + 1, UINT32_MAX};
+    for (unsigned i = 0; i < sizeof(counts) / sizeof(counts[0]); ++i) {
+        edge.participant_count = counts[i];
+        elpis_semantic_hyperedge_v1 before = edge;
+        digest = sentinel;
+        int valid = counts[i] <= SEMANTIC_MAX_PARTICIPANTS;
+        ID_CHECK(elpis_semantic_hyperedge_identity(&edge, &digest) ==
+                 (valid ? SEMANTIC_OK : SEMANTIC_E_INVAL));
+        if (!valid) ID_CHECK(memcmp(&digest, &sentinel, sizeof(digest)) == 0);
+        else {
+            hacf_digest repeated;
+            ID_CHECK(elpis_semantic_hyperedge_identity(&edge, &repeated) == SEMANTIC_OK);
+            ID_CHECK(memcmp(&digest, &repeated, sizeof(digest)) == 0);
+        }
+        ID_CHECK(memcmp(&edge, &before, sizeof(edge)) == 0);
+        ID_CHECK(elpis_semantic_canonicalize_participants(edge.participants, counts[i]) ==
+                 (valid ? SEMANTIC_OK : SEMANTIC_E_INVAL));
+        ID_CHECK(memcmp(&edge, &before, sizeof(edge)) == 0);
+    }
+    ID_CHECK(elpis_semantic_canonicalize_participants(NULL, 0) == SEMANTIC_OK);
+    ID_CHECK(elpis_semantic_canonicalize_participants(NULL, 1) == SEMANTIC_E_INVAL);
+#undef ID_CHECK
+    return 0;
+}
+
 int main(void) {
     printf("Running identity tests...\n");
 
     int tests[] = {
         test_node_identity_independent_of_padding(),
+        test_identity_argument_boundaries(),
         test_node_identity_independent_of_provenance(),
         test_node_identity_independent_of_authority(),
         test_node_identity_changes_with_payload(),

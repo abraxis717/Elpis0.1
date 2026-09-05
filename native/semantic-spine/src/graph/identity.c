@@ -39,6 +39,7 @@ static void write_digest(elpis_sha256_ctx *ctx, const hacf_digest *d) {
 /* ──────────────────────────────────────────────────────────────────── */
 
 int elpis_semantic_node_identity(const elpis_semantic_node_v1 *node, hacf_digest *out) {
+    if (!node || !out) return SEMANTIC_E_INVAL;
     elpis_sha256_ctx ctx;
     elpis_sha256_init(&ctx);
     write_domain_tag(&ctx, "elpis.semantic.node.v1");
@@ -87,7 +88,8 @@ static int participant_cmp(const void *pa, const void *pb) {
 }
 
 int elpis_semantic_canonicalize_participants(elpis_semantic_participant_descriptor *parts, uint32_t count) {
-    if (!parts || count == 0) return SEMANTIC_OK;
+    if (count == 0) return SEMANTIC_OK;
+    if (!parts) return SEMANTIC_E_INVAL;
     if (count > SEMANTIC_MAX_PARTICIPANTS) return SEMANTIC_E_INVAL;
     /* qsort is deterministic for our comparator — full key comparison, no tie-breaking by address. */
     qsort(parts, count, sizeof(elpis_semantic_participant_descriptor), participant_cmp);
@@ -99,6 +101,8 @@ int elpis_semantic_canonicalize_participants(elpis_semantic_participant_descript
 /* ──────────────────────────────────────────────────────────────────── */
 
 int elpis_semantic_hyperedge_identity(const elpis_semantic_hyperedge_v1 *edge, hacf_digest *out) {
+    if (!edge || !out || edge->participant_count > SEMANTIC_MAX_PARTICIPANTS)
+        return SEMANTIC_E_INVAL;
     elpis_sha256_ctx ctx;
     elpis_sha256_init(&ctx);
     write_domain_tag(&ctx, "elpis.semantic.hyperedge.v1");
@@ -145,6 +149,7 @@ int elpis_semantic_hyperedge_cmp(const elpis_semantic_hyperedge_v1 *a, const elp
 /* ──────────────────────────────────────────────────────────────────── */
 
 int elpis_semantic_assertion_identity(const elpis_semantic_assertion_v1 *assertion, hacf_digest *out) {
+    if (!assertion || !out) return SEMANTIC_E_INVAL;
     elpis_sha256_ctx ctx;
     elpis_sha256_init(&ctx);
     write_domain_tag(&ctx, "elpis.semantic.assertion.v1");
@@ -194,6 +199,7 @@ int elpis_semantic_assertion_is_duplicate(const elpis_semantic_assertion_v1 *a, 
 /* ──────────────────────────────────────────────────────────────────── */
 
 int elpis_semantic_incidence_identity(const elpis_semantic_incidence_v1 *incidence, hacf_digest *out) {
+    if (!incidence || !out) return SEMANTIC_E_INVAL;
     elpis_sha256_ctx ctx;
     elpis_sha256_init(&ctx);
     write_domain_tag(&ctx, "elpis.semantic.incidence.v1");
