@@ -4,6 +4,7 @@
 #include "elpis_semantic/trm_alignment_report.h"
 #include "elpis_semantic/trm_alignment_policy.h"
 #include "elpis_semantic/trm_alignment_handoff.h"
+#include <string.h>
 
 int main(void) {
     /* Test report creation */
