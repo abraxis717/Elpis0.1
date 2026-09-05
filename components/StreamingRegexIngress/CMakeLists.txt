@@ -68,3 +68,21 @@ target_compile_features(
     elpis_streaming_regex_b01_regression
     PRIVATE cxx_std_17
 )
+
+# B01 Phase-2 EOF/read-state regression.
+#
+# Exercises the private staging state machine used by the standalone CLI,
+# including deterministic first-read and after-prefix I/O failures.
+add_executable(elpis_streaming_regex_b01_cli_io_regression
+    tests/test_b01_cli_eof_gate.cpp
+)
+
+target_include_directories(
+    elpis_streaming_regex_b01_cli_io_regression
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(
+    elpis_streaming_regex_b01_cli_io_regression
+    PRIVATE cxx_std_17
+)

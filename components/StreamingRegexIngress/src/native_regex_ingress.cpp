@@ -3,6 +3,7 @@
 
 #include "elpis/sha256.h"
 #include "streaming_regex_ingress.h"
+#include "bounded_file_staging.h"
 
 #include <algorithm>
 #include <array>
@@ -588,29 +589,24 @@ static J parse_file(
      * parser used by the stable C ABI. This removes the duplicate rolling-
      * retirement implementation rather than maintaining two B01 fixes.
      */
-    std::vector<char> buf(chunk_size);
-    std::string data;
+    const auto staged =
+        elpis_streaming_regex_detail::stage_bounded_stream(
+            f,
+            chunk_size,
+            carry_bytes);
 
-    while(f) {
-        f.read(buf.data(),(std::streamsize)buf.size());
-        const std::streamsize got=f.gcount();
-        if(got<=0) break;
+    if(staged.status ==
+       elpis_streaming_regex_detail::
+           BoundedFileStageStatus::InputExceedsCarry)
+        throw ElpisStreamingRegexInputExceedsCarry{};
 
-        const size_t n=(size_t)got;
-
-        /*
-         * data.size() is maintained <= carry_bytes, so subtraction cannot
-         * underflow. Reject before appending the out-of-profile bytes.
-         */
-        if(n > carry_bytes-data.size())
-            throw ElpisStreamingRegexInputExceedsCarry{};
-
-        data.append(buf.data(),n);
-    }
+    if(staged.status !=
+       elpis_streaming_regex_detail::BoundedFileStageStatus::Ok)
+        throw std::runtime_error("INPUT_READ");
 
     return parse_bytes_buffer(
-        reinterpret_cast<const uint8_t *>(data.data()),
-        data.size(),
+        reinterpret_cast<const uint8_t *>(staged.data.data()),
+        staged.data.size(),
         chunk_size,
         carry_bytes);
 }
