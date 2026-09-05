@@ -11,3 +11,18 @@ add_subdirectory(native/hacf)
 
 # R1 wrapper (optional, requires HACF built first)
 # add_subdirectory(native/hacf_bridge)
+
+# ---------------------------------------------------------------------------
+# Qualified bounded Regex shipment R0.
+#
+# Build admission is not runtime admission. This compiles the authority-zero
+# StreamingRegexIngress -> HACF -> QueryLocalProposalIngress path only.
+# ---------------------------------------------------------------------------
+option(ELPIS_BUILD_BASIC_REGEX
+  "Build the qualified bounded Regex/HACF/query-local ingress stack"
+  ON)
+
+if(ELPIS_BUILD_BASIC_REGEX)
+  add_subdirectory(components/StreamingRegexIngress)
+  add_subdirectory(components/RegexHACFQueryIngress)
+endif()

@@ -1,7 +1,7 @@
 # RegexHACFQueryIngress
 
 **Status:** `QUALIFIED_SUCCESSOR_COMPONENT`
-**Build-system admission:** `FALSE`
+**Build-system admission:** `TRUE`
 **Runtime admission:** `FALSE`
 
 ## Role
@@ -46,9 +46,8 @@ Qualification proves exact identity parity with the already-closed full native
 Regex -> HACF -> QueryLocalProposalIngress chain for the bounded R1 fixture and
 task family.
 
-The qualification harness uses the same external semantic link-compat shim as
-the closed predecessor. That shim is NOT contained in this component and is NOT
-promoted as repository authority.
+Repository build authority uses the real narrow Semantic Spine support
+(snapshot_manifest.c and snapshot_view.c) and does not compile the former
+qualification-only semantic link-compat shim.
 
-Therefore the source component is qualified, but top-level build-system
-admission remains a separate closure boundary.
+Top-level build-system admission is qualified. Runtime admission remains false.

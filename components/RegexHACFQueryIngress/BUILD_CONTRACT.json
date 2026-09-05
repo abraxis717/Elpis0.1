@@ -1,7 +1,8 @@
 {
-  "build_system_admission": false,
+  "build_authority": "ROOT_CMAKE_BASIC_REGEX_SHIPMENT_R0",
+  "build_system_admission": true,
   "component": "RegexHACFQueryIngress",
-  "qualification_link_compat_external": true,
+  "qualification_link_compat_external": false,
   "qualification_link_compat_promoted": false,
   "requires": {
     "HACF": "R3 lexical corpus + context graph",
@@ -11,5 +12,5 @@
   },
   "runtime_admission": false,
   "schema": "elpis.regex-hacf-query-ingress.build-contract.v1",
-  "top_level_build_reconciliation_required": true
+  "top_level_build_reconciliation_required": false
 }
