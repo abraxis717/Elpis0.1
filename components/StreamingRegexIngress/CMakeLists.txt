@@ -50,3 +50,21 @@ target_link_libraries(elpis_native_regex_ingress
 )
 
 target_compile_features(elpis_native_regex_ingress PRIVATE cxx_std_17)
+
+# B01 bounded-profile regression.
+#
+# This is a focused successor regression target. It verifies that every
+# successfully accepted v1 input remains wholly retained until lexical
+# disposition and that out-of-profile input publishes no result.
+add_executable(elpis_streaming_regex_b01_regression
+    tests/test_b01_bounded_profile.cpp
+)
+
+target_link_libraries(elpis_streaming_regex_b01_regression
+    PRIVATE elpis_streaming_regex_ingress
+)
+
+target_compile_features(
+    elpis_streaming_regex_b01_regression
+    PRIVATE cxx_std_17
+)

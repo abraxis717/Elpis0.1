@@ -546,87 +546,73 @@ static J compose(const std::vector<J> &evidence,const std::string &source_sha) {
     return J(std::move(out));
 }
 
-static J parse_file(const std::string &path,size_t chunk_size,size_t carry_bytes) {
-    if(chunk_size==0 || carry_bytes<256) throw std::runtime_error("INVALID_STREAM_BOUNDS");
+/*
+ * Private B01 range discriminator shared by both native entry paths.
+ *
+ * It derives from std::runtime_error so the standalone CLI retains its existing
+ * NATIVE_REGEX_FAIL:<reason> error surface while the stable C ABI can map this
+ * exact condition to ELPIS_STREAMING_REGEX_E_RANGE.
+ */
+struct ElpisStreamingRegexInputExceedsCarry final : std::runtime_error {
+    ElpisStreamingRegexInputExceedsCarry()
+        : std::runtime_error("INPUT_EXCEEDS_CARRY") {}
+};
+
+static J parse_bytes_buffer(
+    const uint8_t *data,
+    size_t data_len,
+    size_t chunk_size,
+    size_t carry_bytes);
+
+static J parse_file(
+    const std::string &path,
+    size_t chunk_size,
+    size_t carry_bytes)
+{
+    if(chunk_size==0 ||
+       carry_bytes<ELPIS_STREAMING_REGEX_MIN_CARRY_BYTES_V1)
+        throw std::runtime_error("INVALID_STREAM_BOUNDS");
 
     std::ifstream f(path,std::ios::binary);
     if(!f) throw std::runtime_error("INPUT_OPEN");
 
-    auto ps=patterns();
-    compile_patterns(ps);
-
-    elpis_sha256_ctx source_ctx;
-    elpis_sha256_init(&source_ctx);
-    std::string carry;
-    uint64_t total_before=0;
-    std::vector<Evidence> raw;
-    std::set<std::tuple<std::string,uint64_t,uint64_t>> seen;
-
+    /*
+     * B01 containment for the standalone file entry path.
+     *
+     * Do not perform lexical processing while the file is still capable of
+     * exceeding the caller-supplied carry profile. Stage only the admitted
+     * whole input. The first byte beyond carry_bytes fails before Regex pattern
+     * compilation, evidence construction, composition, or output publication.
+     *
+     * Once EOF proves data_len <= carry_bytes, delegate to the same bounded
+     * parser used by the stable C ABI. This removes the duplicate rolling-
+     * retirement implementation rather than maintaining two B01 fixes.
+     */
     std::vector<char> buf(chunk_size);
-    try {
-        while(f) {
-            f.read(buf.data(),(std::streamsize)buf.size());
-            std::streamsize got=f.gcount();
-            if(got<=0) break;
-            std::string fresh(buf.data(),(size_t)got);
-            elpis_sha256_update(&source_ctx,fresh.data(),fresh.size());
+    std::string data;
 
-            std::string window=carry+fresh;
-            uint64_t base=total_before-carry.size();
-            uint64_t total_after=total_before+(uint64_t)fresh.size();
+    while(f) {
+        f.read(buf.data(),(std::streamsize)buf.size());
+        const std::streamsize got=f.gcount();
+        if(got<=0) break;
 
-            Utf8Prefix up=utf8_complete_prefix(window);
-            if(!up.valid) throw std::runtime_error("INVALID_UTF8");
-            std::string complete=window.substr(0,up.complete);
-            std::string suffix=window.substr(up.complete);
+        const size_t n=(size_t)got;
 
-            uint64_t safe_commit_end=total_after>carry_bytes?total_after-carry_bytes:0u;
-            scan_window(complete,base,true,safe_commit_end,ps,raw,seen);
-            carry=safe_carry(complete+suffix,carry_bytes);
-            total_before=total_after;
-        }
+        /*
+         * data.size() is maintained <= carry_bytes, so subtraction cannot
+         * underflow. Reject before appending the out-of-profile bytes.
+         */
+        if(n > carry_bytes-data.size())
+            throw ElpisStreamingRegexInputExceedsCarry{};
 
-        if(!carry.empty()) {
-            Utf8Prefix up=utf8_complete_prefix(carry);
-            if(!up.valid || up.complete!=carry.size()) throw std::runtime_error("INVALID_UTF8_EOF");
-            scan_window(carry,total_before-carry.size(),false,0,ps,raw,seen);
-        }
-    } catch(...) {
-        free_patterns(ps);
-        throw;
+        data.append(buf.data(),n);
     }
-    free_patterns(ps);
 
-    uint8_t source_digest_bytes[32];
-    elpis_sha256_final(&source_ctx,source_digest_bytes);
-    std::string source_sha=hex_digest(source_digest_bytes);
-
-    std::sort(raw.begin(),raw.end(),[](const Evidence&a,const Evidence&b){
-        if(a.start_byte!=b.start_byte) return a.start_byte<b.start_byte;
-        if(a.end_byte!=b.end_byte) return a.end_byte<b.end_byte;
-        return a.pattern_id<b.pattern_id;
-    });
-
-    J::A evidence;
-    for(const auto &e:raw) evidence.push_back(evidence_to_json(e,source_sha));
-
-    J::O ingress;
-    ingress["admission_authority"]=false;
-    ingress["candidate_status"]="PROPOSED_UNADMITTED";
-    ingress["evidence"]=J(evidence);
-    ingress["execution_authority"]=false;
-    ingress["runtime_admission"]=false;
-    ingress["schema"]="elpis.regex-stream-ingress-result.v1";
-    ingress["semantic_authority"]=false;
-    ingress["source_bytes"]=J::num(std::to_string(total_before));
-    ingress["source_sha256"]=source_sha;
-
-    J composition=compose(evidence,source_sha);
-
-    J::O root;
-    root["composition"]=composition;
-    root["ingress"]=J(std::move(ingress));
-    return J(std::move(root));
+    return parse_bytes_buffer(
+        reinterpret_cast<const uint8_t *>(data.data()),
+        data.size(),
+        chunk_size,
+        carry_bytes);
 }
 
 #ifndef ELPIS_STREAMING_REGEX_NO_MAIN
@@ -674,8 +660,23 @@ static J parse_bytes_buffer(
     size_t chunk_size,
     size_t carry_bytes)
 {
-    if((data_len && !data) || chunk_size==0 || carry_bytes<256)
+    if((data_len && !data) ||
+       chunk_size==0 ||
+       carry_bytes<ELPIS_STREAMING_REGEX_MIN_CARRY_BYTES_V1)
         throw std::runtime_error("INVALID_STREAM_BOUNDS");
+
+    /*
+     * B01 containment.
+     *
+     * The v1 grammar contains patterns with unbounded span (for example
+     * whitespace repetition). A finite rolling carry therefore cannot prove
+     * arbitrary-length lexical completeness once bytes are retired.
+     *
+     * Every successfully accepted task must remain wholly retained until EOF.
+     * Chunking is transport segmentation only inside this admitted profile.
+     */
+    if(data_len > carry_bytes)
+        throw ElpisStreamingRegexInputExceedsCarry{};
 
     auto ps=patterns();
     compile_patterns(ps);
@@ -817,6 +818,9 @@ extern "C" int elpis_streaming_regex_parse_bytes_v1(
 
         *out=r;
         return ELPIS_STREAMING_REGEX_OK;
+    } catch(const ElpisStreamingRegexInputExceedsCarry &) {
+        elpis_streaming_regex_last_error_storage="INPUT_EXCEEDS_CARRY";
+        return ELPIS_STREAMING_REGEX_E_RANGE;
     } catch(const std::bad_alloc &) {
         elpis_streaming_regex_last_error_storage="NOMEM";
         return ELPIS_STREAMING_REGEX_E_NOMEM;

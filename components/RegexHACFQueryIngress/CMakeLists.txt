@@ -63,3 +63,20 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" OR
   target_compile_options(elpis_regex_hacf_query_ingress
       PRIVATE -Wall -Wextra -Wpedantic)
 endif()
+
+# B01 bounded-profile successor regression.
+#
+# Root-linked Regex -> HACF -> QueryLocalProposalIngress containment check.
+# Oversized input must fail in Regex before proposal or batch publication.
+add_executable(elpis_regex_hacf_b01_regression
+    tests/test_b01_range_prepublication.cpp
+)
+
+target_link_libraries(elpis_regex_hacf_b01_regression
+    PRIVATE elpis_regex_hacf_query_ingress
+)
+
+target_compile_features(
+    elpis_regex_hacf_b01_regression
+    PRIVATE cxx_std_17
+)

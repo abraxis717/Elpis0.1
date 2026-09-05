@@ -33,6 +33,28 @@ The implementation owns all returned storage until
 
 C++ implementation objects are not part of the ABI.
 
+## Qualified v1 input profile
+
+The v1 lexical grammar is intentionally bounded by the caller-supplied carry
+profile.
+
+A successful v1 parse requires:
+
+- `carry_bytes >= ELPIS_STREAMING_REGEX_MIN_CARRY_BYTES_V1` (`256` bytes); and
+- `data_len <= carry_bytes`.
+
+Inputs whose complete byte length exceeds the supplied carry profile return
+`ELPIS_STREAMING_REGEX_E_RANGE` and publish no result.
+
+The supplied carry is a correctness boundary, not merely a resource
+recommendation. The default carry is `1024` bytes, but it is not an absolute
+v1 task-size maximum.
+
+The grammar contains expressions whose lexical span is not finitely bounded, so
+v1 does not claim arbitrary-length incremental-regex completeness. Chunking is
+transport segmentation only for successfully accepted input; the complete
+accepted task remains available through final lexical disposition.
+
 ## Qualification
 
 The ABI must remain byte-exact with the frozen qualified Python R1 oracle over

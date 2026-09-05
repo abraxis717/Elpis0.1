@@ -16,6 +16,22 @@ extern "C" {
 
 #define ELPIS_STREAMING_REGEX_ABI_VERSION_V1 1u
 #define ELPIS_STREAMING_REGEX_DEFAULT_CARRY_BYTES_V1 1024u
+#define ELPIS_STREAMING_REGEX_MIN_CARRY_BYTES_V1 256u
+/*
+ * Qualified v1 lexical-input profile.
+ *
+ * Successful parsing requires the complete input to fit within the
+ * caller-provided carry window:
+ *
+ *     carry_bytes >= ELPIS_STREAMING_REGEX_MIN_CARRY_BYTES_V1
+ *     data_len <= carry_bytes
+ *
+ * Inputs exceeding the supplied carry profile fail with
+ * ELPIS_STREAMING_REGEX_E_RANGE and publish no result.
+ *
+ * This is deliberately a bounded whole-input lexical guarantee. It does not
+ * claim arbitrary-length incremental-regex completeness.
+ */
 
 #define ELPIS_STREAMING_REGEX_OK 0
 #define ELPIS_STREAMING_REGEX_E_INVAL (-1)
