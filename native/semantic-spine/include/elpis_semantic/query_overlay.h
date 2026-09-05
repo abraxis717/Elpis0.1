@@ -98,7 +98,9 @@ const elpis_semantic_node_v1 *semantic_composed_view_lookup_node(
 const elpis_semantic_hyperedge_v1 *semantic_composed_view_lookup_hyperedge(
     const semantic_composed_view *view, const hacf_digest *hyperedge_identity);
 
-/* Enumerate all nodes (base + overlay merged, overlay shadows base by identity). */
+/* Enumerate distinct nodes in identity order; overlay shadows base by identity.
+ * Skip offset results and return the count placed, bounded by limit and capacity.
+ * Null output or zero bounds write nothing. */
 uint32_t semantic_composed_view_enumerate_nodes(
     const semantic_composed_view *view,
     uint32_t offset, uint32_t limit,

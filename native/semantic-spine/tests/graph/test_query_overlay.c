@@ -197,6 +197,54 @@ int test_opaque_external_dependency_digests(void) {
     return 0;
 }
 
+static int node_order(const void *a, const void *b) {
+    return elpis_semantic_node_cmp(a,b);
+}
+static int test_composed_pagination_and_shadowing(void) {
+#define CHECK(x) do { if (!(x)) { fprintf(stderr,"FAIL composed line %d\n",__LINE__); exit(1); } } while(0)
+    semantic_type_registry *reg; setup_registry(&reg);
+    semantic_snapshot_manifest *m=semantic_snapshot_create();
+    semantic_snapshot_view *base=semantic_view_create(m);
+    hacf_digest query={{1}}, policy={{2}};
+    semantic_query_overlay *overlay=semantic_overlay_create(m,reg,&query);
+    CHECK(base && overlay);
+    elpis_semantic_node_v1 nodes[5];
+    for(unsigned i=0;i<5;++i) { uint8_t payload[32]={(uint8_t)i}; make_node(&nodes[i],1,payload); }
+    qsort(nodes,5,sizeof(*nodes),node_order);
+    elpis_semantic_node_v1 base_nodes[]={nodes[4],nodes[2],nodes[0]};
+    elpis_semantic_hyperedge_v1 edge={0};
+    edge.abi_version=SEMANTIC_ABI_VERSION; edge.hyperedge_type=SEMANTIC_HYPEREDGE_NAMESPACE|1;
+    CHECK(elpis_semantic_hyperedge_identity(&edge,&edge.hyperedge_identity)==SEMANTIC_OK);
+    semantic_view_set_records(base,base_nodes,3,NULL,0,&edge,1,NULL,0);
+    for(unsigned i=1;i<=3;++i) CHECK(semantic_overlay_add_node(overlay,&nodes[i])==SEMANTIC_OK);
+    CHECK(semantic_overlay_add_hyperedge(overlay,&edge)==SEMANTIC_OK);
+    CHECK(semantic_overlay_finalize(overlay)==SEMANTIC_OK);
+    semantic_composed_view *v=semantic_composed_view_create(base,overlay,&policy); CHECK(v);
+    CHECK(semantic_composed_view_total_nodes(v)==5);
+    CHECK(semantic_composed_view_total_hyperedges(v)==1);
+    const elpis_semantic_node_v1 *expected[5], *out[8];
+    for(unsigned i=0;i<5;++i) { expected[i]=semantic_composed_view_lookup_node(v,&nodes[i].node_identity); CHECK(expected[i]); }
+    CHECK(expected[2]!=semantic_view_lookup_node(base,&nodes[2].node_identity));
+    const uint32_t offsets[]={0,1,5,6,UINT32_MAX}, limits[]={0,1,3,5,UINT32_MAX}, caps[]={0,1,3,5,8};
+    for(unsigned a=0;a<5;++a) for(unsigned b=0;b<5;++b) for(unsigned c=0;c<5;++c) {
+        uint32_t want=offsets[a]<5 ? 5-offsets[a] : 0;
+        if(want>limits[b]) want=limits[b];
+        if(want>caps[c]) want=caps[c];
+        for(unsigned repeat=0;repeat<2;++repeat) {
+            for(unsigned i=0;i<8;++i) out[i]=expected[0];
+            CHECK(semantic_composed_view_enumerate_nodes(v,offsets[a],limits[b],out,caps[c])==want);
+            for(unsigned i=0;i<want;++i) CHECK(out[i]==expected[offsets[a]+i]);
+            for(unsigned i=want;i<8;++i) CHECK(out[i]==expected[0]);
+        }
+    }
+    CHECK(semantic_composed_view_enumerate_nodes(v,0,1,NULL,1)==0);
+    CHECK(semantic_view_total_nodes(base)==3 && semantic_view_total_hyperedges(base)==1);
+    semantic_composed_view_destroy(v); semantic_overlay_destroy(overlay);
+    semantic_view_destroy(base); semantic_snapshot_destroy(m); semantic_type_registry_destroy(reg);
+#undef CHECK
+    return 0;
+}
+
 int main(void) {
     printf("Running query overlay tests...\n");
 
@@ -204,6 +252,7 @@ int main(void) {
         test_overlay_references_base_nodes(),
         test_overlay_cannot_alter_base_records(),
         test_composed_view_includes_base_and_overlay(),
+        test_composed_pagination_and_shadowing(),
         test_composed_view_identity_deterministic(),
         test_opaque_external_dependency_digests(),
     };

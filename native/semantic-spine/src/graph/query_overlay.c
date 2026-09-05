@@ -268,34 +268,41 @@ uint32_t semantic_composed_view_enumerate_nodes(
     const semantic_composed_view *view,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_node_v1 **out, uint32_t out_capacity) {
-    if (!view || !out) return 0;
-    *out = NULL;
-
-    uint32_t count = 0;
-    /* Base nodes first (already canonical), then overlay nodes not in base. */
+    if (!view || !out || !limit || !out_capacity) return 0;
     const semantic_snapshot_view *base = view->base_view;
-    for (uint32_t i = 0; i < base->node_count; i++) {
-        if (count < out_capacity) out[count] = &base->nodes[i];
-        count++;
-    }
-    if (view->overlay && view->overlay->local_builder) {
-        for (uint32_t i = 0; i < semantic_builder_node_count(view->overlay->local_builder); i++) {
-            const elpis_semantic_node_v1 *n = semantic_builder_get_node(view->overlay->local_builder, i);
-            if (!n) continue;
-            /* Skip if already in base (overlay shadows, don't duplicate). */
-            if (semantic_view_lookup_node(base, &n->node_identity)) continue;
-            if (count < out_capacity) out[count] = n;
-            count++;
+    const semantic_hypergraph_builder *overlay = view->overlay ? view->overlay->local_builder : NULL;
+    uint32_t base_count = semantic_view_total_nodes(base);
+    uint32_t overlay_count = semantic_builder_node_count(overlay);
+    uint32_t bi = 0, oi = 0, placed = 0;
+    while (bi < base_count || oi < overlay_count) {
+        const elpis_semantic_node_v1 *bn = bi < base_count ? &base->nodes[bi] : NULL;
+        const elpis_semantic_node_v1 *on = semantic_builder_get_node(overlay, oi);
+        const elpis_semantic_node_v1 *node;
+        int order = bn && on ? elpis_semantic_node_cmp(bn, on) : 0;
+        if (!on || (bn && order < 0)) { node = bn; ++bi; }
+        else {
+            node = on; ++oi;
+            if (bn && order == 0) ++bi; /* Overlay is the visible version. */
         }
+        if (offset) { --offset; continue; }
+        out[placed++] = node;
+        if (placed == limit || placed == out_capacity) break;
     }
-    return count;
+    return placed;
 }
 
 uint32_t semantic_composed_view_total_nodes(const semantic_composed_view *view) {
     if (!view) return 0;
     uint32_t total = semantic_view_total_nodes(view->base_view);
     if (view->overlay && view->overlay->local_builder) {
-        total += semantic_builder_node_count(view->overlay->local_builder);
+        const semantic_hypergraph_builder *b = view->overlay->local_builder;
+        for (uint32_t i = 0; i < semantic_builder_node_count(b); ++i) {
+            const elpis_semantic_node_v1 *n = semantic_builder_get_node(b, i);
+            if (!semantic_view_lookup_node(view->base_view, &n->node_identity)) {
+                if (total == UINT32_MAX) return total;
+                ++total;
+            }
+        }
     }
     return total;
 }
@@ -304,7 +311,14 @@ uint32_t semantic_composed_view_total_hyperedges(const semantic_composed_view *v
     if (!view) return 0;
     uint32_t total = semantic_view_total_hyperedges(view->base_view);
     if (view->overlay && view->overlay->local_builder) {
-        total += semantic_builder_hyperedge_count(view->overlay->local_builder);
+        const semantic_hypergraph_builder *b = view->overlay->local_builder;
+        for (uint32_t i = 0; i < semantic_builder_hyperedge_count(b); ++i) {
+            const elpis_semantic_hyperedge_v1 *e = semantic_builder_get_hyperedge(b, i);
+            if (!semantic_view_lookup_hyperedge(view->base_view, &e->hyperedge_identity)) {
+                if (total == UINT32_MAX) return total;
+                ++total;
+            }
+        }
     }
     return total;
 }
