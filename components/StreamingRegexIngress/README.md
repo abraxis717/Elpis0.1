@@ -8,43 +8,47 @@
 `StreamingRegexIngress` is the native bounded lexical producer for the currently
 qualified Regex grammar.
 
-It is a byte-exact native replacement candidate for the previously qualified
-Python `regex_ingress.py` producer.
+This revision exposes a versioned C-compatible library ABI so downstream native
+components no longer need to include the C++ implementation source.
 
-The component:
+## Stable ABI
 
-- streams raw UTF-8 bytes with a bounded carry window;
-- uses PCRE2-8 in UTF/UCP/caseless mode;
-- emits provisional lexical evidence only;
-- composes only locally unambiguous bounded task candidates;
-- fails closed on contradictory evidence;
-- computes source, matched-text, evidence, and candidate SHA-256 identities;
-- emits deterministic canonical UTF-8 JSON.
+Public header:
+
+`include/streaming_regex_ingress.h`
+
+The v1 ABI is opaque-result based. Callers submit raw bytes plus a bounded
+streaming chunk size and receive deterministic read-only views for:
+
+- canonical complete Regex result JSON;
+- canonical ingress JSON;
+- canonical composition JSON;
+- source SHA-256 and source byte count;
+- lexical evidence IDs, pattern IDs, and lexical anchors;
+- candidate IDs;
+- ambiguity count and fail-closed disposition.
+
+The implementation owns all returned storage until
+`elpis_streaming_regex_result_destroy_v1`.
+
+C++ implementation objects are not part of the ABI.
+
+## Qualification
+
+The ABI must remain byte-exact with the frozen qualified Python R1 oracle over
+the complete previously-qualified 196 valid + 21 malformed-UTF8 case/chunk
+matrix.
+
+The native Regex -> HACF -> QueryLocalProposalIngress chain is additionally
+qualified through this public ABI, with no textual `.cpp` source inclusion and
+exact identity parity against the previous full-native closure.
 
 ## Authority boundary
 
-Every emitted record remains:
+All emitted proposal material remains `PROPOSED_UNADMITTED`.
 
-- `candidate_status=PROPOSED_UNADMITTED`
-- `semantic_authority=false`
-- `admission_authority=false`
-- `execution_authority=false`
-- `runtime_admission=false`
+This component does not grant semantic truth, admission, execution, or runtime
+authority. It does not extend P4, create a RetrievalBundle, or assign Grid81
+semantics.
 
-The component does not:
-
-- admit semantic truth;
-- mutate the persistent Semantic Fabric base graph;
-- extend the P4 relation enum;
-- create a RetrievalBundle;
-- map semantics to Grid81;
-- execute generated behavior.
-
-## Regex engine dependency
-
-The qualified native candidate uses PCRE2-8. Qualification binds the observed
-PCRE2 version and requires byte-exact parity against the frozen qualified Python
-oracle over the bounded grammar corpus.
-
-This component remains runtime-unadmitted until its native output is connected
-directly to native HACF + QueryLocalProposalIngress without Python in the path.
+Runtime admission remains false.

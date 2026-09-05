@@ -1,9 +1,8 @@
 {
-  "functional_summary_sha256": "36412c58f2cdd7ed161b771b248598c146db992bad4ae1f03fe9021bd1956b51",
-  "native_source_sha256": "ae85afbce4d8c23b0e4516ba1b131b4827d1a7159f6d2647a6018d36ad76467d",
-  "oracle_sha256": "95191980742ed80e504b3173b9b6b0eb6a484a97b1aec063e47588c7f1394f41",
-  "pcre2_version": "10.47",
+  "abi_functional_summary_sha256": "0ae559672bea2b433599f8e60ce677def88f960ceff48c0e6ee8fc9d12d31982",
+  "abi_version": 1,
+  "full_native_chain_functional_summary_sha256": "a96243c1bb464322931d7af5e9e41ad61fe93748b37dc75c9848d83a5e25b93c",
   "runtime_admission": false,
-  "schema": "elpis.streaming-regex-ingress-r0.qualification-binding.v1",
-  "verdict": "PASS_NATIVE_STREAMING_REGEX_BYTE_EXACT_PARITY_R0"
+  "schema": "elpis.streaming-regex-native-abi-r0.qualification-binding.v1",
+  "verdict": "PASS_STREAMING_REGEX_STABLE_NATIVE_ABI_AND_NO_TEXTUAL_INCLUDE_R0"
 }

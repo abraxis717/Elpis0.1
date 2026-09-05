@@ -2,6 +2,7 @@
 #include <pcre2.h>
 
 #include "elpis/sha256.h"
+#include "streaming_regex_ingress.h"
 
 #include <algorithm>
 #include <array>
@@ -628,6 +629,7 @@ static J parse_file(const std::string &path,size_t chunk_size,size_t carry_bytes
     return J(std::move(root));
 }
 
+#ifndef ELPIS_STREAMING_REGEX_NO_MAIN
 int main(int argc,char **argv) {
     try {
         std::string input;
@@ -647,4 +649,279 @@ int main(int argc,char **argv) {
         std::cerr << "NATIVE_REGEX_FAIL:" << e.what() << "\n";
         return 2;
     }
+}
+#endif
+
+
+struct elpis_streaming_regex_result_v1 {
+    J root;
+    std::string root_json;
+    std::string ingress_json;
+    std::string composition_json;
+    std::string source_sha256;
+    uint64_t source_bytes=0;
+    std::vector<std::array<std::string,3>> evidence;
+    std::vector<std::string> candidate_ids;
+    uint32_t ambiguity_count=0;
+    bool fail_closed=false;
+};
+
+static thread_local std::string elpis_streaming_regex_last_error_storage;
+
+static J parse_bytes_buffer(
+    const uint8_t *data,
+    size_t data_len,
+    size_t chunk_size,
+    size_t carry_bytes)
+{
+    if((data_len && !data) || chunk_size==0 || carry_bytes<256)
+        throw std::runtime_error("INVALID_STREAM_BOUNDS");
+
+    auto ps=patterns();
+    compile_patterns(ps);
+
+    elpis_sha256_ctx source_ctx;
+    elpis_sha256_init(&source_ctx);
+    std::string carry;
+    uint64_t total_before=0;
+    std::vector<Evidence> raw;
+    std::set<std::tuple<std::string,uint64_t,uint64_t>> seen;
+
+    try {
+        size_t offset=0;
+        while(offset<data_len) {
+            size_t n=std::min(chunk_size,data_len-offset);
+            std::string fresh(
+                reinterpret_cast<const char *>(data+offset),
+                n);
+            if(n) elpis_sha256_update(&source_ctx,fresh.data(),fresh.size());
+
+            std::string window=carry+fresh;
+            uint64_t base=total_before-carry.size();
+            uint64_t total_after=total_before+(uint64_t)fresh.size();
+
+            Utf8Prefix up=utf8_complete_prefix(window);
+            if(!up.valid) throw std::runtime_error("INVALID_UTF8");
+            std::string complete=window.substr(0,up.complete);
+            std::string suffix=window.substr(up.complete);
+
+            uint64_t safe_commit_end=
+                total_after>carry_bytes ? total_after-carry_bytes : 0u;
+            scan_window(
+                complete,base,true,safe_commit_end,
+                ps,raw,seen);
+            carry=safe_carry(complete+suffix,carry_bytes);
+            total_before=total_after;
+            offset+=n;
+        }
+
+        if(!carry.empty()) {
+            Utf8Prefix up=utf8_complete_prefix(carry);
+            if(!up.valid || up.complete!=carry.size())
+                throw std::runtime_error("INVALID_UTF8_EOF");
+            scan_window(
+                carry,total_before-carry.size(),false,0,
+                ps,raw,seen);
+        }
+    } catch(...) {
+        free_patterns(ps);
+        throw;
+    }
+    free_patterns(ps);
+
+    uint8_t source_digest_bytes[32];
+    elpis_sha256_final(&source_ctx,source_digest_bytes);
+    std::string source_sha=hex_digest(source_digest_bytes);
+
+    std::sort(raw.begin(),raw.end(),[](const Evidence&a,const Evidence&b){
+        if(a.start_byte!=b.start_byte) return a.start_byte<b.start_byte;
+        if(a.end_byte!=b.end_byte) return a.end_byte<b.end_byte;
+        return a.pattern_id<b.pattern_id;
+    });
+
+    J::A evidence;
+    for(const auto &e:raw)
+        evidence.push_back(evidence_to_json(e,source_sha));
+
+    J::O ingress;
+    ingress["admission_authority"]=false;
+    ingress["candidate_status"]="PROPOSED_UNADMITTED";
+    ingress["evidence"]=J(evidence);
+    ingress["execution_authority"]=false;
+    ingress["runtime_admission"]=false;
+    ingress["schema"]="elpis.regex-stream-ingress-result.v1";
+    ingress["semantic_authority"]=false;
+    ingress["source_bytes"]=J::num(std::to_string(total_before));
+    ingress["source_sha256"]=source_sha;
+
+    J composition=compose(evidence,source_sha);
+
+    J::O root;
+    root["composition"]=composition;
+    root["ingress"]=J(std::move(ingress));
+    return J(std::move(root));
+}
+
+static bool abi_copy_string(char *dst,size_t cap,const std::string &src) {
+    if(!dst || cap==0 || src.size()+1>cap) return false;
+    memset(dst,0,cap);
+    memcpy(dst,src.data(),src.size());
+    return true;
+}
+
+extern "C" uint32_t elpis_streaming_regex_abi_version_v1(void) {
+    return ELPIS_STREAMING_REGEX_ABI_VERSION_V1;
+}
+
+extern "C" int elpis_streaming_regex_parse_bytes_v1(
+    const uint8_t *data,
+    size_t data_len,
+    size_t chunk_size,
+    size_t carry_bytes,
+    elpis_streaming_regex_result_v1 **out)
+{
+    if(!out) return ELPIS_STREAMING_REGEX_E_INVAL;
+    *out=nullptr;
+    elpis_streaming_regex_last_error_storage.clear();
+
+    try {
+        J root=parse_bytes_buffer(
+            data,data_len,chunk_size,carry_bytes);
+
+        auto *r=new elpis_streaming_regex_result_v1;
+        r->root=std::move(root);
+        const auto &ro=r->root.obj();
+        const J &ingress=ro.at("ingress");
+        const J &composition=ro.at("composition");
+        const auto &io=ingress.obj();
+        const auto &co=composition.obj();
+
+        r->root_json=dump(r->root);
+        r->ingress_json=dump(ingress);
+        r->composition_json=dump(composition);
+        r->source_sha256=get_s(io,"source_sha256");
+        r->source_bytes=(uint64_t)std::stoull(get_n(io,"source_bytes"));
+        r->ambiguity_count=(uint32_t)co.at("ambiguities").arr().size();
+        r->fail_closed=get_b(co,"fail_closed");
+
+        for(const J &e:io.at("evidence").arr()) {
+            const auto &eo=e.obj();
+            r->evidence.push_back({
+                get_s(eo,"evidence_id"),
+                get_s(eo,"pattern_id"),
+                get_s(eo,"lexical_anchor")
+            });
+        }
+        for(const J &c:co.at("candidates").arr())
+            r->candidate_ids.push_back(get_s(c.obj(),"candidate_id"));
+
+        *out=r;
+        return ELPIS_STREAMING_REGEX_OK;
+    } catch(const std::bad_alloc &) {
+        elpis_streaming_regex_last_error_storage="NOMEM";
+        return ELPIS_STREAMING_REGEX_E_NOMEM;
+    } catch(const std::exception &e) {
+        elpis_streaming_regex_last_error_storage=e.what();
+        return ELPIS_STREAMING_REGEX_E_PARSE;
+    } catch(...) {
+        elpis_streaming_regex_last_error_storage="UNKNOWN";
+        return ELPIS_STREAMING_REGEX_E_PARSE;
+    }
+}
+
+extern "C" void elpis_streaming_regex_result_destroy_v1(
+    elpis_streaming_regex_result_v1 *result)
+{
+    delete result;
+}
+
+extern "C" const char *elpis_streaming_regex_result_json_v1(
+    const elpis_streaming_regex_result_v1 *result)
+{
+    return result ? result->root_json.c_str() : nullptr;
+}
+
+extern "C" const char *elpis_streaming_regex_result_ingress_json_v1(
+    const elpis_streaming_regex_result_v1 *result)
+{
+    return result ? result->ingress_json.c_str() : nullptr;
+}
+
+extern "C" const char *elpis_streaming_regex_result_composition_json_v1(
+    const elpis_streaming_regex_result_v1 *result)
+{
+    return result ? result->composition_json.c_str() : nullptr;
+}
+
+extern "C" const char *elpis_streaming_regex_result_source_sha256_v1(
+    const elpis_streaming_regex_result_v1 *result)
+{
+    return result ? result->source_sha256.c_str() : nullptr;
+}
+
+extern "C" uint64_t elpis_streaming_regex_result_source_bytes_v1(
+    const elpis_streaming_regex_result_v1 *result)
+{
+    return result ? result->source_bytes : 0u;
+}
+
+extern "C" uint32_t elpis_streaming_regex_result_evidence_count_v1(
+    const elpis_streaming_regex_result_v1 *result)
+{
+    return result ? (uint32_t)result->evidence.size() : 0u;
+}
+
+extern "C" uint32_t elpis_streaming_regex_result_candidate_count_v1(
+    const elpis_streaming_regex_result_v1 *result)
+{
+    return result ? (uint32_t)result->candidate_ids.size() : 0u;
+}
+
+extern "C" uint32_t elpis_streaming_regex_result_ambiguity_count_v1(
+    const elpis_streaming_regex_result_v1 *result)
+{
+    return result ? result->ambiguity_count : 0u;
+}
+
+extern "C" int elpis_streaming_regex_result_fail_closed_v1(
+    const elpis_streaming_regex_result_v1 *result)
+{
+    return result && result->fail_closed ? 1 : 0;
+}
+
+extern "C" int elpis_streaming_regex_result_evidence_at_v1(
+    const elpis_streaming_regex_result_v1 *result,
+    uint32_t index,
+    elpis_streaming_regex_evidence_view_v1 *out)
+{
+    if(!result || !out) return ELPIS_STREAMING_REGEX_E_INVAL;
+    if(index>=result->evidence.size()) return ELPIS_STREAMING_REGEX_E_RANGE;
+    memset(out,0,sizeof *out);
+    out->abi_version=ELPIS_STREAMING_REGEX_ABI_VERSION_V1;
+    const auto &row=result->evidence[index];
+    if(!abi_copy_string(out->evidence_id,sizeof out->evidence_id,row[0]) ||
+       !abi_copy_string(out->pattern_id,sizeof out->pattern_id,row[1]) ||
+       !abi_copy_string(out->lexical_anchor,sizeof out->lexical_anchor,row[2]))
+        return ELPIS_STREAMING_REGEX_E_RANGE;
+    return ELPIS_STREAMING_REGEX_OK;
+}
+
+extern "C" int elpis_streaming_regex_result_candidate_at_v1(
+    const elpis_streaming_regex_result_v1 *result,
+    uint32_t index,
+    elpis_streaming_regex_candidate_view_v1 *out)
+{
+    if(!result || !out) return ELPIS_STREAMING_REGEX_E_INVAL;
+    if(index>=result->candidate_ids.size()) return ELPIS_STREAMING_REGEX_E_RANGE;
+    memset(out,0,sizeof *out);
+    out->abi_version=ELPIS_STREAMING_REGEX_ABI_VERSION_V1;
+    if(!abi_copy_string(
+        out->candidate_id,sizeof out->candidate_id,
+        result->candidate_ids[index]))
+        return ELPIS_STREAMING_REGEX_E_RANGE;
+    return ELPIS_STREAMING_REGEX_OK;
+}
+
+extern "C" const char *elpis_streaming_regex_last_error_v1(void) {
+    return elpis_streaming_regex_last_error_storage.c_str();
 }

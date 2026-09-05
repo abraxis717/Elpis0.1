@@ -1,0 +1,29 @@
+{
+  "abi_version": 1,
+  "full_native_chain_identity_parity": "PASS",
+  "full_native_chain_summary_sha256": "a96243c1bb464322931d7af5e9e41ad61fe93748b37dc75c9848d83a5e25b93c",
+  "predecessor_full_native_result_sha256": "ffdf20e76ff9ad14603e49ce94b69eb5a1db99b56668995937ae7e4982fbb58a",
+  "public_header": "include/streaming_regex_ingress.h",
+  "public_header_sha256": "ae9053d9eed2cb236585fc7b16d319dce639ae69471fa6268a355410ac62ad39",
+  "required_symbols": [
+    "elpis_streaming_regex_abi_version_v1",
+    "elpis_streaming_regex_parse_bytes_v1",
+    "elpis_streaming_regex_result_destroy_v1",
+    "elpis_streaming_regex_result_json_v1",
+    "elpis_streaming_regex_result_ingress_json_v1",
+    "elpis_streaming_regex_result_composition_json_v1",
+    "elpis_streaming_regex_result_source_sha256_v1",
+    "elpis_streaming_regex_result_source_bytes_v1",
+    "elpis_streaming_regex_result_evidence_count_v1",
+    "elpis_streaming_regex_result_candidate_count_v1",
+    "elpis_streaming_regex_result_ambiguity_count_v1",
+    "elpis_streaming_regex_result_fail_closed_v1",
+    "elpis_streaming_regex_result_evidence_at_v1",
+    "elpis_streaming_regex_result_candidate_at_v1",
+    "elpis_streaming_regex_last_error_v1"
+  ],
+  "runtime_admission": false,
+  "schema": "elpis.streaming-regex-native-abi-r0.binding.v1",
+  "symbol_census": "PASS",
+  "textual_implementation_include": false
+}
