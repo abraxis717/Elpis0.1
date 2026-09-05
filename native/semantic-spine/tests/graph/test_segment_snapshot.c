@@ -213,6 +213,47 @@ static int test_manifest_count_boundaries(void) {
     return failed;
 }
 
+static int test_manifest_read_transaction(void) {
+    semantic_snapshot_manifest *valid = semantic_snapshot_create();
+    semantic_snapshot_manifest *out = semantic_snapshot_create();
+    semantic_snapshot_manifest *before = semantic_snapshot_create();
+    if (!valid || !out || !before) {
+        free(valid); free(out); free(before);
+        return 1;
+    }
+    valid->segment_count = 1;
+    int failed = check(semantic_snapshot_finalize(valid) == SEMANTIC_OK,
+                       "prepare manifest", 0);
+    char path[128];
+    snprintf(path, sizeof(path), "/tmp/elpis-read-%ld.sf", (long)getpid());
+    /* Valid, truncated, trailing bytes, and digest-corrupted records. */
+    for (int kind = 0; kind < 4; ++kind) {
+        memset(out, 0xa5, sizeof(*out));
+        *before = *out;
+        semantic_snapshot_manifest record = *valid;
+        if (kind == 3) record.manifest_digest.bytes[0] ^= 1;
+        FILE *f = fopen(path, "wb");
+        if (!f) { failed = 1; break; }
+        size_t size = sizeof(record) - (kind == 1 ? 1 : 0);
+        failed |= fwrite(&record, 1, size, f) != size;
+        if (kind == 2) failed |= fputc(0, f) == EOF;
+        failed |= fclose(f) != 0;
+        int expected[] = {SEMANTIC_OK, SEMANTIC_E_IO,
+                          SEMANTIC_E_INVAL, SEMANTIC_E_DIGEST};
+        failed |= check(semantic_snapshot_read(path, out) == expected[kind],
+                        "read status", kind);
+        failed |= check(memcmp(out, kind == 0 ? valid : before, sizeof(*out)) == 0,
+                        "read publishes only complete validated state", kind);
+    }
+    unlink(path);
+    failed |= check(semantic_snapshot_read(path, out) == SEMANTIC_E_IO,
+                    "missing file", 4);
+    failed |= check(memcmp(out, before, sizeof(*out)) == 0,
+                    "open failure preserves state", 4);
+    free(valid); free(out); free(before);
+    return failed;
+}
+
 int main(void) {
     printf("Running segment/snapshot tests...\n");
 
@@ -224,6 +265,7 @@ int main(void) {
         test_corrupt_manifest_rejected(),
         test_segment_storage_audit(),
         test_manifest_count_boundaries(),
+        test_manifest_read_transaction(),
     };
 
     int pass = 0, total = sizeof(results) / sizeof(results[0]);

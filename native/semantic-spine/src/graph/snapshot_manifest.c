@@ -167,8 +167,19 @@ int semantic_snapshot_read(const char *path, semantic_snapshot_manifest *m_out) 
     FILE *f = fopen(path, "rb");
     if (!f) return SEMANTIC_E_IO;
 
-    if (fread(m_out, sizeof(*m_out), 1, f) != 1) { fclose(f); return SEMANTIC_E_IO; }
-    fclose(f);
+    semantic_snapshot_manifest candidate;
+    if (fread(&candidate, sizeof(candidate), 1, f) != 1) {
+        fclose(f);
+        return SEMANTIC_E_IO;
+    }
+    int trailing = fgetc(f);
+    int read_error = ferror(f);
+    int close_error = fclose(f);
+    if (read_error || close_error) return SEMANTIC_E_IO;
+    if (trailing != EOF) return SEMANTIC_E_INVAL;
 
-    return semantic_snapshot_validate(m_out);
+    int rc = semantic_snapshot_validate(&candidate);
+    if (rc != SEMANTIC_OK) return rc;
+    *m_out = candidate;
+    return SEMANTIC_OK;
 }
