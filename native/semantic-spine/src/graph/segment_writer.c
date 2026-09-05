@@ -6,7 +6,7 @@
  *
  * Genesis: SHA-256("elpis.semantic.genesis.v1" || type_registry_digest).
  *
- * Publication: same-dir temp → write → fsync → rename → dir fsync. O_EXCL.
+ * Publication: same-dir temp → write → fsync → link → dir fsync. O_EXCL.
  */
 #define _DEFAULT_SOURCE
 #include "elpis_semantic/segment.h"
@@ -116,12 +116,12 @@ int semantic_segment_identity(const semantic_segment_record *segment, hacf_diges
     return SEMANTIC_OK;
 }
 
-/* Atomic write: temp → write → fsync → rename → dir fsync. O_EXCL on destination. */
+/* Atomic write: temp → write → fsync → link → dir fsync. O_EXCL on destination. */
 int semantic_segment_write(const semantic_segment_record *segment,
                             const semantic_hypergraph_builder *builder,
                             const char *path,
                             char segment_hex_out[65]) {
-    if (!segment || !path) return SEMANTIC_E_INVAL;
+    if (!segment || !builder || !path) return SEMANTIC_E_INVAL;
 
     /* Create temp file in same directory. */
     char dir[4096];
@@ -170,22 +170,20 @@ int semantic_segment_write(const semantic_segment_record *segment,
     if (fsync(fd) != 0) { close(fd); unlink(tmp_path); return SEMANTIC_E_IO; }
     close(fd);
 
-    /* Check destination doesn't exist (no-replace). */
-    struct stat st;
-    if (stat(path, &st) == 0) {
+    /* link publishes atomically without replacing any existing directory entry,
+     * including dangling symlinks. Both paths are on the same filesystem. */
+    if (link(tmp_path, path) != 0) {
+        int saved_errno = errno;
         unlink(tmp_path);
-        return SEMANTIC_E_DUPLICATE;
+        return saved_errno == EEXIST ? SEMANTIC_E_DUPLICATE : SEMANTIC_E_IO;
     }
+    if (unlink(tmp_path) != 0) return SEMANTIC_E_IO;
 
-    /* Atomic rename. */
-    if (rename(tmp_path, path) != 0) {
-        unlink(tmp_path);
-        return SEMANTIC_E_IO;
-    }
-
-    /* fsync directory. */
     int dir_fd = open(dir, O_RDONLY);
-    if (dir_fd >= 0) { fsync(dir_fd); close(dir_fd); }
+    if (dir_fd < 0) return SEMANTIC_E_IO;
+    int sync_error = fsync(dir_fd);
+    int close_error = close(dir_fd);
+    if (sync_error != 0 || close_error != 0) return SEMANTIC_E_IO;
 
     /* Output hex digest. */
     if (segment_hex_out) {

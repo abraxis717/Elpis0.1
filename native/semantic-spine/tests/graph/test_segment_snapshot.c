@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 /* test_segment_snapshot.c — Segment and snapshot persistence tests. */
 #include "elpis_semantic/segment.h"
 #include "elpis_semantic/snapshot.h"
@@ -6,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 static void setup_registry(semantic_type_registry **reg, hacf_digest *reg_digest) {
     *reg = semantic_type_registry_create();
@@ -254,6 +256,82 @@ static int test_manifest_read_transaction(void) {
     return failed;
 }
 
+static int test_segment_publication_ownership(void) {
+    char dir[] = "./segment-publish-XXXXXX";
+    if (!mkdtemp(dir)) return 1;
+    char path[128];
+    snprintf(path, sizeof(path), "%s/segment.sf", dir);
+    semantic_type_registry *reg;
+    hacf_digest registry_digest, genesis;
+    setup_registry(&reg, &registry_digest);
+    semantic_genesis_identity(&registry_digest, &genesis);
+    semantic_hypergraph_builder *builder = semantic_builder_create(reg);
+    semantic_segment_record segment;
+    int failed = check(semantic_segment_build(builder, reg, &genesis, &segment) ==
+                       SEMANTIC_OK, "build publication fixture", 0);
+    char hex[65], sentinel[65];
+    memset(hex, 'z', sizeof(hex));
+    memcpy(sentinel, hex, sizeof(hex));
+    failed |= check(symlink("missing-target", path) == 0, "create dangling destination", 0);
+    failed |= check(semantic_segment_write(&segment, builder, path, hex) ==
+                    SEMANTIC_E_DUPLICATE, "dangling destination preserved", 0);
+    char target[64] = {0};
+    failed |= check(readlink(path, target, sizeof(target)) == 14 &&
+                    memcmp(target, "missing-target", 14) == 0,
+                    "destination remains original symlink", 0);
+    failed |= check(memcmp(hex, sentinel, sizeof(hex)) == 0,
+                    "rejected publication preserves output", 0);
+    unlink(path);
+    failed |= check(semantic_segment_write(&segment, NULL, path, hex) ==
+                    SEMANTIC_E_INVAL, "null builder rejected", 0);
+
+    int gate[2];
+    if (pipe(gate) != 0) { failed = 1; goto cleanup; }
+    pid_t children[8];
+    unsigned count = 0;
+    for (; count < 8; ++count) {
+        children[count] = fork();
+        if (children[count] < 0) { failed = 1; break; }
+        if (children[count] == 0) {
+            close(gate[1]);
+            char token;
+            if (read(gate[0], &token, 1) < 0) _exit(3);
+            close(gate[0]);
+            int rc = semantic_segment_write(&segment, builder, path, hex);
+            if (rc == SEMANTIC_OK) {
+                char expected[65];
+                elpis_hex32(segment.segment_identity.bytes, expected);
+                _exit(strcmp(hex, expected) == 0 ? 0 : 3);
+            }
+            _exit(rc == SEMANTIC_E_DUPLICATE &&
+                  memcmp(hex, sentinel, sizeof(hex)) == 0 ? 2 : 3);
+        }
+    }
+    close(gate[0]);
+    close(gate[1]); /* EOF releases every publisher. */
+    unsigned winners = 0;
+    for (unsigned i = 0; i < count; ++i) {
+        int status;
+        if (waitpid(children[i], &status, 0) != children[i] || !WIFEXITED(status)) {
+            failed = 1; continue;
+        }
+        winners += WEXITSTATUS(status) == 0;
+        failed |= WEXITSTATUS(status) != 0 && WEXITSTATUS(status) != 2;
+    }
+    failed |= check(winners == 1, "exactly one publisher wins", 0);
+    semantic_segment_record published;
+    failed |= check(semantic_segment_read(path, &published, NULL) == SEMANTIC_OK,
+                    "published file verifies", 0);
+    failed |= check(memcmp(&segment, &published, sizeof(segment)) == 0,
+                    "published identity and content preserved", 0);
+    unlink(path);
+cleanup:
+    semantic_builder_destroy(builder);
+    semantic_type_registry_destroy(reg);
+    failed |= check(rmdir(dir) == 0, "temporary files cleaned", 0);
+    return failed;
+}
+
 int main(void) {
     printf("Running segment/snapshot tests...\n");
 
@@ -266,6 +344,7 @@ int main(void) {
         test_segment_storage_audit(),
         test_manifest_count_boundaries(),
         test_manifest_read_transaction(),
+        test_segment_publication_ownership(),
     };
 
     int pass = 0, total = sizeof(results) / sizeof(results[0]);
