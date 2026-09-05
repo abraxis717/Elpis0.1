@@ -243,15 +243,65 @@ int test_snapshot_chain_continuity(void) {
 }
 
 int test_broken_prior_digest_rejected(void) {
+    semantic_type_registry *reg;
+    setup_registry(&reg);
+    hacf_digest registry_digest, genesis;
+    semantic_type_registry_digest(reg, &registry_digest);
+    semantic_genesis_identity(&registry_digest, &genesis);
+    semantic_hypergraph_builder *builder = semantic_builder_create(reg);
+    semantic_segment_record first, second;
+    assert(semantic_segment_build(builder, reg, &genesis, &first) == SEMANTIC_OK);
+    assert(semantic_segment_build(builder, reg, &first.hacf_next_snapshot, &second) == SEMANTIC_OK);
     semantic_snapshot_manifest *m = semantic_snapshot_create();
+    semantic_snapshot_manifest *before = semantic_snapshot_create();
+    assert(m && before);
+    m->genesis_identity = genesis;
+    *before = *m;
+    first.prior_snapshot_digest.bytes[0] ^= 1;
+    assert(semantic_snapshot_add_segment(m, &first) == SEMANTIC_E_INVAL);
+    assert(memcmp(m, before, sizeof(*m)) == 0);
+    first.prior_snapshot_digest = genesis;
+    assert(semantic_snapshot_add_segment(m, &first) == SEMANTIC_OK);
+    assert(semantic_snapshot_finalize(m) == SEMANTIC_OK);
+    *before = *m;
+    second.prior_snapshot_digest = genesis; /* skip the current tip */
+    assert(semantic_snapshot_add_segment(m, &second) == SEMANTIC_E_INVAL);
+    assert(memcmp(m, before, sizeof(*m)) == 0);
+    second.prior_snapshot_digest = first.hacf_next_snapshot;
+    assert(semantic_snapshot_add_segment(m, &second) == SEMANTIC_OK);
+    assert(m->segment_count == 2);
+    assert(memcmp(&m->hacf_graph_snapshot_digest, &second.hacf_next_snapshot,
+                  sizeof(hacf_digest)) == 0);
+    assert(semantic_snapshot_finalize(m) == SEMANTIC_OK);
+    assert(semantic_snapshot_validate(m) == SEMANTIC_OK);
+    semantic_snapshot_destroy(before);
+    semantic_snapshot_destroy(m);
+    semantic_builder_destroy(builder);
+    semantic_type_registry_destroy(reg);
+    return 0;
+}
 
-    semantic_segment_record seg;
-    memset(&seg, 0, sizeof(seg));
-    seg.abi_version = SEMANTIC_SEGMENT_ABI_VERSION;
-    memset(seg.segment_identity.bytes, 0x11, 32);
-
-    assert(semantic_snapshot_add_segment(m, &seg) == SEMANTIC_OK);
-
+static int test_snapshot_count_overflow(void) {
+    semantic_snapshot_manifest *m = semantic_snapshot_create();
+    semantic_snapshot_manifest *before = semantic_snapshot_create();
+    assert(m && before);
+    semantic_segment_record segment = {0};
+    segment.abi_version = SEMANTIC_SEGMENT_ABI_VERSION;
+    segment.node_count = segment.hyperedge_count = 1;
+    segment.assertion_count = segment.incidence_count = 1;
+    uint32_t *counts[] = {&m->unique_node_count, &m->unique_hyperedge_count,
+                          &m->assertion_count, &m->incidence_count};
+    for (unsigned i = 0; i < 4; ++i) {
+        *counts[i] = UINT32_MAX;
+        *before = *m;
+        assert(semantic_snapshot_add_segment(m, &segment) == SEMANTIC_E_INVAL);
+        assert(memcmp(m, before, sizeof(*m)) == 0);
+        *counts[i] = 0;
+    }
+    for (unsigned i = 0; i < 4; ++i) *counts[i] = UINT32_MAX - 1;
+    assert(semantic_snapshot_add_segment(m, &segment) == SEMANTIC_OK);
+    for (unsigned i = 0; i < 4; ++i) assert(*counts[i] == UINT32_MAX);
+    semantic_snapshot_destroy(before);
     semantic_snapshot_destroy(m);
     return 0;
 }
@@ -305,6 +355,7 @@ int main(void) {
         test_segment_identity_independent_of_insertion_order(),
         test_snapshot_chain_continuity(),
         test_broken_prior_digest_rejected(),
+        test_snapshot_count_overflow(),
         test_duplicate_segment_rejected(),
         test_registry_drift_rejected(),
     };

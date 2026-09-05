@@ -34,27 +34,30 @@ int semantic_snapshot_add_segment(semantic_snapshot_manifest *m,
     if (segment->abi_version != SEMANTIC_SEGMENT_ABI_VERSION) return SEMANTIC_E_INVAL;
     if (m->segment_count >= SEMANTIC_MAX_SEGMENTS) return SEMANTIC_E_NOMEM;
 
-    /* First segment: check it references genesis (prior_snapshot matches genesis). */
-    if (m->segment_count == 0) {
-        m->type_registry_digest = segment->type_registry_digest;
-    } else {
-        /* Registry must match. */
-        if (memcmp(segment->type_registry_digest.bytes, m->type_registry_digest.bytes, HACF_DIGEST_BYTES) != 0)
-            return SEMANTIC_E_INVAL;
-
-        /* Chain continuity: segment prior_snapshot == previous segment's result snapshot. */
-        hacf_digest prior = m->segment_digests[m->segment_count - 1];
-        /* Actually, prior_snapshot must match the previous segment's hacf_next_snapshot.
-         * We need to track next_snapshots — for simplicity in P0, the segment_digests
-         * array stores the segment identities, and we validate against prior_snapshot_digest.
-         * The caller is responsible for ensuring chain continuity when building segments. */
-    }
+    if (m->abi_version != SEMANTIC_SNAPSHOT_ABI_VERSION) return SEMANTIC_E_INVAL;
+    if (m->segment_count != 0 &&
+        memcmp(segment->type_registry_digest.bytes, m->type_registry_digest.bytes,
+               HACF_DIGEST_BYTES) != 0) return SEMANTIC_E_INVAL;
 
     /* Check for duplicate segment. */
     for (uint32_t i = 0; i < m->segment_count; i++) {
         if (memcmp(m->segment_digests[i].bytes, segment->segment_identity.bytes, HACF_DIGEST_BYTES) == 0)
             return SEMANTIC_E_DUPLICATE;
     }
+
+    const hacf_digest *expected_prior = m->segment_count == 0
+        ? &m->genesis_identity : &m->hacf_graph_snapshot_digest;
+    if (memcmp(segment->prior_snapshot_digest.bytes, expected_prior->bytes,
+               HACF_DIGEST_BYTES) != 0) return SEMANTIC_E_INVAL;
+
+    /* Reject before changing any manifest state. */
+    if (segment->node_count > UINT32_MAX - m->unique_node_count ||
+        segment->hyperedge_count > UINT32_MAX - m->unique_hyperedge_count ||
+        segment->assertion_count > UINT32_MAX - m->assertion_count ||
+        segment->incidence_count > UINT32_MAX - m->incidence_count)
+        return SEMANTIC_E_INVAL;
+    if (m->segment_count == 0)
+        m->type_registry_digest = segment->type_registry_digest;
 
     m->segment_digests[m->segment_count] = segment->segment_identity;
     m->segment_count++;
