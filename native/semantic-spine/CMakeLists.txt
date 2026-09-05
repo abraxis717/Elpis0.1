@@ -244,6 +244,11 @@ target_link_libraries(test_snapshot_view PRIVATE elpis_semantic elpis_hash)
 sf_warnings(test_snapshot_view)
 add_test(NAME snapshot_view COMMAND test_snapshot_view)
 
+add_executable(test_view_contract tests/graph/test_view_contract.c)
+target_link_libraries(test_view_contract PRIVATE elpis_semantic elpis_hash)
+sf_warnings(test_view_contract)
+add_test(NAME view_contract COMMAND test_view_contract)
+
 add_executable(test_query_overlay tests/graph/test_query_overlay.c)
 target_link_libraries(test_query_overlay PRIVATE elpis_semantic elpis_hash)
 sf_warnings(test_query_overlay)

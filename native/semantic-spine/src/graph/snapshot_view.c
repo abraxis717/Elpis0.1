@@ -1,6 +1,6 @@
 /* snapshot_view.c — Read-only snapshot view with lookup and enumeration.
  *
- * Index nodes and hyperedges by identity digest for O(n) lookup.
+ * Index nodes and hyperedges by identity digest for binary-search lookup.
  * All results are ordered canonically.
  */
 #include "elpis_semantic/snapshot_view.h"
@@ -107,14 +107,22 @@ const elpis_semantic_node_v1 *semantic_view_lookup_node(
     return &view->nodes[idx];
 }
 
+/* Apply pagination only after a match; never touch unused output slots. */
+#define PLACE_MATCH(record) do { \
+    if (offset) --offset; \
+    else { \
+        out[count++] = (record); \
+        if (count == limit || count == out_capacity) return count; \
+    } \
+} while (0)
+
 uint32_t semantic_view_node_assertions(
     const semantic_snapshot_view *view,
     const hacf_digest *node_identity,
     uint32_t min_authority,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_assertion_v1 **out, uint32_t out_capacity) {
-    if (!view || !node_identity || !out) return 0;
-    *out = NULL;
+    if (!view || !node_identity || !out || !out_capacity || !limit) return 0;
 
     /* Find matching assertions. */
     uint32_t count = 0;
@@ -123,8 +131,7 @@ uint32_t semantic_view_node_assertions(
         if (a->asserted_object_kind != SEMANTIC_OBJECT_KIND_NODE) continue;
         if (memcmp(&a->asserted_object_digest, node_identity, HACF_DIGEST_BYTES) != 0) continue;
         if (a->authority < min_authority) continue;
-        if (count < out_capacity) out[count] = &view->assertions[i];
-        count++;
+        PLACE_MATCH(&view->assertions[i]);
     }
     return count;
 }
@@ -143,8 +150,7 @@ uint32_t semantic_view_hyperedge_assertions(
     uint32_t min_authority,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_assertion_v1 **out, uint32_t out_capacity) {
-    if (!view || !hyperedge_identity || !out) return 0;
-    *out = NULL;
+    if (!view || !hyperedge_identity || !out || !out_capacity || !limit) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->assertion_count; i++) {
@@ -152,8 +158,7 @@ uint32_t semantic_view_hyperedge_assertions(
         if (a->asserted_object_kind != SEMANTIC_OBJECT_KIND_HYPEREDGE) continue;
         if (memcmp(&a->asserted_object_digest, hyperedge_identity, HACF_DIGEST_BYTES) != 0) continue;
         if (a->authority < min_authority) continue;
-        if (count < out_capacity) out[count] = &view->assertions[i];
-        count++;
+        PLACE_MATCH(&view->assertions[i]);
     }
     return count;
 }
@@ -163,16 +168,14 @@ uint32_t semantic_view_hyperedge_participants(
     const hacf_digest *hyperedge_identity,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_participant_descriptor **out, uint32_t out_capacity) {
-    if (!view || !hyperedge_identity || !out) return 0;
-    *out = NULL;
+    if (!view || !hyperedge_identity || !out || !out_capacity || !limit) return 0;
 
     const elpis_semantic_hyperedge_v1 *edge = semantic_view_lookup_hyperedge(view, hyperedge_identity);
     if (!edge) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < edge->participant_count; i++) {
-        if (count < out_capacity) out[count] = &edge->participants[i];
-        count++;
+        PLACE_MATCH(&edge->participants[i]);
     }
     return count;
 }
@@ -182,16 +185,14 @@ uint32_t semantic_view_node_hyperedges(
     const hacf_digest *node_identity,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_hyperedge_v1 **out, uint32_t out_capacity) {
-    if (!view || !node_identity || !out) return 0;
-    *out = NULL;
+    if (!view || !node_identity || !out || !out_capacity || !limit) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->hyperedge_count; i++) {
         const elpis_semantic_hyperedge_v1 *e = &view->hyperedges[i];
         for (uint32_t j = 0; j < e->participant_count; j++) {
             if (memcmp(&e->participants[j].node_identity, node_identity, HACF_DIGEST_BYTES) == 0) {
-                if (count < out_capacity) out[count] = e;
-                count++;
+                PLACE_MATCH(e);
                 break; /* avoid duplicate if node appears multiple times */
             }
         }
@@ -204,14 +205,12 @@ uint32_t semantic_view_enumerate_nodes_by_type(
     uint32_t node_type,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_node_v1 **out, uint32_t out_capacity) {
-    if (!view || !out) return 0;
-    *out = NULL;
+    if (!view || !out || !out_capacity || !limit) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->node_count; i++) {
         if (view->nodes[i].node_type == node_type) {
-            if (count < out_capacity) out[count] = &view->nodes[i];
-            count++;
+            PLACE_MATCH(&view->nodes[i]);
         }
     }
     return count;
@@ -222,14 +221,12 @@ uint32_t semantic_view_enumerate_hyperedges_by_type(
     uint32_t hyperedge_type,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_hyperedge_v1 **out, uint32_t out_capacity) {
-    if (!view || !out) return 0;
-    *out = NULL;
+    if (!view || !out || !out_capacity || !limit) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->hyperedge_count; i++) {
         if (view->hyperedges[i].hyperedge_type == hyperedge_type) {
-            if (count < out_capacity) out[count] = &view->hyperedges[i];
-            count++;
+            PLACE_MATCH(&view->hyperedges[i]);
         }
     }
     return count;
@@ -240,14 +237,12 @@ uint32_t semantic_view_enumerate_incidences_by_role(
     uint32_t incidence_role,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_incidence_v1 **out, uint32_t out_capacity) {
-    if (!view || !out) return 0;
-    *out = NULL;
+    if (!view || !out || !out_capacity || !limit) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->incidence_count; i++) {
         if (view->incidences[i].incidence_role == incidence_role) {
-            if (count < out_capacity) out[count] = &view->incidences[i];
-            count++;
+            PLACE_MATCH(&view->incidences[i]);
         }
     }
     return count;
@@ -258,8 +253,7 @@ uint32_t semantic_view_enumerate_nodes_by_authority(
     uint32_t min_authority,
     uint32_t offset, uint32_t limit,
     const elpis_semantic_node_v1 **out, uint32_t out_capacity) {
-    if (!view || !out) return 0;
-    *out = NULL;
+    if (!view || !out || !out_capacity || !limit) return 0;
 
     uint32_t count = 0;
     for (uint32_t i = 0; i < view->node_count; i++) {
@@ -272,8 +266,7 @@ uint32_t semantic_view_enumerate_nodes_by_authority(
             if (a->authority >= min_authority) { has_auth = 1; break; }
         }
         if (has_auth) {
-            if (count < out_capacity) out[count] = &view->nodes[i];
-            count++;
+            PLACE_MATCH(&view->nodes[i]);
         }
     }
     return count;

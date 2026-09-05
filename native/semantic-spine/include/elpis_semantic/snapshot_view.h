@@ -3,6 +3,9 @@
  * Provides lookup and enumeration operations over an immutable snapshot.
  * Results are ordered canonically. Preserves the distinction between one
  * semantic object and multiple assertions of that object.
+ * Enumeration filters first, skips offset matching records, then places at most
+ * min(limit, out_capacity) pointers. The return value is the count placed.
+ * A null output, zero limit, or zero capacity returns zero without writing.
  */
 #ifndef ELPIS_SEMANTIC_SNAPSHOT_VIEW_H
 #define ELPIS_SEMANTIC_SNAPSHOT_VIEW_H

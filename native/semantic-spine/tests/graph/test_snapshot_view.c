@@ -197,13 +197,11 @@ int test_deterministic_pagination(void) {
     semantic_view_set_records(v, nodes, 5, NULL, 0, NULL, 0, NULL, 0);
 
     const elpis_semantic_node_v1 *page1[16], *page2[16];
-    /* Pagination: enumerate first 2, then next 2.
-     * Note: enumerate_nodes_by_type ignores offset/limit params (TODO: implement pagination).
-     * For now verify total count. */
+    /* Pagination: enumerate first 2, then next 2. */
     uint32_t count1 = semantic_view_enumerate_nodes_by_type(v, SEMANTIC_NODE_NAMESPACE | 1, 0, 2, page1, 16);
     uint32_t count2 = semantic_view_enumerate_nodes_by_type(v, SEMANTIC_NODE_NAMESPACE | 1, 2, 2, page2, 16);
-    assert(count1 == 5);
-    assert(count2 == 5);
+    assert(count1 == 2);
+    assert(count2 == 2);
 
     semantic_view_destroy(v);
     semantic_snapshot_destroy(m);
