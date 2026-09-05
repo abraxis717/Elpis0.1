@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 /* test_trm_adapter.c — P8 TRM adapter and mutability policy test suite.
  *
  * Tests all P8 phases: ABI, policy, input validation, mutability,
@@ -76,8 +77,8 @@ static void create_test_board(uint32_t digits[81], uint32_t occupied[81]) {
         {15, 0}, {16, 0}
     };
     /* Use a simple valid partial: just 5 non-conflicting clues */
-    memset(digits, 0, sizeof(digits));
-    memset(occupied, 0, sizeof(occupied));
+    memset(digits, 0, 81 * sizeof(*digits));
+    memset(occupied, 0, 81 * sizeof(*occupied));
     digits[0] = 5; occupied[0] = 1;   /* row 0, col 0 */
     digits[5] = 3; occupied[5] = 1;   /* row 0, col 5 */
     digits[10] = 7; occupied[10] = 1; /* row 1, col 1 */
