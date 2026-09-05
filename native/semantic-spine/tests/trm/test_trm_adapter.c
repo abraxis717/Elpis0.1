@@ -5,7 +5,7 @@
  * candidate decoder, output guard, Sudoku gate, guarded result,
  * execution handoff, and persistence.
  *
- * Generates JSON reports under reports/P8TRMAdapterMutability/.
+ * Persistence fixtures use a private temporary directory in the test working directory.
  */
 
 #include "elpis_semantic/trm_abi.h"
@@ -37,7 +37,7 @@
 
 static int g_pass = 0;
 static int g_fail = 0;
-static const char *g_report_dir = "$ELPIS_CANON_ROOT/Elpis_Companions/Elpis_Semantic_Fabric/reports/P8TRMAdapterMutability";
+static char g_report_dir[] = "./trm-adapter-XXXXXX";
 
 /* Helper: check if a buffer is all zeros */
 static int memset_check_zero(const uint8_t *buf, size_t len) {
@@ -987,6 +987,7 @@ static void test_execution_handoff(void) {
 /* ──────────────────────────────────────────────────────────────────── */
 
 int main(void) {
+    if (!mkdtemp(g_report_dir)) { perror("mkdtemp"); return 1; }
     printf("P8 TRM Adapter and Mutability Policy Test Suite\n");
     printf("===============================================\n");
 
@@ -1006,17 +1007,7 @@ int main(void) {
     printf("\n===============================================\n");
     printf("Results: %d PASS, %d FAIL, %d TOTAL\n", g_pass, g_fail, g_pass + g_fail);
 
-    /* Write minimal test results JSON */
-    FILE *fp = fopen("$ELPIS_CANON_ROOT/Elpis_Companions/Elpis_Semantic_Fabric/reports/P8TRMAdapterMutability/P8_TEST_RESULTS.json", "w");
-    if (fp) {
-        fprintf(fp, "{\n  \"report\": \"P8_TEST_RESULTS\",\n");
-        fprintf(fp, "  \"pass\": %d,\n", g_pass);
-        fprintf(fp, "  \"fail\": %d,\n", g_fail);
-        fprintf(fp, "  \"total\": %d,\n", g_pass + g_fail);
-        fprintf(fp, "  \"status\": \"%s\"\n", g_fail == 0 ? "ALL_PASS" : "FAILURE");
-        fprintf(fp, "}\n");
-        fclose(fp);
-    }
+    TEST("temporary_directory_cleanup", rmdir(g_report_dir) == 0);
 
     return g_fail > 0 ? 1 : 0;
 }

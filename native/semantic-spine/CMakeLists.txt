@@ -408,7 +408,7 @@ add_test(NAME evidence_determinism COMMAND test_evidence_determinism)
 add_executable(test_evidence_boundaries tests/evidence/test_evidence_boundaries.c)
 target_link_libraries(test_evidence_boundaries PRIVATE elpis_semantic elpis_hash)
 sf_warnings(test_evidence_boundaries)
-add_test(NAME evidence_boundaries COMMAND evidence_boundaries)
+add_test(NAME evidence_boundaries COMMAND test_evidence_boundaries)
 
 # ---------------------------------------------------------------------------
 # P5 — Context re-evaluation and bounded semantic view tests
