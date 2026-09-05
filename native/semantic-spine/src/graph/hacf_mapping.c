@@ -57,27 +57,34 @@ int semantic_map_to_hacf_ops(const semantic_hypergraph_builder *builder,
                                hacf_graph_op **ops_out, uint32_t *op_count_out) {
     if (!builder || !ops_out || !op_count_out) return SEMANTIC_E_INVAL;
 
-    /* Calculate total ops needed:
-     * Each node assertion → 1 ADD_NODE
-     * Each hyperedge assertion → 1 ADD_NODE
-     * Each incidence → 1 ADD_EDGE (one per assertion's provenance)
-     */
-    uint32_t node_assertions = 0;
-    uint32_t hyperedge_assertions = 0;
-
-    for (uint32_t i = 0; i < builder->assertion_count; i++) {
+    /* Count exactly what the emission loops produce, including provenance
+     * multiplicity. Bound each increment before allocation or publication. */
+    uint32_t total_ops = 0;
+    for (uint32_t i = 0; i < builder->assertion_count; ++i) {
         const elpis_semantic_assertion_v1 *a = &builder->assertions[i];
-        if (a->asserted_object_kind == SEMANTIC_OBJECT_KIND_NODE) node_assertions++;
-        else if (a->asserted_object_kind == SEMANTIC_OBJECT_KIND_HYPEREDGE) hyperedge_assertions++;
+        if (a->asserted_object_kind != SEMANTIC_OBJECT_KIND_NODE &&
+            a->asserted_object_kind != SEMANTIC_OBJECT_KIND_HYPEREDGE)
+            return SEMANTIC_E_INVAL;
+        if (total_ops == SEMANTIC_MAX_HACF_OPS) return SEMANTIC_E_NOMEM;
+        ++total_ops;
     }
-
-    uint32_t total_ops = node_assertions + hyperedge_assertions + builder->incidence_count;
+    for (uint32_t i = 0; i < builder->incidence_count; ++i) {
+        for (uint32_t j = 0; j < builder->assertion_count; ++j) {
+            const elpis_semantic_assertion_v1 *a = &builder->assertions[j];
+            if (a->asserted_object_kind == SEMANTIC_OBJECT_KIND_HYPEREDGE &&
+                memcmp(a->asserted_object_digest.bytes,
+                       builder->incidences[i].hyperedge_digest.bytes,
+                       HACF_DIGEST_BYTES) == 0) {
+                if (total_ops == SEMANTIC_MAX_HACF_OPS) return SEMANTIC_E_NOMEM;
+                ++total_ops;
+            }
+        }
+    }
     if (total_ops == 0) {
         *ops_out = NULL;
         *op_count_out = 0;
         return SEMANTIC_OK;
     }
-    if (total_ops > SEMANTIC_MAX_HACF_OPS) return SEMANTIC_E_NOMEM;
 
     hacf_graph_op *ops = calloc(total_ops, sizeof(hacf_graph_op));
     if (!ops) return SEMANTIC_E_NOMEM;

@@ -344,11 +344,69 @@ int test_registry_drift_rejected(void) {
     return 0;
 }
 
+static int test_incidence_provenance_multiplicity(void) {
+    semantic_type_registry *reg;
+    setup_registry(&reg);
+    semantic_hypergraph_builder *b = semantic_builder_create(reg);
+    assert(b);
+    uint8_t payload[32] = {1}, prov[32] = {0};
+    elpis_semantic_node_v1 node;
+    make_node(&node, 1, payload);
+    assert(semantic_builder_add_node(b, &node) == SEMANTIC_OK);
+    elpis_semantic_hyperedge_v1 edge = {0};
+    edge.abi_version = SEMANTIC_ABI_VERSION;
+    edge.hyperedge_type = SEMANTIC_HYPEREDGE_NAMESPACE | 1;
+    edge.participant_count = 2;
+    for (unsigned i = 0; i < 2; ++i) {
+        edge.participants[i].node_identity = node.node_identity;
+        edge.participants[i].incidence_role = SEMANTIC_INCIDENCE_NAMESPACE | 1;
+        edge.participants[i].ordinal = i;
+    }
+    assert(elpis_semantic_hyperedge_identity(&edge, &edge.hyperedge_identity) == SEMANTIC_OK);
+    assert(semantic_builder_add_hyperedge(b, &edge) == SEMANTIC_OK);
+    elpis_semantic_incidence_v1 inc = {0};
+    inc.abi_version = SEMANTIC_ABI_VERSION;
+    inc.node_digest = node.node_identity;
+    inc.hyperedge_digest = edge.hyperedge_identity;
+    inc.incidence_role = SEMANTIC_INCIDENCE_NAMESPACE | 1;
+    assert(elpis_semantic_incidence_identity(&inc, &inc.incidence_identity) == SEMANTIC_OK);
+    assert(semantic_builder_add_incidence(b, &inc) == SEMANTIC_OK);
+    hacf_graph_op *ops = NULL;
+    uint32_t count = 99;
+    assert(semantic_map_to_hacf_ops(b, &ops, &count) == SEMANTIC_OK);
+    assert(count == 0 && ops == NULL); /* no assertion, no emitted edge */
+    for (unsigned i = 1; i <= 3; ++i) {
+        elpis_semantic_assertion_v1 assertion;
+        prov[0] = (uint8_t)i;
+        make_assertion(&assertion, SEMANTIC_OBJECT_KIND_HYPEREDGE,
+                       &edge.hyperedge_identity, prov, i);
+        assert(semantic_builder_add_assertion(b, &assertion) == SEMANTIC_OK);
+    }
+    assert(semantic_map_to_hacf_ops(b, &ops, &count) == SEMANTIC_OK);
+    assert(count == 6);
+    unsigned seen[4] = {0};
+    for (uint32_t i = 0; i < count; ++i) {
+        assert(ops[i].authority >= 1 && ops[i].authority <= 3);
+        assert(ops[i].provenance.bytes[0] == ops[i].authority);
+        assert(memcmp(&ops[i].subject, &edge.hyperedge_identity, sizeof(hacf_digest)) == 0);
+        if (ops[i].type == HACF_GRAPH_ADD_EDGE) {
+            assert(memcmp(&ops[i].object, &node.node_identity, sizeof(hacf_digest)) == 0);
+            seen[ops[i].authority]++;
+        } else assert(ops[i].type == HACF_GRAPH_ADD_NODE);
+    }
+    assert(seen[1] == 1 && seen[2] == 1 && seen[3] == 1);
+    semantic_free_hacf_ops(ops);
+    semantic_builder_destroy(b);
+    semantic_type_registry_destroy(reg);
+    return 0;
+}
+
 int main(void) {
     printf("Running HACF mapping tests...\n");
 
     int tests[] = {
         test_node_assertion_maps_to_add_node(),
+        test_incidence_provenance_multiplicity(),
         test_hacf_operation_order_independent_of_insertion_order(),
         test_graph_delta_digest_stable(),
         test_genesis_identity_deterministic(),
