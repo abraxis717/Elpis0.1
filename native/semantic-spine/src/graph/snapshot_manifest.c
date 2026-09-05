@@ -139,6 +139,8 @@ int semantic_snapshot_write(const semantic_snapshot_manifest *m,
                              const char *path,
                              char hex_out[65]) {
     if (!m || !path) return SEMANTIC_E_INVAL;
+    int rc = semantic_snapshot_validate(m);
+    if (rc != SEMANTIC_OK) return rc;
 
     /* Atomic write via temp file. */
     char tmp_path[4096];

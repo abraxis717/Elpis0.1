@@ -332,6 +332,57 @@ cleanup:
     return failed;
 }
 
+static int test_manifest_write_validation(void) {
+    char dir[] = "./snapshot-publish-XXXXXX";
+    if (!mkdtemp(dir)) return 1;
+    char path[128];
+    snprintf(path, sizeof(path), "%s/snapshot.sf", dir);
+    semantic_snapshot_manifest *m = semantic_snapshot_create();
+    semantic_snapshot_manifest *published = semantic_snapshot_create();
+    semantic_snapshot_manifest *readback = semantic_snapshot_create();
+    if (!m || !published || !readback) {
+        free(m); free(published); free(readback); rmdir(dir); return 1;
+    }
+    m->segment_count = 1;
+    int failed = check(semantic_snapshot_finalize(m) == SEMANTIC_OK,
+                       "prepare writable manifest", 0);
+    *published = *m;
+    char hex[65], expected[65];
+    elpis_hex32(m->manifest_digest.bytes, expected);
+    failed |= check(semantic_snapshot_write(m, path, hex) == SEMANTIC_OK,
+                    "publish valid manifest", 0);
+    failed |= check(strcmp(hex, expected) == 0, "published digest", 0);
+    for (unsigned kind = 0; kind < 4; ++kind) {
+        *m = *published;
+        if (kind == 0) m->segment_count = 0;
+        if (kind == 1) m->segment_count = SEMANTIC_MAX_SEGMENTS + 1;
+        if (kind == 2) m->manifest_digest.bytes[0] ^= 1;
+        if (kind == 3) m->reserved[0] = 1;
+        const int errors[] = {SEMANTIC_E_INVAL, SEMANTIC_E_INVAL,
+                              SEMANTIC_E_DIGEST, SEMANTIC_E_RESERVATION};
+        failed |= check(semantic_snapshot_write(m, path, hex) == errors[kind],
+                        "invalid manifest cannot publish", kind);
+        failed |= check(strcmp(hex, expected) == 0, "rejected write preserves digest", kind);
+        failed |= check(semantic_snapshot_read(path, readback) == SEMANTIC_OK &&
+                        memcmp(readback, published, sizeof(*published)) == 0,
+                        "rejected write preserves destination", kind);
+    }
+    /* Valid successor publication still replaces the manifest atomically. */
+    *m = *published;
+    m->assertion_count++;
+    failed |= check(semantic_snapshot_finalize(m) == SEMANTIC_OK &&
+                    semantic_snapshot_write(m, path, hex) == SEMANTIC_OK &&
+                    semantic_snapshot_read(path, readback) == SEMANTIC_OK &&
+                    memcmp(readback, m, sizeof(*m)) == 0,
+                    "valid successor replaces manifest", 4);
+    unlink(path);
+    failed |= check(semantic_snapshot_write(published, "./missing-snapshot-dir/file", hex) ==
+                    SEMANTIC_E_IO, "publication IO failure", 5);
+    failed |= check(rmdir(dir) == 0, "snapshot temporary files cleaned", 5);
+    free(m); free(published); free(readback);
+    return failed;
+}
+
 int main(void) {
     printf("Running segment/snapshot tests...\n");
 
@@ -345,6 +396,7 @@ int main(void) {
         test_manifest_count_boundaries(),
         test_manifest_read_transaction(),
         test_segment_publication_ownership(),
+        test_manifest_write_validation(),
     };
 
     int pass = 0, total = sizeof(results) / sizeof(results[0]);
