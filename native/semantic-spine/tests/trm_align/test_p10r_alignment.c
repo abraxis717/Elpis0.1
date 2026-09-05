@@ -57,9 +57,18 @@ int main(void) {
     trm_native_contract_t native = trm_native_contract_create();
     trm_alignment_policy_t policy = trm_alignment_policy_create(&native);
     assert(!trm_alignment_policy_is_sealed(&policy));
+    assert(!trm_alignment_policy_validate(&policy));
+    trm_hypothesis_t hypothesis = {0};
+    hypothesis.id = TRM_HYPOTHESIS_INPUT_REPRESENTATION_MISMATCH;
+    assert(trm_alignment_policy_add_hypothesis(&policy, hypothesis));
+    assert(policy.hypothesis_count == 1);
+    assert(policy.hypotheses[0].id == hypothesis.id);
     assert(trm_alignment_policy_seal(&policy));
     assert(trm_alignment_policy_is_sealed(&policy));
     assert(trm_alignment_policy_validate(&policy));
+    trm_alignment_policy_t sealed = policy;
+    assert(!trm_alignment_policy_add_hypothesis(&policy, hypothesis));
+    assert(memcmp(&sealed, &policy, sizeof(policy)) == 0);
 
     /* Test handoff */
     trm_alignment_handoff_t handoff = trm_alignment_handoff_create();
