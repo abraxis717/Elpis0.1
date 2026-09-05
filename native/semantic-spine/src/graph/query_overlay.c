@@ -78,41 +78,102 @@ int semantic_overlay_add_external_dependency(semantic_query_overlay *overlay,
     return SEMANTIC_OK;
 }
 
+static void overlay_write_u32_be(elpis_sha256_ctx *ctx, uint32_t value) {
+    uint32_t be = htonl(value);
+    elpis_sha256_update(ctx, &be, 4);
+}
+
+static void overlay_write_domain(elpis_sha256_ctx *ctx, const char *domain) {
+    uint32_t be_len = htonl((uint32_t)strlen(domain));
+    elpis_sha256_update(ctx, &be_len, 4);
+    elpis_sha256_update(ctx, domain, strlen(domain));
+}
+
+static int semantic_overlay_compute_local_segment_digest(
+    semantic_query_overlay *overlay)
+{
+    if (!overlay || !overlay->local_builder) return SEMANTIC_E_INVAL;
+
+    elpis_sha256_ctx ctx;
+    elpis_sha256_init(&ctx);
+    overlay_write_domain(&ctx, "elpis.semantic.query_local_segment.v1");
+    overlay_write_u32_be(&ctx, overlay->abi_version);
+
+    uint32_t count = semantic_builder_node_count(overlay->local_builder);
+    overlay_write_u32_be(&ctx, count);
+    for (uint32_t i = 0; i < count; ++i) {
+        const elpis_semantic_node_v1 *record =
+            semantic_builder_get_node(overlay->local_builder, i);
+        if (!record) return SEMANTIC_E_INVAL;
+        elpis_sha256_update(&ctx, record->node_identity.bytes,
+                            HACF_DIGEST_BYTES);
+    }
+
+    count = semantic_builder_assertion_count(overlay->local_builder);
+    overlay_write_u32_be(&ctx, count);
+    for (uint32_t i = 0; i < count; ++i) {
+        const elpis_semantic_assertion_v1 *record =
+            semantic_builder_get_assertion(overlay->local_builder, i);
+        if (!record) return SEMANTIC_E_INVAL;
+        elpis_sha256_update(&ctx, record->assertion_identity.bytes,
+                            HACF_DIGEST_BYTES);
+    }
+
+    count = semantic_builder_hyperedge_count(overlay->local_builder);
+    overlay_write_u32_be(&ctx, count);
+    for (uint32_t i = 0; i < count; ++i) {
+        const elpis_semantic_hyperedge_v1 *record =
+            semantic_builder_get_hyperedge(overlay->local_builder, i);
+        if (!record) return SEMANTIC_E_INVAL;
+        elpis_sha256_update(&ctx, record->hyperedge_identity.bytes,
+                            HACF_DIGEST_BYTES);
+    }
+
+    count = semantic_builder_incidence_count(overlay->local_builder);
+    overlay_write_u32_be(&ctx, count);
+    for (uint32_t i = 0; i < count; ++i) {
+        const elpis_semantic_incidence_v1 *record =
+            semantic_builder_get_incidence(overlay->local_builder, i);
+        if (!record) return SEMANTIC_E_INVAL;
+        elpis_sha256_update(&ctx, record->incidence_identity.bytes,
+                            HACF_DIGEST_BYTES);
+    }
+
+    elpis_sha256_final(&ctx, overlay->query_local_segment_digest.bytes);
+    return SEMANTIC_OK;
+}
+
 int semantic_overlay_finalize(semantic_query_overlay *overlay) {
-    if (!overlay) return SEMANTIC_E_INVAL;
+    if (!overlay || !overlay->local_builder) return SEMANTIC_E_INVAL;
+
+    int rc = semantic_overlay_compute_local_segment_digest(overlay);
+    if (rc != SEMANTIC_OK) return rc;
 
     elpis_sha256_ctx ctx;
     elpis_sha256_init(&ctx);
 
-    const char *domain = "elpis.semantic.overlay.v1";
-    uint32_t be_len = htonl((uint32_t)strlen(domain));
-    elpis_sha256_update(&ctx, &be_len, 4);
-    elpis_sha256_update(&ctx, domain, strlen(domain));
+    overlay_write_domain(&ctx, "elpis.semantic.overlay.v1");
+    overlay_write_u32_be(&ctx, overlay->abi_version);
+    elpis_sha256_update(&ctx,
+                        overlay->base_snapshot_manifest_digest.bytes,
+                        HACF_DIGEST_BYTES);
+    elpis_sha256_update(&ctx,
+                        overlay->base_hacf_graph_snapshot_digest.bytes,
+                        HACF_DIGEST_BYTES);
+    elpis_sha256_update(&ctx, overlay->query_digest.bytes,
+                        HACF_DIGEST_BYTES);
+    elpis_sha256_update(&ctx, overlay->overlay_policy_digest.bytes,
+                        HACF_DIGEST_BYTES);
 
-    uint32_t be = htonl(overlay->abi_version);
-    elpis_sha256_update(&ctx, &be, 4);
-    elpis_sha256_update(&ctx, overlay->base_snapshot_manifest_digest.bytes, HACF_DIGEST_BYTES);
-    elpis_sha256_update(&ctx, overlay->base_hacf_graph_snapshot_digest.bytes, HACF_DIGEST_BYTES);
-    elpis_sha256_update(&ctx, overlay->query_digest.bytes, HACF_DIGEST_BYTES);
-    elpis_sha256_update(&ctx, overlay->overlay_policy_digest.bytes, HACF_DIGEST_BYTES);
-    be = htonl(overlay->external_dependency_count);
-    elpis_sha256_update(&ctx, &be, 4);
-    for (uint32_t i = 0; i < overlay->external_dependency_count; i++) {
-        elpis_sha256_update(&ctx, overlay->external_dependency_digests[i].bytes, HACF_DIGEST_BYTES);
+    overlay_write_u32_be(&ctx, overlay->external_dependency_count);
+    for (uint32_t i = 0; i < overlay->external_dependency_count; ++i) {
+        elpis_sha256_update(&ctx,
+                            overlay->external_dependency_digests[i].bytes,
+                            HACF_DIGEST_BYTES);
     }
 
-    /* Query-local segment digest from the builder. */
-    if (overlay->local_builder) {
-        be = htonl(semantic_builder_node_count(overlay->local_builder));
-        elpis_sha256_update(&ctx, &be, 4);
-        be = htonl(semantic_builder_assertion_count(overlay->local_builder));
-        elpis_sha256_update(&ctx, &be, 4);
-        be = htonl(semantic_builder_hyperedge_count(overlay->local_builder));
-        elpis_sha256_update(&ctx, &be, 4);
-        be = htonl(semantic_builder_incidence_count(overlay->local_builder));
-        elpis_sha256_update(&ctx, &be, 4);
-    }
-
+    elpis_sha256_update(&ctx, overlay->query_local_segment_digest.bytes,
+                        HACF_DIGEST_BYTES);
     elpis_sha256_final(&ctx, overlay->overlay_identity.bytes);
     return SEMANTIC_OK;
 }
