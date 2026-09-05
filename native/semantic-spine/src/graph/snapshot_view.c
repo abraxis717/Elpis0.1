@@ -56,6 +56,15 @@ semantic_snapshot_view *semantic_view_create(const semantic_snapshot_manifest *m
     return view;
 }
 
+/* qsort adapters preserve the production record comparison rules. */
+#define RECORD_CMP(name, type, compare) \
+    static int name(const void *a, const void *b) { return compare((const type *)a, (const type *)b); }
+RECORD_CMP(node_cmp, elpis_semantic_node_v1, elpis_semantic_node_cmp)
+RECORD_CMP(assertion_cmp, elpis_semantic_assertion_v1, elpis_semantic_assertion_cmp)
+RECORD_CMP(edge_cmp, elpis_semantic_hyperedge_v1, elpis_semantic_hyperedge_cmp)
+RECORD_CMP(incidence_cmp, elpis_semantic_incidence_v1, elpis_semantic_incidence_cmp)
+#undef RECORD_CMP
+
 /* Direct record injection for P0 testing (bypasses file I/O). */
 void semantic_view_set_records(semantic_snapshot_view *view,
                                 const elpis_semantic_node_v1 *nodes, uint32_t node_count,
@@ -64,30 +73,36 @@ void semantic_view_set_records(semantic_snapshot_view *view,
                                 const elpis_semantic_incidence_v1 *incidences, uint32_t incidence_count) {
     if (!view) return;
 
-    /* Allocate and copy — view owns its data. */
-    if (node_count) {
-        view->nodes = malloc(node_count * sizeof(elpis_semantic_node_v1));
-        if (view->nodes) memcpy(view->nodes, nodes, node_count * sizeof(elpis_semantic_node_v1));
-    }
-    view->node_count = node_count;
-
-    if (assertion_count) {
-        view->assertions = malloc(assertion_count * sizeof(elpis_semantic_assertion_v1));
-        if (view->assertions) memcpy(view->assertions, assertions, assertion_count * sizeof(elpis_semantic_assertion_v1));
-    }
-    view->assertion_count = assertion_count;
-
-    if (hyperedge_count) {
-        view->hyperedges = malloc(hyperedge_count * sizeof(elpis_semantic_hyperedge_v1));
-        if (view->hyperedges) memcpy(view->hyperedges, hyperedges, hyperedge_count * sizeof(elpis_semantic_hyperedge_v1));
-    }
-    view->hyperedge_count = hyperedge_count;
-
-    if (incidence_count) {
-        view->incidences = malloc(incidence_count * sizeof(elpis_semantic_incidence_v1));
-        if (view->incidences) memcpy(view->incidences, incidences, incidence_count * sizeof(elpis_semantic_incidence_v1));
-    }
-    view->incidence_count = incidence_count;
+    if ((node_count && !nodes) || (assertion_count && !assertions) ||
+        (hyperedge_count && !hyperedges) || (incidence_count && !incidences)) return;
+    semantic_snapshot_view next = {0};
+    next.manifest = view->manifest;
+    /* Stage all storage first, including when sources alias the current view. */
+#define COPY_RECORDS(member, source, count, compare) do { \
+    if ((size_t)(count) > SIZE_MAX / sizeof(*next.member)) goto failed; \
+    if (count) { \
+        next.member = malloc((size_t)(count) * sizeof(*next.member)); \
+        if (!next.member) goto failed; \
+        memcpy(next.member, source, (size_t)(count) * sizeof(*next.member)); \
+        qsort(next.member, count, sizeof(*next.member), compare); \
+    } \
+} while (0)
+    COPY_RECORDS(nodes, nodes, node_count, node_cmp);
+    COPY_RECORDS(assertions, assertions, assertion_count, assertion_cmp);
+    COPY_RECORDS(hyperedges, hyperedges, hyperedge_count, edge_cmp);
+    COPY_RECORDS(incidences, incidences, incidence_count, incidence_cmp);
+#undef COPY_RECORDS
+    for (uint32_t i = 0; i < hyperedge_count; ++i)
+        if (next.hyperedges[i].participant_count > SEMANTIC_MAX_PARTICIPANTS) goto failed;
+    next.node_count = node_count;
+    next.assertion_count = assertion_count;
+    next.hyperedge_count = hyperedge_count;
+    next.incidence_count = incidence_count;
+    free(view->nodes); free(view->assertions); free(view->hyperedges); free(view->incidences);
+    *view = next;
+    return;
+failed:
+    free(next.nodes); free(next.assertions); free(next.hyperedges); free(next.incidences);
 }
 
 void semantic_view_destroy(semantic_snapshot_view *view) {
@@ -163,6 +178,16 @@ uint32_t semantic_view_hyperedge_assertions(
     return count;
 }
 
+static int participant_pointer_cmp(const void *pa, const void *pb) {
+    const elpis_semantic_participant_descriptor *a = *(const elpis_semantic_participant_descriptor *const *)pa;
+    const elpis_semantic_participant_descriptor *b = *(const elpis_semantic_participant_descriptor *const *)pb;
+    if (a->incidence_role != b->incidence_role) return a->incidence_role < b->incidence_role ? -1 : 1;
+    if (a->ordinal != b->ordinal) return a->ordinal < b->ordinal ? -1 : 1;
+    int c = memcmp(&a->node_identity, &b->node_identity, sizeof(hacf_digest));
+    if (c) return c;
+    return (a->participant_flags > b->participant_flags) - (a->participant_flags < b->participant_flags);
+}
+
 uint32_t semantic_view_hyperedge_participants(
     const semantic_snapshot_view *view,
     const hacf_digest *hyperedge_identity,
@@ -171,11 +196,14 @@ uint32_t semantic_view_hyperedge_participants(
     if (!view || !hyperedge_identity || !out || !out_capacity || !limit) return 0;
 
     const elpis_semantic_hyperedge_v1 *edge = semantic_view_lookup_hyperedge(view, hyperedge_identity);
-    if (!edge) return 0;
-
+    if (!edge || edge->participant_count > SEMANTIC_MAX_PARTICIPANTS) return 0;
+    /* Sort pointers, preserving the stored record and its identity bytes. */
+    const elpis_semantic_participant_descriptor *ordered[SEMANTIC_MAX_PARTICIPANTS];
+    for (uint32_t i = 0; i < edge->participant_count; ++i) ordered[i] = &edge->participants[i];
+    qsort(ordered, edge->participant_count, sizeof(*ordered), participant_pointer_cmp);
     uint32_t count = 0;
     for (uint32_t i = 0; i < edge->participant_count; i++) {
-        PLACE_MATCH(&edge->participants[i]);
+        PLACE_MATCH(ordered[i]);
     }
     return count;
 }

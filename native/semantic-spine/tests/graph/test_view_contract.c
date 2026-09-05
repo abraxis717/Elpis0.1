@@ -4,6 +4,16 @@
 #include <string.h>
 #define CHECK(x) do { if (!(x)) { fprintf(stderr,"FAIL %d: %s\n",__LINE__,#x); exit(1); } } while (0)
 
+#ifdef VIEW_WRAP_ALLOC
+static int fail_after = -1;
+void *__real_malloc(size_t size);
+void *__wrap_malloc(size_t size) {
+    if (fail_after == 0) return NULL;
+    if (fail_after > 0) --fail_after;
+    return __real_malloc(size);
+}
+#endif
+
 /* Run the complete pagination boundary matrix through each typed public API. */
 #define PAGES(type, call) do { \
     const type *out[12], *expected[12]; \
@@ -67,6 +77,58 @@ int main(void) {
     CHECK(semantic_view_enumerate_hyperedges_by_type(v,1,0,1,NULL,1)==0);
     CHECK(semantic_view_enumerate_incidences_by_role(v,1,0,1,NULL,1)==0);
     CHECK(semantic_view_enumerate_nodes_by_authority(v,0,0,1,NULL,1)==0);
+    /* Reverse caller input: lookup and every output remain canonical. */
+#define REVERSE(array, n, type) do { for(unsigned k=0;k<(n)/2;++k) { type tmp=array[k]; array[k]=array[(n)-1-k]; array[(n)-1-k]=tmp; } } while(0)
+    REVERSE(nodes,7,elpis_semantic_node_v1);
+    REVERSE(edges,7,elpis_semantic_hyperedge_v1);
+    REVERSE(assertions,17,elpis_semantic_assertion_v1);
+    REVERSE(inc,7,elpis_semantic_incidence_v1);
+    REVERSE(edges[6].participants,4,elpis_semantic_participant_descriptor);
+    semantic_view_set_records(v,nodes,7,assertions,17,edges,7,inc,7);
+    for(unsigned i=0;i<7;++i) {
+        CHECK(semantic_view_lookup_node(v,&nodes[i].node_identity));
+        CHECK(semantic_view_lookup_hyperedge(v,&edges[i].hyperedge_identity));
+    }
+    const elpis_semantic_node_v1 *ns[7];
+    CHECK(semantic_view_enumerate_nodes_by_type(v,1,0,7,ns,7)==4);
+    for(unsigned i=0;i<4;++i) CHECK(ns[i]->node_identity.bytes[0]==1+2*i);
+    const elpis_semantic_hyperedge_v1 *es[7];
+    CHECK(semantic_view_node_hyperedges(v,&node,0,7,es,7)==4);
+    for(unsigned i=0;i<4;++i) CHECK(es[i]->hyperedge_identity.bytes[0]==1+2*i);
+    const elpis_semantic_assertion_v1 *as[7];
+    CHECK(semantic_view_node_assertions(v,&node,2,0,7,as,7)==4);
+    for(unsigned i=0;i<4;++i) CHECK(as[i]->provenance_digest.bytes[0]==1+2*i);
+    CHECK(semantic_view_hyperedge_assertions(v,&edge,2,0,7,as,7)==4);
+    for(unsigned i=0;i<4;++i) CHECK(as[i]->provenance_digest.bytes[0]==1+2*i);
+    const elpis_semantic_incidence_v1 *is[7];
+    CHECK(semantic_view_enumerate_incidences_by_role(v,1,0,7,is,7)==4);
+    for(unsigned i=0;i<4;++i) CHECK(is[i]->ordinal==2*i);
+    const elpis_semantic_participant_descriptor *ps[7];
+    CHECK(semantic_view_hyperedge_participants(v,&edge,0,7,ps,7)==4);
+    for(unsigned i=0;i<4;++i) CHECK(ps[i]->ordinal==i);
+    CHECK(memcmp(semantic_view_lookup_hyperedge(v,&edge),&edges[6],sizeof(edges[6]))==0);
+    const elpis_semantic_node_v1 *before=semantic_view_lookup_node(v,&node);
+    semantic_view_set_records(v,NULL,1,assertions,17,edges,7,inc,7);
+    CHECK(semantic_view_lookup_node(v,&node)==before);
+    CHECK(semantic_view_total_nodes(v)==7 && semantic_view_total_assertions(v)==17);
+#ifdef VIEW_WRAP_ALLOC
+    for(int failure=0;failure<4;++failure) {
+        fail_after=failure;
+        semantic_view_set_records(v,nodes,7,assertions,17,edges,7,inc,7);
+        fail_after=-1;
+        CHECK(semantic_view_lookup_node(v,&node)==before);
+        CHECK(semantic_view_total_hyperedges(v)==7 && semantic_view_total_incidences(v)==7);
+    }
+#endif
+    edges[0].participant_count=SEMANTIC_MAX_PARTICIPANTS+1;
+    semantic_view_set_records(v,nodes,7,assertions,17,edges,7,inc,7);
+    CHECK(semantic_view_lookup_node(v,&node)==before);
+    /* Aliased source is copied before the old storage is released. */
+    semantic_view_set_records(v,before,1,NULL,0,NULL,0,NULL,0);
+    CHECK(semantic_view_total_nodes(v)==1 && semantic_view_lookup_node(v,&node));
+    CHECK(semantic_view_total_assertions(v)==0 && semantic_view_total_hyperedges(v)==0);
+    semantic_view_set_records(v,NULL,0,NULL,0,NULL,0,NULL,0);
+    CHECK(semantic_view_total_nodes(v)==0 && !semantic_view_lookup_node(v,&node));
     semantic_view_destroy(v); semantic_snapshot_destroy(m);
     puts("PASS view pagination contract"); return 0;
 }

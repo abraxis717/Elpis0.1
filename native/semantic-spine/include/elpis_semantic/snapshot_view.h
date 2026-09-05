@@ -28,7 +28,10 @@ typedef struct semantic_snapshot_view semantic_snapshot_view;
 /* Create a read-only view over a snapshot manifest. */
 semantic_snapshot_view *semantic_view_create(const semantic_snapshot_manifest *manifest);
 
-/* Direct record injection for P0 (bypasses file I/O). Records are copied. */
+/* Direct record injection for P0 (bypasses file I/O). Records are copied and
+ * ordered canonically. Invalid storage/counts or allocation failure preserve
+ * the previous view. A successful replacement invalidates prior result pointers.
+ * Zero counts clear the corresponding arrays. No registry admission is performed. */
 void semantic_view_set_records(semantic_snapshot_view *view,
                                 const elpis_semantic_node_v1 *nodes, uint32_t node_count,
                                 const elpis_semantic_assertion_v1 *assertions, uint32_t assertion_count,
