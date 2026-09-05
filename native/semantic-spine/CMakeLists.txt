@@ -233,6 +233,12 @@ target_link_libraries(test_segment_snapshot PRIVATE elpis_semantic elpis_hash)
 sf_warnings(test_segment_snapshot)
 add_test(NAME segment_snapshot COMMAND test_segment_snapshot)
 
+add_executable(test_segment_payload tests/graph/test_segment_payload.c)
+target_link_libraries(test_segment_payload PRIVATE elpis_semantic elpis_hash)
+sf_warnings(test_segment_payload)
+add_test(NAME segment_payload COMMAND test_segment_payload)
+set_tests_properties(segment_payload PROPERTIES TIMEOUT 30)
+
 add_executable(test_snapshot_view tests/graph/test_snapshot_view.c)
 target_link_libraries(test_snapshot_view PRIVATE elpis_semantic elpis_hash)
 sf_warnings(test_snapshot_view)
