@@ -178,6 +178,41 @@ int test_segment_storage_audit(void) {
     return ok ? 0 : 1;
 }
 
+static int test_manifest_count_boundaries(void) {
+    semantic_snapshot_manifest *m = semantic_snapshot_create();
+    if (!m) return 1;
+    const uint32_t counts[] = {0, 1, SEMANTIC_MAX_SEGMENTS - 1,
+        SEMANTIC_MAX_SEGMENTS, SEMANTIC_MAX_SEGMENTS + 1, UINT32_MAX};
+    int failed = 0;
+    for (size_t i = 0; i < sizeof(counts) / sizeof(counts[0]); ++i) {
+        m->segment_count = counts[i];
+        hacf_digest before = m->manifest_digest;
+        int valid = counts[i] > 0 && counts[i] <= SEMANTIC_MAX_SEGMENTS;
+        int rc = semantic_snapshot_finalize(m);
+        failed |= check(rc == (valid ? SEMANTIC_OK : SEMANTIC_E_INVAL),
+                        "finalize count boundary", (int)i);
+        if (!valid)
+            failed |= check(memcmp(&before, &m->manifest_digest, sizeof(before)) == 0,
+                            "invalid finalize preserves identity", (int)i);
+        failed |= check(semantic_snapshot_validate(m) ==
+                        (valid ? SEMANTIC_OK : SEMANTIC_E_INVAL),
+                        "validate count boundary", (int)i);
+    }
+    /* Exercise serialized input through the public persistence reader too. */
+    char path[128];
+    snprintf(path, sizeof(path), "/tmp/elpis-h02-%ld.sf", (long)getpid());
+    m->segment_count = SEMANTIC_MAX_SEGMENTS + 1;
+    FILE *f = fopen(path, "wb");
+    if (!f) { semantic_snapshot_destroy(m); return 1; }
+    failed |= fwrite(m, sizeof(*m), 1, f) != 1;
+    failed |= fclose(f) != 0;
+    failed |= check(semantic_snapshot_read(path, m) == SEMANTIC_E_INVAL,
+                    "out-of-range persisted count rejected", 6);
+    unlink(path);
+    semantic_snapshot_destroy(m);
+    return failed;
+}
+
 int main(void) {
     printf("Running segment/snapshot tests...\n");
 
@@ -188,6 +223,7 @@ int main(void) {
         test_corrupt_segment_rejected(),
         test_corrupt_manifest_rejected(),
         test_segment_storage_audit(),
+        test_manifest_count_boundaries(),
     };
 
     int pass = 0, total = sizeof(results) / sizeof(results[0]);

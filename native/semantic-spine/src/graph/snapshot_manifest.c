@@ -70,7 +70,8 @@ int semantic_snapshot_add_segment(semantic_snapshot_manifest *m,
 }
 
 int semantic_snapshot_finalize(semantic_snapshot_manifest *m) {
-    if (!m || m->segment_count == 0) return SEMANTIC_E_INVAL;
+    if (!m || m->segment_count == 0 ||
+        m->segment_count > SEMANTIC_MAX_SEGMENTS) return SEMANTIC_E_INVAL;
 
     elpis_sha256_ctx ctx;
     elpis_sha256_init(&ctx);
@@ -111,7 +112,8 @@ int semantic_snapshot_finalize(semantic_snapshot_manifest *m) {
 int semantic_snapshot_validate(const semantic_snapshot_manifest *m) {
     if (!m) return SEMANTIC_E_INVAL;
     if (m->abi_version != SEMANTIC_SNAPSHOT_ABI_VERSION) return SEMANTIC_E_INVAL;
-    if (m->segment_count == 0) return SEMANTIC_E_INVAL;
+    if (m->segment_count == 0 || m->segment_count > SEMANTIC_MAX_SEGMENTS)
+        return SEMANTIC_E_INVAL;
     if (memcmp(m->reserved, ZERO_64, sizeof(m->reserved)) != 0) return SEMANTIC_E_RESERVATION;
 
     /* Verify manifest digest. */
