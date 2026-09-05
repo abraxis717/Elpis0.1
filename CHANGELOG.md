@@ -1,3 +1,13 @@
+## Elpis2.1.2 — Reference-runtime CI qualification repair
+
+Elpis2.1.2 is a mechanical successor to Elpis2.1.1.
+
+- Replace the stale installed-package assertion against literal `2.1.0`.
+- Derive the expected installed package version from repository `VERSION`.
+- Preserve all Elpis2.1.1 production behavior and authority boundaries.
+- Preserve the immutable Elpis2.1.1 tag and release commit.
+- No runtime, ABI, semantic, persisted-format, or performance change.
+
 ## Elpis2.1.1 — Graph and View Correctness Hardening
 
 Elpis2.1.1 hardens semantic-spine persistence, identity, snapshot/view

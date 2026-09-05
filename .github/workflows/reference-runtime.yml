@@ -43,7 +43,8 @@ jobs:
               default_model_path,
           )
 
-          assert version("elpis") == "2.1.0"
+          expected_version = Path("VERSION").read_text().strip()
+          assert version("elpis") == expected_version
 
           package = files("elpis_reference")
 
