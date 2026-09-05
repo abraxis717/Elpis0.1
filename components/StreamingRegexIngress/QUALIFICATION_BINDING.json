@@ -1,0 +1,9 @@
+{
+  "functional_summary_sha256": "36412c58f2cdd7ed161b771b248598c146db992bad4ae1f03fe9021bd1956b51",
+  "native_source_sha256": "ae85afbce4d8c23b0e4516ba1b131b4827d1a7159f6d2647a6018d36ad76467d",
+  "oracle_sha256": "95191980742ed80e504b3173b9b6b0eb6a484a97b1aec063e47588c7f1394f41",
+  "pcre2_version": "10.47",
+  "runtime_admission": false,
+  "schema": "elpis.streaming-regex-ingress-r0.qualification-binding.v1",
+  "verdict": "PASS_NATIVE_STREAMING_REGEX_BYTE_EXACT_PARITY_R0"
+}
