@@ -1,0 +1,23 @@
+{
+  "build_system_admission": false,
+  "component_content_digest": "ac3dafbdd0fb3c98d34594518bddc39b49a69b666b877ea4552aeacb5cf84993",
+  "component_id": "RegexHACFQueryIngress_R0",
+  "display_name": "RegexHACFQueryIngress",
+  "embedding": false,
+  "execution_authority": false,
+  "grid81_semantics": false,
+  "historical_regex_hacf_query_overlay_lineage_reconciled": false,
+  "p4_relation_enum_extension": false,
+  "persistent_base_graph_admission": false,
+  "pipeline_role": "Bounded native Regex + HACF + query-local proposal ingress composition",
+  "predecessor_commit": "9a05a1b67710b2b3a101232d21d778ad3cfe13cf",
+  "qualification_disposition": "QUALIFIED_SUCCESSOR_COMPONENT",
+  "qualification_link_compat_external": true,
+  "qualification_link_compat_promoted": false,
+  "retrieval_bundle_claimed": false,
+  "runtime_admission": false,
+  "schema": "elpis.component_manifest.v1",
+  "semantic_truth_authority": false,
+  "stable_regex_abi_required": true,
+  "vector_index": false
+}

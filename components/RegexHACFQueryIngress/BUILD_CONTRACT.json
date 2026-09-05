@@ -1,0 +1,15 @@
+{
+  "build_system_admission": false,
+  "component": "RegexHACFQueryIngress",
+  "qualification_link_compat_external": true,
+  "qualification_link_compat_promoted": false,
+  "requires": {
+    "HACF": "R3 lexical corpus + context graph",
+    "QueryLocalProposalIngress": "atomic batch v1",
+    "SemanticSpine": "query-overlay/builder source authority already qualified in predecessor",
+    "StreamingRegexIngress": "stable native ABI v1"
+  },
+  "runtime_admission": false,
+  "schema": "elpis.regex-hacf-query-ingress.build-contract.v1",
+  "top_level_build_reconciliation_required": true
+}

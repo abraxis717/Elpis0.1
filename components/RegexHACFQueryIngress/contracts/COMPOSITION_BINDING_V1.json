@@ -1,0 +1,72 @@
+{
+  "baseline_identity": {
+    "admission_authority": false,
+    "batch_published": true,
+    "batch_receipt_identity": "120cbc71dd80091005693af2e559486468f0e462fe6b0d0db3e74fb574b15f16",
+    "candidate_count": 2,
+    "candidate_ids": [
+      "f9271277bd4ca165f3afa6e89cedfc8ee5ffc0bc392e112eea700646ba6d3cc4",
+      "6b47254ffe8b219e5cff92b2576f700b9c078945cbc2a1f42cdc39066f7fb75b"
+    ],
+    "context_graph_manifest_digest": "06435cecc00b44c5dcdeec9d2c0fe280c59350230c3e2a6c31a91e2a37dbcb60",
+    "corpus_manifest_digest": "9cad143d89840a6b82694ab50a6f797f2c89f8ef737a926b40ff36425270b204",
+    "execution_authority": false,
+    "fail_closed": false,
+    "overlay_identity": "1bd15bf36f13adf4176cdaf86beabbaaed64cc78a42823132e400023d11d8941",
+    "proposal_digest": "82f28e92429901be39bbf219e765c424c0e1dc15234ba673d0408af4abe2045a",
+    "proposal_set_digest": "6b0490266f150a85a29f14b0cb06504cb9573ba580d2ee5382ab99d5c39b308f",
+    "query_local_segment_digest": "c20e53f9cc9fc5ecfbd0789539d0eb70a71712f8e88e86086c1a3bb3dada588b",
+    "runtime_admission": false,
+    "semantic_authority": false,
+    "source_sha256": "c0ca02cffef935280aa34da0f6cb1418c74eeb8d19bfe8a9f989e9e9ff23c102",
+    "status": "PUBLISHED_ATOMIC_QUERY_OVERLAY"
+  },
+  "builder_header_sha256": "4811cbe3d7e7c702dcb0e2dea0f31d39a700046c98866bf05a049b0691f71c34",
+  "builder_source_sha256": "933711678b1f678e96ef496af31ffb13af3edca2d2bf49da4c762bd2a03b1819",
+  "hacf_file_sha256": {
+    "native/hacf/include/elpis/chunking.h": "0004258b74e17747f3090f4d6b9dca1399415b7d69d2856a40bc133eaccb9a79",
+    "native/hacf/include/elpis/context_graph.h": "0186bfce8bd0840af0162ba0c3666833809beb60ce4e23df008b981c8247a9a5",
+    "native/hacf/include/elpis/corpus.h": "afe0078808d72bec9d17afd289c186efe0fab53c41b91c35cdd5f7dbdeffed91",
+    "native/hacf/include/elpis/sha256.h": "08968a94d48965ea40c6cf971d8e1599304369b560e7264557481a7eb365f3c2",
+    "native/hacf/src/hash/sha256.c": "3607f994d8adc3ba95fae9137947b12a1821760d8e4ca9c79bd87a1e481373b7",
+    "native/hacf/src/retrieval/chunking/chunker.cpp": "0e2d5d1d9f5cf46e38573c690f5dfd098f731051226dfab1dea854a7026bcb92",
+    "native/hacf/src/retrieval/corpus/corpus.cpp": "49afd7e198de87255a5384736e093d66973a55229f982cda656a1950cec053ef",
+    "native/hacf/src/retrieval/hybrid/context_graph.cpp": "59d048ab15717790b13b0bc9c245924f42e32c81b1985e0c8cf39b3fe4bb9ddf"
+  },
+  "native_registry_digest": "d2012aad35f795b9d798e5a3f0aeb685a4ac0ffafd9df71f6950ed0e35d87f15",
+  "positive_identity": {
+    "admission_authority": false,
+    "batch_published": true,
+    "batch_receipt_identity": "613e21e5aab5bd80e2d52a10f41229801a23ad7dff9610bdc56578237e0065d3",
+    "candidate_count": 2,
+    "candidate_ids": [
+      "f2a7635d883c08d3e9899b018041a03d3dfae6b5630cd4ebaf6ed6b478ba4feb",
+      "a22faa3c8793d619736a9a023af30edbad1827416f86feb3c1f78a3f8dc85bca"
+    ],
+    "context_graph_manifest_digest": "06435cecc00b44c5dcdeec9d2c0fe280c59350230c3e2a6c31a91e2a37dbcb60",
+    "corpus_manifest_digest": "9cad143d89840a6b82694ab50a6f797f2c89f8ef737a926b40ff36425270b204",
+    "execution_authority": false,
+    "fail_closed": false,
+    "overlay_identity": "2626b5dff4a27b14d706acca478a3ec8fa3f09111950d4f2a70eb1b99789fe16",
+    "proposal_digest": "e88bc57684947ebfdd29bef5806d351592411fcf481b9ae6457e7cd31a52ad89",
+    "proposal_set_digest": "c0ab227f1e60e6433e217b07eb3b9ee116a27e252914648327492b08b393f52c",
+    "query_local_segment_digest": "f404b0d60dfc0ccc56b9b91a01d95e476d7ef8a95d882426c76216f7a9b1a6cf",
+    "runtime_admission": false,
+    "semantic_authority": false,
+    "source_sha256": "162663d2758de93936a6fd9da0e2b23ccf1d273471111b75517b9e34cc504808",
+    "status": "PUBLISHED_ATOMIC_QUERY_OVERLAY"
+  },
+  "qualification_fixture_sha256": "2524783bb78a2dcdf7503aa0706bbca9390024c32a8230e7f9af2b03789d44ab",
+  "qualification_link_compat_external": true,
+  "qualification_link_compat_promoted": false,
+  "qualification_semantic_link_compat_sha256": "f7a70b4b7a9b1fd9500a5499d8d0303ae08015a3a674e9cf29a700f11a293dbe",
+  "query_local_ingress_commit": "ac379a2eee3f93378933864b438df0cc63bf1101",
+  "registry_contract_sha256": "9ac8ec7d88cad77f998e2552b4b72fb16042432025966d9abff6cca551bc5468",
+  "representation_policy_sha256": "8230edd0f653f9b55325766eb88f36ecda0c8c3573af74433dd3bd435e078bcd",
+  "runtime_admission": false,
+  "schema": "elpis.regex-hacf-query-ingress-r0.composition-binding.v1",
+  "stable_regex_abi_commit": "9a05a1b67710b2b3a101232d21d778ad3cfe13cf",
+  "stable_regex_abi_header_sha256": "ae9053d9eed2cb236585fc7b16d319dce639ae69471fa6268a355410ac62ad39",
+  "stable_regex_abi_result_sha256": "f8e11ab1d7b99e1225f9b240c0d213bbd91c65cc3c3c0e6d651f490fd2f5d3ea",
+  "stable_regex_abi_source_sha256": "c678513d266970cb50f993c57c07a2beda3b75fcd0267d47165ffee75d8c8e4a"
+}
