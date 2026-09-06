@@ -137,14 +137,14 @@ def _compute_component_manifest_digests() -> str:
 # ---------------------------------------------------------------------------
 
 FORBIDDEN_PREFIXES: tuple[str, ...] = (
-    # Construct old pre-promotion source roots from configured canonical root
-    # so the guard fires correctly even on a clean checkout
+    # Secondary legacy-root veto; canonical containment is the primary control.
     os.path.join("/mnt/primesauce", "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
     os.path.join("/mnt/primesauce", "Elpis_Canon", "TRMFractalSpine"),
     os.path.join("/mnt/primesauce", "Elpis_Canon", "DarwinianMatrix"),
     os.path.join("/mnt/primesauce", "Elpis_Canon", "Grid81"),
     os.path.join("/mnt/primesauce", "Elpis_Companions", "Elpis_Semantic_Fabric"),
     os.path.join("/mnt/primesauce", "Elpis_Canon", "HashAdressedCascadeFabric"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "Elpis_Parallel"),
 )
 
 

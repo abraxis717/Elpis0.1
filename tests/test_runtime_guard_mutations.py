@@ -113,3 +113,15 @@ def test_r1_build_directory_is_resolved_lazily(tmp_path):
     ns["_ensure_dirs"]()
     assert target.is_dir()
     assert ns["BUILD_DIR"] == str(target)
+
+
+def test_dependency_policy_constants_have_parity():
+    policies = []
+    for version in ("R0", "R1"):
+        path = REPO / f"runtime/{version}/src/elpis_runtime_{version.lower()}/transaction.py"
+        tree = ast.parse(path.read_text())
+        policies.append({node.target.id: ast.dump(node.value, include_attributes=False)
+                         for node in tree.body if isinstance(node, ast.AnnAssign)
+                         and isinstance(node.target, ast.Name)
+                         and node.target.id in {"FORBIDDEN_PREFIXES", "AUDITED_MODULES"}})
+    assert policies[0] == policies[1]

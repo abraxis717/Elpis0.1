@@ -83,11 +83,13 @@ def _resolve_build_dir() -> str:
 BUILD_DIR: str = ""  # resolved lazily per-transaction
 
 FORBIDDEN_PREFIXES: tuple[str, ...] = (
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "HashAdressedCascadeFabric"),
-    os.path.join("/mnt/primesauce", "Elpis_Companions", "Elpis_Semantic_Fabric"),
+    # Secondary legacy-root veto; canonical containment is the primary control.
     os.path.join("/mnt/primesauce", "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
     os.path.join("/mnt/primesauce", "Elpis_Canon", "TRMFractalSpine"),
     os.path.join("/mnt/primesauce", "Elpis_Canon", "DarwinianMatrix"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "Grid81"),
+    os.path.join("/mnt/primesauce", "Elpis_Companions", "Elpis_Semantic_Fabric"),
+    os.path.join("/mnt/primesauce", "Elpis_Canon", "HashAdressedCascadeFabric"),
     os.path.join("/mnt/primesauce", "Elpis_Canon", "Elpis_Parallel"),
 )
 
