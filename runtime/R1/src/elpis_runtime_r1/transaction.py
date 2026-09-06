@@ -113,50 +113,69 @@ QUALIFICATION_DOCUMENTS: list[tuple[str, str, str, str]] = [
 
 
 def _ensure_dirs() -> None:
+    global BUILD_DIR
+    if not BUILD_DIR:
+        BUILD_DIR = _resolve_build_dir()
     os.makedirs(BUILD_DIR, exist_ok=True)
 
 
+AUDITED_MODULES: tuple[str, ...] = ('elpis_fractal_spine', 'elpis_p0', 'elpis_grid81_adjudication', 'elpis_grid81_semantics', 'DarwinianMatrix')
+
+
 def _dependency_escape_audit() -> str:
-    errors: list[str] = []
+    """Veto unresolved imports and imports outside the canonical assembly."""
     import importlib
-    canonical_pkg = os.path.realpath(CANONICAL_ROOT)
-    for module_name in [
-        "elpis_fractal_spine", "elpis_p0",
-        "elpis_grid81_adjudication", "DarwinianMatrix",
-    ]:
+
+    canonical_pkg = os.path.realpath(CANONICAL_ROOT).rstrip(os.sep) + os.sep
+    extensions = os.environ.get("ELPIS_FORBIDDEN_ROOTS", "").split(os.pathsep)
+    forbidden = tuple(sorted({
+        os.path.realpath(root).rstrip(os.sep) + os.sep
+        for root in (*FORBIDDEN_PREFIXES, *extensions) if root
+    }))
+    errors = []
+    resolved = []
+    for module_name in AUDITED_MODULES:
         try:
             mod = importlib.import_module(module_name)
-            mod_file = getattr(mod, "__file__", "")
-            if mod_file:
-                real = os.path.realpath(mod_file)
-                for prefix in FORBIDDEN_PREFIXES:
-                    if real.startswith(prefix):
-                        errors.append(f"{module_name} -> {real}")
-        except ImportError:
-            pass
+        except ImportError as exc:
+            errors.append(f"UNRESOLVED_IMPORT: {module_name}: {exc}")
+            continue
+        mod_file = getattr(mod, "__file__", None)
+        if not mod_file:
+            errors.append(f"NO_MODULE_FILE: {module_name}")
+            continue
+        real = os.path.realpath(mod_file)
+        resolved.append((module_name, real))
+        if not real.startswith(canonical_pkg):
+            errors.append(f"OUTSIDE_CANONICAL: {module_name}: {real}")
+        if any(real.startswith(root) for root in forbidden):
+            errors.append(f"FORBIDDEN_ROOT: {module_name}: {real}")
     audit = {
         "canonical_root": canonical_pkg,
-        "forbidden_prefixes": list(FORBIDDEN_PREFIXES),
+        "forbidden_prefixes": list(forbidden),
+        "modules_checked": len(resolved),
+        "resolved_modules": resolved,
         "escapes_found": len(errors),
         "errors": errors,
         "status": "CLEAN" if not errors else "ESCAPE_DETECTED",
     }
     if errors:
-        raise R1DependencyEscapeError("DEPENDENCY_ESCAPE",
-                                      f"{len(errors)} escapes")
+        raise R1DependencyEscapeError("DEPENDENCY_ESCAPE", "; ".join(errors))
     return _digest(audit)
 
 
 def _canonical_nonmutation_check() -> str:
     r0_report = os.path.join(os.path.dirname(R0_ROOT), "R0_Audit", "FINAL_REPORT.json")
-    if os.path.exists(r0_report):
-        with open(r0_report) as f:
-            report = json.load(f)
-        if report.get("disposition") != "ELPIS_RUNTIME_INTEGRATION_R0_DETERMINISTIC_TRANSACTION_QUALIFIED":
-            raise R1CanonicalMutationError("R0_NOT_QUALIFIED",
-                                           report.get("disposition", "?"))
-        if report.get("canonical_assembly_modified", True):
-            raise R1CanonicalMutationError("CANONICAL_MODIFIED", "changed")
+    if not os.path.isfile(r0_report):
+        raise R1CanonicalMutationError("R0_AUDIT_REPORT_MISSING", r0_report)
+    with open(r0_report, encoding="utf-8") as f:
+        report = json.load(f)
+    if report.get("disposition") != "ELPIS_RUNTIME_INTEGRATION_R0_DETERMINISTIC_TRANSACTION_QUALIFIED":
+        raise R1CanonicalMutationError("R0_NOT_QUALIFIED", report.get("disposition", "?"))
+    if "canonical_assembly_modified" not in report:
+        raise R1CanonicalMutationError("CANONICAL_FIELD_ABSENT", r0_report)
+    if report["canonical_assembly_modified"] is not False:
+        raise R1CanonicalMutationError("CANONICAL_MODIFIED", "explicit false required")
     return _digest({"r0_qualified": True, "canonical_unmodified": True})
 
 

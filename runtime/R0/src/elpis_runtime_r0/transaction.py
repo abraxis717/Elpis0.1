@@ -39,6 +39,7 @@ from .contracts import (
 )
 from .errors import (
     R0Error,
+    R0ImportEscapeError,
     R0RequestContextError,
     R0AdjudicatorRejectionError,
     R0DarwinianRejectionError,
@@ -147,39 +148,48 @@ FORBIDDEN_PREFIXES: tuple[str, ...] = (
 )
 
 
+AUDITED_MODULES: tuple[str, ...] = ('elpis_fractal_spine', 'elpis_p0', 'elpis_grid81_adjudication', 'elpis_grid81_semantics', 'DarwinianMatrix')
+
+
 def _dependency_escape_audit() -> str:
-    """Check that no runtime import resolves to old source roots.
-
-    We verify by checking that all elpis_* and DarwinianMatrix imports
-    resolve from within the canonical R1 assembly at CANONICAL_ROOT.
-    """
+    """Veto unresolved imports and imports outside the canonical assembly."""
     import importlib
-    errors = []
-    canonical_pkg = os.path.realpath(CANONICAL_ROOT)
 
-    # Check key imports resolve to canonical assembly
-    for module_name in [
-        "elpis_fractal_spine",
-        "elpis_p0",
-        "elpis_grid81_adjudication",
-        "elpis_grid81_semantics",
-        "DarwinianMatrix",
-    ]:
+    canonical_pkg = os.path.realpath(CANONICAL_ROOT).rstrip(os.sep) + os.sep
+    extensions = os.environ.get("ELPIS_FORBIDDEN_ROOTS", "").split(os.pathsep)
+    forbidden = tuple(sorted({
+        os.path.realpath(root).rstrip(os.sep) + os.sep
+        for root in (*FORBIDDEN_PREFIXES, *extensions) if root
+    }))
+    errors = []
+    resolved = []
+    for module_name in AUDITED_MODULES:
         try:
             mod = importlib.import_module(module_name)
-            mod_file = getattr(mod, "__file__", "")
-            if mod_file and canonical_pkg not in os.path.realpath(mod_file):
-                errors.append(f"{module_name} resolves to {mod_file} (not in canonical)")
-        except ImportError:
-            pass
-
+        except ImportError as exc:
+            errors.append(f"UNRESOLVED_IMPORT: {module_name}: {exc}")
+            continue
+        mod_file = getattr(mod, "__file__", None)
+        if not mod_file:
+            errors.append(f"NO_MODULE_FILE: {module_name}")
+            continue
+        real = os.path.realpath(mod_file)
+        resolved.append((module_name, real))
+        if not real.startswith(canonical_pkg):
+            errors.append(f"OUTSIDE_CANONICAL: {module_name}: {real}")
+        if any(real.startswith(root) for root in forbidden):
+            errors.append(f"FORBIDDEN_ROOT: {module_name}: {real}")
     audit = {
         "canonical_root": canonical_pkg,
-        "modules_checked": 5,
+        "forbidden_prefixes": list(forbidden),
+        "modules_checked": len(resolved),
+        "resolved_modules": resolved,
         "escapes_found": len(errors),
         "errors": errors,
         "status": "CLEAN" if not errors else "ESCAPE_DETECTED",
     }
+    if errors:
+        raise R0ImportEscapeError("; ".join(errors))
     return _digest(audit)
 
 
