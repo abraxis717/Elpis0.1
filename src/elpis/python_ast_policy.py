@@ -24,6 +24,25 @@ PYTHON_AST_BANNED_CALLS = frozenset(
 )
 
 
+# These names can recover or manufacture references to otherwise forbidden
+# capabilities without naming the eventual callable in ast.Call.func.
+#
+# Keep them separate from PYTHON_AST_BANNED_CALLS: the latter is a legacy,
+# caller-configurable compatibility surface. These are invariant static-policy
+# escape hatches and therefore remain forbidden regardless of that override.
+_PYTHON_AST_ALWAYS_BANNED_REFERENCES = frozenset(
+    {
+        "getattr",
+        "setattr",
+        "delattr",
+        "vars",
+        "globals",
+        "locals",
+        "__builtins__",
+    }
+)
+
+
 @dataclass(frozen=True, slots=True)
 class PythonASTPolicyDecisionV1:
     passed: bool
@@ -42,6 +61,33 @@ def python_call_name(node: ast.expr) -> str | None:
 
     if isinstance(node, ast.Attribute):
         return node.attr
+
+    return None
+
+
+def _python_banned_reference_name(
+    node: ast.AST,
+    *,
+    banned_calls: AbstractSet[str],
+) -> str | None:
+    if isinstance(node, ast.Name):
+        if (
+            node.id in banned_calls
+            or node.id in _PYTHON_AST_ALWAYS_BANNED_REFERENCES
+        ):
+            return node.id
+
+        return None
+
+    if isinstance(node, ast.Attribute):
+        if node.attr in banned_calls:
+            return node.attr
+
+        if (
+            node.attr.startswith("__")
+            and node.attr.endswith("__")
+        ):
+            return node.attr
 
     return None
 
@@ -146,6 +192,23 @@ def evaluate_python_ast_policy(
                     ),
                     call_name=name or "",
                 )
+
+        reference_name = _python_banned_reference_name(
+            node,
+            banned_calls=banned_calls,
+        )
+
+        if reference_name is not None:
+            return PythonASTPolicyDecisionV1(
+                passed=False,
+                code="BANNED_CALL",
+                lineno=getattr(
+                    node,
+                    "lineno",
+                    -1,
+                ),
+                call_name=reference_name,
+            )
 
     return PythonASTPolicyDecisionV1(
         passed=True,

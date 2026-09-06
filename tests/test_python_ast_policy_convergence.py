@@ -281,3 +281,72 @@ def test_call_name_compatibility_surface_is_preserved() -> None:
     assert PythonASTValidator._call_name(
         call.func
     ) == "method"
+
+@pytest.mark.parametrize(
+    ("case_name", "source"),
+    (
+        (
+            "dynamic_getattr_eval",
+            "def solution():\n"
+            "    return getattr("
+            "__builtins__, 'ev' + 'al'"
+            ")('1+1')\n",
+        ),
+        (
+            "builtins_subscript_exec",
+            "def solution():\n"
+            "    __builtins__['exec']('x=1')\n"
+            "    return 0\n",
+        ),
+        (
+            "dunder_subclasses_introspection",
+            "def solution():\n"
+            "    return "
+            "().__class__.__base__.__subclasses__()\n",
+        ),
+        (
+            "banned_callable_alias",
+            "def solution():\n"
+            "    g = eval\n"
+            "    return g('1')\n",
+        ),
+        (
+            "vars_builtins_open",
+            "def solution():\n"
+            "    return vars(__builtins__)"
+            "['open']('/tmp/elpis-policy-probe')\n",
+        ),
+    ),
+)
+def test_banned_reference_bypasses_fail_closed(
+    case_name: str,
+    source: str,
+) -> None:
+    decision = evaluate_python_ast_policy(
+        language="python",
+        source=source,
+        entrypoint="solution",
+    )
+
+    assert decision.passed is False, (
+        case_name,
+        decision,
+    )
+    assert decision.code == "BANNED_CALL", (
+        case_name,
+        decision,
+    )
+
+    evidence = PythonASTValidator().validate(
+        _context(),
+        _artifact(source),
+    )
+
+    assert evidence.passed is False, (
+        case_name,
+        evidence,
+    )
+    assert evidence.code == "BANNED_CALL", (
+        case_name,
+        evidence,
+    )
