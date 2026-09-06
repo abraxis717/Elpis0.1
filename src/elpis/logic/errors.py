@@ -44,6 +44,10 @@ class ResourceExhausted(ResourceError):
     pass
 
 
+class ReceiptRetentionExhausted(ResourceExhausted):
+    """The process-local receipt verification window is full."""
+
+
 class InvalidAllocation(ResourceError):
     pass
 

@@ -32,7 +32,8 @@ class AuthorityReceipt:
     Opaque evidence that a capability issuer consumed authority.
 
     This value is not itself a capability and cannot be reused to authorize a
-    second transition. Verification belongs to the future affine logic layer.
+    second transition. The issuing CapabilityRegistry can verify it within its
+    process-local retained verification window.
     """
 
     issuer_id: str
