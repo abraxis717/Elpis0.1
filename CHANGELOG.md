@@ -1,3 +1,17 @@
+## Elpis2.1.7 — README Paper R0
+
+- Integrate the frozen README Paper R0 as a research-facing account of the
+  Elpis architecture, qualification boundary, negative results, and research
+  frontier.
+- Advance canonical release/package declarations from Elpis2.1.6 to
+  Elpis2.1.7 without rewriting the published Elpis2.1.6 release.
+- Advance the sealer's historical published-version belt through Elpis2.1.6
+  and ratify the 2.1.7 release identity.
+- Extend published-predecessor sealer guard coverage through Elpis2.1.6.
+- Preserve Grid81, C2R6-P0, FuryanLocusOracle R0, structural guidance,
+  runtime authority, TRM/Projector authority, HACF, model checkpoints, and
+  receipt semantics. No performance claim.
+
 ## Elpis2.1.6 — AST Policy and Release-Integrity Hardening
 
 - Harden the canonical Python AST policy against five reproduced banned-call

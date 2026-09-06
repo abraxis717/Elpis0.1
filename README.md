@@ -10,38 +10,32 @@ The current repository contains a qualified structural-guidance runtime and a se
 
 Elpis is therefore presented as a falsifiable systems-research program rather than a general intelligence claim. It does not claim solved alignment, general Grid81 satisfiability, arbitrary autonomous execution, general semantic correctness, cross-process attestation, autonomous implementation synthesis, AGI, or ASI. The intended standard is narrower: each mechanism should state the authority it possesses, the evidence that qualifies it, the conditions under which it fails, and the observations that would falsify the claim being made.
 
-### Latest Release — Elpis2.1.6
+### Latest Release — Elpis2.1.7
 
-**Release line: Elpis2.1.6**
+**Release line: Elpis2.1.7**
 
-Elpis2.1.6 is a narrow security and release-integrity successor to Elpis2.1.5.
+Elpis2.1.7 is a documentation and release-identity successor to Elpis2.1.6.
+It integrates the qualified README Paper R0 presentation into a new immutable
+release identity rather than modifying the published Elpis2.1.6 object.
 
-| Release identity | Value |
-|---|---|
-| Commit | `e0c5462b81525fe45e2f5342dfc2a227b9e6f7f2` |
-| Tree | `75ae3ab9d203c3d030bfc0c3bd22717300d9fd03` |
-| Parent | `1208cc9fd389fd9e256279ef72d61bbc51e41e53` |
-| Manifest | `manifests/Elpis2.1.6.RELEASE_MANIFEST.json` |
-| Manifest SHA-256 | `eae0b7b5acb5ab54d06396c4002f300e3051a4d636b9b86a1a4e26157c126ce6` |
+- Recasts the repository root README as a research-paper-style account of the
+  Elpis research question, architecture, qualified capabilities, negative
+  results, reproducibility boundary, and open research frontier.
+- Advances canonical package and release declarations to Elpis2.1.7.
+- Advances the release sealer's historical publication belt through
+  Elpis2.1.6 and ratifies the corresponding 2.1.7 release identity.
+- Preserves the Elpis2.1.6 AST-policy repair and declared-text integrity
+  guards without changing their semantics.
+- Preserves Grid81 semantics, the C2R6-P0 allocator, structural-guidance
+  behavior, FuryanLocusOracle R0, TRM/Projector authority, validated-source
+  execution boundaries, model checkpoints, HACF behavior, and receipt
+  semantics.
 
-The release makes two qualified changes:
+This release makes no new runtime, scientific-performance, model-quality, AGI,
+ASI, or autonomous-execution claim.
 
-1. **Python AST policy hardening.** Five independently reproduced reference/introspection bypass classes that were accepted by the Elpis2.1.5 policy are rejected fail-closed under the existing external decision code `BANNED_CALL`.
-2. **Declared release-text integrity.** Canonical declarations in `README.md` and `RELEASE_NOTES.md` are grammar-bound to repository `VERSION`; missing, duplicate, ambiguous, or stale declarations fail verification.
-
-The release mutation suite expands from 20 to 22 intended-reason cases. Post-seal qualification recorded a passing public verifier, passing post-seal required control, passing release-guard regressions, `22/22` release mutations, qualified AST-policy R0, write-once manifest behavior, and immutable predecessor manifests. Hosted qualification on the exact release SHA also passed:
-
-| Workflow | Run | Result |
-|---|---:|---|
-| `CI` | `34041084404` | success |
-| `platform-matrix` | `34041084368` | success |
-| `reference-runtime` | `34041084356` | success |
-
-Elpis2.1.6 does **not** change Grid81 allocation semantics, the known C2R6-P0 allocator limitation, FuryanLocusOracle R0, TRM or Projector authority, generated-source execution authority, model checkpoints, HACF behavior, or receipt-verification semantics. No performance claim is made.
-
-See [`RELEASE_NOTES_Elpis2.1.6.md`](RELEASE_NOTES_Elpis2.1.6.md) for the exact release scope and qualification boundary.
-
----
+See [`RELEASE_NOTES_Elpis2.1.7.md`](RELEASE_NOTES_Elpis2.1.7.md) for the exact
+release scope and qualification boundary.
 
 ## 1. Research Question and Scope
 
