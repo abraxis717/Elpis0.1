@@ -1,3 +1,18 @@
+## Elpis2.1.5 — Furyan Locus Oracle R0
+
+- Ship the exact independently qualified FuryanLocusOracle R0 scientific
+  object from commit `59241be905c15947deddbdc67ae1bf3de81620cb`.
+- Bind `FuryanLocusOracle.py` at SHA-256
+  `3aea7f9fb7ee6bf3c1c38b95a12023fd5277670919fba70d06d69c139701825c`.
+- Preserve the 44,005-case independent solver/reference equivalence result,
+  12/12 intended-reason mutation kills, fresh-process determinism, and
+  independently validated SAT certificates.
+- Document the qualified C2R6-P0 allocator completeness counterexample for the
+  audited ROUTE/`state_feeds` subset.
+- Do not repair or otherwise modify the production allocator in this release.
+- Preserve all Elpis2.1.4 and earlier published release manifests byte-for-byte.
+- Add dedicated Furyan release-integration CI. No performance claim.
+
 ## Elpis2.1.4 — Release-integrity successor
 
 - Repair the post-seal README drift by creating a successor release identity;
