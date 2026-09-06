@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed public verifier for Elpis2.1.2."""
+"""Fail-closed, VERSION-driven public release verifier."""
 
 from __future__ import annotations
 
@@ -14,32 +14,44 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 
-RELEASE_MANIFEST_REL = Path(
-    "manifests/Elpis2.1.2.RELEASE_MANIFEST.json"
-)
-
-DISTRIBUTION_MANIFEST_REL = Path(
-    "manifests/Elpis2.1.2.DISTRIBUTION_MANIFEST.json"
-)
-
-MANIFEST_REL = (
-    DISTRIBUTION_MANIFEST_REL
-    if (REPO / DISTRIBUTION_MANIFEST_REL).exists()
-    else RELEASE_MANIFEST_REL
-)
-
-MANIFEST = REPO / MANIFEST_REL
-
-IGNORE_PARTS = {
-    ".git",
-    "build",
-    "dist",
-    "__pycache__",
-    ".pytest_cache",
-    ".mypy_cache",
-    ".ruff_cache",
-    ".venv",
+RELEASE_VERSION = (REPO / "VERSION").read_text(encoding="utf-8").strip()
+# Ratified repository identities, never inferred from a manifest's claims.
+RELEASE_IDENTITIES = {
+    "2.1.2": {
+        "primitive_closure_commit": "482d4064321392108b87124cd47343d9c748f5bc",
+        "base_release_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
+    },
+    "2.1.3": {
+        "primitive_closure_commit": "UNSEALED",
+        "base_release_commit": "UNSEALED",
+    },
 }
+RELEASE_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.RELEASE_MANIFEST.json")
+DISTRIBUTION_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.DISTRIBUTION_MANIFEST.json")
+MANIFEST_REL = (DISTRIBUTION_MANIFEST_REL
+                if (REPO / DISTRIBUTION_MANIFEST_REL).exists()
+                else RELEASE_MANIFEST_REL)
+MANIFEST = REPO / MANIFEST_REL
+IGNORE_PARTS = {".git"}
+EPHEMERAL_PARTS = {"build", "dist", "__pycache__", ".venv",
+                   ".pytest_cache", ".mypy_cache", ".ruff_cache"}
+ALLOWLIST_REL = Path("tools/public_scan_allowlist.json")
+
+
+def release_identity():
+    identity = RELEASE_IDENTITIES.get(RELEASE_VERSION)
+    if identity is None:
+        raise ValueError(f"UNKNOWN_RELEASE_IDENTITY: {RELEASE_VERSION}")
+    if any(value == "UNSEALED" for value in identity.values()):
+        raise ValueError(f"UNSEALED_RELEASE_IDENTITY: {RELEASE_VERSION}")
+    return identity
+
+
+def ephemeral(rel: Path) -> bool:
+    return bool(set(rel.parts) & EPHEMERAL_PARTS) or any(
+        part.endswith(".egg-info") for part in rel.parts
+    )
+
 
 BINARY_SUFFIXES = {
     ".so", ".a", ".o", ".pyc",
@@ -52,16 +64,8 @@ TEXT_SUFFIXES = {
     ".md", ".txt", ".cff", ".cmake", ".sh",
 }
 
-SCAN_SKIP_NAMES = {
-    "verify_public_release.py",
-    "ci_secret_scan.py",
-    "test_ci_secret_scan.py",
-    "transaction.py",
-    "test_r0_transaction.py",
-}
-
 SECRET_PATTERNS = (
-    (r"BEGIN PRIVATE KEY", "private key"),
+    (r"BEGIN " + "PRIVATE KEY", "private key"),
     (r"ghp_[A-Za-z0-9]{36}", "GitHub PAT"),
     (r"github_pat_[A-Za-z0-9_]{20,}", "GitHub PAT"),
     (r"sk-[A-Za-z0-9]{48,}", "OpenAI-style key"),
@@ -83,10 +87,15 @@ def ignored(rel: Path) -> bool:
     return bool(set(rel.parts) & IGNORE_PARTS)
 
 
+def release_paths() -> list[Path]:
+    return sorted(path for path in REPO.rglob("*")
+                  if not ignored(path.relative_to(REPO)))
+
+
 def actual_files() -> set[str]:
     out: set[str] = set()
 
-    for path in REPO.rglob("*"):
+    for path in release_paths():
         rel = path.relative_to(REPO)
 
         if ignored(rel):
@@ -120,14 +129,18 @@ def load_manifest():
         else "elpis.release-manifest.v2"
     )
 
+    try:
+        identity = release_identity()
+    except ValueError as exc:
+        return data, [str(exc)]
+
     expected = {
         "schema": expected_schema,
-        "release_name": "Elpis2.1.2",
-        "release_tag": "Elpis2.1.2",
-        "version": "2.1.2",
+        "release_name": f"Elpis{RELEASE_VERSION}",
+        "release_tag": f"Elpis{RELEASE_VERSION}",
+        "version": RELEASE_VERSION,
         "package_name": "elpis",
-        "primitive_closure_commit":
-            "482d4064321392108b87124cd47343d9c748f5bc",
+        "primitive_closure_commit": identity["primitive_closure_commit"],
         "runtime_status": "VALIDATED_SOURCE",
         "full_elpis_runtime_admission": True,
         "request_guidance_gate_default": False,
@@ -139,11 +152,10 @@ def load_manifest():
         "nanbeige_host_shipped": False,
     }
 
+    if RELEASE_VERSION != "2.1.2" or MANIFEST_REL == DISTRIBUTION_MANIFEST_REL:
+        expected["base_release_commit"] = identity["base_release_commit"]
     if MANIFEST_REL == DISTRIBUTION_MANIFEST_REL:
-        expected["base_release_commit"] = (
-            "c911af22e01ee35c441d65e8dbcad18694bdcb2a"
-        )
-        expected["distribution_version"] = "2.1.2"
+        expected["distribution_version"] = RELEASE_VERSION
         expected["tag_immutable"] = True
 
     for key, value in expected.items():
@@ -224,10 +236,10 @@ def check_package():
     if project.get("name") != "elpis":
         errors.append("package name is not elpis")
 
-    if project.get("version") != "2.1.2":
-        errors.append("package version is not 2.1.2")
+    if project.get("version") != RELEASE_VERSION:
+        errors.append(f"package version is not {RELEASE_VERSION}")
 
-    if (REPO / "VERSION").read_text().strip() != "2.1.2":
+    if (REPO / "VERSION").read_text().strip() != RELEASE_VERSION:
         errors.append("VERSION mismatch")
 
     if not any(
@@ -523,48 +535,69 @@ def check_public_boundary():
     return not errors, errors
 
 
-def check_private_data():
+def scan_findings():
+    from collections import Counter
+    findings = Counter()
     errors = []
-
-    for rel in sorted(actual_files()):
-        path = REPO / rel
-
-        if (
-            path.suffix not in TEXT_SUFFIXES
-            or path.name in SCAN_SKIP_NAMES
-            or path.is_symlink()
-        ):
+    for path in release_paths():
+        if not (path.is_file() or path.is_symlink()):
             continue
-
+        rel = path.relative_to(REPO).as_posix()
+        if path.suffix not in TEXT_SUFFIXES and path.name not in {"VERSION", "LICENSE", "CMakeLists.txt"}:
+            continue
         try:
-            text = path.read_text(errors="replace")
-        except Exception:
+            text = path.read_text(encoding="utf-8", errors="strict")
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"TEXT_SCAN_DECODE_FAILED: {rel}: {exc}")
             continue
+        patterns = list(SECRET_PATTERNS) + [
+            (re.escape("/mnt/" + "primesauce"), "PRIVATE_PATH"),
+            (re.escape("/home/" + "joe"), "PRIVATE_PATH"),
+        ]
+        for pattern, desc in patterns:
+            kind = desc if desc == "PRIVATE_PATH" else f"SECRET:{desc}"
+            for match in re.finditer(pattern, text):
+                literal_digest = hashlib.sha256(match.group().encode("utf-8")).hexdigest()
+                findings[(rel, kind, literal_digest)] += 1
+    return findings, errors
 
-        for pattern, desc in SECRET_PATTERNS:
-            if re.search(pattern, text):
-                errors.append(
-                    f"SECRET {desc}: {rel}"
-                )
 
-        for private in (
-            "/mnt/primesauce",
-            "/home/joe",
-        ):
-            if private in text:
-                errors.append(
-                    f"PRIVATE PATH {private}: {rel}"
-                )
+def emitted_allowlist():
+    findings, errors = scan_findings()
+    if errors:
+        raise ValueError("; ".join(errors))
+    return [{"path": p, "kind": k, "sha256": h, "count": n}
+            for (p, k, h), n in sorted(findings.items())]
 
+
+def check_private_data():
+    findings, errors = scan_findings()
+    try:
+        entries = json.loads((REPO / ALLOWLIST_REL).read_text(encoding="utf-8"))
+        allowlist = {}
+        for entry in entries:
+            key = (entry["path"], entry["kind"], entry["sha256"])
+            if key in allowlist or type(entry["count"]) is not int or entry["count"] < 1:
+                raise ValueError("invalid or duplicate allowlist entry")
+            allowlist[key] = entry["count"]
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return False, errors + [f"INVALID ALLOWLIST: {exc}"]
+    for key, count in sorted(findings.items()):
+        if count > allowlist.get(key, 0):
+            errors.append(f"{key[1]}: {key[0]}: not allowlisted (count {count})")
+    for key, count in sorted(allowlist.items()):
+        if findings.get(key, 0) < count:
+            errors.append(f"STALE ALLOWLIST ENTRY: {key[0]}: {key[1]}")
     return not errors, errors
 
 
 def check_artifacts():
     errors = []
 
-    for rel in sorted(actual_files()):
-        path = REPO / rel
-
+    for path in release_paths():
+        rel = path.relative_to(REPO)
+        if ephemeral(rel):
+            errors.append(f"EPHEMERAL ARTIFACT PRESENT: {rel}")
         if path.suffix in BINARY_SUFFIXES:
             errors.append(
                 f"BINARY/ARTIFACT: {rel}"
@@ -582,6 +615,12 @@ def check_artifacts():
 
 
 def main() -> int:
+    if "--print-manifest" in sys.argv:
+        print(MANIFEST_REL.as_posix())
+        return 0
+    if "--emit-allowlist" in sys.argv:
+        print(json.dumps(emitted_allowlist(), indent=2) )
+        return 0
     checks = (
         ("Elpis2 manifest", check_manifest),
         ("Package identity", check_package),
@@ -607,12 +646,12 @@ def main() -> int:
 
     if passed:
         print(
-            "PASS: Elpis2.1.2 public release verified"
+            f"PASS: Elpis{RELEASE_VERSION} public release verified"
         )
         return 0
 
     print(
-        "FAIL: Elpis2.1.2 public release verification failed"
+        f"FAIL: Elpis{RELEASE_VERSION} public release verification failed"
     )
     return 1
 
