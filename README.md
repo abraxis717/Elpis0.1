@@ -1,92 +1,411 @@
 # Elpis
 
-> **Structural reasoning without giving the learned model the keys.**
+**A deterministic structural-reasoning architecture for bounded learned proposals, explicit authority, and falsifiable runtime composition.**
+
+## Abstract
+
+Elpis investigates whether learned components can contribute useful structural proposals without implicitly acquiring authority over the representations, admissible state transitions, validation criteria, or execution boundaries that govern those proposals. The system separates typed semantic representation from deterministic projection, learned structural guidance from transition authority, source construction from execution, and evidence from reusable capability. Its present research surface combines a canonical semantic request graph, deterministic projection into an explicit 81-cell Grid81 control topology, bounded TRM guidance, authority-mediated materialization and planning, deterministic source construction, and static Python validation.
+
+The current repository contains a qualified structural-guidance runtime and a separate public reference-model path. The structural-guidance path keeps the learned model behind an explicit default-OFF admission gate, fixes its authority at zero, and retains candidate legality and transition execution in deterministic code. The terminal validated-source composition binds the semantic input, topology, model checkpoint, materialization, planning artifact, decoder plan, source artifact, and validation evidence by deterministic identities while explicitly setting execution authority to false. Independent FuryanLocusOracle R0 qualification also establishes a negative result: the shipped C2R6-P0 allocation strategy is incomplete for a bounded audited `ROUTE`/`state_feeds` subset, even though valid one-Grid81 placements exist for some rejected instances.
+
+Elpis is therefore presented as a falsifiable systems-research program rather than a general intelligence claim. It does not claim solved alignment, general Grid81 satisfiability, arbitrary autonomous execution, general semantic correctness, cross-process attestation, autonomous implementation synthesis, AGI, or ASI. The intended standard is narrower: each mechanism should state the authority it possesses, the evidence that qualifies it, the conditions under which it fails, and the observations that would falsify the claim being made.
+
+### Latest Release — Elpis2.1.6
 
 **Release line: Elpis2.1.6**
-Deterministic structural AI research with explicit topology, bounded learned proposals, digest-bound authority, and falsifiable runtime claims.
 
-Elpis is an experiment in a simple architectural idea:
+Elpis2.1.6 is a narrow security and release-integrity successor to Elpis2.1.5.
 
-**learned systems should be allowed to propose — without silently owning the state, rules, validation, or execution authority around those proposals.**
+| Release identity | Value |
+|---|---|
+| Commit | `e0c5462b81525fe45e2f5342dfc2a227b9e6f7f2` |
+| Tree | `75ae3ab9d203c3d030bfc0c3bd22717300d9fd03` |
+| Parent | `1208cc9fd389fd9e256279ef72d61bbc51e41e53` |
+| Manifest | `manifests/Elpis2.1.6.RELEASE_MANIFEST.json` |
+| Manifest SHA-256 | `eae0b7b5acb5ab54d06396c4002f300e3051a4d636b9b86a1a4e26157c126ce6` |
 
-The project combines a typed semantic graph, deterministic projection into Grid81, learned structural guidance, explicit authority transitions, deterministic materialization, source construction, and static validation. A separate public reference path runs a real pinned FPRM model on Sudoku.
+The release makes two qualified changes:
 
-Elpis is **not** presented as a solved alignment system, an AGI, or an autonomous coding agent. The repository is deliberately organized so that working mechanisms, negative results, and unfinished research remain distinguishable and testable.
+1. **Python AST policy hardening.** Five independently reproduced reference/introspection bypass classes that were accepted by the Elpis2.1.5 policy are rejected fail-closed under the existing external decision code `BANNED_CALL`.
+2. **Declared release-text integrity.** Canonical declarations in `README.md` and `RELEASE_NOTES.md` are grammar-bound to repository `VERSION`; missing, duplicate, ambiguous, or stale declarations fail verification.
+
+The release mutation suite expands from 20 to 22 intended-reason cases. Post-seal qualification recorded a passing public verifier, passing post-seal required control, passing release-guard regressions, `22/22` release mutations, qualified AST-policy R0, write-once manifest behavior, and immutable predecessor manifests. Hosted qualification on the exact release SHA also passed:
+
+| Workflow | Run | Result |
+|---|---:|---|
+| `CI` | `34041084404` | success |
+| `platform-matrix` | `34041084368` | success |
+| `reference-runtime` | `34041084356` | success |
+
+Elpis2.1.6 does **not** change Grid81 allocation semantics, the known C2R6-P0 allocator limitation, FuryanLocusOracle R0, TRM or Projector authority, generated-source execution authority, model checkpoints, HACF behavior, or receipt-verification semantics. No performance claim is made.
+
+See [`RELEASE_NOTES_Elpis2.1.6.md`](RELEASE_NOTES_Elpis2.1.6.md) for the exact release scope and qualification boundary.
 
 ---
 
-## If you only read one section
+## 1. Research Question and Scope
 
-Elpis separates **reasoning** from **authority**.
+The central question is:
+
+> **Can a learned component contribute useful structural search or ordering information while a deterministic substrate retains ownership of representation, admissibility, authority, validation, and terminal action?**
+
+Elpis treats this as a systems question rather than as a claim about the internal reliability of a learned model. The relevant object is not only a model output, but the composition in which that output is produced, bounded, admitted, transformed, validated, and either accepted or rejected.
+
+Let $x$ denote a typed semantic request, $S$ the current structural state, $M$ a learned proposer, $p=M(x,S)$ a proposal, and $J$ a deterministic adjudicator under an explicit contract $C$. The intended separation is:
+
+$$
+p = M(x,S), \qquad S' = J(x,S,p;C),
+$$
+
+with $M$ unable to redefine $C$, widen its own writable scope, grant itself a capability, or convert confidence into permission. A learned proposal may influence the search order or candidate selection within an already admitted space; it is not itself the authority that makes the transition legal.
+
+The current repository scope is correspondingly bounded. It includes qualified mechanisms for semantic representation, structural projection, bounded learned guidance, authority-mediated downstream transformations, validated-source construction, a public Sudoku reference-model path, independent finite-placement science, and release-integrity enforcement. It does not include a trusted natural-language-to-semantic compiler, unrestricted autonomous code synthesis, generated-source execution, persistent cross-process authority, or a general-purpose autonomous agent runtime.
+
+The term **authority** is used operationally: the explicit capability to admit, reveal, consume, mutate, validate, execute, or otherwise advance a state transition. It is not used as a synonym for model confidence, heuristic usefulness, or semantic plausibility.
+
+---
+
+## 2. Architectural Principle: Proposal Without Authority
+
+Many model-centric agent architectures allow a single learned system to interpret an instruction, choose a representation, plan, call tools, validate its own output, and act. Elpis deliberately decomposes those roles. The learned component is treated as a bounded proposer inside a substrate whose contracts and authority are external to the model.
+
+The principle can be summarized as four separations:
+
+1. **Representation is not proposal.** The semantic request and structural topology are defined independently of the learned proposal that may refine them.
+2. **Proposal is not admissibility.** A candidate produced by a model is not accepted merely because the model produced it.
+3. **Validation is not execution.** A source artifact may pass a static policy while retaining zero execution authority.
+4. **Evidence is not capability.** A receipt or terminal result can prove what occurred without becoming reusable permission to perform another transition.
+
+In the qualified structural-guidance component, the request-level gate defaults **OFF**. The semantic binding envelope remains outside the model input. TRM authority is always zero. Candidate legality and transition execution remain owned by deterministic C2R6-P1 machinery. The frozen TRM0 may alter stable ordering before a strict-improvement scan and can therefore affect which action is selected only among equal-best improving candidates; plateau escape remains unguided. If guidance cannot be admitted, the component returns `FALLBACK_REQUIRED` rather than silently executing an alternate path.
+
+This is the primary distinction between Elpis and a generic LLM agent framework. The research object is not an LLM with a larger tool surface. It is a composition in which tool access, writable state, transition legality, source validation, and execution authority are separately represented and can be independently tested.
+
+This separation is intended to make failure easier to localize. It is **not** a proof that bounded authority solves alignment or that a sufficiently complex composition cannot fail in other ways.
+
+---
+
+## 3. System Architecture
+
+At the current qualified boundary, the structural path is organized around an explicit semantic object, a deterministic control topology, bounded learned guidance, and a sequence of authority-mediated transformations.
 
 ```text
-semantic request
-      |
-      v
-deterministic projection
-      |
-      v
-Grid81 structural topology
-      |
-      v
-learned proposal / refinement
-      |
-      v
-deterministic adjudication
-      |
-      v
-bounded downstream capabilities
+P0SemanticRequestV1
+        |
+        v
+Deterministic Projector
+        |
+        v
+Grid81 structural state
+        |
+        v
+bounded TRM guidance
+        |
+        v
+deterministic transition validation / replay
+        |
+        v
+ResolvedStructuralTopologyV1
+        |
+        v
+materialization -> planning -> decoding
+        |
+        v
+deterministic source construction
+        |
+        v
+canonical Python AST policy
+        |
+        v
+StructuralGuidanceRuntimeResultV1
+        |
+        +-- authority_granted      = 0
+        +-- validation_authorized  = false
+        +-- execution_authorized   = false
 ```
 
-The learned model does not get to redefine the topology it is modifying, widen its own writable scope, grant itself execution authority, or turn confidence into permission.
+### 3.1 Semantic request
 
-That separation is the research surface.
+`P0SemanticRequestV1` is a canonical relational task representation independent of Grid81. The contract represents:
+
+- entities;
+- operations;
+- constraints;
+- relations;
+- dependencies;
+- quantities; and
+- declared output entities.
+
+The semantic layer has canonical identifiers, validation rules, canonical serialization, and digest-bound identity. It does **not** parse natural language, and it does not itself allocate semantic objects into Grid81. Natural-language compilation therefore remains outside the qualified semantic contract.
+
+This distinction prevents an upstream language model from silently defining both the problem representation and the structural state into which it will later propose changes.
+
+### 3.2 Grid81
+
+Grid81 is the explicit bounded structural control space used by the current P0 projection path. It is an 81-cell topology organized as nine ranks across nine lanes, with explicit cell contents, lane bindings, invariants, frozen and writable masks, residual state, semantic sidecar bindings, and a structural input fingerprint.
+
+The C2R6-P0 Projector is a pure function of an explicit projection input and a pinned ruleset. Its implementation does not read the filesystem, environment, network, wall clock, or a learned model. It canonicalizes the semantic graph, analyzes scheduling structure, performs bounded capacity checks, allocates lanes/ranks/loci, constructs masks and invariants, derives residual state, and emits a replay trace and projection digest.
+
+Expected rejections are represented as typed results rather than by opportunistic fallback. Capacity failure may produce `DECOMPOSITION_REQUIRED`; structural contradictions and invalid inputs are distinct conditions. Importantly, `DECOMPOSITION_REQUIRED` is an allocator outcome, not a proof that the corresponding semantic structure is globally unsatisfiable in Grid81.
+
+Grid81 is an experimental structural substrate. Elpis does not claim that an 81-cell representation is universal or that intelligence is fundamentally geometric.
+
+### 3.3 Structural guidance
+
+The qualified learned component is a frozen structural TRM guidance path. Its role is deliberately narrow:
+
+- request-level admission is explicit and defaults OFF;
+- the admissible checkpoint SHA-256 is hard-pinned while the host supplies the checkpoint path;
+- the semantic binding envelope remains outside model input;
+- the model receives no transition authority;
+- deterministic candidate legality remains external to the model;
+- TRM0 can affect stable ordering only among equal-best improving candidates before the strict-improvement scan;
+- plateau escape is not model-guided; and
+- failed guidance returns explicit fallback control to the enclosing controller.
+
+The model is therefore a proposer/refiner within a fixed structural contract. It is not the authority root and it cannot redefine the writable topology merely by producing an output.
+
+### 3.4 Authority and validation
+
+Elpis models sensitive downstream transitions as explicit authority boundaries rather than ambient permissions. The validated-source composition uses one-shot authority objects for materialization, planning, decoding, source emission, and validation. Each stage consumes a specific bound transition rather than inheriting unrestricted authority from the previous stage.
+
+The resulting lineage binds, among other identities:
+
+```text
+semantic input
+    -> topology
+    -> checkpoint
+    -> materialization
+    -> planning input
+    -> planning artifact
+    -> decoder plan
+    -> source input
+    -> source artifact
+    -> validation evidence
+    -> terminal runtime result
+```
+
+Terminal structural results are authority-zero. Validation evidence does not propagate planning, decoding, source-emission, validation, or execution authority.
+
+Separately, the process-local `CapabilityRegistry` uses explicitly scoped capability issuance and digest-bound receipts. Receipt verification is intentionally bounded to the active process/issuer context; no cross-process or asymmetric attestation claim is made.
+
+### 3.5 Validated-source runtime
+
+The terminal structural-guidance runtime composes already-qualified stages through static source validation. It can produce a deterministic source artifact and a terminal validation decision, but it does not compile, import, invoke, or execute generated source.
+
+The canonical Python AST policy distinguishes syntax, entrypoint, import, scope-mutation, banned-call, and valid-policy outcomes. Elpis2.1.6 extends the `BANNED_CALL` boundary to cover the five reproduced dynamic-reference/introspection bypass classes documented in the release notes.
+
+A result of:
+
+```text
+validation_code = AST_VALID
+```
+
+means that the artifact parsed and passed the configured static P0 policy. It does **not** mean that the program is functionally correct, safe under arbitrary execution, semantically faithful to the task, or authorized to run.
 
 ---
 
-## What works today
+## 4. Qualified Capabilities
 
-### Qualified and working
+The table below states the current public claim surface. “Qualified” means that the repository contains a frozen implementation and qualification boundary for the stated mechanism; it does not widen the claim beyond that mechanism.
 
-- **Release integrity** — VERSION-driven manifest verification, negative mutation tests, fail-closed release guards.
-- **Typed semantic requests** — canonical relational task representation with digest-bound identity.
-- **Deterministic semantic → Grid81 projection** — explicit masks, bindings, invariants, residuals, and rejection states.
-- **Frozen structural TRM guidance** — works when the qualified checkpoint is explicitly supplied; admission remains opt-in.
-- **Resolved structural topology and materialization** — bounded downstream contracts with explicit authority transitions.
-- **Validated-source runtime** — deterministic source construction and static validation without execution authority.
-- **Canonical Python AST policy** — rejects malformed syntax, imports, scope mutation, direct banned calls, references to configured banned call names, selected dynamic built-in escape hatches, and dunder-attribute introspection; this is a static policy boundary, not an execution sandbox.
-- **Public FPRM reference model** — pinned model bootstrap, verification, strict load, and real CPU Sudoku inference.
-- **FuryanLocusOracle R0** — independently qualified finite rank/locus satisfiability oracle with certificate validation, exhaustive reference cross-checking, mutation qualification, and deterministic result identity.
-- **Bounded feedback / RELEASE machinery** — failures can release pre-existing structural support without granting arbitrary authority to invent new structure.
+| Capability | Qualified claim | Boundary |
+|---|---|---|
+| Canonical semantic request | Typed relational requests can be validated, canonicalized, and digest-bound. | No trusted natural-language parsing claim. |
+| Semantic → Grid81 projection | Supported semantic structure is deterministically projected under a pinned ruleset with typed rejections and replay evidence. | No universal allocation-completeness claim. |
+| Structural TRM guidance | A frozen checkpoint can influence bounded equal-best ordering when explicitly admitted. | Gate defaults OFF; TRM authority remains zero. |
+| Resolved topology | Admitted guidance can be transformed into a digest-bound resolved structural topology while preserving authority-zero semantics. | Requires a real admitted guidance result. |
+| Materialization and planning | Resolved topology can pass through explicit one-shot materialization and deterministic planning contracts. | Authority is stage-bound rather than ambient. |
+| Decoder/source construction | Authority-zero planning artifacts can be normalized into deterministic decoder/source artifacts. | Source construction is not execution. |
+| Static Python validation | Generated Python can be checked against the canonical P0 AST policy, including Elpis2.1.6 bypass hardening. | Static policy validity is not functional correctness or sandboxing. |
+| Terminal runtime result | The validated-source runtime emits digest-bound terminal results with zero authority and no execution permission. | No generated-source execution occurs. |
+| FuryanLocusOracle R0 | A finite, independently qualified rank/locus oracle can decide the admitted R0 placement model and emit independently checkable SAT certificates. | Not a general Grid81 solver and not production runtime authority. |
+| Public FPRM reference path | A pinned public FPRM checkpoint can be fetched, verified, strictly loaded, and used for real CPU Sudoku inference. | Sudoku capability is evidence only for the Sudoku reference task. |
+| Release integrity | Release identity, declared text, manifests, secret/private-path scanning, and intended negative mutations are fail-closed and version-bound. | A development branch is not itself a sealed release. |
 
-### Real, but deliberately limited
-
-- Structural TRM guidance is **not enabled by default**.
-- The structural TRM checkpoint is qualified, but does **not yet** have the same public bootstrap path as the FPRM Sudoku model.
-- The current C2R6-P0 structural-guidance allocator is known to be incomplete for a qualified ROUTE/`state_feeds` subset: it can request decomposition where a one-Grid81 placement exists. Elpis2.1.5 introduced the independent oracle and regression evidence; the allocator remains unrepaired in Elpis2.1.6.
-- Receipt verification remains **process-local**; no cross-process or asymmetric attestation claim is made.
-- Static AST validity means **policy-valid source**, not functional correctness.
-
-### Not implemented yet
-
-- Trusted natural-language → semantic graph compilation.
-- General autonomous implementation synthesis.
-- Generated-source execution.
-- Persistent cross-process authority.
-- A general-purpose autonomous agent runtime.
-
-That distinction matters. A working mechanism is not silently promoted into a larger intelligence or alignment claim.
+The qualified claim surface intentionally includes negative evidence. A component is not promoted to a stronger claim merely because a neighboring stage is green.
 
 ---
 
-## Try the real reference path
+## 5. Known Limitations and Negative Results
 
-The PyPI project name `elpis` is currently owned by an unrelated automatic-speech-recognition project. **Do not use `pip install elpis` for this repository.**
+### 5.1 C2R6-P0 allocator incompleteness
 
-Start from a pristine source checkout of the release:
+FuryanLocusOracle R0 was introduced as a production-independent finite placement oracle for an explicitly bounded model. Its qualification included exhaustive canonical core coverage, independent reference agreement, independently validated SAT certificates, mutation qualification, and fresh-process deterministic result identity.
+
+The frozen scientific result shows that the shipped C2R6-P0 allocation strategy is incomplete for the audited `ROUTE`/`state_feeds` subset. For example, a structure equivalent to:
+
+```text
+route(A, B)
+route(C, B)
+```
+
+admits a valid one-Grid81 placement in the Furyan R0 model, while the shipped strategy can return `DECOMPOSITION_REQUIRED` because its allocation procedure commits too early to an operation schedule before auxiliary-locus feasibility is resolved jointly.
+
+Qualification covered `44,005` canonical core cases and killed `12/12` intended-reason source mutations. The shipped Furyan solver source has SHA-256:
+
+```text
+3aea7f9fb7ee6bf3c1c38b95a12023fd5277670919fba70d06d69c139701825c
+```
+
+The conclusion is deliberately narrow:
+
+> The current C2R6-P0 allocation strategy is incomplete for the audited finite subset.
+
+It does **not** establish general Grid81 satisfiability, general semantic equivalence between Furyan and Elpis, or a right to replace production allocation with the oracle without a separately qualified engineering tranche.
+
+### 5.2 Static validity without functional correctness
+
+A separate validated-source experiment supplied the runtime with a typed `merge_intervals` semantic representation, the natural-language task, the frozen structural TRM0, and the full validated-source composition, but no correct implementation body.
+
+The blind result was:
+
+```text
+runtime_status      = VALIDATED_SOURCE
+validation_code     = AST_VALID
+functional_pass     = false
+functional_failures = 7 / 7
+```
+
+The emitted function contained `return None`. A positive-control arm using the same semantic input and resolved topology but a known-correct implementation body passed the downstream source and functional-validation path.
+
+This negative result localizes the present boundary: semantic representation, structural projection, learned guidance, resolved topology, materialization, planning transport, decoder normalization, source emission, and static validation can all function while autonomous implementation synthesis still fails.
+
+### 5.3 Process-local receipt verification
+
+Receipt verification is process-local. The current mechanism does not claim cross-process persistence, asymmetric attestation, or globally reusable capability proofs. Bounded receipt retention is also an explicit implementation constraint rather than an unbounded audit log.
+
+### 5.4 Cross-process semantic identity remains unfinished
+
+A previously isolated direct-E2E qualification gate found deterministic core P0 artifacts but non-deterministic diagnostic/residual/resolution identities across fresh processes because ephemeral capability/authority instance identifiers entered diagnostic identity. The direct-E2E implementation was therefore not started under that scientific gate.
+
+The intended repair direction is to distinguish deterministic semantic/replay identity from ephemeral security/capability-instance identity. Security identifiers should not simply be removed to make digests equal.
+
+### 5.5 Explicit non-claims
+
+Elpis currently makes no claim of:
+
+- trusted natural-language → semantic-graph compilation;
+- general autonomous implementation synthesis;
+- generated-source execution authority;
+- arbitrary autonomous tool execution;
+- general Grid81 satisfiability;
+- universal allocator completeness;
+- cross-process or asymmetric receipt attestation;
+- unrestricted learned-model authority;
+- generalized held-out competence unless separately qualified;
+- solved alignment;
+- AGI or ASI; or
+- performance improvement not demonstrated by qualification.
+
+These are not rhetorical disclaimers attached after the fact; they delimit the current research object.
+
+---
+
+## 6. Current Runtime Composition
+
+The qualified validated-source composition is implemented under `src/elpis_reference/structural_guidance/`. The runtime module states the composition explicitly:
+
+```text
+Semantic IR
+    -> Projector
+    -> bounded structural-guidance admission
+    -> resolved topology
+    -> zero-authority observation
+    -> one-shot structural materialization
+    -> planning input
+    -> one-shot planning
+    -> deterministic structural planning
+    -> one-shot decoding adapter
+    -> authority-zero decoder-specific plan
+    -> prompt/source-input binding
+    -> one-shot source emission
+    -> deterministic source emission
+    -> one-shot validation
+    -> canonical Python AST policy
+    -> authority-zero terminal validation result
+```
+
+The corresponding public terminal object is `StructuralGuidanceRuntimeResultV1`. Its identity covers the major intermediate digests and the exact emitted source SHA-256. Validation enforces:
+
+```text
+authority_granted     == 0
+validation_authorized == false
+execution_authorized  == false
+```
+
+The runtime refuses disabled structural-guidance configuration when the validated-source path requires a real admitted result. Validation rejection is terminal and authority-zero. No generated source executes in either terminal state.
+
+At the broader architectural level, an external orchestrator such as Prime is intended to remain a thin control plane rather than the owner of Grid81, semantic admission, structural resolution, or execution authority. The learned TRM is similarly a bounded proposer rather than the authority root. That broader composition is an architectural direction; only repository-qualified stages should be treated as shipped claims.
+
+---
+
+## 7. Reproducibility and Falsification
+
+Elpis treats reproducibility as an attempt to make claims easy to attack. A qualification should bind exact source, exact configuration, exact inputs, deterministic identities where claimed, intended negative branches, and independent checks where practical.
+
+### Release integrity
+
+From a pristine checkout of the published release object:
 
 ```bash
 python tools/verify_public_release.py
+python tools/ci_secret_scan.py .
+```
+
+The public verifier checks release identity and manifest consistency, including the canonical declared release text. Elpis2.1.6 adds negative mutations proving that stale README or canonical release-note declarations were accepted by the old verifier and rejected by the repaired one for the intended reason.
+
+### Structural runtime
+
+The repository exposes focused tests for the validated-source composition:
+
+```bash
+export PYTHONPATH="$PWD/src:$PWD/components:$PWD/components/Pipeline/P0ControlProtocol/src:$PWD/components/TRMFractalSpine/src"
+
+python -m pytest -q \
+  tests/test_python_ast_policy_convergence.py \
+  tests/test_structural_guidance_structural_validator.py \
+  tests/test_structural_guidance_validated_source_runtime.py \
+  tests/test_structural_guidance_runtime_admission.py
+```
+
+These tests exercise policy convergence, explicit guidance admission, terminal digest integrity, authority-zero results, validation rejection, source tamper detection, and the prohibition on generated-source execution.
+
+### Furyan release integration
+
+The public release includes a frozen-source integration gate for Furyan:
+
+```bash
+python -m pytest -q tests/test_furyan_release_integration.py
+```
+
+The full scientific qualification was performed against its frozen science authority and should not be reconstructed casually from the release branch. The release integration test instead verifies that the exact qualified scientific bytes were carried into the public release unchanged.
+
+### Falsification criteria
+
+The project treats the following as evidence against a claimed mechanism rather than as cosmetic test failures:
+
+- a forbidden transition succeeds;
+- a negative mutation fails to fire for its intended reason;
+- equivalent canonical inputs produce different identities where determinism is claimed;
+- a terminal artifact can widen its own authority;
+- a model proposal bypasses deterministic admission;
+- generated source is executed without a separately authorized execution boundary;
+- an independent oracle disagrees with a production claim inside the oracle's qualified domain; or
+- release bytes no longer match the immutable manifest that claims to describe them.
+
+A mechanical harness failure is classified separately from a scientific/security/integrity non-pass. Frozen evidence should not be rewritten merely to make a harness green.
+
+---
+
+## 8. Reference Model
+
+Elpis contains a public reference-model path separate from the structural TRM research path. The reference path exists to provide a reproducible example of real pinned model loading and inference rather than to stand in for the complete Elpis architecture.
+
+The PyPI project name `elpis` is currently owned by an unrelated automatic-speech-recognition project. Do **not** use `pip install elpis` to obtain this repository.
+
+From a pristine source checkout:
+
+```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
@@ -100,7 +419,7 @@ elpis model fetch
 elpis model verify
 ```
 
-Run a real CPU inference:
+Run real CPU Sudoku inference:
 
 ```bash
 elpis sudoku solve \
@@ -108,348 +427,104 @@ elpis sudoku solve \
   --device cpu
 ```
 
-The model is loaded only after its pinned identity and state ABI are verified.
+The reference runtime verifies the pinned model identity and state ABI before loading. This path demonstrates a reproducible model-integrity and inference mechanism.
 
-The Sudoku path is intentionally narrow: **Sudoku capability is evidence of Sudoku capability, not evidence of general reasoning.**
-
----
-
-## Why separate proposal from authority?
-
-Many learned systems collapse several roles into one model:
-
-```text
-interpretation
-representation
-planning
-proposal
-validation
-action
-```
-
-Elpis tries to pull those roles apart.
-
-A learned component may propose a structural change without owning the rules that define the structure. A decoder may construct candidate source without acquiring permission to execute it. A validator may reject an artifact without gaining authority to repair arbitrary state. A terminal result may carry evidence without becoming a reusable capability.
-
-In practice, Elpis repeatedly asks:
-
-> **What is the smallest amount of authority this learned component actually needs?**
-
-The hypothesis is modest: if learned components hold less authority, failures may become easier to contain, reproduce, inspect, and falsify.
-
-That is an architectural hypothesis, not a proof that bounded authority solves alignment.
+It does not establish generalized reasoning. **Sudoku capability is evidence of Sudoku capability.** The public FPRM reference path and the frozen structural TRM path should not be conflated.
 
 ---
 
-## The structural substrate: Grid81
+## 9. Repository Organization
 
-Elpis uses **Grid81** as a bounded structural control space.
+The repository is organized so that architectural surfaces, qualified components, tests, evidence, and release authority can be inspected independently.
 
-It is an 81-cell topology with explicit lanes, ranks, masks, bindings, invariants, residuals, and transition rules. A typed semantic request can describe entities, operations, dependencies, relations, constraints, quantities, and outputs; the deterministic Projector maps supported structure into Grid81.
-
-```text
-typed semantic graph
-        |
-        v
- deterministic Projector
-        |
-        v
-+-----------------------+
-|        Grid81         |
-| masks / invariants    |
-| bindings / residuals  |
-| explicit write scope  |
-+-----------------------+
-        |
-        v
- learned structural proposal
-```
-
-The learned model operates **inside** the admitted topology. It does not silently define that topology for itself.
-
-Grid81 is an experimental substrate, not a claim that intelligence is fundamentally geometric or that one 81-cell representation is universal.
-
----
-
-## Current runtime path
-
-The qualified validated-source composition is approximately:
-
-```text
-P0SemanticRequestV1
-        |
-        v
-Projector
-        |
-        v
-structural guidance
-        |
-        v
-ResolvedStructuralTopologyV1
-        |
-        v
-ResolvedStructuralMaterializationV1
-        |
-        v
-PlanningInputV1
-        |
-        v
-StructuralPlanningArtifactV1
-        |
-        v
-DecoderSpecificPlanV1
-        |
-        v
-DecoderSourceInputV1
-        |
-        v
-DecodedSourceArtifactV1
-        |
-        v
-StructuralValidationEvidenceV1
-        |
-        v
-StructuralGuidanceRuntimeResultV1
-```
-
-Terminal structural results retain the authority boundary:
-
-```text
-authority_granted = 0
-validation_authorized = false
-execution_authorized = false
-```
-
-The runtime may produce validated source. It does **not** compile, import, invoke, or execute generated source.
-
----
-
-## Elpis2.1.4 release-integrity repair
-
-Elpis2.1.4 is a **mechanical release-integrity successor** to Elpis2.1.3. It preserves the 2.1.3 runtime and authority semantics while repairing the write-once sealing boundary and binding this README into the successor manifest.
-
-Elpis2.1.3 introduced the fail-closed authority and release-qualification hardening summarized below.
-
-The most important breaking change is intentional:
-
-```python
-CapabilityRegistry.issue(scope=...)
-```
-
-now requires a **non-empty explicit scope**. The previous empty default could behave as effectively unbounded authority. Scope binding is now fail-closed, and receipts sign the issue-time bound scope rather than a caller-supplied widening.
-
-The release also hardens:
-
-- process-local receipt verification by recomputing HMAC under the active issuer key;
-- bounded receipt-retention windows and transactionally inert rejection paths;
-- R0/R1 dependency containment and missing-evidence handling;
-- release manifest identity selection from `VERSION`;
-- mutation-tested secret/private-path scanning;
-- dirty-tree and ephemeral-artifact rejection;
-- strict UTF-8 scanning for declared text.
-
-Pre-seal qualification recorded in the release notes includes:
-
-```text
-release mutations       20 / 20
-authority focused       21 / 21
-runtime guards          22 / 22
-sealer / identity       10 / 10
-full Python suite      313 / 313
-Grid81                 122 / 122
-R0                       26 / 26
-native HACF              21 / 21
-R1 positive              PASS
-R1 required negatives    PASS
-```
-
-No performance claim is made by this release.
-
-See [`RELEASE_NOTES_Elpis2.1.4.md`](RELEASE_NOTES_Elpis2.1.4.md) for the release-integrity repair and [`RELEASE_NOTES_Elpis2.1.3.md`](RELEASE_NOTES_Elpis2.1.3.md) for the inherited authority-hardening details.
-
----
-
-## The useful failure
-
-One of the most informative Elpis tests is a failure.
-
-The system was given a typed semantic representation of `merge_intervals`, the natural-language task, the real frozen structural TRM0, and the complete validated-source runtime. No implementation body was supplied.
-
-The blind result was:
-
-```text
-runtime_status      = VALIDATED_SOURCE
-validation_code     = AST_VALID
-functional_pass     = false
-functional_failures = 7 / 7
-```
-
-The emitted function contained `return None`.
-
-A positive-control arm used the same semantic input and resolved topology but supplied a known-correct body; the downstream source and functional-validation path passed.
-
-That localizes the current boundary:
-
-```text
-semantic representation               working
-deterministic projection               working
-learned structural guidance            working
-resolved topology                      working
-materialization                        working
-planning transport                     working
-decoder normalization                  working
-source emission                        working
-static validation                      working
-autonomous implementation synthesis    not working
-```
-
-This result is not hidden behind the successful AST check. It tells us where the actual research frontier is.
-
----
-
-## Reproduce and falsify
-
-Elpis is intended to be easier to disprove than to market.
-
-### Release integrity
-
-Run from a pristine checkout before installing or building inside the tree:
-
-```bash
-python tools/verify_public_release.py
-python tools/ci_secret_scan.py .
-```
-
-The release verifier rejects inconsistent identities, undeclared files, malformed release authority, ephemeral build/cache content, and non-UTF-8 declared text.
-
-### Model integrity
-
-```bash
-elpis model fetch
-elpis model verify
-```
-
-A modified or ABI-incompatible checkpoint should fail verification.
-
-### Structural runtime
-
-From the repository root:
-
-```bash
-export PYTHONPATH="$PWD/src:$PWD/components:$PWD/components/Pipeline/P0ControlProtocol/src:$PWD/components/TRMFractalSpine/src"
-
-python -m pytest -q \
-  tests/test_python_ast_policy_convergence.py \
-  tests/test_structural_guidance_structural_validator.py \
-  tests/test_structural_guidance_validated_source_runtime.py \
-  tests/test_structural_guidance_runtime_admission.py
-```
-
-These tests cover static-policy convergence, terminal digest integrity, explicit guidance admission, authority-zero results, validation rejection, source tamper detection, and the prohibition on generated-source execution.
-
-Broader mechanism, determinism, integration, mutation, and red-team tests live under `tests/`.
-
----
-
-## Repository map
-
-You do not need to read the entire repository to understand the current system.
-
-| Start here | What lives there |
+| Path | Role |
 |---|---|
-| `src/elpis_reference/` | Portable runtime and public model path |
-| `src/elpis_reference/structural_guidance/` | End-to-end structural-guidance composition |
-| `src/elpis/` | Shared policies, authority, and contracts |
-| `components/TRMFractalSpine/` | Structural TRM contracts and oracle/refinement surfaces |
-| `components/DarwinianMatrix/` | Structural clamp and Projector authority machinery |
-| `components/Pipeline/P0ControlProtocol/` | P0 control and validator mechanisms |
-| `tests/` | Direct, negative, determinism, integration, mutation, and red-team tests |
-| `manifests/` | Release and distribution integrity records |
-| `docs/` | Build, testing, architecture, and provenance detail |
-| `CHANGELOG.md` | Historical development and release chronology |
+| `src/elpis_reference/` | Portable public runtime and reference-model path. |
+| `src/elpis_reference/structural_guidance/` | End-to-end validated-source structural-guidance composition and its authority boundaries. |
+| `src/elpis/` | Shared contracts and policies, including the canonical Python AST policy and capability machinery. |
+| `components/Grid81/` | Canonical Grid81 substrate artifacts. |
+| `components/TRMFractalSpine/` | Structural TRM contracts and refinement surfaces. |
+| `components/DarwinianMatrix/` | Structural clamp, Projector, search/refinement research, and related deterministic mechanisms. |
+| `components/Pipeline/P0ControlProtocol/` | P0 control-protocol and validation mechanisms. |
+| `components/FuryanLocusOracle/` | Frozen independent finite-placement oracle, specification, certificate validation, and release-integrated scientific source. |
+| `tests/` | Mechanism, negative, determinism, integration, mutation, and red-team tests. |
+| `manifests/` | Versioned release manifests and immutable release-integrity authority. |
+| `docs/` | Architecture, build, qualification, and provenance documentation. |
+| `.github/` | Hosted qualification workflows. |
+| `CHANGELOG.md` | Historical development chronology. |
+| `RELEASE_NOTES_*.md` | Release-specific claim and qualification boundaries. |
 
-For architecture, start with `src/elpis_reference/structural_guidance/`. For truth, follow it immediately with the tests that exercise the component you care about.
+For the current structural architecture, start with `src/elpis_reference/structural_guidance/README.md` and `runtime.py`, then inspect the corresponding tests. For Grid81 placement semantics, follow the P0 Projector authority and Furyan's separately bounded specification rather than inferring semantics from component names alone.
 
 ---
 
-## What is being built next
+## 10. Research Frontier
 
-The immediate frontier is not “make the model more autonomous.” It is **close the direct typed transaction seam without widening authority**.
+The current frontier is defined by unresolved mechanisms, not by a target level of anthropomorphic autonomy.
 
-The intended direct path is:
+### Allocator completeness
+
+The highest-priority scientific engineering target is a C2R6-P0 allocator repair that removes the qualified incompleteness without special-casing the discovered counterexample. A satisfactory repair should use a complete joint rank/locus allocation formulation, preserve deterministic canonical output, distinguish true capacity exhaustion from algorithmic failure, and differentially qualify the supported subset against the frozen Furyan authority.
+
+### Direct typed end-to-end composition
+
+The direct control path should be closed before introducing broader search/evolution layers. The outstanding cross-process identity blocker should be repaired by separating deterministic semantic/replay identity from ephemeral capability-instance identity, not by weakening security identity.
+
+### Semantic compilation and source synthesis
+
+Trusted natural-language → semantic compilation remains open. Autonomous implementation synthesis also remains open: current evidence shows that a pipeline can produce AST-valid source while failing every functional test. Future synthesis claims therefore require independent functional validation rather than source-policy validity alone.
+
+### Authority and receipt evolution
+
+Future work may include persistent or asymmetric receipt verification, improved bounded-retention behavior, and clearer separation between evidence identity and live capability identity. These should be separate tranches because they change authority semantics.
+
+### Runtime dependency reduction
+
+The current package has a hard `torch` dependency. Some deterministic R0 verdict paths may not require that dependency for their own arithmetic. Any reduction should be treated as a separate compatibility/qualification tranche rather than incidental cleanup.
+
+### Darwinian refinement
+
+DarwinianMatrix-style refinement remains a secondary research path. The architectural order is direct typed composition first, optional bounded evolutionary/refinement search later. Adding a search layer must not move Grid81 ownership, semantic admission, or execution authority into the orchestrator or learned model.
+
+---
+
+## 11. Release Integrity and Provenance
+
+Elpis treats a published release as an immutable object rather than a moving branch label.
+
+A release identity is bound by repository `VERSION`, canonical declared release text, the exact Git tree, and a version-specific manifest. The sealer is write-once for published manifest identities. Once a version is sealed and published, tracked changes — including documentation-only changes — require a successor release identity or an explicitly unsealed development branch; the previous manifest is not regenerated to describe new bytes.
+
+Elpis2.1.6 specifically adds grammar-bound declared-text verification for:
 
 ```text
-Prime / external orchestrator
-        |
-        v
-typed Elpis request
-        |
-        v
-P0 + canonical structural state
-        |
-        v
-learned TRM proposal
-        |
-        v
-deterministic adjudication
-        |
-        v
-Projector RELEASE boundary
-        |
-        v
-typed result + deterministic receipt
+README.md:
+**Release line: ElpisX.Y.Z**
+
+RELEASE_NOTES.md:
+## Version: vX.Y.Z
 ```
 
-DarwinianMatrix search is deliberately deferred until the direct path is proven and replayable.
+The verifier rejects missing, duplicate, ambiguous, or mismatched canonical declarations. A random occurrence of the current version elsewhere in the document cannot satisfy the guard.
 
-Other active research directions include:
+The release-integrity model is intentionally adversarial. Negative mutations must demonstrate that a forbidden state is rejected for the intended reason, and the corresponding pre-fix control must establish that the unpatched guard would have accepted the mutation where that claim is made.
 
-- autonomous structural source synthesis;
-- trustworthy natural-language semantic compilation;
-- public bootstrap for the structural TRM checkpoint;
-- independent functional validation;
-- persistent and cross-process authority mechanisms.
-
----
-
-## Research discipline
-
-The repository is intentionally hostile to claims that exceed the evidence.
-
-A mechanism test proves the mechanism it exercises. It does **not** automatically prove intelligence, competence, alignment, generalization, or real-world utility.
-
-Generated code should be treated as untrusted regardless of whether it was written by a human, an LLM, or another synthesis system. Important transitions should have narrow scope, explicit contracts, negative tests, deterministic identities where claimed, and independent validation of observable behavior.
-
-A demo should not be made to pass by quietly widening authority.
-
-In particular, convenience is not enough justification for hidden `eval`, `exec`, implicit subprocess execution, arbitrary imports, or automatic execution of generated artifacts.
-
-If execution is added later, it should be a separately designed, separately authorized, separately qualified boundary.
-
----
-
-## Release and provenance
-
-This source tree is the **Elpis2.1.4** release line. Published release tags are treated as immutable. Any tracked change to a sealed tree requires a successor release identity rather than a post-seal manifest rewrite.
-
-Release identities live under:
+For Elpis2.1.6, the immutable release object is:
 
 ```text
-manifests/
+commit       e0c5462b81525fe45e2f5342dfc2a227b9e6f7f2
+tree         75ae3ab9d203c3d030bfc0c3bd22717300d9fd03
+manifest     manifests/Elpis2.1.6.RELEASE_MANIFEST.json
+manifest sha eae0b7b5acb5ab54d06396c4002f300e3051a4d636b9b86a1a4e26157c126ce6
 ```
 
-Model provenance and third-party notices live under:
-
-```text
-THIRD_PARTY_NOTICES.md
-LICENSES/
-docs/
-```
-
-Elpis code is MIT licensed unless a file or bundled third-party component states otherwise.
-
-The standard for the project is reproducibility: important claims should survive independent installation, deterministic identity checks, adversarial tests, real-model execution where relevant, and external functional oracles.
+The repository should be read as a hierarchy of claims: source defines a mechanism, tests attack that mechanism, qualification binds an exact object, and release manifests bind the published bytes. None of those layers should silently substitute for another.
 
 ---
 
-**Christ is King**
+## 12. Licensing
+
+Elpis source code is distributed under the [MIT License](LICENSE) unless an individual file or bundled third-party component states otherwise.
+
+Third-party model, code, and data obligations are separate from the repository's own MIT-licensed source. Consult [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md), `LICENSES/`, component-local notices, and model provenance records before redistributing bundled or downloaded third-party artifacts.
+
+The license grants software-use rights; it does not expand the scientific claims, authority boundaries, qualification scope, or safety guarantees described in this paper-style README.
