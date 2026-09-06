@@ -1,3 +1,16 @@
+## Elpis2.1.4 — Release-integrity successor
+
+- Repair the post-seal README drift by creating a successor release identity;
+  Elpis2.1.3 and all earlier published manifests remain byte-for-byte immutable.
+- Make release manifests write-once by existence, with the historical
+  `PUBLISHED` set retained as a second independent guard.
+- Add Elpis2.1.3 to the published-version belt.
+- Add negative sealer tests for existing-manifest refusal, historical published
+  refusal, ephemeral-artifact refusal, and real sealed-tree verification
+  without provisional resealing.
+- Preserve Elpis2.1.3 runtime, authority, Grid81, TRM, HACF, ABI, and model
+  semantics. No performance claim.
+
 ## Elpis2.1.3 — Fail-closed runtime, capability, and release guards
 
 - **BREAKING:** capability issuance requires explicit non-empty scope; the old

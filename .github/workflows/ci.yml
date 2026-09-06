@@ -35,7 +35,7 @@ jobs:
           python-version: '3.11'
       - run: python tools/mutation_suite.py
       - run: python -m pip install pytest
-      - run: python -m pytest -p no:cacheprovider tests/test_runtime_guard_mutations.py tests/test_release_sealer_guards.py
+      - run: python -m pytest -p no:cacheprovider tests/test_runtime_guard_mutations.py tests/test_release_sealer_guards.py tests/test_seal_release_mutations.py
       - run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - run: python -m pip install .
       - run: python -m pytest -p no:cacheprovider tests/test_authority_receipt_verification.py

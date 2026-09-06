@@ -9,9 +9,12 @@ WHY THIS IS A SEPARATE TOOL
   alone.
 
 GUARDS
-  - Refuses to write a manifest for any version listed in PUBLISHED unless
-    --provisional and --i-am-rewriting-history are given in a verified
-    throwaway mutation copy.
+  - Refuses to rewrite any existing release manifest. Manifest existence is
+    the primary write-once fact.
+  - PUBLISHED remains a secondary historical belt and independently refuses
+    known published versions when their manifest is absent in a test copy.
+  - The only rewrite override is --provisional plus --i-am-rewriting-history
+    inside the verified throwaway mutation-copy shape.
   - Refuses to seal when the working tree contains ephemeral artifacts, since
     those must never enter a release manifest.
   - Refuses to seal a version whose identity constants are still UNSEALED in
@@ -43,7 +46,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 
 # Versions that have been released. Their manifest bytes are frozen.
-PUBLISHED = frozenset({"2.0.0", "2.1.0", "2.1.1", "2.1.2"})
+PUBLISHED = frozenset({"2.0.0", "2.1.0", "2.1.1", "2.1.2", "2.1.3"})
 
 IGNORE_PARTS = {".git"}
 
@@ -98,6 +101,13 @@ def main(argv: list[str]) -> int:
         and not (REPO / ".git").exists()
     ):
         print("REFUSED: override requires an explicit throwaway mutation copy", file=sys.stderr)
+        return 2
+    if manifest.exists() and not override:
+        print(
+            f"REFUSED: {manifest_rel.as_posix()} already exists; "
+            "release manifests are write-once",
+            file=sys.stderr,
+        )
         return 2
     if version in PUBLISHED and not override:
         print(f"REFUSED: Elpis{version} is published; its manifest is immutable", file=sys.stderr)

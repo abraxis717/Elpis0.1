@@ -2,7 +2,7 @@
 
 > **Structural reasoning without giving the learned model the keys.**
 
-**Current public release: Elpis2.1.3**
+**Release line: Elpis2.1.4**
 Deterministic structural AI research with explicit topology, bounded learned proposals, digest-bound authority, and falsifiable runtime claims.
 
 Elpis is an experiment in a simple architectural idea:
@@ -222,9 +222,11 @@ The runtime may produce validated source. It does **not** compile, import, invok
 
 ---
 
-## Elpis2.1.3 in one minute
+## Elpis2.1.4 release-integrity repair
 
-Elpis2.1.3 is a **fail-closed authority and release-qualification hardening release**.
+Elpis2.1.4 is a **mechanical release-integrity successor** to Elpis2.1.3. It preserves the 2.1.3 runtime and authority semantics while repairing the write-once sealing boundary and binding this README into the successor manifest.
+
+Elpis2.1.3 introduced the fail-closed authority and release-qualification hardening summarized below.
 
 The most important breaking change is intentional:
 
@@ -261,7 +263,7 @@ R1 required negatives    PASS
 
 No performance claim is made by this release.
 
-See [`RELEASE_NOTES_Elpis2.1.3.md`](RELEASE_NOTES_Elpis2.1.3.md) for the exact authority, qualification, and open-scope details.
+See [`RELEASE_NOTES_Elpis2.1.4.md`](RELEASE_NOTES_Elpis2.1.4.md) for the release-integrity repair and [`RELEASE_NOTES_Elpis2.1.3.md`](RELEASE_NOTES_Elpis2.1.3.md) for the inherited authority-hardening details.
 
 ---
 
@@ -426,7 +428,7 @@ If execution is added later, it should be a separately designed, separately auth
 
 ## Release and provenance
 
-Elpis2.1.3 is the current public release. The matching release tag is treated as immutable; `main` may move forward with documentation and future development while the tagged release remains fixed.
+This source tree is the **Elpis2.1.4** release line. Published release tags are treated as immutable. Any tracked change to a sealed tree requires a successor release identity rather than a post-seal manifest rewrite.
 
 Release identities live under:
 

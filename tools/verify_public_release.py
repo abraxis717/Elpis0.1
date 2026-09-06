@@ -25,6 +25,12 @@ RELEASE_IDENTITIES = {
         "primitive_closure_commit": "482d4064321392108b87124cd47343d9c748f5bc",
         "base_release_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
     },
+    "2.1.4": {
+        # Release-integrity successor only: no primitive/runtime closure moved.
+        "primitive_closure_commit": "482d4064321392108b87124cd47343d9c748f5bc",
+        # This field is the original Elpis2.0.0 distribution baseline, not predecessor.
+        "base_release_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
+    },
 }
 RELEASE_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.RELEASE_MANIFEST.json")
 DISTRIBUTION_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.DISTRIBUTION_MANIFEST.json")

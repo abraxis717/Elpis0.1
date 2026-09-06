@@ -13,12 +13,42 @@ import pytest
 REPO = Path(__file__).resolve().parents[1]
 
 
+def _copy_ignore(src, names):
+    """Ignore generated content while preserving nested vendored `models/`.
+
+    `shutil.ignore_patterns("models")` is recursively applied and therefore
+    incorrectly removes src/elpis_reference/vendor/fprm/models/. Only the
+    repository-root qualification checkpoint directory is excluded.
+    """
+    ignored = set(
+        shutil.ignore_patterns(
+            ".git",
+            "build",
+            "dist",
+            "__pycache__",
+            ".pytest_cache",
+            ".mypy_cache",
+            ".ruff_cache",
+            "*.egg-info",
+        )(src, names)
+    )
+
+    if Path(src).resolve() == REPO.resolve() and "models" in names:
+        ignored.add("models")
+
+    return ignored
+
+
 @pytest.fixture
 def copy_root():
     with tempfile.TemporaryDirectory(prefix="elpis_mut_") as td:
         root = Path(td) / "repo"
-        shutil.copytree(REPO, root, symlinks=True, ignore=shutil.ignore_patterns(
-            ".git", "build", "dist", "__pycache__", ".pytest_cache", "*.egg-info"))
+        shutil.copytree(
+            REPO,
+            root,
+            symlinks=True,
+            ignore=_copy_ignore,
+        )
         yield root
 
 
@@ -27,12 +57,22 @@ def seal(root, *args):
                           cwd=root, capture_output=True, text=True)
 
 
-@pytest.mark.parametrize("version", ["2.0.0", "2.1.0", "2.1.1", "2.1.2"])
-def test_published_manifest_is_immutable(copy_root, version):
+@pytest.mark.parametrize(
+    "version",
+    ["2.0.0", "2.1.0", "2.1.1", "2.1.2", "2.1.3"],
+)
+def test_existing_published_manifest_is_write_once(copy_root, version):
     path = copy_root / f"manifests/Elpis{version}.RELEASE_MANIFEST.json"
     before = path.read_bytes()
+
     proc = seal(copy_root, "--version", version)
-    assert proc.returncode == 2 and "immutable" in proc.stderr
+
+    marker = (
+        f"manifests/Elpis{version}.RELEASE_MANIFEST.json "
+        "already exists; release manifests are write-once"
+    )
+    assert proc.returncode == 2
+    assert marker in proc.stderr
     assert path.read_bytes() == before
 
 
@@ -65,9 +105,22 @@ def test_identity_must_be_ratified(copy_root, value, marker):
     proc = seal(copy_root, "--provisional", "--i-am-rewriting-history")
     assert proc.returncode == 2 and marker in proc.stderr
     assert (manifest.read_bytes() if manifest.exists() else None) == before
-    checked = subprocess.run([sys.executable, str(copy_root / "tools/verify_public_release.py")],
-                             cwd=copy_root, capture_output=True, text=True)
-    assert checked.returncode == 1 and marker in checked.stdout
+
+    # During successor pre-seal qualification the current manifest does not
+    # exist yet. Materialize only a minimal throwaway fixture so the verifier
+    # reaches the deliberately corrupted identity branch instead of stopping
+    # first at "missing manifest". This is not a seal or a production write.
+    if not manifest.exists():
+        manifest.write_text("{}\n", encoding="utf-8")
+
+    checked = subprocess.run(
+        [sys.executable, str(copy_root / "tools/verify_public_release.py")],
+        cwd=copy_root,
+        capture_output=True,
+        text=True,
+    )
+    assert checked.returncode == 1
+    assert marker in checked.stdout
 
 
 def test_sealer_rejects_empty_ephemeral_directory(copy_root):
