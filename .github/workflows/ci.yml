@@ -181,7 +181,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install . pytest==9.0.2
+      - run: python -m pip install ".[trm]" pytest==9.0.2
       - name: Installed semantic and adapter tests
         run: PYTHONPATH="" python -m pytest -q -p no:cacheprovider tests/test_semantic_refinement_contract.py tests/test_projector_release_adapter.py
       - name: Canonical Projector source tests
@@ -196,7 +196,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install . pytest==9.0.2
+      - run: python -m pip install ".[trm]" pytest==9.0.2
       - name: Installed C2R3 feedback tests
         run: PYTHONPATH="" python -m pytest -q -p no:cacheprovider tests/test_feedback_refinement.py
 
@@ -209,7 +209,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install . pytest==9.0.2
+      - run: python -m pip install ".[trm]" pytest==9.0.2
       - name: Production P0 validator ingress tests
         run: PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python -m pytest -q -p no:cacheprovider tests/test_p0_validator_ingress.py tests/test_p0_artifact_lineage.py tests/test_direct_semantic_replay.py
       - name: Red-team release and feedback regressions
@@ -224,7 +224,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install . pytest==9.0.2
+      - run: python -m pip install ".[trm]" pytest==9.0.2
       - name: P0 semantic-space and validator sub-locus tests
         run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python -m pytest -q -p no:cacheprovider components/Pipeline/P0ControlProtocol/tests/test_semantic_space.py tests/test_p0_validator_ingress.py
       - name: C2R6B semantic topology E2E
@@ -258,7 +258,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install . pytest==9.0.2
+      - run: python -m pip install ".[trm]" pytest==9.0.2
       - name: Production trusted ingress tests
         run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src python -m pytest -q -p no:cacheprovider tests/test_p0_validator_ingress.py
       - name: C2R6C-B trusted ingress E2E

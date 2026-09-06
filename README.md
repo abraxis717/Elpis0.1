@@ -6,35 +6,36 @@
 
 Elpis investigates whether learned components can contribute useful structural proposals without implicitly acquiring authority over the representations, admissible state transitions, validation criteria, or execution boundaries that govern those proposals. The system separates typed semantic representation from deterministic projection, learned structural guidance from transition authority, source construction from execution, and evidence from reusable capability. Its present research surface combines a canonical semantic request graph, deterministic projection into an explicit 81-cell Grid81 control topology, bounded TRM guidance, authority-mediated materialization and planning, deterministic source construction, and static Python validation.
 
-The current repository contains a qualified structural-guidance runtime and a separate public reference-model path. The structural-guidance path keeps the learned model behind an explicit default-OFF admission gate, fixes its authority at zero, and retains candidate legality and transition execution in deterministic code. The terminal validated-source composition binds the semantic input, topology, model checkpoint, materialization, planning artifact, decoder plan, source artifact, and validation evidence by deterministic identities while explicitly setting execution authority to false. Independent FuryanLocusOracle R0 qualification also establishes a negative result: the shipped C2R6-P0 allocation strategy is incomplete for a bounded audited `ROUTE`/`state_feeds` subset, even though valid one-Grid81 placements exist for some rejected instances.
+The current repository contains a qualified structural-guidance runtime and a separate public reference-model path. The structural-guidance path keeps the learned model behind an explicit default-OFF admission gate, fixes its authority at zero, and retains candidate legality and transition execution in deterministic code. The terminal validated-source composition binds the semantic input, topology, model checkpoint, materialization, planning artifact, decoder plan, source artifact, and validation evidence by deterministic identities while explicitly setting execution authority to false. Independent FuryanLocusOracle R0 qualification established a historical negative result for the earlier C2R6-P0 allocator. Elpis2.1.8 replaces that incomplete greedy strategy with deterministic joint rank/locus allocation for the audited subset while retaining Furyan as frozen independent evidence rather than runtime authority.
 
 Elpis is therefore presented as a falsifiable systems-research program rather than a general intelligence claim. It does not claim solved alignment, general Grid81 satisfiability, arbitrary autonomous execution, general semantic correctness, cross-process attestation, autonomous implementation synthesis, AGI, or ASI. The intended standard is narrower: each mechanism should state the authority it possesses, the evidence that qualifies it, the conditions under which it fails, and the observations that would falsify the claim being made.
 
-### Latest Release — Elpis2.1.7
+### Latest Release — Elpis2.1.8
 
-**Release line: Elpis2.1.7**
+**Release line: Elpis2.1.8**
 
-Elpis2.1.7 is a documentation and release-identity successor to Elpis2.1.6.
-It integrates the qualified README Paper R0 presentation into a new immutable
-release identity rather than modifying the published Elpis2.1.6 object.
+Elpis2.1.8 is a deterministic-runtime and correctness successor to
+Elpis2.1.7.
 
-- Recasts the repository root README as a research-paper-style account of the
-  Elpis research question, architecture, qualified capabilities, negative
-  results, reproducibility boundary, and open research frontier.
-- Advances canonical package and release declarations to Elpis2.1.7.
-- Advances the release sealer's historical publication belt through
-  Elpis2.1.6 and ratifies the corresponding 2.1.7 release identity.
-- Preserves the Elpis2.1.6 AST-policy repair and declared-text integrity
-  guards without changing their semantics.
-- Preserves Grid81 semantics, the C2R6-P0 allocator, structural-guidance
-  behavior, FuryanLocusOracle R0, TRM/Projector authority, validated-source
-  execution boundaries, model checkpoints, HACF behavior, and receipt
-  semantics.
+- Makes canonical AST restrictions non-subtractive and closes additional
+  introspection-based restricted-callable recovery paths while preserving the
+  static-policy boundary.
+- Reduces the base dependency surface to NumPy and SciPy; Torch and
+  model-oriented dependencies are explicit through the `trm` extra.
+- Replaces incomplete C2R6-P0 greedy rank/locus placement with deterministic
+  joint finite-domain allocation for the audited Furyan subset.
+- Preserves the frozen FuryanLocusOracle R0 object and qualifies current
+  production against all 44,005 canonical core cases.
+- Separates deterministic semantic/replay identity from ephemeral
+  process-local security identity.
+- Adds a machine-readable non-executing functional-evaluation boundary.
+- Qualifies both `v*` and `Elpis*` release tags while retaining a dedicated
+  Torch-free deterministic-base qualification.
 
-This release makes no new runtime, scientific-performance, model-quality, AGI,
-ASI, or autonomous-execution claim.
+Generated source remains non-executable and authority-zero at the qualified
+terminal boundary. No performance claim is made.
 
-See [`RELEASE_NOTES_Elpis2.1.7.md`](RELEASE_NOTES_Elpis2.1.7.md) for the exact
+See [`RELEASE_NOTES_Elpis2.1.8.md`](RELEASE_NOTES_Elpis2.1.8.md) for the exact
 release scope and qualification boundary.
 
 ## 1. Research Question and Scope
@@ -186,7 +187,7 @@ Separately, the process-local `CapabilityRegistry` uses explicitly scoped capabi
 
 The terminal structural-guidance runtime composes already-qualified stages through static source validation. It can produce a deterministic source artifact and a terminal validation decision, but it does not compile, import, invoke, or execute generated source.
 
-The canonical Python AST policy distinguishes syntax, entrypoint, import, scope-mutation, banned-call, and valid-policy outcomes. Elpis2.1.6 extends the `BANNED_CALL` boundary to cover the five reproduced dynamic-reference/introspection bypass classes documented in the release notes.
+The canonical Python AST policy distinguishes syntax, entrypoint, import, scope-mutation, banned-call, and valid-policy outcomes. Elpis2.1.8 retains the earlier bypass hardening, makes canonical restrictions non-subtractive, and rejects the qualified frame, generator, coroutine, async-generator, traceback, and code-object introspection families.
 
 A result of:
 
@@ -210,7 +211,7 @@ The table below states the current public claim surface. “Qualified” means t
 | Resolved topology | Admitted guidance can be transformed into a digest-bound resolved structural topology while preserving authority-zero semantics. | Requires a real admitted guidance result. |
 | Materialization and planning | Resolved topology can pass through explicit one-shot materialization and deterministic planning contracts. | Authority is stage-bound rather than ambient. |
 | Decoder/source construction | Authority-zero planning artifacts can be normalized into deterministic decoder/source artifacts. | Source construction is not execution. |
-| Static Python validation | Generated Python can be checked against the canonical P0 AST policy, including Elpis2.1.6 bypass hardening. | Static policy validity is not functional correctness or sandboxing. |
+| Static Python validation | Generated Python can be checked against the canonical P0 AST policy, including non-subtractive canonical restrictions and the qualified introspection-family closures. | Static policy validity is not functional correctness or sandboxing. |
 | Terminal runtime result | The validated-source runtime emits digest-bound terminal results with zero authority and no execution permission. | No generated-source execution occurs. |
 | FuryanLocusOracle R0 | A finite, independently qualified rank/locus oracle can decide the admitted R0 placement model and emit independently checkable SAT certificates. | Not a general Grid81 solver and not production runtime authority. |
 | Public FPRM reference path | A pinned public FPRM checkpoint can be fetched, verified, strictly loaded, and used for real CPU Sudoku inference. | Sudoku capability is evidence only for the Sudoku reference task. |
@@ -222,30 +223,25 @@ The qualified claim surface intentionally includes negative evidence. A componen
 
 ## 5. Known Limitations and Negative Results
 
-### 5.1 C2R6-P0 allocator incompleteness
+### 5.1 Historical allocator incompleteness and current repair
 
-FuryanLocusOracle R0 was introduced as a production-independent finite placement oracle for an explicitly bounded model. Its qualification included exhaustive canonical core coverage, independent reference agreement, independently validated SAT certificates, mutation qualification, and fresh-process deterministic result identity.
+FuryanLocusOracle R0 remains the frozen production-independent finite
+placement oracle that established the historical C2R6-P0 completeness defect
+for the bounded audited `ROUTE`/`state_feeds` subset.
 
-The frozen scientific result shows that the shipped C2R6-P0 allocation strategy is incomplete for the audited `ROUTE`/`state_feeds` subset. For example, a structure equivalent to:
+The frozen result, including representative counterexamples, the 44,005-case
+canonical core, independently checked certificates, 12/12 mutation kills, and
+fresh-process identity evidence, remains unchanged.
 
-```text
-route(A, B)
-route(C, B)
-```
+Elpis2.1.8 repairs the corresponding production strategy by jointly assigning
+operation ranks and auxiliary loci rather than committing to the earlier
+greedy schedule before auxiliary feasibility is known. Current-production
+successor tests compare the allocator against Furyan over all 44,005 canonical
+core cases and retain separate stress/tail and fresh-process checks.
 
-admits a valid one-Grid81 placement in the Furyan R0 model, while the shipped strategy can return `DECOMPOSITION_REQUIRED` because its allocation procedure commits too early to an operation schedule before auxiliary-locus feasibility is resolved jointly.
-
-Qualification covered `44,005` canonical core cases and killed `12/12` intended-reason source mutations. The shipped Furyan solver source has SHA-256:
-
-```text
-3aea7f9fb7ee6bf3c1c38b95a12023fd5277670919fba70d06d69c139701825c
-```
-
-The conclusion is deliberately narrow:
-
-> The current C2R6-P0 allocation strategy is incomplete for the audited finite subset.
-
-It does **not** establish general Grid81 satisfiability, general semantic equivalence between Furyan and Elpis, or a right to replace production allocation with the oracle without a separately qualified engineering tranche.
+This qualification remains bounded to the admitted finite model. It does not
+establish general Grid81 satisfiability or promote Furyan into runtime
+authority.
 
 ### 5.2 Static validity without functional correctness
 
@@ -268,11 +264,17 @@ This negative result localizes the present boundary: semantic representation, st
 
 Receipt verification is process-local. The current mechanism does not claim cross-process persistence, asymmetric attestation, or globally reusable capability proofs. Bounded receipt retention is also an explicit implementation constraint rather than an unbounded audit log.
 
-### 5.4 Cross-process semantic identity remains unfinished
+### 5.4 Semantic replay identity and process-local security identity
 
-A previously isolated direct-E2E qualification gate found deterministic core P0 artifacts but non-deterministic diagnostic/residual/resolution identities across fresh processes because ephemeral capability/authority instance identifiers entered diagnostic identity. The direct-E2E implementation was therefore not started under that scientific gate.
+Elpis2.1.8 separates deterministic semantic/replay identity from ephemeral
+authority and capability-instance evidence.
 
-The intended repair direction is to distinguish deterministic semantic/replay identity from ephemeral security/capability-instance identity. Security identifiers should not simply be removed to make digests equal.
+For equal deterministic semantic inputs, replay-facing identity can therefore
+remain stable across fresh processes without making security nonces,
+capabilities, authority instances, or consumption evidence deterministic.
+
+Security authority remains process-local. This repair does not establish
+cross-process bearer capability, asymmetric attestation, or external trust.
 
 ### 5.5 Explicit non-claims
 
@@ -403,7 +405,7 @@ From a pristine source checkout:
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install .
+python -m pip install ".[trm]"
 ```
 
 Fetch and verify the pinned public model:

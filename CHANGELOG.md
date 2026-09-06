@@ -1,3 +1,22 @@
+## Elpis2.1.8 — Deterministic Runtime Hardening
+
+- Make canonical Python AST restrictions non-subtractive and close the
+  reproduced frame/generator/coroutine/traceback/code-object introspection
+  families.
+- Reduce base dependencies to NumPy and SciPy; move Torch and model-oriented
+  dependencies behind the explicit `trm` extra.
+- Qualify deterministic imports and R0 execution with Torch absent.
+- Replace incomplete greedy C2R6-P0 rank/locus placement with deterministic
+  joint finite-domain allocation for the audited Furyan subset.
+- Preserve frozen FuryanLocusOracle R0 while qualifying current production
+  against all 44,005 canonical core cases.
+- Separate deterministic semantic/replay identity from ephemeral process-local
+  security identity.
+- Add a non-executing machine-readable functional-evaluation contract.
+- Qualify both `v*` and `Elpis*` release tags and make Torch-backed hosted jobs
+  request the learned-runtime dependency explicitly.
+- Generated-source execution authority remains false. No performance claim.
+
 ## Elpis2.1.7 — README Paper R0
 
 - Integrate the frozen README Paper R0 as a research-facing account of the
