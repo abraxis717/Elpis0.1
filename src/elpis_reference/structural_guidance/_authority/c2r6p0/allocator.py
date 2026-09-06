@@ -5,8 +5,8 @@ its schedule analysis it compiles, with explicit named rules:
 
   * one lane per operation (R6), assigned by a total order on
     (longest-path distance, topological index, operation id);
-  * one frozen operational locus per operation at rank = longest-path
-    distance (R7), with a role token (R8): INPUT for sources, OUTPUT for
+  * one frozen operational locus per operation at the least jointly feasible
+    rank (R7), with a role token (R8): INPUT for sources, OUTPUT for
     sinks, TRANSFORM otherwise (TRANSFORM is structural; the executable
     meaning stays in the sidecar);
   * ROUTE loci for explicit cross-lane route relations (R9) satisfying
@@ -100,7 +100,6 @@ class Placement:
 
     grid: list[int]
     frozen: set[int]
-    placed: dict[int, str]          # cell -> what was placed (trace)
     lane_of: dict[str, int]          # op_id -> lane
     rank_of: dict[str, int]           # op_id -> rank
     role_of: dict[str, int]            # op_id -> token
@@ -214,35 +213,112 @@ def _constraint_owner(
     return None
 
 
-def _place_tail(
-    placement: Placement,
-    lane: int,
-    low_rank: int,
-    what: str,
-) -> int | None:
-    """Place at the smallest free rank >= low_rank in `lane` (<= 8)."""
-    for rank in range(low_rank, RANKS):
-        c = cell(rank, lane)
-        if c not in placement.frozen and c not in placement.placed:
-            placement.placed[c] = what
-            return c
-    return None
+def _joint_assignment(operations, edges, demands):
+    """Complete finite rank/locus CSP, independent of the scientific oracle.
+
+    A demand is (id, lane owner, after operation, before operation or None).
+    Every variable has domain 0..8. Strict interval edges and per-lane
+    injectivity are the entire placement model. Propagation removes only
+    values violating bounds or a fixed lane occupant; bipartite matching
+    rejects lanes with no injection. Neither step commits a greedy witness.
+
+    Search visits operations by id, then demands by id, with ascending ranks.
+    Exhaustion proves infeasibility; first success is the lexicographically
+    least joint assignment. There is no search cutoff or learned dependency.
+    """
+    operations = tuple(sorted(operations))
+    demands = tuple(sorted(demands))
+    index = {op: i for i, op in enumerate(operations)}
+    lanes = [[index[op]] for op in operations]
+    inequalities = [(index[a], index[b], gap) for a, b, gap in edges]
+    for i, (_name, lane, after, before) in enumerate(demands, len(operations)):
+        lanes[index[lane]].append(i)
+        inequalities.append((index[after], i, 1))
+        if before is not None:
+            inequalities.append((i, index[before], 1))
+    if any(len(lane) > RANKS for lane in lanes):
+        return None
+
+    def matching_possible(lane, domains):
+        occupied = {}
+
+        def augment(variable, seen):
+            for rank in sorted(domains[variable]):
+                if rank in seen:
+                    continue
+                seen.add(rank)
+                if rank not in occupied or augment(occupied[rank], seen):
+                    occupied[rank] = variable
+                    return True
+            return False
+
+        return all(augment(variable, set()) for variable in lane)
+
+    def propagate(domains):
+        changed = True
+        while changed:
+            changed = False
+            for a, b, gap in inequalities:
+                if not domains[a] or not domains[b]:
+                    return False
+                da = {r for r in domains[a] if r + gap <= max(domains[b])}
+                db = {r for r in domains[b] if r >= min(domains[a]) + gap}
+                if not da or not db:
+                    return False
+                changed |= da != domains[a] or db != domains[b]
+                domains[a], domains[b] = da, db
+            for lane in lanes:
+                fixed = [next(iter(domains[v])) for v in lane if len(domains[v]) == 1]
+                if len(set(fixed)) != len(fixed):
+                    return False
+                for v in lane:
+                    if len(domains[v]) > 1:
+                        narrowed = domains[v] - set(fixed)
+                        if not narrowed:
+                            return False
+                        changed |= narrowed != domains[v]
+                        domains[v] = narrowed
+        return all(matching_possible(lane, domains) for lane in lanes)
+
+    def search(domains):
+        if not propagate(domains):
+            return None
+        variable = next((i for i, domain in enumerate(domains) if len(domain) > 1), None)
+        if variable is None:
+            return [next(iter(domain)) for domain in domains]
+        for rank in sorted(domains[variable]):
+            branch = domains.copy()  # propagation replaces sets, never mutates them
+            branch[variable] = {rank}
+            found = search(branch)
+            if found is not None:
+                return found
+        return None
+
+    found = search([set(range(RANKS)) for _ in range(len(operations) + len(demands))])
+    if found is None:
+        return None
+    return (
+        dict(zip(operations, found)),
+        {demand[0]: found[i] for i, demand in enumerate(demands, len(operations))},
+    )
 
 
-def _place_in_interval(
-    placement: Placement,
-    lane: int,
-    lo: int,
-    hi: int,
-    what: str,
-) -> int | None:
-    """Place at the smallest free rank r with lo < r < hi in `lane`."""
-    for rank in range(lo + 1, hi):
-        c = cell(rank, lane)
-        if c not in placement.frozen and c not in placement.placed:
-            placement.placed[c] = what
-            return c
-    return None
+def _locus_demands(payload, analysis):
+    producers, consumers = _producer_consumers(payload)
+    demands = []
+    for rel in payload["relations"]:
+        src, dst, kind = rel["source_id"], rel["target_id"], rel["predicate"]
+        if kind in (ROUTE_PREDICATE, STATE_FEEDS_PREDICATE):
+            lane = dst if kind == ROUTE_PREDICATE else src
+            demands.append((f"rel:{rel['relation_id']}", lane, src, dst))
+        elif kind == INTERFACE_PREDICATE:
+            demands.append((f"rel:{rel['relation_id']}", dst, dst, None))
+    for con in payload["constraints"]:
+        if con["hard"]:
+            owner = _constraint_owner(con, payload, producers, consumers, analysis)
+            if owner is not None:
+                demands.append((f"con:{con['constraint_id']}", owner, owner, None))
+    return demands
 
 
 def allocate(
@@ -315,7 +391,6 @@ def allocate(
     placement = Placement(
         grid=[VOID] * GRID_SIZE,
         frozen=set(),
-        placed={},
         lane_of=lane_of,
         rank_of={},
         role_of={},
@@ -325,7 +400,19 @@ def allocate(
         edge_bindings=[],
         unsatisfied_hazards=[],
     )
-    capacity: dict[str, int] = {}
+    assignment = _joint_assignment(
+        analysis.op_ids,
+        [(e.src, e.dst, e.gap) for e in analysis.edges],
+        _locus_demands(payload, analysis),
+    )
+    if assignment is None:
+        cap = _capacity_record(payload, analysis)
+        return None, _reject_decomposition(
+            R.R_CAP_LOCI,
+            {"reason": "finite_joint_allocation_exhausted"},
+            cap,
+        ), cap
+    rank_of, locus_ranks = assignment
 
     # Lane assignments are recorded first (R6), in sorted operation order,
     # before any locus is placed.
@@ -335,10 +422,10 @@ def allocate(
             "LANE_ASSIGNED",
             R.R_LANE_ALLOC,
             (op_id,),
-            cell(analysis.dist[op_id], lane_of[op_id]),
+            cell(rank_of[op_id], lane_of[op_id]),
             {
                 "lane": lane_of[op_id],
-                "rank_offset": analysis.dist[op_id],
+                "rank_offset": rank_of[op_id],
                 "topo_index": topo_index[op_id],
                 "order_key": [
                     analysis.dist[op_id], topo_index[op_id], op_id
@@ -352,12 +439,11 @@ def allocate(
     for op in sorted(ops, key=lambda o: o["operation_id"]):
         op_id = op["operation_id"]
         lane = lane_of[op_id]
-        rank = analysis.dist[op_id]
+        rank = rank_of[op_id]
         role = _role_token(op_id, n_ops, analysis, payload)
         c = cell(rank, lane)
         placement.grid[c] = role
         placement.frozen.add(c)
-        placement.placed[c] = f"operation:{op_id}"
         placement.rank_of[op_id] = rank
         placement.role_of[op_id] = role
         _act(
@@ -436,24 +522,7 @@ def allocate(
     )
     for rel in route_rels:
         src, dst = rel["source_id"], rel["target_id"]
-        r_src = placement.rank_of[src]
-        r_dst = placement.rank_of[dst]
-        c = _place_in_interval(
-            placement, lane_of[dst], r_src, r_dst, f"route:{rel['relation_id']}"
-        )
-        if c is None:
-            cap = _capacity_record(payload, analysis, lane_of, placement)
-            err = _reject_decomposition(
-                R.R_ROUTE_RANK,
-                {
-                    "relation": rel["relation_id"],
-                    "consumer_lane": lane_of[dst],
-                    "rank_span": [r_src + 1, r_dst - 1],
-                    "reason": "no_free_rank_for_route_in_consumer_lane",
-                },
-                cap,
-            )
-            return None, err, cap
+        c = cell(locus_ranks[f"rel:{rel['relation_id']}"], lane_of[dst])
         placement.frozen.add(c)
         placement.grid[c] = ROUTE
         _act(
@@ -502,25 +571,7 @@ def allocate(
     )
     for rel in state_rels:
         src, dst = rel["source_id"], rel["target_id"]
-        r_src = placement.rank_of[src]
-        r_dst = placement.rank_of[dst]
-        c = _place_in_interval(
-            placement, lane_of[src], r_src, r_dst,
-            f"memory:{rel['relation_id']}",
-        )
-        if c is None:
-            cap = _capacity_record(payload, analysis, lane_of, placement)
-            err = _reject_decomposition(
-                R.R_MEMORY_RANK,
-                {
-                    "relation": rel["relation_id"],
-                    "producer_lane": lane_of[src],
-                    "rank_span": [r_src + 1, r_dst - 1],
-                    "reason": "no_free_rank_for_memory_span_in_producer_lane",
-                },
-                cap,
-            )
-            return None, err, cap
+        c = cell(locus_ranks[f"rel:{rel['relation_id']}"], lane_of[src])
         placement.frozen.add(c)
         placement.grid[c] = MEMORY
         _act(
@@ -612,22 +663,8 @@ def allocate(
     ops_with_constraints: set[str] = set()
     for owner in sorted(constraints_by_op):
         lane = lane_of[owner]
-        r_op = placement.rank_of[owner]
         for con in constraints_by_op[owner]:
-            c = _place_tail(placement, lane, r_op + 1,
-                            f"constraint:{con['constraint_id']}")
-            if c is None:
-                cap = _capacity_record(payload, analysis, lane_of, placement)
-                err = _reject_decomposition(
-                    R.R_CONSTRAINT_RANK,
-                    {
-                        "constraint": con["constraint_id"],
-                        "lane": lane,
-                        "reason": "no_free_rank_after_owner_operation",
-                    },
-                    cap,
-                )
-                return None, err, cap
+            c = cell(locus_ranks[f"con:{con['constraint_id']}"], lane)
             placement.frozen.add(c)
             placement.grid[c] = CONSTRAINT
             ops_with_constraints.add(owner)
@@ -685,21 +722,7 @@ def allocate(
     for rel in interface_rels:
         src_entity, dst_op = rel["source_id"], rel["target_id"]
         lane = lane_of[dst_op]
-        r_op = placement.rank_of[dst_op]
-        c = _place_tail(placement, lane, r_op + 1,
-                        f"interface:{rel['relation_id']}")
-        if c is None:
-            cap = _capacity_record(payload, analysis, lane_of, placement)
-            err = _reject_decomposition(
-                R.R_INTERFACE_RANK,
-                {
-                    "relation": rel["relation_id"],
-                    "lane": lane,
-                    "reason": "no_free_rank_after_bound_operation",
-                },
-                cap,
-            )
-            return None, err, cap
+        c = cell(locus_ranks[f"rel:{rel['relation_id']}"], lane)
         placement.frozen.add(c)
         placement.grid[c] = INTERFACE
         ops_with_interfaces.add(dst_op)
@@ -816,7 +839,6 @@ def allocate(
     # ---- terminal RESOLUTION locus (R13)
     placement.grid[TERMINAL_CELL] = RESOLUTION
     placement.frozen.add(TERMINAL_CELL)
-    placement.placed[TERMINAL_CELL] = "terminal.resolution"
     _act(
         placement,
         "FROZEN_LOCUS_DECLARED",
@@ -925,24 +947,13 @@ def allocate(
             )
         )
 
-    # ---- final per-lane capacity check (R15.CAPACITY_LOCI)
-    cap = _capacity_record(payload, analysis, lane_of, placement)
+    # ---- capacity metadata; injectivity was already proved by joint allocation
+    cap = _capacity_record(payload, analysis)
     per_lane_loci: dict[int, int] = {}
-    for c in sorted(placement.frozen | set(placement.placed)):
+    for c in sorted(placement.frozen):
         per_lane_loci[c % 9] = per_lane_loci.get(c % 9, 0) + 1
     cap["max_loci_per_lane"] = max(per_lane_loci.values(), default=0)
-    cap["loci_total"] = len(placement.frozen | set(placement.placed))
-    if any(v > RANKS for v in per_lane_loci.values()):
-        err = _reject_decomposition(
-            R.R_CAP_LOCI,
-            {
-                "per_lane_loci": {str(k): v for k, v in
-                                  sorted(per_lane_loci.items())},
-                "reason": "lane_exceeds_rank_capacity",
-            },
-            cap,
-        )
-        return None, err, cap
+    cap["loci_total"] = len(placement.frozen)
 
     return placement, None, cap
 
@@ -959,8 +970,6 @@ def _deduped_pairs(analysis: GraphAnalysis):
 def _capacity_record(
     payload: dict[str, Any],
     analysis: GraphAnalysis,
-    lane_of: dict[str, int],
-    placement: Placement,
 ) -> dict[str, int]:
     route_count = sum(
         1 for r in payload["relations"]

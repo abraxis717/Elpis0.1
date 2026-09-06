@@ -7,11 +7,10 @@ import random
 from collections import Counter
 from typing import Callable
 
-import torch
+from elpis.optional_dependencies import require_torch
 
 from .c2r6p1_bridge.contracts import CandidateMoveV1, RefinerInputV1
 from .c2r6p1_bridge import refiners as P1R
-from .c2r7c.structural_trm_model import StructuralTRM64
 from .elpis_p0.contracts import BasisToken
 from .elpis_p0.structural_residual import residual as _authority_residual
 
@@ -39,6 +38,8 @@ def FROZEN_COST_FN(grid, invariants):
 
 
 def _load_model(checkpoint_path: Path):
+    torch = require_torch()
+    from .c2r7c.structural_trm_model import StructuralTRM64
     checkpoint = torch.load(
         checkpoint_path,
         map_location="cpu",
@@ -64,6 +65,7 @@ def _load_model(checkpoint_path: Path):
 
 
 def _grid_tensor(grid):
+    torch = require_torch()
     return torch.tensor(
         [grid],
         dtype=torch.long,
@@ -71,6 +73,7 @@ def _grid_tensor(grid):
 
 
 def _bits_tensor(bits):
+    torch = require_torch()
     return torch.tensor(
         [bits],
         dtype=torch.float32,
@@ -215,6 +218,7 @@ class FrozenTRM0ProposalSource:
         self,
         ri: RefinerInputV1,
     ) -> tuple[int, ...]:
+        torch = require_torch()
         with torch.inference_mode():
             _, proposed_tensor, _ = self.model.propose(
                 _grid_tensor(ri.grid81),

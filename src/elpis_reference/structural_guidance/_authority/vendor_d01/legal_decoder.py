@@ -30,7 +30,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple
 
-import torch
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import torch
 
 # Production Grid81 structural geometry (components/TRMFractalSpine /
 # elpis_p0.structural_residual).

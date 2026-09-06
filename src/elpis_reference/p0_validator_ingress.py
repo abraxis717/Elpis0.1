@@ -14,7 +14,7 @@ Authority constraints:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Protocol, Sequence
 
 from .semantic_refinement import (
@@ -24,6 +24,7 @@ from .semantic_refinement import (
     ReverseTraceIndex,
     StructuralObservationRecord,
     TaskDiagnosticV1,
+    DiagnosticSecurityBindingV1,
     canonical_bytes,
     domain_digest,
     require_digest,
@@ -556,20 +557,12 @@ class P0ValidatorIngressV1:
             )
 
         details_digest = domain_digest(
-            "elpis.p0-validator-failure-details.c2r6cb.v1",
+            "elpis.p0-validator-failure-details.semantic.v2",
             {
                 "artifact_digest": artifact_digest,
                 "artifact_proposal_lineage_digest": (
                     lineage.lineage_digest
                 ),
-                "authority_capability_id": receipt.capability_id,
-                "authority_consumption_digest": (
-                    consumption.consumption_digest
-                ),
-                "authority_instance_id": (
-                    receipt.authority_instance_id
-                ),
-                "authority_receipt_digest": receipt.receipt_digest,
                 "decoder_plan_digest": lineage.decoder_plan_digest,
                 "p0_result_digest": lineage.p0_result_digest,
                 "structural_proposal_digest": (
@@ -589,7 +582,7 @@ class P0ValidatorIngressV1:
             },
         )
 
-        return TaskDiagnosticV1(
+        diagnostic = TaskDiagnosticV1(
             diagnostic_class=TASK_REJECTION,
             task_scope_id=task_scope_id,
             frame_index=frame_index,
@@ -599,6 +592,17 @@ class P0ValidatorIngressV1:
             locus_identity=locus_identity,
             reason_codes=(evidence.code,),
             details_digest=details_digest,
+        )
+        return replace(
+            diagnostic,
+            security_binding=DiagnosticSecurityBindingV1(
+                diagnostic_digest=diagnostic.digest(),
+                authority_instance_id=consumption.authority_instance_id,
+                capability_id=consumption.capability_id,
+                lineage_digest=consumption.lineage_digest,
+                receipt_digest=consumption.receipt_digest,
+                consumption_digest=consumption.consumption_digest,
+            ),
         )
 
 

@@ -1,4 +1,12 @@
-"""Release-integration gate for the frozen Furyan R0 scientific object."""
+"""Release-integration gate for frozen Furyan R0 scientific authority.
+
+The historical production differential remains frozen inside the Furyan
+component as evidence of the allocator defect qualified by Elpis2.1.5.
+
+Current-production allocator behavior is intentionally qualified separately:
+once that defect is repaired, successor releases must not require production
+to continue returning the historical failure.
+"""
 from __future__ import annotations
 
 import hashlib
@@ -23,7 +31,6 @@ import corpus
 import reference
 import baseline
 import mutations
-import production_differential
 
 EXPECTED_FILES = {'components/FuryanLocusOracle/FURYAN_R0_SPEC.md': 'd66adcc26f3c7e99fe16db31074b61f71a84db9813ad222d0131d8fcb25073fd',
  'components/FuryanLocusOracle/FuryanLocusOracle.py': '3aea7f9fb7ee6bf3c1c38b95a12023fd5277670919fba70d06d69c139701825c',
@@ -96,7 +103,7 @@ def test_frozen_scientific_inventory_and_hashes():
     )
 
 
-def test_focused_certificates_mutations_and_production_differential():
+def test_focused_certificates_and_mutations():
     solver = load_solver()
 
     assert guards.focused(solver)
@@ -130,13 +137,13 @@ def test_focused_certificates_mutations_and_production_differential():
     ]
     assert all(x["result"] == "KILLED" for x in records)
 
-    production = production_differential.run(solver)
 
-    assert production["status"] == (
-        "PRODUCTION_ALLOCATOR_COUNTEREXAMPLE_CONFIRMED"
-    )
-    assert production["validator_result"] == "PASS"
-    assert production["shifted_grid_production_residual"] == []
+def test_historical_production_differential_remains_frozen_evidence():
+    """The old production-defect witness remains byte-identical evidence."""
+    rel = "components/FuryanLocusOracle/tests/production_differential.py"
+
+    assert sha(ROOT / rel) == EXPECTED_FILES[rel]
+
 
 
 def test_exhaustive_44005_case_reference_equivalence_and_minimality():

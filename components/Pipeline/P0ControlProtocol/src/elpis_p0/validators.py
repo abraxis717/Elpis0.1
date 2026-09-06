@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from elpis.python_ast_policy import (
+    PYTHON_AST_BANNED_CALLS,
     evaluate_python_ast_policy,
     python_call_name,
 )
@@ -15,14 +16,7 @@ from .contracts import (
 class PythonASTValidator:
     validator_id = "python.ast.v1"
 
-    banned_calls = {
-        "eval",
-        "exec",
-        "compile",
-        "open",
-        "__import__",
-        "breakpoint",
-    }
+    banned_calls = set(PYTHON_AST_BANNED_CALLS)
 
     def validate(
         self,

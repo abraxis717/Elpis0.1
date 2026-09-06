@@ -5,10 +5,22 @@ on:
     branches:
       - main
       - 'ci/**'
+    tags: ['v*', 'Elpis*']
   pull_request:
   workflow_dispatch:
 
 jobs:
+  deterministic-base:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install . pytest
+      - run: python -m pytest tests/test_optional_trm.py
+      - run: python -c "import elpis.contracts, elpis_reference.structural_guidance, sys; assert 'torch' not in sys.modules"
+
   reference-runtime-smoke:
     runs-on: ubuntu-latest
 
@@ -25,7 +37,7 @@ jobs:
       - name: Install package
         run: |
           python -m pip install --upgrade pip
-          python -m pip install . pytest
+          python -m pip install ".[trm]" pytest
 
       - name: Installed package and package-data smoke
         env:

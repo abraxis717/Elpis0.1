@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-import torch
+from elpis.optional_dependencies import require_torch
 
 from .model import (
     FPRM_MAX_ITER,
@@ -32,6 +32,7 @@ def _build_fprm_batch(
     Rows 1..31 are all-zero padding, exactly matching the qualified
     PuzzleDataset/DataLoader behavior.
     """
+    torch = require_torch()
     inputs = torch.zeros(
         (FPRM_RUNTIME_BATCH_SIZE, 81),
         dtype=torch.int32,
@@ -75,6 +76,7 @@ class RefinementResult:
 def _proposal_from_outputs(
     outputs: dict[str, torch.Tensor],
 ) -> tuple[int, ...] | None:
+    torch = require_torch()
     ids = tuple(
         int(value)
         for value in torch.argmax(
@@ -106,6 +108,7 @@ def _fixed_point_done(carry) -> bool:
 
 
 def _forward(model, carry, batch, target_device):
+    torch = require_torch()
     if target_device.type == "cuda":
         with torch.autocast(
             device_type="cuda",
@@ -125,6 +128,7 @@ def _attempt(
     seed: int,
     max_steps: int,
 ) -> tuple[tuple[int, ...] | None, tuple[RefinementStep, ...]]:
+    torch = require_torch()
     with torch.inference_mode(), torch.device(target_device):
         carry = model.initial_carry(batch)
 
@@ -225,6 +229,7 @@ def solve_sudoku(
     device: str = "auto",
     max_steps: int = FPRM_MAX_ITER,
 ) -> RefinementResult:
+    torch = require_torch()
     if len(puzzle) != 81:
         raise ValueError("Sudoku puzzle must contain exactly 81 cells")
 

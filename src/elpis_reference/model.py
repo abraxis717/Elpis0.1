@@ -7,12 +7,7 @@ import shutil
 import sys
 from pathlib import Path
 
-import torch
-from huggingface_hub import hf_hub_download
-
-from .vendor.fprm.models.fixed_point_reasoning.fp_trm_singlez import (
-    FPTinyRecursiveReasoningModelSingleZ_ACTV1,
-)
+from elpis.optional_dependencies import require_torch
 
 
 MODEL_REPO = "fixed-point-reasoners/fprm"
@@ -164,6 +159,7 @@ def _model_config(device: torch.device) -> dict[str, object]:
 
 
 def _device_from_name(name: str) -> torch.device:
+    torch = require_torch()
     if name != "auto":
         return torch.device(name)
 
@@ -178,6 +174,7 @@ def _device_from_name(name: str) -> torch.device:
 
 
 def _extract_state_dict(payload: object) -> dict[str, torch.Tensor]:
+    torch = require_torch()
     if not isinstance(payload, dict):
         raise RuntimeError("FPRM checkpoint root is not a mapping")
 
@@ -216,6 +213,7 @@ def _extract_state_dict(payload: object) -> dict[str, torch.Tensor]:
 
 
 def _load_checkpoint_state(path: Path) -> dict[str, torch.Tensor]:
+    torch = require_torch()
     observed = _sha256(path)
     if observed != MODEL_SHA256:
         raise RuntimeError(
@@ -240,6 +238,8 @@ def _load_checkpoint_state(path: Path) -> dict[str, torch.Tensor]:
 
 
 def _new_model(device: torch.device) -> FPTinyRecursiveReasoningModelSingleZ_ACTV1:
+    torch = require_torch()
+    from .vendor.fprm.models.fixed_point_reasoning.fp_trm_singlez import FPTinyRecursiveReasoningModelSingleZ_ACTV1
     cfg = _model_config(device)
 
     # Match the qualified FPRM evaluator: construct directly on the target
@@ -258,6 +258,7 @@ def _new_model(device: torch.device) -> FPTinyRecursiveReasoningModelSingleZ_ACT
 
 
 def verify_model(path: Path) -> dict[str, object]:
+    torch = require_torch()
     path = Path(path)
 
     if path.name != MODEL_FILENAME:
@@ -301,6 +302,8 @@ def fetch_model(
     cache_dir: Path | None = None,
     force: bool = False,
 ) -> Path:
+    require_torch()
+    from huggingface_hub import hf_hub_download
     cache_dir = Path(cache_dir or default_cache_dir())
     cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -341,6 +344,7 @@ def load_model(
     device: str = "auto",
     seed: int | None = None,
 ) -> tuple[FPTinyRecursiveReasoningModelSingleZ_ACTV1, torch.device]:
+    torch = require_torch()
     path = Path(model_path or default_model_path())
 
     if not path.exists():

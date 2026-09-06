@@ -13,12 +13,11 @@ from enum import Enum
 import hashlib
 import json
 import math
-from typing import Iterable, Sequence
+import sys
+from typing import TYPE_CHECKING, Iterable, Sequence
 
-import torch
-from torch import Tensor
-
-from ..geometry import MATRIX_CELLS
+if TYPE_CHECKING:
+    from torch import Tensor
 
 
 class FrameVerdict(str, Enum):
@@ -48,9 +47,16 @@ def _require_finite_number(name: str, value: float) -> float:
 
 
 def _coerce_history(
-    history: Tensor | Sequence[float] | Iterable[float],
+    history: "Tensor | Sequence[float] | Iterable[float]",
 ) -> tuple[float, ...]:
-    if isinstance(history, Tensor):
+    # Do not import Torch merely to classify ordinary deterministic history.
+    # A real torch.Tensor cannot exist unless torch is already loaded.
+    torch = sys.modules.get("torch")
+
+    if (
+        torch is not None
+        and isinstance(history, torch.Tensor)
+    ):
         tensor = history.detach().to(
             device="cpu",
             dtype=torch.float64,
@@ -74,12 +80,27 @@ def _coerce_history(
     return values
 
 
-def viability(state, capacity_field: Tensor) -> float:
+def viability(state, capacity_field: "Tensor") -> float:
     """Compute the declared scalar ecological viability.
 
     Viability is telemetry only. It does not mutate the ecological state and
     does not directly authorize projector or TRM writes.
+
+    Torch is loaded only when tensor-backed ecological viability is actually
+    requested; importing the deterministic controller does not require it.
     """
+    try:
+        import torch
+    except ModuleNotFoundError as exc:
+        if exc.name != "torch":
+            raise
+        raise ModuleNotFoundError(
+            "Darwinian tensor viability requires the optional Torch runtime.",
+            name="torch",
+        ) from exc
+
+    from ..geometry import MATRIX_CELLS
+
     if capacity_field.shape != (MATRIX_CELLS,):
         raise ValueError(
             f"capacity_field must have shape ({MATRIX_CELLS},)."

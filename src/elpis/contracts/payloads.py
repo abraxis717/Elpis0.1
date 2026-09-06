@@ -5,7 +5,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import numpy as np
-import torch
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import torch
 
 from .codecs.grid_numpy_torch import CELLS, bytes_from_np, np_from_bytes
 from .identity import chi_payload

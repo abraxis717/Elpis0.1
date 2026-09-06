@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import hashlib
 import json
 from typing import Iterable, Mapping, Protocol, Sequence
@@ -60,6 +60,27 @@ def require_reason_codes(values: Sequence[str]) -> tuple[str, ...]:
 
 
 @dataclass(frozen=True)
+class DiagnosticSecurityBindingV1:
+    """Audit link to consumed process-local authority, never a capability.
+
+    Semantic replay serializes TaskDiagnosticV1.payload(); security audit
+    serializes this binding separately. A hash or this record cannot replace
+    receipt membership checks at the controller's one-shot authority boundary.
+    """
+
+    diagnostic_digest: str
+    authority_instance_id: str
+    capability_id: str
+    lineage_digest: str
+    receipt_digest: str
+    consumption_digest: str
+
+    def __post_init__(self) -> None:
+        for name in self.__dataclass_fields__:
+            require_digest(name, getattr(self, name))
+
+
+@dataclass(frozen=True)
 class TaskDiagnosticV1:
     diagnostic_class: str
     task_scope_id: str
@@ -70,6 +91,7 @@ class TaskDiagnosticV1:
     locus_identity: str
     reason_codes: tuple[str, ...]
     details_digest: str
+    security_binding: DiagnosticSecurityBindingV1 | None = field(default=None, compare=False)
 
     def __post_init__(self) -> None:
         if self.diagnostic_class not in (TASK_REJECTION, STRUCTURAL_REJECTION):
@@ -90,7 +112,14 @@ class TaskDiagnosticV1:
             require_digest("locus_identity", self.locus_identity)
         require_reason_codes(self.reason_codes)
 
+        if self.security_binding is not None:
+            if not isinstance(self.security_binding, DiagnosticSecurityBindingV1):
+                raise TypeError("invalid diagnostic security binding")
+            if self.security_binding.diagnostic_digest != self.digest():
+                raise ValueError("security binding belongs to another diagnostic")
+
     def payload(self) -> dict[str, object]:
+        """Deterministic semantic replay payload; security audit is separate."""
         return {
             "details_digest": self.details_digest,
             "diagnostic_class": self.diagnostic_class,

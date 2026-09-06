@@ -10,7 +10,7 @@
 from __future__ import annotations
 
 import numpy as np
-import torch
+from elpis.optional_dependencies import require_torch
 
 SYMBOLS = 10
 CELLS = 81
@@ -61,16 +61,18 @@ def grid9x9(a: np.ndarray) -> np.ndarray:
 
 # ---------------------------------------------------------- named boundaries
 def torch_from_np(g: np.ndarray, *, device: str | torch.device = "cpu",
-                  dtype: torch.dtype = torch.long) -> torch.Tensor:
+                  dtype: torch.dtype | None = None) -> torch.Tensor:
     """np uint8 -> torch (default long, embedding-ready). Copy, no grad."""
+    torch = require_torch()
     b = bytes_from_np(g)
     B = len(b) // CELLS
     t = torch.frombuffer(bytearray(b), dtype=torch.uint8).reshape(B, CELLS)
-    return t.to(device=device, dtype=dtype, copy=True).requires_grad_(False)
+    return t.to(device=device, dtype=torch.long if dtype is None else dtype, copy=True).requires_grad_(False)
 
 
 def np_from_torch(t: torch.Tensor) -> np.ndarray:
     """torch -> np uint8[B,81]. CPU, detached, copied, range-validated."""
+    torch = require_torch()
     if t.dtype not in (torch.uint8, torch.int32, torch.int64):
         raise GridCodecError(f"symbol tensor dtype must be integral, got {t.dtype}")
     if t.ndim == 1:
@@ -89,6 +91,7 @@ def project_logits(logits: torch.Tensor) -> torch.Tensor:
     """THE single named projection [B,81,10] -> [B,81] (long).
     Deterministic tie-break: torch.argmax returns the first maximal index.
     Grid81 argmax is discontinuous: contraction claims stop here (F0 §6)."""
+    torch = require_torch()
     if logits.ndim != 3 or logits.shape[1:] != (CELLS, SYMBOLS):
         raise GridCodecError(f"logits must be [B,81,10], got {tuple(logits.shape)}")
     return torch.argmax(logits.detach(), dim=-1)
