@@ -2,7 +2,7 @@
 
 > **Structural reasoning without giving the learned model the keys.**
 
-**Release line: Elpis2.1.5**
+**Release line: Elpis2.1.6**
 Deterministic structural AI research with explicit topology, bounded learned proposals, digest-bound authority, and falsifiable runtime claims.
 
 Elpis is an experiment in a simple architectural idea:
@@ -54,7 +54,7 @@ That separation is the research surface.
 - **Frozen structural TRM guidance** — works when the qualified checkpoint is explicitly supplied; admission remains opt-in.
 - **Resolved structural topology and materialization** — bounded downstream contracts with explicit authority transitions.
 - **Validated-source runtime** — deterministic source construction and static validation without execution authority.
-- **Canonical Python AST policy** — rejects malformed syntax, imports, scope mutation, and dangerous calls such as `eval`, `exec`, `compile`, `open`, `__import__`, and `breakpoint`.
+- **Canonical Python AST policy** — rejects malformed syntax, imports, scope mutation, direct banned calls, references to configured banned call names, selected dynamic built-in escape hatches, and dunder-attribute introspection; this is a static policy boundary, not an execution sandbox.
 - **Public FPRM reference model** — pinned model bootstrap, verification, strict load, and real CPU Sudoku inference.
 - **FuryanLocusOracle R0** — independently qualified finite rank/locus satisfiability oracle with certificate validation, exhaustive reference cross-checking, mutation qualification, and deterministic result identity.
 - **Bounded feedback / RELEASE machinery** — failures can release pre-existing structural support without granting arbitrary authority to invent new structure.
@@ -63,7 +63,7 @@ That separation is the research surface.
 
 - Structural TRM guidance is **not enabled by default**.
 - The structural TRM checkpoint is qualified, but does **not yet** have the same public bootstrap path as the FPRM Sudoku model.
-- The current C2R6-P0 structural-guidance allocator is known to be incomplete for a qualified ROUTE/`state_feeds` subset: it can request decomposition where a one-Grid81 placement exists. Elpis2.1.5 ships the independent oracle and regression evidence; it does **not** repair that allocator.
+- The current C2R6-P0 structural-guidance allocator is known to be incomplete for a qualified ROUTE/`state_feeds` subset: it can request decomposition where a one-Grid81 placement exists. Elpis2.1.5 introduced the independent oracle and regression evidence; the allocator remains unrepaired in Elpis2.1.6.
 - Receipt verification remains **process-local**; no cross-process or asymmetric attestation claim is made.
 - Static AST validity means **policy-valid source**, not functional correctness.
 

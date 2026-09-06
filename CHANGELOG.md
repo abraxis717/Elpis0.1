@@ -1,3 +1,20 @@
+## Elpis2.1.6 — AST Policy and Release-Integrity Hardening
+
+- Harden the canonical Python AST policy against five reproduced banned-call
+  reference/introspection bypass classes while preserving the existing
+  `BANNED_CALL` external decision code.
+- Add VERSION-bound canonical declaration checks for `README.md` and
+  `RELEASE_NOTES.md`; absent, duplicate, or stale declarations fail closed.
+- Expand the release mutation suite from 20 to 22 intended-reason cases with
+  independent README and RELEASE_NOTES declaration-drift mutations.
+- Replace the stale canonical legacy release notes with the actual successor
+  release notes.
+- Advance the sealer's historical published-version belt through Elpis2.1.5
+  without rewriting the immutable Elpis2.1.5 manifest.
+- Preserve FuryanLocusOracle R0, C2R6-P0 allocator behavior, Grid81 semantics,
+  runtime authority, TRM/Projector authority, model checkpoints, HACF behavior,
+  and receipt semantics. No performance claim.
+
 ## Elpis2.1.5 — Furyan Locus Oracle R0
 
 - Ship the exact independently qualified FuryanLocusOracle R0 scientific
