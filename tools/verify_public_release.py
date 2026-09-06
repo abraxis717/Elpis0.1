@@ -238,6 +238,62 @@ def check_manifest():
     return not errors, errors
 
 
+_DECLARED_TEXT_VERSION_PATTERNS = {
+    "README.md": re.compile(
+        r"(?m)^\*\*Release line: Elpis"
+        r"([0-9]+\.[0-9]+\.[0-9]+)"
+        r"\*\*[ \t]*$"
+    ),
+    "RELEASE_NOTES.md": re.compile(
+        r"(?m)^## Version: v"
+        r"([0-9]+\.[0-9]+\.[0-9]+)"
+        r"[ \t]*$"
+    ),
+}
+
+
+def check_declared_text_version():
+    errors = []
+
+    for rel, pattern in (
+        _DECLARED_TEXT_VERSION_PATTERNS.items()
+    ):
+        path = REPO / rel
+
+        try:
+            text = path.read_text(
+                encoding="utf-8",
+                errors="strict",
+            )
+        except (OSError, UnicodeError) as exc:
+            errors.append(
+                "DECLARED_TEXT_VERSION_INVALID: "
+                f"{rel}: {exc}"
+            )
+            continue
+
+        matches = pattern.findall(text)
+
+        if len(matches) != 1:
+            errors.append(
+                "DECLARED_TEXT_VERSION_INVALID: "
+                f"{rel}: declarations={len(matches)}"
+            )
+            continue
+
+        declared = matches[0]
+
+        if declared != RELEASE_VERSION:
+            errors.append(
+                "DECLARED_TEXT_VERSION_MISMATCH: "
+                f"{rel}: "
+                f"declared={declared} "
+                f"expected={RELEASE_VERSION}"
+            )
+
+    return not errors, errors
+
+
 def check_package():
     errors = []
     data = tomllib.loads(
@@ -636,6 +692,7 @@ def main() -> int:
     checks = (
         ("Elpis2 manifest", check_manifest),
         ("Package identity", check_package),
+        ("Declared-text version", check_declared_text_version),
         ("Runtime boundary", check_runtime_boundary),
         ("Portable public boundary", check_public_boundary),
         ("Secret/private-path scan", check_private_data),

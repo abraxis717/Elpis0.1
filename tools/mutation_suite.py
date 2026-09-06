@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -270,7 +271,92 @@ def m14_symlink_escape(root: Path) -> None:
     (root / "escape-link").symlink_to(root.parent / "outside")
 
 
+def m15_readme_declared_release_drift(root: Path) -> None:
+    """Declared README release identity must agree with VERSION.
+
+    Resealing deliberately removes manifest digest drift as a confounder.
+    The verifier must reject the semantically inconsistent declaration.
+    """
+    rel = "README.md"
+    target = root / rel
+    version = (root / "VERSION").read_text().strip()
+
+    stale = (
+        "0.0.0"
+        if version != "0.0.0"
+        else "9.9.9"
+    )
+
+    pattern = (
+        rf"(?m)^\*\*Release line: "
+        rf"Elpis{re.escape(version)}\*\*$"
+    )
+
+    mutated, count = re.subn(
+        pattern,
+        f"**Release line: Elpis{stale}**",
+        target.read_text(),
+        count=1,
+    )
+
+    if count != 1:
+        raise AssertionError(
+            "canonical README release declaration "
+            f"not found for VERSION={version}"
+        )
+
+    target.write_text(mutated)
+    _reseal(root, rel)
+
+
+def m16_release_notes_declared_version_drift(
+    root: Path,
+) -> None:
+    """Canonical RELEASE_NOTES.md version must agree with VERSION.
+
+    Match the declaration grammar itself rather than merely searching for
+    the current version as an arbitrary substring elsewhere in the file.
+    """
+    rel = "RELEASE_NOTES.md"
+    target = root / rel
+
+    stale = "0.0.0"
+
+    pattern = (
+        r"(?m)^## Version: v"
+        r"[0-9]+\.[0-9]+\.[0-9]+\s*$"
+    )
+
+    mutated, count = re.subn(
+        pattern,
+        f"## Version: v{stale}",
+        target.read_text(),
+        count=1,
+    )
+
+    if count != 1:
+        raise AssertionError(
+            "canonical RELEASE_NOTES.md "
+            "version declaration not found"
+        )
+
+    target.write_text(mutated)
+    _reseal(root, rel)
+
+
 CASES: tuple[tuple[str, object, int, str], ...] = (
+    (
+        "M15 README declared release drift",
+        m15_readme_declared_release_drift,
+        1,
+        "DECLARED_TEXT_VERSION_MISMATCH: README.md",
+    ),
+    (
+        "M16 RELEASE_NOTES declared version drift",
+        m16_release_notes_declared_version_drift,
+        1,
+        "DECLARED_TEXT_VERSION_MISMATCH: RELEASE_NOTES.md",
+    ),
     ("M12 new finding kind in allowlisted fixture",
      m12_new_finding_kind, 1, "SECRET:private key"),
     ("M13 empty cache directory",
