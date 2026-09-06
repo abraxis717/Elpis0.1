@@ -38,19 +38,18 @@ The working release therefore already contains a real structural system and real
 
 ## Quick start
 
-### Install the published wheel
+### Install from a release source checkout
 
 The PyPI project name `elpis` is currently owned by an unrelated automatic-speech-recognition project. Do not use `pip install elpis` to install this repository.
 
-Install the Elpis2.0.0 GitHub release wheel instead:
+From a pristine checkout of the release source, verify it before installation:
 
 ```bash
+python tools/verify_public_release.py
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-
-python -m pip install \
-  https://github.com/abraxis717/Elpis0.1/releases/download/Elpis2.0.0/elpis-2.0.0-py3-none-any.whl
+python -m pip install .
 ```
 
 Fetch the pinned public FPRM checkpoint:
@@ -337,11 +336,11 @@ python tools/verify_public_release.py
 python tools/ci_secret_scan.py .
 ```
 
-The release verifier should reject inconsistent tracked-file identities or malformed distribution authority.
+The release verifier rejects inconsistent file identities, malformed authority, undeclared files, ephemeral build/cache directories, and non-UTF-8 declared text. Run it in a pristine clone or export before installing, fetching models, or building inside that tree. See `RELEASE_NOTES_Elpis2.1.3.md` for the breaking capability-scope change.
 
 ## 3.2 Real model integrity
 
-From an installed Elpis2.0.0 wheel:
+From an installation of this source tree:
 
 ```bash
 elpis model fetch
@@ -496,7 +495,7 @@ Persistent governance, persistent memory authority, generalized semantic re-proj
 
 # 7. Release, provenance, and license
 
-The current public release is `Elpis2.0.0`.
+This source tree targets `Elpis2.1.3`. Publication is established by the matching immutable tag and GitHub Release.
 
 The release tag is intentionally immutable. `main` may contain post-release packaging, testing, and documentation improvements while the tagged release remains fixed.
 

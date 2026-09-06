@@ -1,3 +1,16 @@
+## Elpis2.1.3 — Fail-closed runtime, capability, and release guards
+
+- **BREAKING:** capability issuance requires explicit non-empty scope; the old
+  empty default provided effectively unbounded authority.
+- Recompute process-local receipt HMACs from retained payloads. Retention defaults
+  to 4096 and rejects transactionally with `ReceiptRetentionExhausted`.
+- Veto unresolved/outside-canonical dependencies and absent R0 qualification.
+- Reject ephemeral release trees and non-UTF-8 declared text. Bind scanner
+  exceptions to exact findings and counts; enforce immutable sealing identities.
+- Add diagnostic-asserted mutation and parity regressions to push/release CI.
+- Qualification and provenance: `RELEASE_NOTES_Elpis2.1.3.md`.
+- No cross-process verification or performance claim.
+
 ## Elpis2.1.2 — Reference-runtime CI qualification repair
 
 Elpis2.1.2 is a mechanical successor to Elpis2.1.1.
