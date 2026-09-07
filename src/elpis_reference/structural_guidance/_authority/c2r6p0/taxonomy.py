@@ -12,10 +12,10 @@ SUPPORTED_ENTITY_KINDS = frozenset(
 )
 
 # Dependency kinds. "precedes" is strict ordering (PRECEDES invariant).
-# "state_feeds" is legitimate state/memory recurrence (MEMORY_SPAN); the
-# authority's dependency DAG stays acyclic, so recurrence cycles are
-# expressed through relations, not raw dependencies.
-SUPPORTED_DEPENDENCY_KINDS = frozenset({"precedes", "state_feeds"})
+# state_feeds carries MEMORY_SPAN semantics and is therefore accepted only as
+# a relation, where the projector allocates and validates an explicit MEMORY
+# witness. Treating it as a raw dependency would silently reduce it to ordering.
+SUPPORTED_DEPENDENCY_KINDS = frozenset({"precedes"})
 
 # Relation predicates carrying structural meaning.
 ROUTE_PREDICATE = "route"

@@ -75,6 +75,17 @@ INVARIANT_KINDS = frozenset({
     "TERMINAL_RESOLUTION",
 })
 
+INVARIANT_ARITY = {
+    "LANE_SINGLE_OCCUPANCY": 1,
+    "PRECEDES": 2,
+    "CROSS_LANE_ROUTE": 2,
+    "MEMORY_SPAN": 2,
+    "MUTATION_HAZARD": 3,
+    "CONSTRAINT_AFTER": 1,
+    "INTERFACE_TERMINAL": 1,
+    "TERMINAL_RESOLUTION": 0,
+}
+
 
 class StructuralSchemaError(ValueError):
     """A structural schema or grid violates its contract."""
@@ -143,6 +154,12 @@ class StructuralInvariantV1:
     def __post_init__(self) -> None:
         if self.kind not in INVARIANT_KINDS:
             raise StructuralSchemaError(f"unknown invariant kind {self.kind!r}")
+        expected_arity = INVARIANT_ARITY[self.kind]
+        if len(self.lanes) != expected_arity:
+            raise StructuralSchemaError(
+                f"invariant {self.kind!r} requires {expected_arity} lane(s); "
+                f"got {len(self.lanes)}"
+            )
         for lane in self.lanes:
             if not 0 <= lane < LANES:
                 raise StructuralSchemaError(f"lane {lane} outside 0..{LANES - 1}")
@@ -347,12 +364,28 @@ def is_resolved(grid: tuple[int, ...], schema: StructuralSchemaV1) -> bool:
     )
 
 
-def halt_score(grid: tuple[int, ...], schema: StructuralSchemaV1) -> float:
-    """Residual-based. Never VOID-count-based."""
+def residual_clearance_score(
+    grid: tuple[int, ...],
+    schema: StructuralSchemaV1,
+) -> float:
+    """Fraction of declared invariants currently clear.
+
+    This metric intentionally excludes materialisability and, when invariants
+    exist, quiescence. Therefore a value of 1.0 is not a resolution predicate;
+    callers requiring terminal resolution must use ``is_resolved``.
+    """
     total = len(schema.invariants)
     if total == 0:
         return 1.0 if quiescent(grid) else 0.0
     return 1.0 - len(residual(grid, schema.invariants)) / total
+
+
+def halt_score(grid: tuple[int, ...], schema: StructuralSchemaV1) -> float:
+    """Legacy compatibility alias for ``residual_clearance_score``.
+
+    A score of 1.0 does not imply ``is_resolved(grid, schema)``.
+    """
+    return residual_clearance_score(grid, schema)
 
 
 def validate_transition(
@@ -398,7 +431,13 @@ def capacity_requirements(
     cross_lane_edges: int,
     memory_spans: int,
 ) -> tuple[int, int, int]:
-    """Lower bounds. Counts only; never places."""
+    """Conservative diagnostic capacity estimate; never an infeasibility proof.
+
+    The weighted schedule already carries rank-gap information, while
+    independent auxiliary obligations may share rank levels. Consequently this
+    historical count helper must not be interpreted as a mathematical lower
+    bound or used as a ``DECOMPOSITION_REQUIRED`` certificate.
+    """
     lanes_required = lane_count
     ranks_required = longest_chain + max(cross_lane_edges, memory_spans)
     loci_required = lane_count * max(1, ranks_required)

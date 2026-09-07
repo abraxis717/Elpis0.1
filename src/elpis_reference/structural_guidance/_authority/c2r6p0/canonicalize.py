@@ -334,6 +334,7 @@ def _check_relations(
         MUTATES_PREDICATE,
         ROUTE_PREDICATE,
         STATE_FEEDS_PREDICATE,
+        STRUCTURAL_RELATION_PREDICATES,
     )
 
     op_ids = {o["operation_id"] for o in payload["operations"]}
@@ -345,6 +346,18 @@ def _check_relations(
         pred = rel["predicate"]
         src, tgt = rel["source_id"], rel["target_id"]
         rid = rel["relation_id"]
+        if pred in STRUCTURAL_RELATION_PREDICATES and rel["negated"]:
+            return _reject(
+                ProjectionStatus.UNSUPPORTED_SEMANTIC_SHAPE,
+                ErrorCode.UNSUPPORTED_SHAPE,
+                R.R_UNSUPPORTED_KIND,
+                {
+                    "relation": rid,
+                    "predicate": pred,
+                    "reason": "negated_structural_relation_unsupported",
+                },
+                rid,
+            )
         if pred == ROUTE_PREDICATE:
             if src not in op_ids or tgt not in op_ids:
                 return _reject(

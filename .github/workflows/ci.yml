@@ -117,6 +117,97 @@ jobs:
           fi
           echo "Unresolved symbols: 0"
 
+  hacf-sanitizers:
+    name: HACF ASAN+UBSAN native and ctypes boundary
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONNOUSERSITE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install sanitizer qualification dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libsqlite3-dev
+          python -m pip install pytest==9.0.2 numpy
+      - name: Resolve sanitizer runtimes
+        run: |
+          ASAN_LIB="$(gcc -print-file-name=libasan.so)"
+          UBSAN_LIB="$(gcc -print-file-name=libubsan.so)"
+          test -f "$ASAN_LIB"
+          test -f "$UBSAN_LIB"
+          echo "ASAN_LIB=$ASAN_LIB" >> "$GITHUB_ENV"
+          echo "UBSAN_LIB=$UBSAN_LIB" >> "$GITHUB_ENV"
+      - name: Build HACF with ASAN and UBSAN
+        run: |
+          cmake \
+            -S native/hacf \
+            -B /tmp/elpis-hacf-sanitized \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+            -DELPIS_ENABLE_ASAN=ON \
+            -DELPIS_ENABLE_UBSAN=ON \
+            -DELPIS_ENABLE_TSAN=OFF
+          cmake --build /tmp/elpis-hacf-sanitized --parallel
+      - name: Run native HACF sanitizer suite with leak detection
+        env:
+          ASAN_OPTIONS: halt_on_error=1:abort_on_error=1:detect_leaks=1:strict_string_checks=1:check_initialization_order=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+        run: |
+          LD_PRELOAD="$ASAN_LIB:$UBSAN_LIB" \
+            ctest \
+              --test-dir /tmp/elpis-hacf-sanitized \
+              --output-on-failure
+      - name: Build sanitized R1 ctypes wrapper
+        run: |
+          SAN_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls"
+          cmake \
+            -S native/hacf_bridge \
+            -B /tmp/elpis-hacf-wrapper-sanitized \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DHACF_INCLUDE_DIR="$GITHUB_WORKSPACE/native/hacf/include" \
+            -DHACF_LIB_DIR=/tmp/elpis-hacf-sanitized \
+            -DCMAKE_C_FLAGS="$SAN_FLAGS" \
+            -DCMAKE_CXX_FLAGS="$SAN_FLAGS" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-fsanitize=address,undefined"
+          cmake --build /tmp/elpis-hacf-wrapper-sanitized --parallel
+          ldd /tmp/elpis-hacf-wrapper-sanitized/libr1_hacf_wrapper.so \
+            | tee /tmp/elpis-hacf-wrapper-ldd.txt
+          grep -Eq 'libasan\.so' /tmp/elpis-hacf-wrapper-ldd.txt
+          grep -Eq 'libubsan\.so' /tmp/elpis-hacf-wrapper-ldd.txt
+      - name: Load ctypes wrapper under ASAN and UBSAN
+        env:
+          ASAN_OPTIONS: halt_on_error=1:abort_on_error=1:detect_leaks=0:strict_string_checks=1:check_initialization_order=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+        run: |
+          LD_PRELOAD="$ASAN_LIB:$UBSAN_LIB" \
+            python -c "import ctypes; ctypes.CDLL('/tmp/elpis-hacf-wrapper-sanitized/libr1_hacf_wrapper.so'); print('SANITIZED WRAPPER LOAD: OK')"
+      - name: Run real R1 ctypes retrieval boundary under ASAN and UBSAN
+        env:
+          ASAN_OPTIONS: halt_on_error=1:abort_on_error=1:detect_leaks=0:strict_string_checks=1:check_initialization_order=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+          HACF_WRAPPER_LIB: /tmp/elpis-hacf-wrapper-sanitized/libr1_hacf_wrapper.so
+          PYTHONPATH: runtime/R1/src:src:components:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src
+        run: |
+          LD_PRELOAD="$ASAN_LIB:$UBSAN_LIB" \
+            python -m pytest \
+              -q -p no:cacheprovider \
+              runtime/R1/tests/test_r1.py::TestHacfRetrieval
+      - name: Run full R1 suite under sanitized wrapper
+        env:
+          ASAN_OPTIONS: halt_on_error=1:abort_on_error=1:detect_leaks=0:strict_string_checks=1:check_initialization_order=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+          HACF_WRAPPER_LIB: /tmp/elpis-hacf-wrapper-sanitized/libr1_hacf_wrapper.so
+          PYTHONPATH: runtime/R1/src:src:components:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src
+        run: |
+          LD_PRELOAD="$ASAN_LIB:$UBSAN_LIB" \
+            python -m pytest \
+              -q -p no:cacheprovider \
+              runtime/R1/tests/test_r1.py
+
   runtime-r1:
     name: Runtime R1 suite
     runs-on: ubuntu-latest
