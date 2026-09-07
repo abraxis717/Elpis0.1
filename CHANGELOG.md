@@ -1,3 +1,22 @@
+## Elpis2.1.9 — Structural Correctness and Runtime Boundary Hardening
+
+- Reject negative structural relations as unsupported semantic shapes rather
+  than silently converting them into positive structural obligations.
+- Restrict dependency scheduling to `precedes`; relation-form `state_feeds`
+  remains the memory-span representation.
+- Enforce exact structural-invariant arity and clarify residual-clearance and
+  capacity-diagnostic contracts.
+- Add permanent ASAN+UBSAN qualification for HACF and the real Python/ctypes
+  Runtime R1 boundary.
+- Replace the vacuous R0 authority-integrity check with exact bounded authority
+  invariants and negative regressions.
+- Retire the stale generic public manifest while preserving every versioned
+  historical release manifest.
+- Block `socket.create_connection()` hostnames before name resolution and bind
+  the airgap/subprocess policy regressions into hosted CI.
+- Preserve FuryanLocusOracle R0 byte-for-byte as frozen independent evidence.
+- Generated-source execution authority remains false. No performance claim.
+
 ## Elpis2.1.8 — Deterministic Runtime Hardening
 
 - Make canonical Python AST restrictions non-subtractive and close the

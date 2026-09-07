@@ -10,32 +10,32 @@ The current repository contains a qualified structural-guidance runtime and a se
 
 Elpis is therefore presented as a falsifiable systems-research program rather than a general intelligence claim. It does not claim solved alignment, general Grid81 satisfiability, arbitrary autonomous execution, general semantic correctness, cross-process attestation, autonomous implementation synthesis, AGI, or ASI. The intended standard is narrower: each mechanism should state the authority it possesses, the evidence that qualifies it, the conditions under which it fails, and the observations that would falsify the claim being made.
 
-### Latest Release — Elpis2.1.8
+### Latest Release — Elpis2.1.9
 
-**Release line: Elpis2.1.8**
+**Release line: Elpis2.1.9**
 
-Elpis2.1.8 is a deterministic-runtime and correctness successor to
-Elpis2.1.7.
+Elpis2.1.9 is a structural-correctness and runtime-boundary successor to
+Elpis2.1.8.
 
-- Makes canonical AST restrictions non-subtractive and closes additional
-  introspection-based restricted-callable recovery paths while preserving the
-  static-policy boundary.
-- Reduces the base dependency surface to NumPy and SciPy; Torch and
-  model-oriented dependencies are explicit through the `trm` extra.
-- Replaces incomplete C2R6-P0 greedy rank/locus placement with deterministic
-  joint finite-domain allocation for the audited Furyan subset.
-- Preserves the frozen FuryanLocusOracle R0 object and qualifies current
-  production against all 44,005 canonical core cases.
-- Separates deterministic semantic/replay identity from ephemeral
-  process-local security identity.
-- Adds a machine-readable non-executing functional-evaluation boundary.
-- Qualifies both `v*` and `Elpis*` release tags while retaining a dedicated
-  Torch-free deterministic-base qualification.
+- Rejects negative structural relations instead of silently converting them
+  into positive obligations.
+- Restricts dependency scheduling to `precedes`; relation-form `state_feeds`
+  remains the memory-span representation.
+- Enforces exact structural-invariant arity and clarifies residual-clearance
+  and capacity-diagnostic contracts.
+- Permanently gates HACF and the real Python/ctypes boundary under ASAN+UBSAN.
+- Replaces the vacuous R0 authority-integrity check with executable bounded
+  authority invariants and negative regressions.
+- Retires the stale generic public manifest while preserving all versioned
+  historical release manifests.
+- Blocks `socket.create_connection()` hostnames before name resolution and
+  binds the airgap policy into hosted CI.
+- Preserves FuryanLocusOracle R0 byte-for-byte as independent frozen evidence.
 
 Generated source remains non-executable and authority-zero at the qualified
 terminal boundary. No performance claim is made.
 
-See [`RELEASE_NOTES_Elpis2.1.8.md`](RELEASE_NOTES_Elpis2.1.8.md) for the exact
+See [`RELEASE_NOTES_Elpis2.1.9.md`](RELEASE_NOTES_Elpis2.1.9.md) for the exact
 release scope and qualification boundary.
 
 ## 1. Research Question and Scope
