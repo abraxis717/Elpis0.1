@@ -278,6 +278,45 @@ class TestAuthorityBoundaries:
         from elpis_runtime_r0.composition import verify_authority_integrity
         assert verify_authority_integrity()
 
+    def test_authority_integrity_rejects_forbidden_claim(
+        self, monkeypatch
+    ):
+        import elpis_runtime_r0.composition as composition
+
+        monkeypatch.setattr(
+            composition,
+            "P0_PROJECTOR_AUTHORITY",
+            "semantic_truth",
+        )
+
+        assert composition.verify_authority_integrity() is False
+
+    def test_authority_integrity_rejects_unapproved_drift(
+        self, monkeypatch
+    ):
+        import elpis_runtime_r0.composition as composition
+
+        monkeypatch.setattr(
+            composition,
+            "P0_PROJECTOR_AUTHORITY",
+            "structural_description_and_execution",
+        )
+
+        assert composition.verify_authority_integrity() is False
+
+    def test_authority_integrity_rejects_runtime_admission(
+        self, monkeypatch
+    ):
+        import elpis_runtime_r0.composition as composition
+
+        monkeypatch.setattr(
+            composition,
+            "RUNTIME_ADMISSION",
+            True,
+        )
+
+        assert composition.verify_authority_integrity() is False
+
     def test_runtime_admission_never_true(self):
         from elpis_runtime_r0.composition import RUNTIME_ADMISSION
         assert RUNTIME_ADMISSION is False

@@ -141,8 +141,49 @@ def instrument_airgap() -> None:
 
         return _original_connect_ex(self, address, *args)
 
+    def _guarded_create_connection(address, *args, **kwargs):
+        host, port = address
+
+        try:
+            ip = ipaddress.ip_address(host)
+        except (TypeError, ValueError):
+            _audit_entry(
+                "create_connection",
+                socket.AF_INET,
+                (host, port),
+                False,
+                "DNS hostname not permitted",
+            )
+            raise AirgapViolationError(
+                f"DNS hostname blocked before resolution: {host}"
+            )
+
+        family = (
+            socket.AF_INET
+            if isinstance(ip, ipaddress.IPv4Address)
+            else socket.AF_INET6
+        )
+        normalized = (str(ip), port)
+        allowed = _is_allowed_destination(family, normalized)
+
+        _audit_entry(
+            "create_connection",
+            family,
+            normalized,
+            allowed,
+            _get_stack_summary(),
+        )
+
+        if not allowed:
+            raise AirgapViolationError(
+                f"Blocked create_connection to {host}:{port}"
+            )
+
+        return _original_create_connection(address, *args, **kwargs)
+
     socket.socket.connect = _guarded_connect
     socket.socket.connect_ex = _guarded_connect_ex
+    socket.create_connection = _guarded_create_connection
 
     # Guard asyncio.open_connection if available
     global _original_asyncio_open_connection
@@ -204,6 +245,7 @@ def uninstrument_airgap() -> None:
 
     socket.socket.connect = _original_connect
     socket.socket.connect_ex = _original_connect_ex
+    socket.create_connection = _original_create_connection
 
     if _original_asyncio_open_connection is not None:
         try:

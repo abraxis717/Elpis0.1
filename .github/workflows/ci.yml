@@ -54,6 +54,27 @@ jobs:
           PYTHONPATH=components/Grid81StructuralSemantics/src:components/Grid81TypedProjectionCompiler/src:components/Grid81StructuralGroupProjectionCompiler/src:components/Grid81DeterministicStructuralAdjudicator/src
           pytest components/Grid81StructuralSemantics/tests/ -v
 
+  cnum-py-cortex-airgap:
+    name: CNumPyCortex airgap policy
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONNOUSERSITE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install airgap test dependencies
+        run: python -m pip install pytest==9.0.2
+      - name: Run airgap and subprocess policy regressions
+        run: |
+          PYTHONPATH=components/CNumPyCortex/src \
+            python -m pytest \
+              -q -p no:cacheprovider \
+              components/CNumPyCortex/tests/test_airgap.py \
+              components/CNumPyCortex/tests/test_subprocess_policy.py
+
   runtime-r0:
     name: Runtime R0 suite
     runs-on: ubuntu-latest
