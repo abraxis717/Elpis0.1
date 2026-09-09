@@ -1,0 +1,23 @@
+{
+  "continuous_optimization": false,
+  "e2_authorized": false,
+  "implementation_authorized_in_this_task": false,
+  "inputs": [
+    "exact frozen sidecar Theta",
+    "validated participation state",
+    "matching primitive/d/N/sidecar/gauge/pre-state identity bindings"
+  ],
+  "ontology_id": "MICROSCOPIC_COLUMN_PARTICIPATION_MASK_R0",
+  "output": "exactly one W_out in R^(6 x N) in the bound operational gauge",
+  "primitive_preservation": "d, N, phi and raw-sum forward law are unchanged",
+  "randomness": false,
+  "restoration": "RESTORE returns the exact frozen Theta[:,i] bytes. Random initialization, interpolation, optimization, reconstruction, or learned recovery is forbidden.",
+  "rule": {
+    "ACTIVE": "copy exact frozen Theta[:,i] bytes",
+    "DISABLED": "emit six exact binary64 +0.0 values",
+    "FROZEN_ZERO": "retain bound exact zero column; no edit is admitted"
+  },
+  "schema": "elpis.ecs.structural-authority-r0.materialization-contract.v1",
+  "scientific_observation_as_edit_identity": false,
+  "width_preservation": "N columns remain physically present; no column is added or removed"
+}

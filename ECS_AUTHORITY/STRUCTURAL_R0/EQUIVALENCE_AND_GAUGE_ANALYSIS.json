@@ -1,0 +1,43 @@
+{
+  "canonicalization": {
+    "canonical_order": "lexicographic full_column_bytes, then status_code",
+    "collision_rule": "full bytes define equality/order; the SHA-256 digest is an identifier for the serialization, not the equality oracle",
+    "column_key": "the complete 6-scalar frozen column byte string, not a hash",
+    "equivalence_digest": "SHA-256 of the canonical serialization",
+    "scalar_encoding": "Canonical sidecar binding requires finite IEEE-754 binary64 values serialized little-endian. No rounding, normalization, reordering, or scientific transformation is permitted.",
+    "serialization": "domain-separated, length-delimited sequence containing ontology/version, primitive digest, d, N, then sorted state-pair records with multiplicity",
+    "state_pair": "(full_column_bytes,status_code)",
+    "status_codes": {
+      "ACTIVE": 1,
+      "DISABLED": 0,
+      "FROZEN_ZERO": 2
+    }
+  },
+  "coordinate_basis": {
+    "selected_axis_level_editing": false,
+    "semantic_axis_labels": false,
+    "status": "FROZEN_OPERATIONAL_NUMERIC_BASIS_ONLY"
+  },
+  "equivalence_relation": {
+    "definition": "(Theta,a) is equivalent to (Theta P, P^-1 a) for any column-permutation matrix P; equivalently, the multiset of pairs (full frozen column bytes, participation status) is identical.",
+    "duplicate_columns": "Permutations of byte-identical frozen columns are gauge-equivalent. The canonical state therefore uses multiplicities of (full-column-bytes,status) pairs."
+  },
+  "grid81_dependency": false,
+  "intrinsic_column_identity": false,
+  "operational_gauge": {
+    "definition": "At candidate binding time, the exact ordered frozen sidecar Theta supplies operational slots 0..N-1. These slots are addresses within one bound representation, not intrinsic semantic entities.",
+    "id": "BOUND_ARRAY_COLUMN_ORDER_G0",
+    "required_bindings": [
+      "primitive_contract_digest",
+      "d",
+      "N",
+      "ordered_frozen_sidecar_digest",
+      "pre_state_equivalence_digest",
+      "ontology_id",
+      "ontology_version"
+    ]
+  },
+  "s3_in_edit_identity": false,
+  "schema": "elpis.ecs.structural-authority-r0.equivalence-gauge.v1",
+  "selected_ontology": "MICROSCOPIC_COLUMN_PARTICIPATION_MASK_R0"
+}

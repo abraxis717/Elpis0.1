@@ -1,0 +1,40 @@
+{
+  "explicitly_not_authorized": [
+    "pairwise adjacency",
+    "module/partition labels",
+    "entrywise 6xN support edits in selected R0",
+    "width edits",
+    "continuous mixing edits",
+    "E0R2",
+    "E1",
+    "E2",
+    "Grid81 projection",
+    "TRM or learned inference",
+    "Darwinian execution",
+    "scientific experiment",
+    "Git publication"
+  ],
+  "frozen": [
+    "all continuous frozen Theta bytes",
+    "d=6",
+    "width N",
+    "phi coefficients and primitive law",
+    "raw-sum forward rule",
+    "optimizer and learning rate",
+    "initialization semantics",
+    "scientific thresholds/gates",
+    "S3 coordinates and all scientific observations",
+    "Branch35-38 provenance and claims",
+    "S2/S3/RAND83 scientific intervention machinery",
+    "six-axis numeric basis",
+    "exact-zero frozen columns",
+    "all imported ECS_AUTHORITY/REFERENCE bytes",
+    "all pre-existing Elpis2.1.11 authorities",
+    "canonical Grid81"
+  ],
+  "ontology_id": "MICROSCOPIC_COLUMN_PARTICIPATION_MASK_R0",
+  "schema": "elpis.ecs.structural-authority-r0.frozen-writable-boundary.v1",
+  "writable": [
+    "ACTIVE/DISABLED participation status of each exact nonzero frozen microscopic column in the bound operational gauge"
+  ]
+}

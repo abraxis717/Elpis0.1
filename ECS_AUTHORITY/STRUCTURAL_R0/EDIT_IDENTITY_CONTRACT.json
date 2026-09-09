@@ -1,0 +1,27 @@
+{
+  "candidate_binding": {
+    "s3_required_for_edit_identity": false,
+    "scientific_observation_binding": "may remain externally associated but cannot authorize or identify the structural edit"
+  },
+  "cross_gauge_rule": "Operational edit IDs may differ across gauges. Structural state equivalence is established by the canonical permutation-invariant representation, not by slot-number equality.",
+  "edit_address": {
+    "fields": [
+      "ontology_id",
+      "ontology_version",
+      "primitive_contract_digest",
+      "d",
+      "N",
+      "ordered_frozen_sidecar_digest",
+      "operational_gauge_id",
+      "slot_index",
+      "expected_pre_status",
+      "pre_state_equivalence_digest"
+    ],
+    "slot_semantics": "operational gauge slot only",
+    "stale_rejection": "Any mismatch in primitive, d, N, sidecar digest, gauge, slot bounds, expected status, or pre-state digest rejects."
+  },
+  "intrinsic_entity_ids": false,
+  "ontology_id": "MICROSCOPIC_COLUMN_PARTICIPATION_MASK_R0",
+  "schema": "elpis.ecs.structural-authority-r0.edit-identity-contract.v1",
+  "zero_column_rule": "An exact all-zero frozen column is FROZEN_ZERO and non-writable because ACTIVE versus DISABLED would otherwise create two structural encodings with identical materialized W."
+}

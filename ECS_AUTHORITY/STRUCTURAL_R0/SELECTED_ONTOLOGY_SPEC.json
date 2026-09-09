@@ -1,0 +1,63 @@
+{
+  "authority_class": "PROSPECTIVE_ONLY",
+  "claims": {
+    "branch35_38_transfer": false,
+    "ecs_scientific_result": false,
+    "emergence_improvement": false,
+    "evolution_improvement": false,
+    "fitness_improvement": false,
+    "learning_improvement": false,
+    "memory_improvement": false,
+    "reasoning_improvement": false,
+    "stability_improvement": false
+  },
+  "frozen_sidecar": {
+    "definition": "Exact byte snapshot of the microscopic W bound for a future structural proposal. Theta is a prospective immutable sidecar alias and is not a new scientific primitive parameter.",
+    "dtype": "finite IEEE-754 binary64",
+    "mutability_during_structural_proposal": "IMMUTABLE",
+    "ordered_digest": "domain-separated SHA-256 over ontology/version, primitive-contract digest, d, N, and canonical little-endian C-order Theta bytes",
+    "shape": "6 x N",
+    "symbol": "Theta"
+  },
+  "future_authority": "This PASS authorizes only a separately prompted E0R2 representability test.",
+  "identity_semantics": {
+    "column_slot": "OPERATIONAL_GAUGE_ONLY",
+    "equivalence": "simultaneous permutation of frozen columns and participation states",
+    "intrinsic_entities": false
+  },
+  "materialization_semantics": {
+    "ACTIVE": "W_out[:,i] is copied exactly from frozen Theta[:,i]",
+    "DISABLED": "W_out[:,i] is six exact binary64 +0.0 values",
+    "FROZEN_ZERO": "W_out[:,i] remains the bound zero column and is not writable",
+    "reason_zero_is_ordinary_primitive_member": "The primitive accepts W in R^(6 x N); phi(0)=0, so a zero column contributes zero to the existing raw additive sum.",
+    "shape": "6 x N unchanged"
+  },
+  "ontology_id": "MICROSCOPIC_COLUMN_PARTICIPATION_MASK_R0",
+  "ontology_version": "R0",
+  "primitive_contract_digest": "745fe2d762568dced27b9ff55e373ea40943f5104d24d995c30847052044ec90",
+  "retroactive_scientific_authority": false,
+  "schema": "elpis.ecs.structural-authority-r0.selected-ontology-spec.v1",
+  "source_scope": {
+    "d": 6,
+    "forward_map": "f_W(x)=sum_i phi(x^T w_i)",
+    "frozen_widths": [
+      36,
+      48,
+      72
+    ],
+    "phi": "0.5*z + 0.5*z^2 + 0.5*z^3",
+    "width_normalization_permitted": false
+  },
+  "structural_state": {
+    "binding_initialization": "Every exact numerically nonzero frozen Theta column begins ACTIVE. Every exact all-zero frozen column begins FROZEN_ZERO and is non-writable.",
+    "column_add_remove": false,
+    "per_slot_status": [
+      "ACTIVE",
+      "DISABLED",
+      "FROZEN_ZERO"
+    ],
+    "width_change": false,
+    "writable_degree_class": "one binary ACTIVE/DISABLED state per writable whole column",
+    "writable_slots": "exact nonzero frozen columns only"
+  }
+}

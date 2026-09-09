@@ -1,0 +1,43 @@
+{
+  "atomicity": "one atomic operation per R0 structural proposal",
+  "forbidden": [
+    "continuous parameter optimization",
+    "learning-rate changes",
+    "optimizer changes",
+    "primitive-law changes",
+    "width changes",
+    "input-dimension changes",
+    "new entity-to-entity causal interactions",
+    "pairwise adjacency creation",
+    "learned generation",
+    "semantic invention",
+    "scientific threshold changes",
+    "S2/S3/RAND83 intervention reuse as structural mutation",
+    "continuous column mixing",
+    "random initialization"
+  ],
+  "hidden_parameter_update": false,
+  "learned_generation": false,
+  "ontology_id": "MICROSCOPIC_COLUMN_PARTICIPATION_MASK_R0",
+  "operations": [
+    {
+      "address": null,
+      "effect": "no structural or continuous state change",
+      "op": "ABSTAIN",
+      "precondition": "valid bound structural state"
+    },
+    {
+      "address": "one writable operational-gauge slot",
+      "effect": "status becomes DISABLED",
+      "op": "DISABLE_COLUMN",
+      "precondition": "status=ACTIVE and all identity bindings match"
+    },
+    {
+      "address": "one writable operational-gauge slot",
+      "effect": "status becomes ACTIVE; exact frozen Theta column is the sole restoration value",
+      "op": "RESTORE_COLUMN",
+      "precondition": "status=DISABLED and all identity bindings match"
+    }
+  ],
+  "schema": "elpis.ecs.structural-authority-r0.mutation-grammar.v1"
+}
