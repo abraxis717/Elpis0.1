@@ -1,3 +1,19 @@
+## Elpis2.1.12 — ECS Structural Authority R0 Publication
+
+- Publish and seal the bounded ECS Structural Authority R0 contract
+  `MICROSCOPIC_COLUMN_PARTICIPATION_MASK_R0`.
+- Preserve operational-gauge column identity, simultaneous-permutation
+  equivalence, exact ACTIVE/DISABLED whole-column semantics, and byte-exact
+  restoration while keeping continuous column state frozen.
+- Advance release/package declarations, the public release identity table,
+  immutable predecessor belt, predecessor guard coverage, and the write-once
+  release manifest so the new ECS public files are part of the canonical
+  distribution boundary.
+- Preserve runtime behavior, canonical Grid81, Semantic IR, Projector, P1,
+  materialization, learned/Darwinian execution, and scientific execution.
+- No Semantic-IR representability, Grid81 compatibility, E0R2/E1/E2,
+  scientific efficacy, evolutionary benefit, or general RSI claim.
+
 ## Elpis2.1.11 — Authority-Preserving Improvement Witness R0
 
 - Add the closed APW R0 deterministic witness and regression.
