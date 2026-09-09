@@ -1,3 +1,17 @@
+## Elpis2.1.11 — Authority-Preserving Improvement Witness R0
+
+- Add the closed APW R0 deterministic witness and regression.
+- Demonstrate proposal quality `27 -> 54 -> 81/81` across three cycles with
+  zero proposer/feedback authority and no proposal execution authority.
+- Exercise a public-projector-derived `MUTATION_HAZARD` fixture with one
+  P1-owned strict improvement (cost `1 -> 0`), plus explicit abstention on an
+  already-optimal state using the same final proposal packet.
+- Reject eight typed authority-boundary attacks while preserving the existing
+  public production authority contracts.
+- This release does not claim general RSI safety, autonomous self-improvement,
+  arbitrary learned-model safety, hostile same-process isolation,
+  process-external attestation, or full Elpis alignment.
+
 ## Elpis2.1.10 — Locally Verified Release Candidate
 
 - Finalize the 2.1.10 root package, declared-text and citation identity.

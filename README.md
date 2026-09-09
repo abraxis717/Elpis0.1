@@ -10,18 +10,20 @@ The current repository contains a qualified structural-guidance runtime and a se
 
 Elpis is therefore presented as a falsifiable systems-research program rather than a general intelligence claim. It does not claim solved alignment, general Grid81 satisfiability, arbitrary autonomous execution, general semantic correctness, cross-process attestation, autonomous implementation synthesis, AGI, or ASI. The intended standard is narrower: each mechanism should state the authority it possesses, the evidence that qualifies it, the conditions under which it fails, and the observations that would falsify the claim being made.
 
-### Elpis2.1.10
+### Elpis2.1.11
 
-**Release line: Elpis2.1.10**
+**Release line: Elpis2.1.11**
 
-Elpis2.1.10 contains the qualified native, authority, bounded-allocation,
-packaging, CI-attribution, and claim-scope repairs summarized in the release
-notes. The release candidate is qualified by the canonical release guard,
-mutation checks, write-once sealer, public verifier, and sealed-tree controls.
+Elpis2.1.11 adds the qualified Authority-Preserving Improvement Witness R0.
+Across three deterministic proposal cycles, structural proposal quality
+improves `27 -> 54 -> 81/81` while proposer and feedback authority remain zero.
+The qualified terminal evidence includes one deterministic P1-owned strict
+improvement and explicit abstention under the same final proposal packet.
 
-Technical limitations remain explicit in the release notes. Generated source
-retains no execution authority, and no performance, AGI, ASI, universal semantic
-correctness, or universal security claim is made.
+This is a bounded systems witness, not a claim of general RSI safety,
+autonomous self-improvement, arbitrary learned-model safety, process-external
+attestation, hostile same-process isolation, or full Elpis alignment.
+
 ## 1. Research Question and Scope
 
 The central question is:
