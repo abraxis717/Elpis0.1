@@ -24,8 +24,8 @@ Elpis is a deterministic structural-core system organized around receipt-bound t
 - Three downstream consumers: typed projection, group projection, adjudication
 
 ### Canonical substrate (Grid81 generation 000001)
-- Immutable canonical grid state with authority audit
-- Transaction manifest with capability lifecycle tracking
+- Historical canonical grid state with a read-only identity verifier; the stored authority audit is not independent proof
+- Transaction manifest with declared capability lifecycle fields; no durable canonical-state writer is qualified
 - Source non-mutation verification
 
 ### TRM Fractal Spine

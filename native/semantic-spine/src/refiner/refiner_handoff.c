@@ -16,8 +16,8 @@ int elpis_refiner_handoff_identity(const elpis_semantic_refiner_handoff_v1 *hand
     size_t off = 0;
 
     memcpy(buf + off, domain, strlen(domain)); off += strlen(domain);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(handoff->abi_version);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(handoff->handoff_kind);
+    { uint32_t encoded_u32 = __builtin_bswap32(handoff->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4; }
+    { uint32_t encoded_u32 = __builtin_bswap32(handoff->handoff_kind); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     memcpy(buf + off, handoff->selected_name, REFINER_CANDIDATE_NAME_MAX);
     off += REFINER_CANDIDATE_NAME_MAX;
     memcpy(buf + off, handoff->p10_corpus_digest.bytes, 32); off += 32;

@@ -8,11 +8,6 @@
 
 #include <string.h>
 
-/* Helper: compare a digest against all-zero */
-static const uint8_t ZERO_DIGEST[32] = {0};
-static int digest_is_zero(const hacf_digest *d) {
-    return memcmp(d->bytes, ZERO_DIGEST, 32) == 0;
-}
 
 static int tests_run = 0;
 static int tests_pass = 0;
@@ -195,6 +190,25 @@ static void test_candidate_validate_unknown_polarity(void) {
     TEST(unknown_polarity_rejected, elpis_claim_candidate_validate(&c) != SEMANTIC_OK);
 }
 
+static void test_candidate_validate_zero_enums(void) {
+    elpis_evidence_claim_candidate_v1 c;
+    elpis_claim_candidate_init(&c);
+    memcpy(c.typer_profile_digest.bytes, "X", 1);
+    c.claim_type = 1;
+    memcpy(c.claim_payload_digest.bytes, "P", 1);
+    memcpy(c.claim_payload_object_digest.bytes, "O", 1);
+    c.source_span_count = 1;
+    memcpy(c.source_span_digests[0].bytes, "S", 1);
+
+    c.claim_polarity = (evidence_claim_polarity)0;
+    c.claim_modality = CLAIM_MODALITY_UNSPECIFIED;
+    TEST(zero_polarity_rejected, elpis_claim_candidate_validate(&c) != SEMANTIC_OK);
+
+    c.claim_polarity = CLAIM_POLARITY_UNSPECIFIED;
+    c.claim_modality = (evidence_claim_modality)0;
+    TEST(zero_modality_rejected, elpis_claim_candidate_validate(&c) != SEMANTIC_OK);
+}
+
 static void test_candidate_validate_reserved(void) {
     elpis_evidence_claim_candidate_v1 c;
     elpis_claim_candidate_init(&c);
@@ -221,6 +235,7 @@ int main(void) {
     test_candidate_identity_changes_with_source_span();
     test_candidate_validate_missing_span();
     test_candidate_validate_unknown_polarity();
+    test_candidate_validate_zero_enums();
     test_candidate_validate_reserved();
 
     printf("claim_candidate: %d/%d tests passed\n", tests_pass, tests_run);

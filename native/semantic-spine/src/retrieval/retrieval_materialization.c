@@ -16,13 +16,6 @@ struct elpis_materialization_table {
     elpis_materialization_entry_v1 *entries;
 };
 
-static uint8_t be32_buf(uint32_t v) {
-    uint8_t b[4];
-    uint32_t be = htonl(v);
-    memcpy(b, &be, 4);
-    return b[0]; /* just to suppress unused warning */
-}
-
 static void write_be32(elpis_sha256_ctx *h, uint32_t v) {
     uint32_t be = htonl(v);
     elpis_sha256_update(h, &be, 4);

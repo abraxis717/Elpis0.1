@@ -90,12 +90,9 @@ def _signed_receipt(
     best_cost=0,
     output_fingerprint=None,
 ):
-    base = admit_projection(
-        projection
-    ).receipt
-
-    unsigned = replace(
-        base,
+    unsigned = StructuralGuidanceReceiptV1(
+        schema=receipt_module.SCHEMA,
+        projection_digest=projection.projection_digest,
         outcome="ADMITTED",
         enabled=True,
         envelope_digest=(

@@ -15,6 +15,7 @@ source, mutate state, or authorize execution/refinement.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import ClassVar
 import hashlib
 import json
 import re
@@ -137,6 +138,9 @@ def _require_nonempty(
 
 @dataclass(frozen=True, slots=True)
 class ValidationAuthorizationIntentV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _VALIDATION_INTENT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _INTENT_DOMAIN
+
     schema: str
 
     source_artifact_digest: str
@@ -202,7 +206,7 @@ class ValidationAuthorizationIntentV1:
     ) -> None:
         if (
             self.schema
-            != _VALIDATION_INTENT_SCHEMA
+            != self.EXPECTED_SCHEMA
         ):
             raise ValidationAuthorityError(
                 "unsupported validation intent schema"
@@ -267,7 +271,7 @@ class ValidationAuthorizationIntentV1:
         )
 
         expected = _domain_digest(
-            _INTENT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -279,6 +283,9 @@ class ValidationAuthorizationIntentV1:
 
 @dataclass(frozen=True, slots=True)
 class ValidationCapabilityReceiptV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _VALIDATION_RECEIPT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _RECEIPT_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -388,7 +395,7 @@ class ValidationCapabilityReceiptV1:
     ) -> None:
         if (
             self.schema
-            != _VALIDATION_RECEIPT_SCHEMA
+            != self.EXPECTED_SCHEMA
         ):
             raise ValidationAuthorityError(
                 "unsupported validation receipt schema"
@@ -513,7 +520,7 @@ class ValidationCapabilityReceiptV1:
             )
 
         expected = _domain_digest(
-            _RECEIPT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -531,6 +538,9 @@ class AuthorizedValidationV1:
 
 @dataclass(frozen=True, slots=True)
 class ValidationConsumptionV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _VALIDATION_CONSUMPTION_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _CONSUMPTION_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -640,7 +650,7 @@ class ValidationConsumptionV1:
     ) -> None:
         if (
             self.schema
-            != _VALIDATION_CONSUMPTION_SCHEMA
+            != self.EXPECTED_SCHEMA
         ):
             raise ValidationAuthorityError(
                 "unsupported validation consumption schema"
@@ -754,7 +764,7 @@ class ValidationConsumptionV1:
             )
 
         expected = _domain_digest(
-            _CONSUMPTION_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -764,12 +774,36 @@ class ValidationConsumptionV1:
             )
 
 
+@dataclass(frozen=True, slots=True)
+class ValidationAuthorizationIntentV2(ValidationAuthorizationIntentV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.validation-intent.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class ValidationCapabilityReceiptV2(ValidationCapabilityReceiptV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.validation-capability-receipt.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class ValidationConsumptionV2(ValidationConsumptionV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.validation-capability-consumption.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
 def _build_intent(
     artifact: DecodedSourceArtifactV1,
     *,
     validator_id: str,
     validator_version: str,
-) -> ValidationAuthorizationIntentV1:
+) -> ValidationAuthorizationIntentV2:
     if not isinstance(
         artifact,
         DecodedSourceArtifactV1,
@@ -812,7 +846,7 @@ def _build_intent(
 
     base = {
         "schema": (
-            _VALIDATION_INTENT_SCHEMA
+            ValidationAuthorizationIntentV2.EXPECTED_SCHEMA
         ),
         "source_artifact_digest": (
             artifact.source_artifact_digest
@@ -849,10 +883,10 @@ def _build_intent(
         ),
     }
 
-    intent = ValidationAuthorizationIntentV1(
+    intent = ValidationAuthorizationIntentV2(
         **base,
         intent_digest=_domain_digest(
-            _INTENT_DOMAIN,
+            ValidationAuthorizationIntentV2.DIGEST_DOMAIN,
             base,
         ),
     )
@@ -871,6 +905,8 @@ class _ValidationAuthority:
         "__pending",
         "__sequence",
         "__lock",
+        "__closed",
+        "__runtime_bound",
     )
 
     def __init__(
@@ -879,7 +915,7 @@ class _ValidationAuthority:
         seed = secrets.token_hex(32)
 
         self.__instance_id = _domain_digest(
-            _INSTANCE_DOMAIN,
+            _INSTANCE_DOMAIN.removesuffix('.v1') + '.v2',
             {
                 "seed": seed,
             },
@@ -891,15 +927,17 @@ class _ValidationAuthority:
         ] = {}
 
         self.__pending: dict[
-            int,
+            str,
             tuple[
-                ValidationAuthorizationIntentV1,
-                ValidationCapabilityReceiptV1,
+                ValidationAuthorizationIntentV2,
+                ValidationCapabilityReceiptV2,
             ],
         ] = {}
 
         self.__sequence = 0
         self.__lock = threading.RLock()
+        self.__closed = False
+        self.__runtime_bound = False
 
     def _precommit_from_owner(
         self,
@@ -907,16 +945,18 @@ class _ValidationAuthority:
         *,
         validator_id: str,
         validator_version: str,
-    ) -> ValidationAuthorizationIntentV1:
+    ) -> ValidationAuthorizationIntentV2:
         intent = _build_intent(
             artifact,
             validator_id=validator_id,
             validator_version=validator_version,
         )
 
-        key = id(intent)
+        key = intent.intent_digest
 
         with self.__lock:
+            if self.__closed:
+                raise ValidationAuthorityError("authority runtime boundary is closed")
             if key in self.__pending:
                 raise ValidationAuthorityError(
                     "validation intent already precommitted"
@@ -937,7 +977,7 @@ class _ValidationAuthority:
 
             base = {
                 "schema": (
-                    _VALIDATION_RECEIPT_SCHEMA
+                    ValidationCapabilityReceiptV2.EXPECTED_SCHEMA
                 ),
                 "authority_instance_id": (
                     self.__instance_id
@@ -994,10 +1034,10 @@ class _ValidationAuthority:
                 "execution_authorized": False,
             }
 
-            receipt = ValidationCapabilityReceiptV1(
+            receipt = ValidationCapabilityReceiptV2(
                 **base,
                 receipt_digest=_domain_digest(
-                    _RECEIPT_DOMAIN,
+                    ValidationCapabilityReceiptV2.DIGEST_DOMAIN,
                     base,
                 ),
             )
@@ -1019,21 +1059,23 @@ class _ValidationAuthority:
 
     def _reveal_from_owner(
         self,
-        intent: ValidationAuthorizationIntentV1,
+        intent: ValidationAuthorizationIntentV2,
     ) -> AuthorizedValidationV1:
         if not isinstance(
             intent,
-            ValidationAuthorizationIntentV1,
+            ValidationAuthorizationIntentV2,
         ):
             raise TypeError(
-                "intent must be ValidationAuthorizationIntentV1"
+                "intent must be ValidationAuthorizationIntentV2"
             )
 
         intent.validate()
 
         with self.__lock:
+            if self.__closed:
+                raise ValidationAuthorityError("authority runtime boundary is closed")
             entry = self.__pending.get(
-                id(intent)
+                intent.intent_digest
             )
 
             if entry is None:
@@ -1044,9 +1086,9 @@ class _ValidationAuthority:
 
             stored, receipt = entry
 
-            if stored is not intent:
+            if stored != intent:
                 raise ValidationAuthorityError(
-                    "validation intent object differs from precommit"
+                    "validation intent content differs from precommit"
                 )
 
             intent.validate()
@@ -1060,7 +1102,7 @@ class _ValidationAuthority:
                 )
 
             del self.__pending[
-                id(intent)
+                intent.intent_digest
             ]
 
             return AuthorizedValidationV1(
@@ -1071,7 +1113,7 @@ class _ValidationAuthority:
     def _consume_from_owner(
         self,
         authorized: AuthorizedValidationV1,
-    ) -> ValidationConsumptionV1:
+    ) -> ValidationConsumptionV2:
         if not isinstance(
             authorized,
             AuthorizedValidationV1,
@@ -1124,6 +1166,8 @@ class _ValidationAuthority:
                 )
 
         with self.__lock:
+            if self.__closed:
+                raise ValidationAuthorityError("authority runtime boundary is closed")
             active = self.__active.get(
                 receipt.capability_id
             )
@@ -1144,7 +1188,7 @@ class _ValidationAuthority:
 
         base = {
             "schema": (
-                _VALIDATION_CONSUMPTION_SCHEMA
+                ValidationConsumptionV2.EXPECTED_SCHEMA
             ),
             "authority_instance_id": (
                 receipt.authority_instance_id
@@ -1201,10 +1245,10 @@ class _ValidationAuthority:
             ),
         }
 
-        consumption = ValidationConsumptionV1(
+        consumption = ValidationConsumptionV2(
             **base,
             consumption_digest=_domain_digest(
-                _CONSUMPTION_DOMAIN,
+                ValidationConsumptionV2.DIGEST_DOMAIN,
                 base,
             ),
         )
@@ -1212,6 +1256,21 @@ class _ValidationAuthority:
         consumption.validate()
 
         return consumption
+
+
+    def _bind_runtime_owner(self) -> None:
+        """Reserve this issuer/consumer for exactly one caller-owned context."""
+        with self.__lock:
+            if self.__closed or self.__runtime_bound:
+                raise ValidationAuthorityError("authority already bound or closed")
+            self.__runtime_bound = True
+
+    def _close_from_owner(self) -> None:
+        """Expire pending and revealed capabilities at the request boundary."""
+        with self.__lock:
+            self.__closed = True
+            self.__pending.clear()
+            self.__active.clear()
 
 
 def _new_validation_authority(

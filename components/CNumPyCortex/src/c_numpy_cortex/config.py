@@ -3,7 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+import ipaddress
 import tomllib
+from urllib.parse import urlsplit
+
+from .airgap import FORBIDDEN_DESTINATION_PORTS
 
 
 # ─── Sampling rates ─────────────────────────────────────────────────────
@@ -17,13 +21,6 @@ CHRONOS_RATE_HZ = 0.2
 # ─── Retention ──────────────────────────────────────────────────────────
 
 RETENTION_COUNT = 4
-
-# ─── Health endpoints ───────────────────────────────────────────────────
-
-HEALTH_ENDPOINTS = [
-    ("127.0.0.1", 8080),
-    ("127.0.0.1", 8081),
-]
 
 # ─── Config dataclasses ─────────────────────────────────────────────────
 
@@ -81,6 +78,39 @@ class OutputConfig:
 class LlamaEndpoint:
     name: str
     url: str
+
+    def __post_init__(self) -> None:
+        parsed = urlsplit(self.url)
+
+        if parsed.scheme not in {"http", "https"}:
+            raise ValueError(
+                f"llama endpoint {self.name!r} must use http or https"
+            )
+        if parsed.username is not None or parsed.password is not None:
+            raise ValueError(
+                f"llama endpoint {self.name!r} may not contain credentials"
+            )
+        if parsed.hostname is None or parsed.port is None:
+            raise ValueError(
+                f"llama endpoint {self.name!r} requires an explicit host and port"
+            )
+        if parsed.port in FORBIDDEN_DESTINATION_PORTS:
+            raise ValueError(
+                f"llama endpoint {self.name!r} uses forbidden destination "
+                f"port {parsed.port}"
+            )
+
+        try:
+            ip = ipaddress.ip_address(parsed.hostname)
+        except ValueError as exc:
+            raise ValueError(
+                f"llama endpoint {self.name!r} must use a numeric loopback host"
+            ) from exc
+
+        if not ip.is_loopback:
+            raise ValueError(
+                f"llama endpoint {self.name!r} must use loopback"
+            )
 
 
 @dataclass(frozen=True, slots=True)

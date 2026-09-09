@@ -16,9 +16,9 @@ int elpis_refiner_selection_identity(const elpis_semantic_refiner_selection_v1 *
     size_t off = 0;
 
     memcpy(buf + off, domain, strlen(domain)); off += strlen(domain);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(sel->abi_version);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(sel->qualified_count);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(sel->ranking_count);
+    { uint32_t encoded_u32 = __builtin_bswap32(sel->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4; }
+    { uint32_t encoded_u32 = __builtin_bswap32(sel->qualified_count); memcpy(buf + off, &encoded_u32, 4); off += 4; }
+    { uint32_t encoded_u32 = __builtin_bswap32(sel->ranking_count); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     memcpy(buf + off, sel->selected_name, REFINER_CANDIDATE_NAME_MAX);
     off += REFINER_CANDIDATE_NAME_MAX;
 

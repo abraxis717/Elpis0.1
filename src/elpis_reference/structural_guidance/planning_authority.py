@@ -23,6 +23,7 @@ the existing P0 lineage-authority threat model.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import ClassVar
 import hashlib
 import json
 import re
@@ -123,6 +124,9 @@ def _require_identity(
 
 @dataclass(frozen=True, slots=True)
 class PlanningAuthorizationIntentV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _PLANNING_INTENT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _INTENT_DOMAIN
+
     schema: str
 
     planning_input_digest: str
@@ -164,7 +168,7 @@ class PlanningAuthorizationIntentV1:
         }
 
     def validate(self) -> None:
-        if self.schema != _PLANNING_INTENT_SCHEMA:
+        if self.schema != self.EXPECTED_SCHEMA:
             raise PlanningAuthorityError(
                 "unsupported planning intent schema"
             )
@@ -215,7 +219,7 @@ class PlanningAuthorizationIntentV1:
         )
 
         expected = _domain_digest(
-            _INTENT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -227,6 +231,9 @@ class PlanningAuthorizationIntentV1:
 
 @dataclass(frozen=True, slots=True)
 class PlanningCapabilityReceiptV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _PLANNING_RECEIPT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _RECEIPT_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -284,7 +291,7 @@ class PlanningCapabilityReceiptV1:
         }
 
     def validate(self) -> None:
-        if self.schema != _PLANNING_RECEIPT_SCHEMA:
+        if self.schema != self.EXPECTED_SCHEMA:
             raise PlanningAuthorityError(
                 "unsupported planning receipt schema"
             )
@@ -364,7 +371,7 @@ class PlanningCapabilityReceiptV1:
             )
 
         expected = _domain_digest(
-            _RECEIPT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -382,6 +389,9 @@ class AuthorizedPlanningV1:
 
 @dataclass(frozen=True, slots=True)
 class PlanningConsumptionV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _PLANNING_CONSUMPTION_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _CONSUMPTION_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -437,7 +447,7 @@ class PlanningConsumptionV1:
         }
 
     def validate(self) -> None:
-        if self.schema != _PLANNING_CONSUMPTION_SCHEMA:
+        if self.schema != self.EXPECTED_SCHEMA:
             raise PlanningAuthorityError(
                 "unsupported planning consumption schema"
             )
@@ -512,7 +522,7 @@ class PlanningConsumptionV1:
             )
 
         expected = _domain_digest(
-            _CONSUMPTION_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -522,12 +532,36 @@ class PlanningConsumptionV1:
             )
 
 
+@dataclass(frozen=True, slots=True)
+class PlanningAuthorizationIntentV2(PlanningAuthorizationIntentV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.planning-intent.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class PlanningCapabilityReceiptV2(PlanningCapabilityReceiptV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.planning-capability-receipt.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class PlanningConsumptionV2(PlanningConsumptionV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.planning-capability-consumption.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
 def _build_intent(
     planning_input: PlanningInputV1,
     *,
     planner_id: str,
     planner_version: str,
-) -> PlanningAuthorizationIntentV1:
+) -> PlanningAuthorizationIntentV2:
     if not isinstance(
         planning_input,
         PlanningInputV1,
@@ -567,7 +601,7 @@ def _build_intent(
     )
 
     base = {
-        "schema": _PLANNING_INTENT_SCHEMA,
+        "schema": PlanningAuthorizationIntentV2.EXPECTED_SCHEMA,
         "planning_input_digest": (
             planning_input.planning_input_digest
         ),
@@ -591,10 +625,10 @@ def _build_intent(
         "planner_version": planner_version,
     }
 
-    intent = PlanningAuthorizationIntentV1(
+    intent = PlanningAuthorizationIntentV2(
         **base,
         intent_digest=_domain_digest(
-            _INTENT_DOMAIN,
+            PlanningAuthorizationIntentV2.DIGEST_DOMAIN,
             base,
         ),
     )
@@ -613,13 +647,15 @@ class _PlanningAuthority:
         "__pending",
         "__sequence",
         "__lock",
+        "__closed",
+        "__runtime_bound",
     )
 
     def __init__(self) -> None:
         seed = secrets.token_hex(32)
 
         self.__instance_id = _domain_digest(
-            _INSTANCE_DOMAIN,
+            _INSTANCE_DOMAIN.removesuffix('.v1') + '.v2',
             {
                 "seed": seed,
             },
@@ -628,15 +664,17 @@ class _PlanningAuthority:
         self.__active: dict[str, str] = {}
 
         self.__pending: dict[
-            int,
+            str,
             tuple[
-                PlanningAuthorizationIntentV1,
-                PlanningCapabilityReceiptV1,
+                PlanningAuthorizationIntentV2,
+                PlanningCapabilityReceiptV2,
             ],
         ] = {}
 
         self.__sequence = 0
         self.__lock = threading.RLock()
+        self.__closed = False
+        self.__runtime_bound = False
 
     def _precommit_from_owner(
         self,
@@ -644,16 +682,18 @@ class _PlanningAuthority:
         *,
         planner_id: str,
         planner_version: str,
-    ) -> PlanningAuthorizationIntentV1:
+    ) -> PlanningAuthorizationIntentV2:
         intent = _build_intent(
             planning_input,
             planner_id=planner_id,
             planner_version=planner_version,
         )
 
-        key = id(intent)
+        key = intent.intent_digest
 
         with self.__lock:
+            if self.__closed:
+                raise PlanningAuthorityError("authority runtime boundary is closed")
             if key in self.__pending:
                 raise PlanningAuthorityError(
                     "planning intent already precommitted"
@@ -673,7 +713,7 @@ class _PlanningAuthority:
             self.__sequence += 1
 
             base = {
-                "schema": _PLANNING_RECEIPT_SCHEMA,
+                "schema": PlanningCapabilityReceiptV2.EXPECTED_SCHEMA,
                 "authority_instance_id": (
                     self.__instance_id
                 ),
@@ -702,10 +742,10 @@ class _PlanningAuthority:
                 "execution_authorized": False,
             }
 
-            receipt = PlanningCapabilityReceiptV1(
+            receipt = PlanningCapabilityReceiptV2(
                 **base,
                 receipt_digest=_domain_digest(
-                    _RECEIPT_DOMAIN,
+                    PlanningCapabilityReceiptV2.DIGEST_DOMAIN,
                     base,
                 ),
             )
@@ -725,21 +765,23 @@ class _PlanningAuthority:
 
     def _reveal_from_owner(
         self,
-        intent: PlanningAuthorizationIntentV1,
+        intent: PlanningAuthorizationIntentV2,
     ) -> AuthorizedPlanningV1:
         if not isinstance(
             intent,
-            PlanningAuthorizationIntentV1,
+            PlanningAuthorizationIntentV2,
         ):
             raise TypeError(
-                "intent must be PlanningAuthorizationIntentV1"
+                "intent must be PlanningAuthorizationIntentV2"
             )
 
         intent.validate()
 
         with self.__lock:
+            if self.__closed:
+                raise PlanningAuthorityError("authority runtime boundary is closed")
             entry = self.__pending.get(
-                id(intent)
+                intent.intent_digest
             )
 
             if entry is None:
@@ -750,9 +792,9 @@ class _PlanningAuthority:
 
             stored, receipt = entry
 
-            if stored is not intent:
+            if stored != intent:
                 raise PlanningAuthorityError(
-                    "planning intent object differs from precommit"
+                    "planning intent content differs from precommit"
                 )
 
             intent.validate()
@@ -766,7 +808,7 @@ class _PlanningAuthority:
                 )
 
             del self.__pending[
-                id(intent)
+                intent.intent_digest
             ]
 
             return AuthorizedPlanningV1(
@@ -777,7 +819,7 @@ class _PlanningAuthority:
     def _consume_from_owner(
         self,
         authorized: AuthorizedPlanningV1,
-    ) -> PlanningConsumptionV1:
+    ) -> PlanningConsumptionV2:
         if not isinstance(
             authorized,
             AuthorizedPlanningV1,
@@ -818,6 +860,8 @@ class _PlanningAuthority:
                 )
 
         with self.__lock:
+            if self.__closed:
+                raise PlanningAuthorityError("authority runtime boundary is closed")
             active = self.__active.get(
                 receipt.capability_id
             )
@@ -837,7 +881,7 @@ class _PlanningAuthority:
             ]
 
         base = {
-            "schema": _PLANNING_CONSUMPTION_SCHEMA,
+            "schema": PlanningConsumptionV2.EXPECTED_SCHEMA,
             "authority_instance_id": (
                 receipt.authority_instance_id
             ),
@@ -864,10 +908,10 @@ class _PlanningAuthority:
             "receipt_digest": receipt.receipt_digest,
         }
 
-        consumption = PlanningConsumptionV1(
+        consumption = PlanningConsumptionV2(
             **base,
             consumption_digest=_domain_digest(
-                _CONSUMPTION_DOMAIN,
+                PlanningConsumptionV2.DIGEST_DOMAIN,
                 base,
             ),
         )
@@ -875,6 +919,21 @@ class _PlanningAuthority:
         consumption.validate()
 
         return consumption
+
+
+    def _bind_runtime_owner(self) -> None:
+        """Reserve this issuer/consumer for exactly one caller-owned context."""
+        with self.__lock:
+            if self.__closed or self.__runtime_bound:
+                raise PlanningAuthorityError("authority already bound or closed")
+            self.__runtime_bound = True
+
+    def _close_from_owner(self) -> None:
+        """Expire pending and revealed capabilities at the request boundary."""
+        with self.__lock:
+            self.__closed = True
+            self.__pending.clear()
+            self.__active.clear()
 
 
 def _new_planning_authority() -> _PlanningAuthority:

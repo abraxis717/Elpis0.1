@@ -213,7 +213,7 @@ uint32_t embedding_composed_view_enumerate_embedded_nodes(
     uint32_t out_capacity) {
     if (!view || !view->base_view || !view->refs || !view->ref_count ||
         !out_nodes || !out_capacity || !limit) return 0;
-    if ((size_t)view->ref_count > SIZE_MAX / sizeof(*out_nodes)) return 0;
+    if (view->ref_count != 0 && SIZE_MAX / (size_t)view->ref_count < sizeof(*out_nodes)) return 0;
     const elpis_semantic_node_v1 **nodes = malloc((size_t)view->ref_count * sizeof(*nodes));
     if (!nodes) return 0;
     uint32_t found = 0;

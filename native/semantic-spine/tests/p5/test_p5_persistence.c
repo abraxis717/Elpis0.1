@@ -8,11 +8,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static void set_digest(hacf_digest *d, uint32_t seed) {
-    memset(d, 0, HACF_DIGEST_BYTES);
-    d->bytes[0] = (uint8_t)(seed & 0xFF);
-}
-
 static int test_iteration_policy_round_trip(void) {
     elpis_semantic_context_iteration_policy_v1 policy;
     elpis_context_iteration_policy_default(&policy);

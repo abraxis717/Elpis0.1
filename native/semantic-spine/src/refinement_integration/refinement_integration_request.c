@@ -13,14 +13,14 @@ void elpis_refinement_integration_request_init(
 
 int elpis_refinement_integration_request_identity(
     const elpis_semantic_refinement_integration_request_v1 *r, hacf_digest *out) {
-    const char *domain = "elpis.semantic.refinement_integration_request.v1";
-    size_t domain_len = 51;
+    static const char domain[] = "elpis.semantic.refinement_integration_request.v2";
+    const size_t domain_len = sizeof(domain) - 1u;
 
     uint8_t buf[2048];
     size_t off = 0;
 
     memcpy(buf + off, domain, domain_len); off += domain_len;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(r->abi_version);
+    { uint32_t encoded_u32 = __builtin_bswap32(r->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     memcpy(buf + off, r->P7_structural_packet_digest.bytes, 32); off += 32;
     memcpy(buf + off, r->backend_registry_digest.bytes, 32); off += 32;
     memcpy(buf + off, r->active_backend_digest.bytes, 32); off += 32;

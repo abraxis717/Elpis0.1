@@ -95,13 +95,13 @@ int trm_fixture_count_wrong(const int8_t board[TRM_FIXTURE_CELL_COUNT],
     return count;
 }
 
-void trm_fixture_compute_digest(const trm_fixture_t *fixture) {
+void trm_fixture_compute_digest(trm_fixture_t *fixture) {
     if (!fixture) return;
     sha256_hex(fixture->digits, TRM_FIXTURE_CELL_COUNT,
                fixture->fixture_digest, TRM_FIXTURE_DIGEST_LEN);
 }
 
-void trm_fixture_set_compute_digest(const trm_fixture_set_t *set) {
+void trm_fixture_set_compute_digest(trm_fixture_set_t *set) {
     if (!set) return;
     sha256_hex(set->fixtures, set->fixture_count * sizeof(trm_fixture_t),
                set->set_digest, TRM_FIXTURE_DIGEST_LEN);

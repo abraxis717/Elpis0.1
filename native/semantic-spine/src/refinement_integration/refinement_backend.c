@@ -12,18 +12,18 @@ void elpis_refinement_backend_init(elpis_semantic_refinement_backend_v1 *b) {
 
 int elpis_refinement_backend_identity(
     const elpis_semantic_refinement_backend_v1 *b, hacf_digest *out) {
-    const char *domain = "elpis.semantic.refinement_backend.v1";
-    size_t domain_len = 40;
+    static const char domain[] = "elpis.semantic.refinement_backend.v2";
+    const size_t domain_len = sizeof(domain) - 1u;
 
     uint8_t buf[1024];
     size_t off = 0;
 
     memcpy(buf + off, domain, domain_len); off += domain_len;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(b->abi_version);
+    { uint32_t encoded_u32 = __builtin_bswap32(b->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     memcpy(buf + off, b->backend_name, REFINEMENT_BACKEND_NAME_MAX);
     off += REFINEMENT_BACKEND_NAME_MAX;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(b->candidate_class);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(b->status);
+    { uint32_t encoded_u32 = __builtin_bswap32(b->candidate_class); memcpy(buf + off, &encoded_u32, 4); off += 4; }
+    { uint32_t encoded_u32 = __builtin_bswap32(b->status); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     memcpy(buf + off, b->adapter_name, REFINER_ADAPTER_NAME_MAX);
     off += REFINER_ADAPTER_NAME_MAX;
     memcpy(buf + off, b->candidate_manifest.candidate_name, REFINER_CANDIDATE_NAME_MAX);

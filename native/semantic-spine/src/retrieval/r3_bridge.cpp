@@ -31,7 +31,6 @@ static const char kZeroDigest[] =
  * Domain: "elpis.hybrid.query.v1" (includes NUL in sizeof) */
 static int compute_r3_query_digest(
     const elpis_materialization_entry_v1 *mat,
-    const elpis_hybrid_policy *policy,
     char out[65])
 {
     if (!mat || !mat->query_text || !mat->embedding_vector || !out) return -1;
@@ -258,7 +257,7 @@ int elpis_r3_bridge_execute(
     /* R3 query digest */
     {
         char qd[65];
-        if (compute_r3_query_digest(materialization, &plan->derived_policy, qd) == 0) {
+        if (compute_r3_query_digest(materialization, qd) == 0) {
             hacf_digest_from_hex(qd, &receipt->r3_query_digest);
         }
     }

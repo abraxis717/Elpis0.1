@@ -155,11 +155,11 @@ int elpis_downstream_handoff_validate(
     if (handoff->handoff_kind > 0) return SEMANTIC_E_INVAL;
 
     /* Non-zero required digests */
-    for (int i = 0; i < HACF_DIGEST_BYTES; i++) {
+    for (uint32_t i = 0; i < HACF_DIGEST_BYTES; i++) {
         if (handoff->bounded_semantic_view_digest.bytes[i] != 0) break;
         if (i == HACF_DIGEST_BYTES - 1) return SEMANTIC_E_INVAL;
     }
-    for (int i = 0; i < HACF_DIGEST_BYTES; i++) {
+    for (uint32_t i = 0; i < HACF_DIGEST_BYTES; i++) {
         if (handoff->semantic_plane_digest.bytes[i] != 0) break;
         if (i == HACF_DIGEST_BYTES - 1) return SEMANTIC_E_INVAL;
     }

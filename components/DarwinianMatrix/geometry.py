@@ -13,9 +13,8 @@ from typing import Iterable, Sequence
 import torch
 from torch import Tensor
 
+from .grid_constants import GRID_CELLS, GRID_SIDE
 
-GRID_SIDE = 9
-GRID_CELLS = GRID_SIDE * GRID_SIDE
 
 PATCH_RADIUS = 4
 PATCH_SIDE = 2 * PATCH_RADIUS + 1

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from types import SimpleNamespace
+from _support.admission_fixtures import projection_fixture
+from elpis_reference.structural_guidance.errors import AdmissionIntegrityViolation
 
 import pytest
 
@@ -39,10 +40,7 @@ def test_component_scope_flags():
 def test_request_gate_defaults_off():
     cfg = StructuralGuidanceAdmissionConfig()
 
-    projection = SimpleNamespace(
-        projection_digest="1" * 64,
-        structural_input_fingerprint="2" * 64,
-    )
+    projection = projection_fixture()
 
     result = admit_projection(
         projection,  # type: ignore[arg-type]
@@ -72,43 +70,16 @@ def test_enabled_without_checkpoint_fails_closed():
         checkpoint_path="",
     )
 
-    projection = SimpleNamespace(
-        projection_digest="3" * 64,
-        structural_input_fingerprint="4" * 64,
-    )
+    projection = projection_fixture()
 
-    result = admit_projection(
-        projection,  # type: ignore[arg-type]
-        cfg,
-    )
-
-    assert result.admitted is False
-    assert result.fallback_required is True
-
-    assert (
-        result.receipt.outcome
-        == "FALLBACK_REQUIRED"
-    )
-
-    assert result.receipt.enabled is True
-
-    assert (
-        result.receipt.authority_granted
-        == 0
-    )
-
-    assert result.receipt.error_code == "TypeError"
-
-    assert result.receipt.validate_digest()
+    with pytest.raises(AdmissionIntegrityViolation, match="pinned checkpoint"):
+        admit_projection(projection, cfg)
 
 
 def test_receipt_is_deterministic():
     cfg = StructuralGuidanceAdmissionConfig()
 
-    projection = SimpleNamespace(
-        projection_digest="5" * 64,
-        structural_input_fingerprint="6" * 64,
-    )
+    projection = projection_fixture()
 
     a = admit_projection(
         projection,  # type: ignore[arg-type]
@@ -287,31 +258,10 @@ def test_project_and_admit_enabled_failure_is_explicit(
         lambda value: projection,
     )
 
-    result = hook.project_and_admit(
-        pin,
-        StructuralGuidanceAdmissionConfig(
-            enabled=True,
-            checkpoint_path="",
-        ),
-    )
-
-    assert result.admitted is False
-    assert result.fallback_required is True
-
-    assert (
-        result.admission.receipt.outcome
-        == "FALLBACK_REQUIRED"
-    )
-
-    assert (
-        result.admission.receipt.error_code
-        == "ValueError"
-    )
-
-    assert (
-        result.admission.receipt.authority_granted
-        == 0
-    )
+    with pytest.raises(AdmissionIntegrityViolation, match="pinned checkpoint"):
+        hook.project_and_admit(
+            pin, StructuralGuidanceAdmissionConfig(enabled=True, checkpoint_path=""),
+        )
 
 
 def test_semantic_request_public_wrapper(

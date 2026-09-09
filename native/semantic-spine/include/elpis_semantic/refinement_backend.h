@@ -3,7 +3,7 @@
  * Defines the backend identity, input contract, output contract, and status
  * for a structural-refinement backend registered in the P12 registry.
  *
- * Identity domain: "elpis.semantic.refinement_backend.v1"
+ * Identity domain: "elpis.semantic.refinement_backend.v2"
  */
 #ifndef ELPIS_SEMANTIC_REFINEMENT_BACKEND_H
 #define ELPIS_SEMANTIC_REFINEMENT_BACKEND_H
@@ -73,7 +73,7 @@ typedef struct elpis_semantic_refinement_backend_v1 {
 void elpis_refinement_backend_init(
     elpis_semantic_refinement_backend_v1 *backend);
 
-/* Compute backend identity. Domain: "elpis.semantic.refinement_backend.v1" */
+/* Compute backend identity. Domain: "elpis.semantic.refinement_backend.v2" */
 int elpis_refinement_backend_identity(
     const elpis_semantic_refinement_backend_v1 *backend, hacf_digest *out);
 

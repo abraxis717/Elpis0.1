@@ -3,19 +3,21 @@
 #include <stdio.h>
 #include <openssl/sha.h>
 
-static void sha256_hex(const void *data, size_t len, char *out, size_t out_len) {
+static void sha256_hex64(const void *data, size_t len, char out[64]) {
+    static const char hex[] = "0123456789abcdef";
     unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256(data, len, hash);
-    for (int i = 0; i < SHA256_DIGEST_LENGTH && (size_t)(i * 2 + 2) < out_len; i++) {
-        sprintf(out + i * 2, "%02x", hash[i]);
+    for (size_t i = 0; i < SHA256_DIGEST_LENGTH; ++i) {
+        out[i * 2] = hex[hash[i] >> 4];
+        out[i * 2 + 1] = hex[hash[i] & 0x0f];
     }
 }
 
 trm_alignment_report_t trm_alignment_report_create(void) {
     trm_alignment_report_t report;
     memset(&report, 0, sizeof(report));
-    report.abi_version = 1;
-    strncpy(report.domain, "elpis.semantic.trm_alignment_report.v1", sizeof(report.domain) - 1);
+    report.abi_version = TRM_ALIGNMENT_REPORT_ABI_VERSION;
+    strncpy(report.domain, TRM_ALIGNMENT_REPORT_DOMAIN, sizeof(report.domain) - 1);
     report.diagnosis_digest[0] = '\0';
     return report;
 }
@@ -77,8 +79,9 @@ void trm_alignment_report_diagnose(trm_alignment_report_t *report,
 
 void trm_alignment_report_compute_digest(trm_alignment_report_t *report) {
     if (!report) return;
-    sha256_hex(report, sizeof(trm_alignment_report_t),
-               report->diagnosis_digest, TRM_REPORT_DIGEST_LEN);
+    trm_alignment_report_t normalized = *report;
+    memset(normalized.diagnosis_digest, 0, sizeof(normalized.diagnosis_digest));
+    sha256_hex64(&normalized, sizeof(normalized), report->diagnosis_digest);
 }
 
 const char *trm_diagnosis_verdict_string(trm_diagnosis_verdict_t verdict) {

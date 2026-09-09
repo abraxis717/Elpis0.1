@@ -8,11 +8,6 @@
 
 #include <string.h>
 
-/* Helper: compare a digest against all-zero */
-static const uint8_t ZERO_DIGEST[32] = {0};
-static int digest_is_zero(const hacf_digest *d) {
-    return memcmp(d->bytes, ZERO_DIGEST, 32) == 0;
-}
 #include <stdlib.h>
 
 static int tests_run = 0;
@@ -160,7 +155,6 @@ static void test_span_whitespace_preserved(void) {
 }
 
 static void test_span_same_bytes_different_offset(void) {
-    const char *text = "abab";
     elpis_evidence_span_v1 a, b;
     elpis_evidence_span_init(&a);
     elpis_evidence_span_init(&b);

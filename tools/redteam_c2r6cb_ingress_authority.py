@@ -73,6 +73,11 @@ def fixture(request_id):
         projection_digest=result.projection.digest,
         grid81=result.projection.grid81,
         semantic_rows=result.projection.semantic_rows,
+        semantic_request_digest=getattr(
+            result.projection,
+            "semantic_request_digest",
+            "",
+        ),
     )
     return ctx, controller, ingress, result, authorized, trace
 

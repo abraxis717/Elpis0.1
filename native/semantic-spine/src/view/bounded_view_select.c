@@ -14,18 +14,6 @@
 /* Simple atomic write — declared in p5_writer.c */
 extern int p5_simple_write(const char *path, const uint8_t *data, size_t sz);
 
-static void write_domain_tag(elpis_sha256_ctx *ctx, const char *domain) {
-    size_t len = strlen(domain);
-    uint32_t be_len = htonl((uint32_t)len);
-    elpis_sha256_update(ctx, &be_len, 4);
-    elpis_sha256_update(ctx, domain, len);
-}
-
-static void write_u32_be(elpis_sha256_ctx *ctx, uint32_t val) {
-    uint32_t be = htonl(val);
-    elpis_sha256_update(ctx, &be, 4);
-}
-
 
 
 

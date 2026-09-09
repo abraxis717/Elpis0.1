@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define TRM_NATIVE_CONTRACT_ABI_VERSION 1
-#define TRM_NATIVE_CONTRACT_DOMAIN "elpis.semantic.trm_native_contract.v1"
+#define TRM_NATIVE_CONTRACT_ABI_VERSION 2
+#define TRM_NATIVE_CONTRACT_DOMAIN "elpis.semantic.trm_native_contract.v2"
 #define TRM_NATIVE_CONTRACT_DIGEST_LEN 64
 #define TRM_EVIDENCE_FILE_MAX 16
 #define TRM_EVIDENCE_FILE_PATH_LEN 256
@@ -50,7 +50,7 @@ typedef struct {
 
 trm_native_contract_t trm_native_contract_create(void);
 int trm_native_contract_validate(const trm_native_contract_t *contract);
-void trm_native_contract_compute_digest(const trm_native_contract_t *contract);
+void trm_native_contract_compute_digest(trm_native_contract_t *contract);
 int trm_native_contract_has_unknown_fields(const trm_native_contract_t *contract);
 uint32_t trm_native_contract_unknown_field_count(const trm_native_contract_t *contract);
 

@@ -23,7 +23,7 @@ class FixedPointTransformerBlock(nn.Module):
         super().__init__()
 
         self.config = config
-        weight_dropout = getattr(config, "weight_dropout", 0.0)
+        weight_dropout = config.weight_dropout
         if self.config.mlp_t:
             self.puzzle_emb_len = -(self.config.puzzle_emb_ndim // -self.config.hidden_size) if self.config.puzzle_emb_len == 0 else self.config.puzzle_emb_len
             self.mlp_t = SwiGLU(

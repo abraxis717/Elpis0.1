@@ -202,8 +202,20 @@ target_include_directories(elpis_semantic SYSTEM PUBLIC "${ELPIS_HACF_ROOT}/incl
 target_link_libraries(elpis_semantic PUBLIC elpis_graph elpis_hash elpis_hybrid elpis_vector elpis_corpus elpis_embedding elpis_fms Threads::Threads OpenSSL::SSL OpenSSL::Crypto)
 sf_warnings(elpis_semantic)
 
-# Add HACF targets from the external project
-add_subdirectory("${ELPIS_HACF_ROOT}" "${CMAKE_BINARY_DIR}/hacf" EXCLUDE_FROM_ALL)
+# Add HACF targets in standalone mode. When embedded by the Elpis root,
+# the parent already owns HACF and those targets must be reused.
+if(TARGET elpis_hash)
+  get_target_property(_elpis_hacf_target_source elpis_hash SOURCE_DIR)
+  file(REAL_PATH "${ELPIS_HACF_ROOT}" _elpis_hacf_expected_source)
+  file(REAL_PATH "${_elpis_hacf_target_source}" _elpis_hacf_target_source_real)
+  if(NOT _elpis_hacf_target_source_real STREQUAL _elpis_hacf_expected_source)
+    message(FATAL_ERROR
+      "Existing elpis_hash target does not originate from ELPIS_HACF_ROOT: "
+      "${_elpis_hacf_target_source_real} != ${_elpis_hacf_expected_source}")
+  endif()
+else()
+  add_subdirectory("${ELPIS_HACF_ROOT}" "${CMAKE_BINARY_DIR}/hacf")
+endif()
 
 # ---------------------------------------------------------------------------
 # Tests
@@ -313,6 +325,9 @@ add_test(NAME embedding_storage COMMAND test_embedding_storage)
 
 add_executable(test_embedding_boundary tests/embedding/test_embedding_boundary.c)
 target_link_libraries(test_embedding_boundary PRIVATE elpis_semantic elpis_hash)
+target_compile_definitions(test_embedding_boundary PRIVATE
+  ELPIS_SEMANTIC_SOURCE_ROOT="${CMAKE_CURRENT_SOURCE_DIR}"
+  ELPIS_HACF_SOURCE_ROOT="${ELPIS_HACF_ROOT}")
 sf_warnings(test_embedding_boundary)
 add_test(NAME embedding_boundary COMMAND test_embedding_boundary)
 
@@ -360,6 +375,9 @@ add_test(NAME retrieval_requirement_bundle COMMAND test_retrieval_requirement_bu
 
 add_executable(test_context_boundaries tests/context/test_context_boundaries.c)
 target_link_libraries(test_context_boundaries PRIVATE elpis_semantic elpis_hash)
+target_compile_definitions(test_context_boundaries PRIVATE
+  ELPIS_SEMANTIC_SOURCE_ROOT="${CMAKE_CURRENT_SOURCE_DIR}"
+  ELPIS_HACF_SOURCE_ROOT="${ELPIS_HACF_ROOT}")
 sf_warnings(test_context_boundaries)
 add_test(NAME context_boundaries COMMAND test_context_boundaries)
 

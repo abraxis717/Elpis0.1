@@ -1,6 +1,7 @@
 """Tests for adversarial qualification and authority — G5.3E.1 comprehensive matrix."""
 
 import json
+import pytest
 import os
 import sys
 
@@ -84,22 +85,23 @@ def test_adversarial_all_rejected():
 
 
 def test_plan_non_executable():
-    result = verify_plan_nonexecutable()
+    from elpis_grid81_promotion_planner.canonical import CanonicalPromotionPlan
+    from elpis_grid81_promotion_planner.plan import get_intentions
+    plan = CanonicalPromotionPlan(
+        intentions=tuple(i.intention_type for i in get_intentions()),
+        decision_digest="1"*64, source_chain_digest="2"*64,
+    )
+    result = verify_plan_nonexecutable(plan)
     assert result["plan_non_executable"] is True
     assert result["violations_found"] == 0
+    assert result["plan_digest"] == plan.digest
 
 
-def test_authority_audit_all_false():
-    audit = generate_authority_audit(_load_config())
-    assert audit.planner_authoritative_for_application is False
-    assert audit.planner_authoritative_for_capability_consumption is False
-    assert audit.planner_authoritative_for_canonical_state is False
-    assert audit.canonical_write_permitted is False
-    assert audit.canonical_capabilities_consumed == 0
-    assert audit.qubo_touched is False
-    assert audit.darwinian_life_touched is False
-    assert audit.production_trm_touched is False
-    assert audit.network_used is False
+def test_authority_audit_requires_observable_sources(tmp_path):
+    config = {key: str(tmp_path / key) for key in
+              ("g53b1_directory", "g53c_directory", "g53d_directory")}
+    with pytest.raises(FileNotFoundError):
+        generate_authority_audit(config)
 
 
 def test_source_nonmutation():

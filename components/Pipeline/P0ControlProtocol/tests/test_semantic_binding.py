@@ -283,6 +283,7 @@ def test_projection_trace_semantic_digest_is_required_at_ingress():
         projection_digest=result.projection.digest,
         grid81=result.projection.grid81,
         semantic_rows=result.projection.semantic_rows,
+        semantic_request_digest="",  # explicit no-sidecar sentinel
     )
     with pytest.raises(
         ValueError,

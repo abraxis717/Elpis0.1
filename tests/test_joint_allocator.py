@@ -56,7 +56,9 @@ def assignment(raw):
     demands = [(f'edge:{k}:{a}:{b}', b if k == 'route' else a, a, b)
                for k, a, b in raw['edges'] if k != 'precedes']
     demands += [(f"tail:{t['id']}", t['lane'], t['after'], None) for t in raw['tails']]
-    return _joint_assignment(raw['operations'], edges, demands)
+    result = _joint_assignment(raw['operations'], edges, demands)
+    assert result.status != 'SEARCH_BUDGET_EXHAUSTED', raw
+    return result.assignments[0] if result.status == 'SAT' else None
 
 
 def check_differential(raw, *, project_core=False):

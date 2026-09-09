@@ -4,7 +4,7 @@
  * transaction completed with bounded execution, Sudoku-valid states,
  * and all guard conformance.
  *
- * Identity domain: "elpis.semantic.refinement_integration_receipt.v1"
+ * Identity domain: "elpis.semantic.refinement_integration_receipt.v2"
  */
 #ifndef ELPIS_SEMANTIC_REFINEMENT_INTEGRATION_RECEIPT_H
 #define ELPIS_SEMANTIC_REFINEMENT_INTEGRATION_RECEIPT_H

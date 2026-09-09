@@ -3,7 +3,7 @@
  * Immutable result from canonical refinement integration. Contains step trace,
  * committed states, and termination reason.
  *
- * Identity domain: "elpis.semantic.refinement_integration_result.v1"
+ * Identity domain: "elpis.semantic.refinement_integration_result.v2"
  */
 #ifndef ELPIS_SEMANTIC_REFINEMENT_INTEGRATION_RESULT_H
 #define ELPIS_SEMANTIC_REFINEMENT_INTEGRATION_RESULT_H
@@ -116,7 +116,7 @@ typedef struct elpis_semantic_refinement_integration_result_v1 {
 void elpis_refinement_integration_result_init(
     elpis_semantic_refinement_integration_result_v1 *result);
 
-/* Compute result identity. Domain: "elpis.semantic.refinement_integration_result.v1" */
+/* Compute result identity. Domain: "elpis.semantic.refinement_integration_result.v2" */
 int elpis_refinement_integration_result_identity(
     const elpis_semantic_refinement_integration_result_v1 *result, hacf_digest *out);
 

@@ -633,11 +633,7 @@ def build_resolved_structural_topology(
             "wrong production projection type"
         )
 
-    status = getattr(
-        projection.status,
-        "value",
-        projection.status,
-    )
+    status = projection.status
 
     if status != "PROJECTED":
         raise ResolvedStructuralTopologyError(
@@ -779,20 +775,13 @@ def build_resolved_structural_topology(
             "semantic binding sidecar identity mismatch"
         )
 
-    computed_envelope_digest = getattr(
-        envelope,
-        "envelope_digest_computed",
-        None,
-    )
-
-    if callable(computed_envelope_digest):
-        if (
-            envelope.envelope_digest
-            != computed_envelope_digest()
-        ):
-            raise ResolvedStructuralTopologyError(
-                "invalid envelope digest"
-            )
+    if (
+        envelope.envelope_digest
+        != envelope.envelope_digest_computed()
+    ):
+        raise ResolvedStructuralTopologyError(
+            "invalid envelope digest"
+        )
 
     _require_projection_identity(
         projection,

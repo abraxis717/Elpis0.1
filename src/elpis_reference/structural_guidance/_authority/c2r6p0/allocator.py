@@ -57,7 +57,7 @@ from .contracts import (
     StructuralBindingV1,
 )
 from .graph import GraphAnalysis
-from .rules import Ruleset
+from .rules import BudgetedRulesetV2
 from .taxonomy import (
     INTERFACE_PREDICATE,
     MUTATES_PREDICATE,
@@ -213,7 +213,28 @@ def _constraint_owner(
     return None
 
 
-def _joint_assignment(operations, edges, demands):
+from enum import Enum
+from .rules import DEFAULT_NODE_BUDGET, MAX_NODE_BUDGET
+
+
+class SearchStatus(str, Enum):
+    SAT = "SAT"
+    UNSAT = "UNSAT"
+    SEARCH_BUDGET_EXHAUSTED = "SEARCH_BUDGET_EXHAUSTED"
+
+
+@dataclass(frozen=True)
+class JointAssignmentResult:
+    status: SearchStatus
+    search_entries: int
+    assignments: tuple[tuple[dict[str, int], dict[str, int]], ...]
+
+    def __post_init__(self):
+        if len(self.assignments) != (1 if self.status is SearchStatus.SAT else 0):
+            raise ValueError("assignment evidence does not match search status")
+
+
+def _joint_assignment(operations, edges, demands, *, node_budget=DEFAULT_NODE_BUDGET):
     """Complete finite rank/locus CSP, independent of the scientific oracle.
 
     A demand is (id, lane owner, after operation, before operation or None).
@@ -223,9 +244,13 @@ def _joint_assignment(operations, edges, demands):
     rejects lanes with no injection. Neither step commits a greedy witness.
 
     Search visits operations by id, then demands by id, with ascending ranks.
-    Exhaustion proves infeasibility; first success is the lexicographically
-    least joint assignment. There is no search cutoff or learned dependency.
+    Completed enumeration proves infeasibility; a budget cutoff does not.
+    First success is the lexicographically least joint assignment. Search-entry
+    counting is deterministic and independent of wall time.
     """
+    if type(node_budget) is not int or not 1 <= node_budget <= MAX_NODE_BUDGET:
+        raise ValueError("invalid finite node_budget")
+    entries = 0
     operations = tuple(sorted(operations))
     demands = tuple(sorted(demands))
     index = {op: i for i, op in enumerate(operations)}
@@ -237,7 +262,7 @@ def _joint_assignment(operations, edges, demands):
         if before is not None:
             inequalities.append((i, index[before], 1))
     if any(len(lane) > RANKS for lane in lanes):
-        return None
+        return JointAssignmentResult(SearchStatus.UNSAT, 0, ())
 
     def matching_possible(lane, domains):
         occupied = {}
@@ -280,7 +305,12 @@ def _joint_assignment(operations, edges, demands):
                         domains[v] = narrowed
         return all(matching_possible(lane, domains) for lane in lanes)
 
+    class BudgetExhausted(Exception):
+        pass
+
     def search(domains):
+        nonlocal entries
+        entries += 1
         if not propagate(domains):
             return None
         variable = next((i for i, domain in enumerate(domains) if len(domain) > 1), None)
@@ -289,18 +319,23 @@ def _joint_assignment(operations, edges, demands):
         for rank in sorted(domains[variable]):
             branch = domains.copy()  # propagation replaces sets, never mutates them
             branch[variable] = {rank}
+            if entries >= node_budget:
+                raise BudgetExhausted
             found = search(branch)
             if found is not None:
                 return found
         return None
 
-    found = search([set(range(RANKS)) for _ in range(len(operations) + len(demands))])
+    try:
+        found = search([set(range(RANKS)) for _ in range(len(operations) + len(demands))])
+    except BudgetExhausted:
+        return JointAssignmentResult(SearchStatus.SEARCH_BUDGET_EXHAUSTED, entries, ())
     if found is None:
-        return None
-    return (
+        return JointAssignmentResult(SearchStatus.UNSAT, entries, ())
+    return JointAssignmentResult(SearchStatus.SAT, entries, ((
         dict(zip(operations, found)),
         {demand[0]: found[i] for i, demand in enumerate(demands, len(operations))},
-    )
+    ),))
 
 
 def _locus_demands(payload, analysis):
@@ -324,7 +359,7 @@ def _locus_demands(payload, analysis):
 def allocate(
     payload: dict[str, Any],
     analysis: GraphAnalysis,
-    ruleset: Ruleset,
+    ruleset: BudgetedRulesetV2,
 ) -> tuple[Placement | None, ProjectionError | None, dict[str, int]]:
     """Run deterministic allocation. Returns (placement, error, capacity)."""
     ops = payload["operations"]
@@ -404,15 +439,24 @@ def allocate(
         analysis.op_ids,
         [(e.src, e.dst, e.gap) for e in analysis.edges],
         _locus_demands(payload, analysis),
+        node_budget=ruleset.node_budget,
     )
-    if assignment is None:
+    if assignment.status is SearchStatus.SEARCH_BUDGET_EXHAUSTED:
+        error = ProjectionError(
+            status="SEARCH_BUDGET_EXHAUSTED", code="ERR.SEARCH_BUDGET_EXHAUSTED",
+            rule="R15.SEARCH_BUDGET",
+            detail={"node_budget": ruleset.node_budget, "search_entries": assignment.search_entries},
+        )
+        return None, error, {"search_entries": assignment.search_entries}
+    if assignment.status is SearchStatus.UNSAT:
         cap = _capacity_record(payload, analysis)
+        cap["search_entries"] = assignment.search_entries
         return None, _reject_decomposition(
             R.R_CAP_LOCI,
             {"reason": "finite_joint_allocation_exhausted"},
             cap,
         ), cap
-    rank_of, locus_ranks = assignment
+    rank_of, locus_ranks = assignment.assignments[0]
 
     # Lane assignments are recorded first (R6), in sorted operation order,
     # before any locus is placed.
@@ -954,6 +998,7 @@ def allocate(
         per_lane_loci[c % 9] = per_lane_loci.get(c % 9, 0) + 1
     cap["max_loci_per_lane"] = max(per_lane_loci.values(), default=0)
     cap["loci_total"] = len(placement.frozen)
+    cap["search_entries"] = assignment.search_entries
 
     return placement, None, cap
 

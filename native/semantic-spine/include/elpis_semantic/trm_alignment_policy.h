@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include "trm_native_contract.h"
 
-#define TRM_ALIGNMENT_POLICY_ABI_VERSION 1
-#define TRM_ALIGNMENT_POLICY_DOMAIN "elpis.semantic.trm_alignment_policy.v1"
+#define TRM_ALIGNMENT_POLICY_ABI_VERSION 2
+#define TRM_ALIGNMENT_POLICY_DOMAIN "elpis.semantic.trm_alignment_policy.v2"
 #define TRM_HYPOTHESIS_MAX 16
 #define TRM_LANE_MAX 8
 #define TRM_LANE_ID_LEN 64

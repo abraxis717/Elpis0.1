@@ -8,26 +8,14 @@
 #include "elpis/corpus.h"
 #include "elpis/sha256.h"
 
+#include <cstdio>
 #include <cstring>
 #include <cstdint>
-#include <string>
 
 namespace {
 
 static const char kZeroDigest[] =
     "0000000000000000000000000000000000000000000000000000000000000000";
-
-static std::string hex_bytes(const char *s, size_t n) {
-    static const char h[] = "0123456789abcdef";
-    std::string o;
-    o.resize(n * 2);
-    for (size_t i = 0; i < n; ++i) {
-        unsigned char c = (unsigned char)s[i];
-        o[i * 2] = h[c >> 4];
-        o[i * 2 + 1] = h[c & 15];
-    }
-    return o;
-}
 
 } // namespace
 
@@ -225,7 +213,8 @@ int elpis_bundle_verify(
             if (std::strcmp(computed_digest, bd) != 0) {
                 result->status = BUNDLE_VERIFY_PACKAGE_MISMATCH;
                 std::snprintf(result->detail, sizeof(result->detail),
-                    "bundle digest mismatch: computed=%s stored=%s", computed_digest, bd);
+                    "bundle digest mismatch: computed=%.32s stored=%.32s",
+                    computed_digest, bd);
                 elpis_free(json);
                 return SEMANTIC_OK;
             }

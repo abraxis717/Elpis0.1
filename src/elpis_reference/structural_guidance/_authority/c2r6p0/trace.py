@@ -266,3 +266,23 @@ def build_rejection_trace(
         events=events,
         trace_digest=digest,
     )
+
+
+def bind_search_budget(trace, content_digest, ruleset_digest, node_budget, search_entries):
+    """Commit new operational information only under the successor trace schema."""
+    from .contracts import ProjectionTraceV2
+    search = ({"state": "NOT_RUN"} if not search_entries else
+              {"state": "MEASURED", "entries": search_entries[0]})
+    payload = {
+        "schema": "c2r6p0.projection-trace.v2",
+        "semantic_input_digest": content_digest,
+        "rule_set_digest": ruleset_digest,
+        "events": [event.to_dict() for event in trace.events],
+        "node_budget": node_budget,
+        "search": search,
+    }
+    return ProjectionTraceV2(
+        schema=payload["schema"], events=trace.events,
+        trace_digest=sha256_hex(canonical_bytes(payload)),
+        node_budget=node_budget, search_entries=search_entries,
+    )

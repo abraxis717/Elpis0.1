@@ -1,6 +1,6 @@
 /* elpis_semantic/refiner_bakeoff_policy.h — Immutable P11 bakeoff policy v1.
  *
- * Identity domain: "elpis.semantic.refiner_bakeoff_policy.v1"
+ * Identity domain: "elpis.semantic.refiner_bakeoff_policy.v2"
  */
 #ifndef ELPIS_SEMANTIC_REFINER_BAKEOFF_POLICY_H
 #define ELPIS_SEMANTIC_REFINER_BAKEOFF_POLICY_H

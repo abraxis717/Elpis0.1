@@ -31,17 +31,6 @@ static void write_digest(elpis_sha256_ctx *ctx, const hacf_digest *d) {
     elpis_sha256_update(ctx, d->bytes, HACF_DIGEST_BYTES);
 }
 
-static uint64_t htonll(uint64_t val) {
-    uint64_t lo = htonl((uint32_t)val);
-    uint64_t hi = htonl((uint32_t)(val >> 32));
-    return (hi << 32) | lo;
-}
-
-static void write_i64_be(elpis_sha256_ctx *ctx, int64_t val) {
-    uint64_t be_val = htonll((uint64_t)val);
-    elpis_sha256_update(ctx, &be_val, 8);
-}
-
 static const char DIAG_DOMAIN[] = "elpis.semantic.requirement_result.diagnostic.v1";
 
 /* ──────────────────────────────────────────────────────────────────── */
@@ -98,35 +87,98 @@ void elpis_requirement_results_canonicalize(
     }
 }
 
-void elpis_count_deficits(
+int elpis_context_requirement_objects_validate_binding(
+    const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t requirement_count)
+{
+    if (!requirement_set || !requirements) return SEMANTIC_E_INVAL;
+    if (elpis_context_requirement_set_validate(requirement_set) != SET_VALID)
+        return SEMANTIC_E_INVAL;
+    if (requirement_count == 0 ||
+        requirement_count != requirement_set->requirement_count ||
+        requirement_count > CONTEXT_MAX_REQUIREMENTS)
+        return SEMANTIC_E_INVAL;
+
+    for (uint32_t i = 0; i < requirement_count; ++i) {
+        if (elpis_context_requirement_validate(&requirements[i]) != SEMANTIC_OK)
+            return SEMANTIC_E_INVAL;
+
+        hacf_digest computed;
+        if (elpis_context_requirement_identity(&requirements[i], &computed) != SEMANTIC_OK)
+            return SEMANTIC_E_INVAL;
+        if (memcmp(&computed, &requirements[i].requirement_identity,
+                   sizeof(hacf_digest)) != 0)
+            return SEMANTIC_E_DIGEST;
+        if (memcmp(&computed, &requirement_set->requirement_digests[i],
+                   sizeof(hacf_digest)) != 0)
+            return SEMANTIC_E_DIGEST;
+    }
+    return SEMANTIC_OK;
+}
+
+int elpis_count_deficits(
     const elpis_semantic_requirement_result_v1 *results, uint32_t count,
     const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t requirement_count,
     uint32_t *satisfied_out,
     uint32_t *mandatory_deficit_out,
     uint32_t *preferred_deficit_out,
     uint32_t *diagnostic_deficit_out,
-    uint32_t *blocked_out) {
+    uint32_t *blocked_out)
+{
+    if (!results || !requirement_set || !requirements ||
+        !satisfied_out || !mandatory_deficit_out || !preferred_deficit_out ||
+        !diagnostic_deficit_out || !blocked_out)
+        return SEMANTIC_E_INVAL;
+
+    if (count != requirement_count)
+        return SEMANTIC_E_INVAL;
+
+    int binding_rc = elpis_context_requirement_objects_validate_binding(
+        requirement_set, requirements, requirement_count);
+    if (binding_rc != SEMANTIC_OK)
+        return binding_rc;
+
     *satisfied_out = 0;
     *mandatory_deficit_out = 0;
     *preferred_deficit_out = 0;
     *diagnostic_deficit_out = 0;
     *blocked_out = 0;
 
-    (void)requirement_set; /* future: lookup requirement level from requirement_set */
+    for (uint32_t i = 0; i < count; ++i) {
+        if (memcmp(&results[i].requirement_digest,
+                   &requirements[i].requirement_identity,
+                   sizeof(hacf_digest)) != 0)
+            return SEMANTIC_E_DIGEST;
 
-    for (uint32_t i = 0; i < count; i++) {
         if (results[i].evaluation_status != EVAL_STATUS_EVALUATED) {
             (*blocked_out)++;
             continue;
         }
         if (results[i].satisfaction_status == SAT_STATUS_SATISFIED) {
             (*satisfied_out)++;
-        } else if (results[i].satisfaction_status == SAT_STATUS_UNSATISFIED) {
-            /* Without the requirement set's level info, default to mandatory */
-            /* In production this would look up the level from the requirement */
-            (*mandatory_deficit_out)++;
+            continue;
+        }
+        if (results[i].satisfaction_status != SAT_STATUS_UNSATISFIED)
+            continue;
+
+        switch (requirements[i].requirement_level) {
+            case MANDATORY:
+                (*mandatory_deficit_out)++;
+                break;
+            case PREFERRED:
+                (*preferred_deficit_out)++;
+                break;
+            case DIAGNOSTIC:
+                (*diagnostic_deficit_out)++;
+                break;
+            default:
+                return SEMANTIC_E_INVAL;
         }
     }
+    return SEMANTIC_OK;
 }
 
 /* ──────────────────────────────────────────────────────────────────── */
@@ -926,49 +978,58 @@ int elpis_context_evaluate_requirements(
     const elpis_semantic_embedding_collection_v1 *embedding_collections,
     uint32_t                                     collection_count,
     const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t                                     requirement_count,
     const elpis_semantic_context_deficit_policy_v1  *policy,
     elpis_semantic_requirement_result_v1 **results_out,
     uint32_t                              *result_count_out) {
 
-    if (!requirement_set || !policy || !results_out || !result_count_out) {
+    if (!composed_view || !requirement_set || !requirements || !policy ||
+        !results_out || !result_count_out) {
         return SEMANTIC_E_INVAL;
     }
-
-    /* Validate policy */
-    if (elpis_context_deficit_policy_validate(policy) != SEMANTIC_OK) {
+    if (collection_count > 0 && !embedding_collections)
         return SEMANTIC_E_INVAL;
-    }
 
-    uint32_t count = requirement_set->requirement_count;
-    if (count == 0 || count > CONTEXT_MAX_REQUIREMENTS) {
+    if (elpis_context_deficit_policy_validate(policy) != SEMANTIC_OK)
         return SEMANTIC_E_INVAL;
-    }
 
+    int binding_rc = elpis_context_requirement_objects_validate_binding(
+        requirement_set, requirements, requirement_count);
+    if (binding_rc != SEMANTIC_OK)
+        return binding_rc;
+
+    uint32_t count = requirement_count;
     elpis_semantic_requirement_result_v1 *results =
         calloc((size_t)count, sizeof(elpis_semantic_requirement_result_v1));
     if (!results) return SEMANTIC_E_NOMEM;
 
-    for (uint32_t i = 0; i < count; i++) {
+    for (uint32_t i = 0; i < count; ++i) {
         elpis_requirement_result_init(&results[i]);
-        /* For full evaluation we would need the requirement structs, not just digests.
-           In P2 the requirement_set stores digests; the actual requirements are passed
-           via a separate lookup mechanism. For now evaluate with a placeholder. */
-        elpis_semantic_context_requirement_v1 placeholder;
-        memset(&placeholder, 0, sizeof(placeholder));
-        placeholder.abi_version = CONTEXT_REQUIREMENT_ABI_VERSION;
-        placeholder.requirement_identity = requirement_set->requirement_digests[i];
 
-        evaluate_single_requirement(&placeholder, composed_view,
-                                    embedding_collections, collection_count,
-                                    &results[i]);
+        int rc = evaluate_single_requirement(
+            &requirements[i], composed_view,
+            embedding_collections, collection_count, &results[i]);
+        if (rc != SEMANTIC_OK) {
+            free(results);
+            return rc;
+        }
 
-        /* Compute diagnostic digest */
-        elpis_requirement_result_diagnostic(&results[i], &results[i].diagnostic_digest);
+        if (memcmp(&results[i].requirement_digest,
+                   &requirements[i].requirement_identity,
+                   sizeof(hacf_digest)) != 0) {
+            free(results);
+            return SEMANTIC_E_DIGEST;
+        }
+
+        if (elpis_requirement_result_diagnostic(
+                &results[i], &results[i].diagnostic_digest) != SEMANTIC_OK) {
+            free(results);
+            return SEMANTIC_E_INVAL;
+        }
     }
 
-    /* Canonicalize results */
     elpis_requirement_results_canonicalize(results, count);
-
     *results_out = results;
     *result_count_out = count;
     return SEMANTIC_OK;

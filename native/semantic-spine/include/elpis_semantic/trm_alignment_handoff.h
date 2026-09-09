@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include "trm_alignment_report.h"
 
+#define TRM_ALIGNMENT_HANDOFF_ABI_VERSION 2
+#define TRM_ALIGNMENT_HANDOFF_DOMAIN "elpis.semantic.trm_alignment_handoff.v2"
 #define TRM_HANDOFF_DIGEST_LEN 64
 #define TRM_HANDOFF_STATEMENT_LEN 512
 

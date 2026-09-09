@@ -35,7 +35,7 @@ static int test_round_zero_baseline(void) {
     }
 
     /* Predecessor should be all-zero */
-    for (int i = 0; i < HACF_DIGEST_BYTES; i++) {
+    for (uint32_t i = 0; i < HACF_DIGEST_BYTES; i++) {
         if (state.previous_iteration_state_digest.bytes[i] != 0) {
             printf("FAIL: predecessor not all-zero for round 0\n");
             return 1;
@@ -44,7 +44,7 @@ static int test_round_zero_baseline(void) {
 
     /* Identity should be set */
     int all_zero = 1;
-    for (int i = 0; i < HACF_DIGEST_BYTES; i++) {
+    for (uint32_t i = 0; i < HACF_DIGEST_BYTES; i++) {
         if (state.iteration_state_digest.bytes[i] != 0) { all_zero = 0; break; }
     }
     if (all_zero) {

@@ -10,6 +10,8 @@ from .admission import (
 from ._authority.c2r6p0.contracts import (
     ProjectionInputV1,
     ProjectionResultV1,
+    ProjectionBudgetExhaustedV2,
+    ProjectionSearchBudgetExhausted,
 )
 from ._authority.c2r6p0.projector import (
     project,
@@ -58,6 +60,9 @@ def project_and_admit(
     projection = project(
         projection_input
     )
+
+    if isinstance(projection, ProjectionBudgetExhaustedV2):
+        raise ProjectionSearchBudgetExhausted(projection)
 
     if not isinstance(
         projection,

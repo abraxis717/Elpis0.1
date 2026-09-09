@@ -80,6 +80,14 @@ static int find_vector_bytes(
     return -1;
 }
 
+static int digest_in_composed_view(
+    const hacf_digest *nodes, uint32_t count, const hacf_digest *target) {
+    for (uint32_t i = 0; i < count; ++i) {
+        if (memcmp(&nodes[i], target, sizeof(hacf_digest)) == 0) return 1;
+    }
+    return 0;
+}
+
 /* ──────────────────────────────────────────────────────────────────── */
 /* Resolve neighborhood                                                  */
 /* ──────────────────────────────────────────────────────────────────── */
@@ -116,6 +124,11 @@ int elpis_embedding_resolve_neighborhood(
 
     for (uint32_t i = 0; i < ref_count; i++) {
         const elpis_semantic_embedding_ref_v1 *ref = &refs[i];
+
+        /* Neighborhood candidates are restricted to the exact composed view. */
+        if (!digest_in_composed_view(composed_view_nodes, composed_node_count,
+                                     &ref->semantic_node_digest))
+            continue;
 
         /* Skip if not for the target profile */
         if (memcmp(&ref->embedding_profile_digest, &query->profile_digest, sizeof(hacf_digest)) != 0)

@@ -11,9 +11,8 @@ import psutil
 import requests
 
 from .airgap import (
-    check_subprocess_allowed,
-    instrument_airgap,
-    uninstrument_airgap,
+    SubprocessPolicyError,
+    run_allowed_subprocess,
 )
 from .cache import WorkerCache
 from .config import LlamaEndpoint, SensorConfig
@@ -127,17 +126,13 @@ class NvidiaWorker(Worker):
             "--format=csv,noheader,nounits",
         ]
 
-        if not check_subprocess_allowed(command):
-            return
-
         try:
-            completed = subprocess.run(
+            completed = run_allowed_subprocess(
                 command,
                 capture_output=True,
                 text=True,
                 timeout=0.35,
                 check=True,
-                shell=False,
             )
 
             for line in completed.stdout.splitlines():
@@ -177,7 +172,12 @@ class NvidiaWorker(Worker):
                     except ValueError:
                         continue
 
-        except (OSError, subprocess.SubprocessError, ValueError):
+        except (
+            OSError,
+            subprocess.SubprocessError,
+            SubprocessPolicyError,
+            ValueError,
+        ):
             pass
 
         if results:

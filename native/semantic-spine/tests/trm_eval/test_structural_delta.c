@@ -11,8 +11,6 @@ static int tests_failed = 0;
     else { tests_passed++; } \
 } while(0)
 
-static const uint32_t REF[GRID81_CELL_COUNT] = {0};
-
 int main(void) {
     elpis_semantic_trm_structural_delta_v1 delta;
     uint32_t fixed[GRID81_CELL_COUNT] = {0};

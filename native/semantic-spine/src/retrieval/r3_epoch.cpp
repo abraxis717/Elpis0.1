@@ -23,12 +23,6 @@ namespace {
 static const char kZeroDigest[] =
     "0000000000000000000000000000000000000000000000000000000000000000";
 
-static void put_be32(elpis_sha256_ctx *h, uint32_t v) {
-    uint8_t b[4] = {(uint8_t)(v >> 24), (uint8_t)(v >> 16),
-                    (uint8_t)(v >> 8), (uint8_t)v};
-    elpis_sha256_update(h, b, sizeof b);
-}
-
 } // namespace
 
 extern "C" {

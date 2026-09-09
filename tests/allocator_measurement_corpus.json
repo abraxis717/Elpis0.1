@@ -1,0 +1,21 @@
+{
+  "cases": 44202,
+  "encoding": "UTF-8 JSONL; sorted keys; compact separators; allow_nan=False; final LF",
+  "generator_sha256": "8b637d18f16dcadcc0c61e0a1f78029c30d4d93dc63da330746ad449b04f1afe",
+  "groups": {
+    "canonical_core": 44005,
+    "single_tails": 55,
+    "small_tail_minimality": 67,
+    "stress": 75
+  },
+  "order": [
+    "canonical_core(1)",
+    "canonical_core(2)",
+    "canonical_core(3)",
+    "single_tails()",
+    "small_tail_minimality()",
+    "stress()"
+  ],
+  "schema": "elpis.closure.allocator-measurement-corpus.v1",
+  "sha256": "20022bdabd727024d260246ec284b6a1a11db8487f3ce2dc55a8e555fff18f63"
+}

@@ -19,10 +19,18 @@
 #include "elpis/vector_shard.h"
 #include "elpis/sha256.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+
+#define R1_MAX_DOCS 64
+#define R1_MAX_CHUNKS 128
+#define R1_MANIFEST_JSON_CAP 65536
+#define R1_E_LIMIT (-2)
+#define R1_E_INVAL (-3)
+#define R1_E_IO (-4)
 
 typedef struct {
     char label[64];
@@ -53,185 +61,28 @@ typedef struct r1_env {
     size_t shard_len;
 } r1_env_t;
 
-static void mkdirp(const char *p) {
+static int mkdirp(const char *p) {
+    if (!p || !*p) return R1_E_INVAL;
+
     char tmp[1024];
-    snprintf(tmp, sizeof tmp, "%s", p);
+    int written = snprintf(tmp, sizeof tmp, "%s", p);
+    if (written < 0 || (size_t)written >= sizeof tmp) return R1_E_LIMIT;
+
     for (char *c = tmp + 1; *c; c++) {
-        if (*c == '/') {
-            *c = '\0'; mkdir(tmp, 0755); *c = '/';
+        if (*c != '/') continue;
+        *c = '\0';
+        if (mkdir(tmp, 0755) != 0 && errno != EEXIST) {
+            *c = '/';
+            return R1_E_IO;
         }
+        *c = '/';
     }
-    mkdir(tmp, 0755);
+
+    if (mkdir(tmp, 0755) != 0 && errno != EEXIST) return R1_E_IO;
+    return 0;
 }
 
-r1_env_t *r1_env_create(const char *state_root,
-                         const char **labels, const char **texts,
-                         const char **namespaces, const char **authorities,
-                         int n_docs, char error_buf[256]) {
-    r1_env_t *env = calloc(1, sizeof(r1_env_t));
-    if (!env) { snprintf(error_buf, 256, "calloc"); return NULL; }
-
-    char corpus_dir[512];
-    snprintf(corpus_dir, sizeof corpus_dir, "%s/corpus", state_root);
-    mkdirp(corpus_dir);
-    if (elpis_corpus_open(corpus_dir, &env->corpus) != 0) {
-        snprintf(error_buf, 256, "corpus_open failed"); free(env); return NULL;
-    }
-
-    for (int i = 0; i < n_docs; i++) {
-        elpis_ingest_meta m;
-        memset(&m, 0, sizeof m);
-        m.ns = namespaces[i]; m.authority = authorities[i];
-        m.media_type = ELPIS_MT_TEXT; m.origin = labels[i];
-        elpis_ingest_result ir;
-        memset(&ir, 0, sizeof ir);
-        if (elpis_corpus_ingest_bytes(env->corpus, texts[i], strlen(texts[i]), &m, &ir) != 0) {
-            snprintf(error_buf, 256, "ingest failed for %s", labels[i]);
-            elpis_corpus_close(env->corpus); free(env); return NULL;
-        }
-        if (env->n_refs < 64) {
-            strncpy(env->refs[env->n_refs].label, labels[i], 63);
-            memcpy(env->refs[env->n_refs].doc, ir.doc_digest, 64);
-            env->refs[env->n_refs].doc[64] = '\0';
-            env->refs[env->n_refs].ns[0] = '\0';
-            env->refs[env->n_refs].auth[0] = '\0';
-            env->refs[env->n_refs].chunk[0] = '\0';
-            env->n_refs++;
-        }
-    }
-
-    {
-        char *cj = NULL;
-        if (elpis_corpus_manifest_json(env->corpus, &cj, env->corpus_digest) == 0 && cj) {
-            size_t len = strlen(cj);
-            env->corpus_manifest_json_len = len < 65535 ? len : 65535;
-            memcpy(env->corpus_manifest_json, cj, env->corpus_manifest_json_len);
-            env->corpus_manifest_json[env->corpus_manifest_json_len] = '\0';
-            elpis_free(cj);
-        }
-    }
-
-    {
-        elpis_chunk_ref refs[128];
-        uint32_t n = 0;
-        elpis_corpus_list_chunks(env->corpus, NULL, NULL, 0, 128, refs, &n);
-        for (uint32_t ci = 0; ci < n; ci++) {
-            for (size_t li = 0; li < env->n_refs; li++) {
-                if (strcmp(env->refs[li].doc, refs[ci].doc_digest) == 0) {
-                    memcpy(env->refs[li].chunk, refs[ci].chunk_digest, 64);
-                    env->refs[li].chunk[64] = '\0';
-                    strncpy(env->refs[li].ns, refs[ci].ns, 95);
-                    strncpy(env->refs[li].auth, refs[ci].authority, 31);
-                }
-            }
-        }
-    }
-
-    if (elpis_embedder_fixture_create(ELPIS_NORM_L2, &env->embedder) != 0) {
-        snprintf(error_buf, 256, "embedder_create failed");
-        elpis_corpus_close(env->corpus); free(env); return NULL;
-    }
-    elpis_embedder_profile(env->embedder, &env->profile);
-
-    elpis_vshard_input inputs[128];
-    memset(inputs, 0, sizeof inputs);
-    int n_inputs = 0;
-    for (size_t i = 0; i < env->n_refs; i++) {
-        char *text = NULL;
-        if (elpis_corpus_chunk_text(env->corpus, env->refs[i].chunk, &text) != 0)
-            continue;
-        float vec[ELPIS_EMBEDDING_DIM];
-        elpis_embedder_embed(env->embedder, text, strlen(text), vec, ELPIS_EMBEDDING_DIM);
-        elpis_free(text);
-
-        strncpy(inputs[n_inputs].chunk_digest, env->refs[i].chunk, 64);
-        strncpy(inputs[n_inputs].doc_digest, env->refs[i].doc, 64);
-        inputs[n_inputs].ns = env->refs[i].ns;
-        inputs[n_inputs].authority = env->refs[i].auth;
-        float *v = malloc(ELPIS_EMBEDDING_DIM * sizeof(float));
-        memcpy(v, vec, ELPIS_EMBEDDING_DIM * sizeof(float));
-        inputs[n_inputs].vector = v;
-        n_inputs++;
-    }
-
-    {
-        char sd[65];
-        if (elpis_vshard_build(inputs, n_inputs, &env->profile, env->corpus_digest,
-                               &env->shard_bytes, &env->shard_len, sd) != 0) {
-            snprintf(error_buf, 256, "vshard_build failed");
-            for (int i = 0; i < n_inputs; i++) free((void*)inputs[i].vector);
-            elpis_embedder_destroy(env->embedder);
-            elpis_corpus_close(env->corpus); free(env); return NULL;
-        }
-        memcpy(env->shard_digest, sd, 64);
-        env->shard_digest[64] = '\0';
-    }
-    for (int i = 0; i < n_inputs; i++) free((void*)inputs[i].vector);
-
-    {
-        char cold_root[512];
-        snprintf(cold_root, sizeof cold_root, "%s/cold", state_root);
-        mkdirp(cold_root);
-        fms_pal *pal = fms_pal_posix_create(cold_root);
-        if (!pal) {
-            snprintf(error_buf, 256, "fms_pal failed");
-            elpis_free(env->shard_bytes);
-            elpis_embedder_destroy(env->embedder);
-            elpis_corpus_close(env->corpus); free(env); return NULL;
-        }
-        fms_config cfg;
-        memset(&cfg, 0, sizeof cfg);
-        cfg.tier_budget[FMS_WARM] = 16ull << 20;
-        cfg.tier_budget[FMS_COLD] = 512ull << 20;
-        cfg.domain_ceiling[FMS_DOM_RAM] = 16ull << 20;
-        cfg.domain_ceiling[FMS_DOM_STORAGE] = 512ull << 20;
-        cfg.high_wm = 0.90f; cfg.low_wm = 0.70f;
-        cfg.max_objects = 64;
-        cfg.hot_absent_policy = FMS_REJECT;
-        cfg.cold_absent_policy = FMS_FOLD_DOWN;
-        env->fms = fms_create(&cfg, pal);
-        if (!env->fms) {
-            snprintf(error_buf, 256, "fms_create failed");
-            elpis_free(env->shard_bytes);
-            elpis_embedder_destroy(env->embedder);
-            elpis_corpus_close(env->corpus); free(env); return NULL;
-        }
-    }
-
-    if (elpis_vector_index_create(env->fms, &env->profile, env->corpus_digest, &env->index) != ELPIS_VEC_OK) {
-        snprintf(error_buf, 256, "vindex_create failed");
-        fms_destroy(env->fms);
-        elpis_free(env->shard_bytes);
-        elpis_embedder_destroy(env->embedder);
-        elpis_corpus_close(env->corpus); free(env); return NULL;
-    }
-    if (elpis_vector_index_add_shard_bytes(env->index, env->shard_bytes, env->shard_len, NULL) != ELPIS_VEC_OK) {
-        snprintf(error_buf, 256, "add_shard failed: %s", elpis_vector_index_error(env->index));
-        elpis_vector_index_destroy(env->index);
-        fms_destroy(env->fms);
-        elpis_free(env->shard_bytes);
-        elpis_embedder_destroy(env->embedder);
-        elpis_corpus_close(env->corpus); free(env); return NULL;
-    }
-    elpis_free(env->shard_bytes); env->shard_bytes = NULL; env->shard_len = 0;
-
-    {
-        char *vj = NULL;
-        char vj_digest[65];
-        if (elpis_vector_index_manifest_json(env->index, &vj, vj_digest) == 0 && vj) {
-            size_t len = strlen(vj);
-            env->vindex_manifest_json_len = len < 65535 ? len : 65535;
-            memcpy(env->vindex_manifest_json, vj, env->vindex_manifest_json_len);
-            env->vindex_manifest_json[env->vindex_manifest_json_len] = '\0';
-            elpis_free(vj);
-        }
-    }
-
-    snprintf(error_buf, 256, "ok");
-    return env;
-}
-
-void r1_env_destroy(r1_env_t *env) {
+static void r1_env_cleanup(r1_env_t *env) {
     if (!env) return;
     if (env->index) elpis_vector_index_destroy(env->index);
     if (env->fms) fms_destroy(env->fms);
@@ -239,6 +90,318 @@ void r1_env_destroy(r1_env_t *env) {
     if (env->corpus) elpis_corpus_close(env->corpus);
     if (env->shard_bytes) elpis_free(env->shard_bytes);
     free(env);
+}
+
+static r1_env_t *r1_env_fail(
+    r1_env_t *env, char error_buf[256], const char *code, const char *detail) {
+    if (error_buf) snprintf(error_buf, 256, "%s: %s", code, detail);
+    r1_env_cleanup(env);
+    return NULL;
+}
+
+static int path_join(
+    char *out, size_t out_cap, const char *root, const char *leaf) {
+    if (!out || out_cap == 0 || !root || !leaf) return R1_E_INVAL;
+    int written = snprintf(out, out_cap, "%s/%s", root, leaf);
+    if (written < 0 || (size_t)written >= out_cap) return R1_E_LIMIT;
+    return 0;
+}
+
+int r1_checked_manifest_copy(
+    const char *manifest_json,
+    char *dst,
+    size_t dst_cap,
+    size_t *len_out,
+    char error_buf[256]) {
+    if (error_buf) error_buf[0] = '\0';
+    if (len_out) *len_out = 0;
+
+    if (!manifest_json || !dst || dst_cap == 0 || !len_out) {
+        if (error_buf) {
+            snprintf(error_buf, 256, "E_INVAL: invalid manifest copy arguments");
+        }
+        return R1_E_INVAL;
+    }
+
+    size_t len = strlen(manifest_json);
+    if (len >= dst_cap) {
+        if (error_buf) {
+            snprintf(
+                error_buf, 256,
+                "E_LIMIT: manifest JSON requires %zu bytes, capacity=%zu",
+                len + 1, dst_cap);
+        }
+        return R1_E_LIMIT;
+    }
+
+    memcpy(dst, manifest_json, len + 1);
+    *len_out = len;
+    if (error_buf) snprintf(error_buf, 256, "ok");
+    return 0;
+}
+
+r1_env_t *r1_env_create(const char *state_root,
+                         const char **labels, const char **texts,
+                         const char **namespaces, const char **authorities,
+                         int n_docs, char error_buf[256]) {
+    if (error_buf) error_buf[0] = '\0';
+    if (!state_root || n_docs < 0 ||
+        (n_docs > 0 && (!labels || !texts || !namespaces || !authorities))) {
+        if (error_buf) snprintf(error_buf, 256, "E_INVAL: invalid create arguments");
+        return NULL;
+    }
+    if (n_docs > R1_MAX_DOCS) {
+        if (error_buf) {
+            snprintf(error_buf, 256, "E_LIMIT: n_docs=%d exceeds %d",
+                     n_docs, R1_MAX_DOCS);
+        }
+        return NULL;
+    }
+
+    r1_env_t *env = calloc(1, sizeof(r1_env_t));
+    if (!env) {
+        if (error_buf) snprintf(error_buf, 256, "E_NOMEM: environment allocation failed");
+        return NULL;
+    }
+
+    char corpus_dir[512];
+    int path_rc = path_join(corpus_dir, sizeof corpus_dir, state_root, "corpus");
+    if (path_rc == R1_E_LIMIT)
+        return r1_env_fail(env, error_buf, "E_LIMIT", "corpus path exceeds native boundary");
+    if (path_rc != 0)
+        return r1_env_fail(env, error_buf, "E_INVAL", "invalid corpus path");
+    int mkdir_rc = mkdirp(corpus_dir);
+    if (mkdir_rc == R1_E_LIMIT)
+        return r1_env_fail(env, error_buf, "E_LIMIT", "corpus mkdir path exceeds native boundary");
+    if (mkdir_rc != 0)
+        return r1_env_fail(env, error_buf, "E_IO", "corpus mkdir failed");
+
+    if (elpis_corpus_open(corpus_dir, &env->corpus) != 0)
+        return r1_env_fail(env, error_buf, "E_NATIVE", "corpus_open failed");
+
+    for (int i = 0; i < n_docs; i++) {
+        if (!labels[i] || !texts[i] || !namespaces[i] || !authorities[i])
+            return r1_env_fail(env, error_buf, "E_INVAL", "NULL document field");
+        if (strlen(labels[i]) >= sizeof env->refs[0].label)
+            return r1_env_fail(env, error_buf, "E_LIMIT", "label exceeds 63 bytes");
+        if (strlen(namespaces[i]) >= sizeof env->refs[0].ns)
+            return r1_env_fail(env, error_buf, "E_LIMIT", "namespace exceeds 95 bytes");
+        if (strlen(authorities[i]) >= sizeof env->refs[0].auth)
+            return r1_env_fail(env, error_buf, "E_LIMIT", "authority exceeds 31 bytes");
+
+        elpis_ingest_meta m;
+        memset(&m, 0, sizeof m);
+        m.ns = namespaces[i];
+        m.authority = authorities[i];
+        m.media_type = ELPIS_MT_TEXT;
+        m.origin = labels[i];
+
+        elpis_ingest_result ir;
+        memset(&ir, 0, sizeof ir);
+        if (elpis_corpus_ingest_bytes(
+                env->corpus, texts[i], strlen(texts[i]), &m, &ir) != 0) {
+            return r1_env_fail(env, error_buf, "E_NATIVE", "corpus ingest failed");
+        }
+
+        memcpy(env->refs[env->n_refs].label, labels[i], strlen(labels[i]) + 1);
+        memcpy(env->refs[env->n_refs].doc, ir.doc_digest, 64);
+        env->refs[env->n_refs].doc[64] = '\0';
+        env->refs[env->n_refs].ns[0] = '\0';
+        env->refs[env->n_refs].auth[0] = '\0';
+        env->refs[env->n_refs].chunk[0] = '\0';
+        env->n_refs++;
+    }
+
+    {
+        char *cj = NULL;
+        char corpus_digest[65];
+        if (elpis_corpus_manifest_json(env->corpus, &cj, corpus_digest) != 0 || !cj)
+            return r1_env_fail(env, error_buf, "E_NATIVE", "corpus manifest failed");
+
+        size_t manifest_len = 0;
+        int manifest_copy_rc = r1_checked_manifest_copy(
+            cj,
+            env->corpus_manifest_json,
+            sizeof env->corpus_manifest_json,
+            &manifest_len,
+            error_buf);
+        if (manifest_copy_rc != 0) {
+            elpis_free(cj);
+            r1_env_cleanup(env);
+            return NULL;
+        }
+        env->corpus_manifest_json_len = manifest_len;
+        memcpy(env->corpus_digest, corpus_digest, 65);
+        elpis_free(cj);
+    }
+
+    {
+        elpis_chunk_ref refs[R1_MAX_CHUNKS];
+        uint32_t n = 0;
+        int list_rc = elpis_corpus_list_chunks(
+            env->corpus, NULL, NULL, 0, R1_MAX_CHUNKS, refs, &n);
+        if (list_rc != 0) {
+            return r1_env_fail(
+                env, error_buf, "E_NATIVE", "corpus chunk listing failed");
+        }
+        if (n == R1_MAX_CHUNKS) {
+            elpis_chunk_ref overflow_ref[1];
+            uint32_t overflow_n = 0;
+            int overflow_rc = elpis_corpus_list_chunks(
+                env->corpus, NULL, NULL, R1_MAX_CHUNKS,
+                1, overflow_ref, &overflow_n);
+            if (overflow_rc != 0) {
+                return r1_env_fail(
+                    env, error_buf, "E_NATIVE", "corpus chunk overflow probe failed");
+            }
+            if (overflow_n != 0) {
+                return r1_env_fail(
+                    env, error_buf, "E_LIMIT", "corpus exceeds 128 chunks");
+            }
+        }
+
+        for (uint32_t ci = 0; ci < n; ci++) {
+            for (size_t li = 0; li < env->n_refs; li++) {
+                if (strcmp(env->refs[li].doc, refs[ci].doc_digest) != 0)
+                    continue;
+                if (strlen(refs[ci].ns) >= sizeof env->refs[li].ns ||
+                    strlen(refs[ci].authority) >= sizeof env->refs[li].auth) {
+                    return r1_env_fail(
+                        env, error_buf, "E_LIMIT",
+                        "chunk metadata exceeds native boundary");
+                }
+                memcpy(env->refs[li].chunk, refs[ci].chunk_digest, 64);
+                env->refs[li].chunk[64] = '\0';
+                memcpy(env->refs[li].ns, refs[ci].ns, strlen(refs[ci].ns) + 1);
+                memcpy(env->refs[li].auth, refs[ci].authority,
+                       strlen(refs[ci].authority) + 1);
+            }
+        }
+    }
+
+    if (elpis_embedder_fixture_create(ELPIS_NORM_L2, &env->embedder) != 0)
+        return r1_env_fail(env, error_buf, "E_NATIVE", "embedder_create failed");
+    elpis_embedder_profile(env->embedder, &env->profile);
+
+    elpis_vshard_input inputs[R1_MAX_DOCS];
+    memset(inputs, 0, sizeof inputs);
+    int n_inputs = 0;
+    for (size_t i = 0; i < env->n_refs; i++) {
+        char *text = NULL;
+        if (elpis_corpus_chunk_text(env->corpus, env->refs[i].chunk, &text) != 0)
+            continue;
+
+        float vec[ELPIS_EMBEDDING_DIM];
+        elpis_embedder_embed(
+            env->embedder, text, strlen(text), vec, ELPIS_EMBEDDING_DIM);
+        elpis_free(text);
+
+        strncpy(inputs[n_inputs].chunk_digest, env->refs[i].chunk, 64);
+        strncpy(inputs[n_inputs].doc_digest, env->refs[i].doc, 64);
+        inputs[n_inputs].ns = env->refs[i].ns;
+        inputs[n_inputs].authority = env->refs[i].auth;
+
+        float *v = malloc(ELPIS_EMBEDDING_DIM * sizeof(float));
+        if (!v) {
+            for (int j = 0; j < n_inputs; j++) free((void *)inputs[j].vector);
+            return r1_env_fail(env, error_buf, "E_NOMEM", "vector allocation failed");
+        }
+        memcpy(v, vec, ELPIS_EMBEDDING_DIM * sizeof(float));
+        inputs[n_inputs].vector = v;
+        n_inputs++;
+    }
+
+    {
+        char sd[65];
+        if (elpis_vshard_build(
+                inputs, n_inputs, &env->profile, env->corpus_digest,
+                &env->shard_bytes, &env->shard_len, sd) != 0) {
+            for (int i = 0; i < n_inputs; i++) free((void *)inputs[i].vector);
+            return r1_env_fail(env, error_buf, "E_NATIVE", "vshard_build failed");
+        }
+        memcpy(env->shard_digest, sd, 64);
+        env->shard_digest[64] = '\0';
+    }
+    for (int i = 0; i < n_inputs; i++) free((void *)inputs[i].vector);
+
+    {
+        char cold_root[512];
+        path_rc = path_join(cold_root, sizeof cold_root, state_root, "cold");
+        if (path_rc == R1_E_LIMIT)
+            return r1_env_fail(env, error_buf, "E_LIMIT", "cold path exceeds native boundary");
+        if (path_rc != 0)
+            return r1_env_fail(env, error_buf, "E_INVAL", "invalid cold path");
+        mkdir_rc = mkdirp(cold_root);
+        if (mkdir_rc == R1_E_LIMIT)
+            return r1_env_fail(env, error_buf, "E_LIMIT", "cold mkdir path exceeds native boundary");
+        if (mkdir_rc != 0)
+            return r1_env_fail(env, error_buf, "E_IO", "cold mkdir failed");
+
+        fms_pal *pal = fms_pal_posix_create(cold_root);
+        if (!pal)
+            return r1_env_fail(env, error_buf, "E_NATIVE", "fms_pal failed");
+
+        fms_config cfg;
+        memset(&cfg, 0, sizeof cfg);
+        cfg.tier_budget[FMS_WARM] = 16ull << 20;
+        cfg.tier_budget[FMS_COLD] = 512ull << 20;
+        cfg.domain_ceiling[FMS_DOM_RAM] = 16ull << 20;
+        cfg.domain_ceiling[FMS_DOM_STORAGE] = 512ull << 20;
+        cfg.high_wm = 0.90f;
+        cfg.low_wm = 0.70f;
+        cfg.max_objects = 64;
+        cfg.hot_absent_policy = FMS_REJECT;
+        cfg.cold_absent_policy = FMS_FOLD_DOWN;
+        env->fms = fms_create(&cfg, pal);
+        if (!env->fms)
+            return r1_env_fail(env, error_buf, "E_NATIVE", "fms_create failed");
+    }
+
+    if (elpis_vector_index_create(
+            env->fms, &env->profile, env->corpus_digest, &env->index)
+        != ELPIS_VEC_OK) {
+        return r1_env_fail(env, error_buf, "E_NATIVE", "vindex_create failed");
+    }
+
+    if (elpis_vector_index_add_shard_bytes(
+            env->index, env->shard_bytes, env->shard_len, NULL)
+        != ELPIS_VEC_OK) {
+        return r1_env_fail(
+            env, error_buf, "E_NATIVE", elpis_vector_index_error(env->index));
+    }
+
+    elpis_free(env->shard_bytes);
+    env->shard_bytes = NULL;
+    env->shard_len = 0;
+
+    {
+        char *vj = NULL;
+        char vj_digest[65];
+        if (elpis_vector_index_manifest_json(env->index, &vj, vj_digest) != 0 || !vj)
+            return r1_env_fail(env, error_buf, "E_NATIVE", "vector manifest failed");
+
+        size_t manifest_len = 0;
+        int manifest_copy_rc = r1_checked_manifest_copy(
+            vj,
+            env->vindex_manifest_json,
+            sizeof env->vindex_manifest_json,
+            &manifest_len,
+            error_buf);
+        if (manifest_copy_rc != 0) {
+            elpis_free(vj);
+            r1_env_cleanup(env);
+            return NULL;
+        }
+        env->vindex_manifest_json_len = manifest_len;
+        elpis_free(vj);
+    }
+
+    if (error_buf) snprintf(error_buf, 256, "ok");
+    return env;
+}
+
+void r1_env_destroy(r1_env_t *env) {
+    r1_env_cleanup(env);
 }
 
 int r1_env_embed(r1_env_t *env, const char *text, int text_len, float *out, int out_dim) {
@@ -260,7 +423,13 @@ int r1_env_retrieve(r1_env_t *env,
                     int *item_count_out,
                     char error_buf[256]) {
     if (!env || !env->corpus || !env->index) {
-        snprintf(error_buf, 256, "env not ready"); return -1;
+        if (error_buf) snprintf(error_buf, 256, "E_INVAL: env not ready");
+        return R1_E_INVAL;
+    }
+    if (!query_text || !query_vector || query_dim <= 0 ||
+        !bundle_json_out || bundle_json_cap <= 0 || !bundle_digest_out) {
+        if (error_buf) snprintf(error_buf, 256, "E_INVAL: invalid retrieval arguments");
+        return R1_E_INVAL;
     }
 
     elpis_hybrid_policy policy;
@@ -306,9 +475,18 @@ int r1_env_retrieve(r1_env_t *env,
     }
 
     size_t jlen = strlen(j);
-    if (jlen >= (size_t)bundle_json_cap) jlen = bundle_json_cap - 1;
-    memcpy(bundle_json_out, j, jlen);
-    bundle_json_out[jlen] = '\0';
+    if (jlen >= (size_t)bundle_json_cap) {
+        elpis_free(j);
+        elpis_retrieval_bundle_destroy(bundle);
+        elpis_hybrid_retriever_destroy(retriever);
+        if (error_buf) {
+            snprintf(error_buf, 256,
+                     "E_LIMIT: bundle JSON requires %zu bytes, capacity=%d",
+                     jlen + 1, bundle_json_cap);
+        }
+        return R1_E_LIMIT;
+    }
+    memcpy(bundle_json_out, j, jlen + 1);
     elpis_free(j);
 
     memcpy(bundle_digest_out, bd, 64);
@@ -325,7 +503,7 @@ int r1_env_retrieve(r1_env_t *env,
 
     elpis_retrieval_bundle_destroy(bundle);
     elpis_hybrid_retriever_destroy(retriever);
-    snprintf(error_buf, 256, "ok");
+    if (error_buf) snprintf(error_buf, 256, "ok");
     return 0;
 }
 

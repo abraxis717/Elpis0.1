@@ -16,11 +16,11 @@ int elpis_refiner_execution_identity(const elpis_semantic_refiner_execution_v1 *
     size_t off = 0;
 
     memcpy(buf + off, domain, strlen(domain)); off += strlen(domain);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(exec->abi_version);
+    { uint32_t encoded_u32 = __builtin_bswap32(exec->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     memcpy(buf + off, exec->candidate_manifest_digest.bytes, 32); off += 32;
     memcpy(buf + off, exec->input_state_digest.bytes, 32); off += 32;
     memcpy(buf + off, exec->output_state_digest.bytes, 32); off += 32;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(exec->disposition);
+    { uint32_t encoded_u32 = __builtin_bswap32(exec->disposition); memcpy(buf + off, &encoded_u32, 4); off += 4; }
 
     elpis_sha256(buf, off, out->bytes);
     return SEMANTIC_OK;

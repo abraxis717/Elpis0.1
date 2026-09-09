@@ -3,7 +3,7 @@
  * Binds evaluation results to the composed view, embedding collections,
  * requirement set, and deficit policy. Determines overall disposition.
  *
- * Identity domain: "elpis.semantic.context_deficit_report.v1"
+ * Identity domain: "elpis.semantic.context_deficit_report.v2"
  */
 #ifndef ELPIS_SEMANTIC_CONTEXT_DEFICIT_REPORT_H
 #define ELPIS_SEMANTIC_CONTEXT_DEFICIT_REPORT_H
@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-#define CONTEXT_DEFICIT_REPORT_ABI_VERSION  1u
+#define CONTEXT_DEFICIT_REPORT_ABI_VERSION  2u
 #define CONTEXT_MAX_EMBEDDING_COLLECTIONS   16u
 
 /* ──────────────────────────────────────────────────────────────────── */
@@ -64,7 +64,7 @@ typedef struct elpis_semantic_context_deficit_report_v1 {
 void elpis_context_deficit_report_init(
     elpis_semantic_context_deficit_report_v1 *report);
 
-/* Compute report identity. Domain: "elpis.semantic.context_deficit_report.v1"
+/* Compute report identity. Domain: "elpis.semantic.context_deficit_report.v2"
  * Byte stream: domain_tag || abi_version(4 BE)
  *             || composed_view_digest(32)
  *             || embedding_collection_count(4 BE)
@@ -93,16 +93,22 @@ int elpis_context_deficit_report_identity(
 int elpis_context_deficit_report_disposition(
     const elpis_semantic_requirement_result_v1 *results, uint32_t result_count,
     const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t requirement_count,
     const elpis_semantic_context_deficit_policy_v1 *policy,
     uint32_t *disposition_out);
 
 /* Build a complete deficit report from evaluation results.
- * Caller must free *report_out on error. */
+ * composed_view_digest is the explicit identity of the evaluated view and
+ * must equal requirement_set->target_composed_view_digest.
+ * Caller owns *report_out on success and must free it. */
 int elpis_context_deficit_report_build(
-    const semantic_snapshot_view          *composed_view,
+    const hacf_digest                     *composed_view_digest,
     const elpis_semantic_embedding_collection_v1 *embedding_collections,
     uint32_t                                     collection_count,
     const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t requirement_count,
     const elpis_semantic_context_deficit_policy_v1  *policy,
     const elpis_semantic_requirement_result_v1 *results,
     uint32_t result_count,

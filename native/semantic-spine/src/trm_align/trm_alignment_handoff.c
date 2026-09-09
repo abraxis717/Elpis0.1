@@ -3,18 +3,20 @@
 #include <stdio.h>
 #include <openssl/sha.h>
 
-static void sha256_hex(const void *data, size_t len, char *out, size_t out_len) {
+static void sha256_hex64(const void *data, size_t len, char out[64]) {
+    static const char hex[] = "0123456789abcdef";
     unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256(data, len, hash);
-    for (int i = 0; i < SHA256_DIGEST_LENGTH && (size_t)(i * 2 + 2) < out_len; i++) {
-        sprintf(out + i * 2, "%02x", hash[i]);
+    for (size_t i = 0; i < SHA256_DIGEST_LENGTH; ++i) {
+        out[i * 2] = hex[hash[i] >> 4];
+        out[i * 2 + 1] = hex[hash[i] & 0x0f];
     }
 }
 
 trm_alignment_handoff_t trm_alignment_handoff_create(void) {
     trm_alignment_handoff_t handoff;
     memset(&handoff, 0, sizeof(handoff));
-    handoff.abi_version = 1;
+    handoff.abi_version = TRM_ALIGNMENT_HANDOFF_ABI_VERSION;
     handoff.handoff_kind = TRM_HANDOFF_FROZEN_TRM_ALIGNMENT_DIAGNOSIS;
     handoff.p10_negative_result_unchanged = 1;
     handoff.frozen_model_unchanged = 1;
@@ -33,13 +35,14 @@ trm_alignment_handoff_t trm_alignment_handoff_create(void) {
 
 void trm_alignment_handoff_compute_digest(trm_alignment_handoff_t *handoff) {
     if (!handoff) return;
-    sha256_hex(handoff, sizeof(trm_alignment_handoff_t),
-               handoff->handoff_digest, TRM_HANDOFF_DIGEST_LEN);
+    trm_alignment_handoff_t normalized = *handoff;
+    memset(normalized.handoff_digest, 0, sizeof(normalized.handoff_digest));
+    sha256_hex64(&normalized, sizeof(normalized), handoff->handoff_digest);
 }
 
 int trm_alignment_handoff_validate(const trm_alignment_handoff_t *handoff) {
     if (!handoff) return 0;
-    if (handoff->abi_version != 1) return 0;
+    if (handoff->abi_version != TRM_ALIGNMENT_HANDOFF_ABI_VERSION) return 0;
     if (handoff->handoff_kind != TRM_HANDOFF_FROZEN_TRM_ALIGNMENT_DIAGNOSIS) return 0;
     if (handoff->runtime_admission != 0) return 0;
     if (handoff->no_weights_changed != 1) return 0;

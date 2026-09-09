@@ -26,7 +26,8 @@ void *__wrap_malloc(size_t size) {
     for(unsigned a=0;a<5;++a) for(unsigned b=0;b<5;++b) for(unsigned c=0;c<5;++c) { \
         offset=offsets[a]; limit=limits[b]; capacity=capacities[c]; \
         uint32_t want=offset<total ? total-offset : 0; \
-        if(want>limit) want=limit; if(want>capacity) want=capacity; \
+        if(want>limit) want=limit; \
+        if(want>capacity) want=capacity; \
         for(unsigned repeat=0;repeat<2;++repeat) { \
             for(unsigned k=0;k<12;++k) out[k]=expected[0]; \
             CHECK((call)==want); \

@@ -297,7 +297,6 @@ static int test_identity_deterministic(void) {
 }
 
 static int test_null_input(void) {
-    elpis_semantic_context_progress_v1 report;
     if (elpis_context_measure_progress(NULL, NULL, NULL, 0, NULL, 0, NULL)
         != SEMANTIC_E_INVAL) {
         printf("FAIL: NULL not rejected\n");

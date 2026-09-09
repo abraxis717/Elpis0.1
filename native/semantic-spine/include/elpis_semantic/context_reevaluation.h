@@ -1,9 +1,11 @@
 /* elpis_semantic/context_reevaluation.h — Post-admission context re-evaluation.
  *
- * P5 uses the qualified P2 evaluator against the exact P4 typed-evidence view
- * and the exact rebound P2 requirement set. P5 preserves the exact P2 disposition.
+ * P5 consumes an immutable P2 deficit report already evaluated against the
+ * exact rebound requirement set and typed-evidence-view identity. P5 does not
+ * claim to invoke P2. It verifies the report binding and preserves its exact
+ * disposition.
  *
- * Identity domain: "elpis.semantic.context_reevaluation.v1"
+ * Identity domain: "elpis.semantic.context_reevaluation.v2"
  */
 #ifndef ELPIS_SEMANTIC_CONTEXT_REEVALUATION_H
 #define ELPIS_SEMANTIC_CONTEXT_REEVALUATION_H
@@ -19,7 +21,7 @@
 extern "C" {
 #endif
 
-#define CONTEXT_REEVALUATION_ABI_VERSION 1u
+#define CONTEXT_REEVALUATION_ABI_VERSION 2u
 
 /* ──────────────────────────────────────────────────────────────────── */
 /* Context re-evaluation receipt                                         */
@@ -58,14 +60,14 @@ typedef struct elpis_semantic_context_reevaluation_v1 {
 void elpis_context_reevaluation_init(
     elpis_semantic_context_reevaluation_v1 *receipt);
 
-/* Perform post-admission context re-evaluation:
- *  1. Verify the P4 typed-evidence view.
- *  2. Verify the requirement rebind receipt.
- *  3. Verify P1 collection targets.
- *  4. Invoke every P2 evaluator exactly once.
- *  5. Produce a new immutable P2 deficit report.
- *  6. Bind outputs into the reevaluation receipt.
+/* Consume a post-admission P2 deficit report:
+ *  1. Verify the P4 typed-evidence view and its identity.
+ *  2. Verify the requirement rebind receipt and rebound set identity.
+ *  3. Verify the P2 policy identity.
+ *  4. Verify the supplied P2 report identity and all cross-bindings.
+ *  5. Preserve the report's exact P2 disposition in the receipt.
  *
+ * P5 does not invoke P2 in this ABI. The caller supplies the P2 report.
  * Returns SEMANTIC_OK on success. P2 disposition is preserved exactly:
  *   DISP_CONTEXT_SUFFICIENT, DISP_RETRIEVAL_REQUIRED,
  *   DISP_REQUIREMENT_SET_INVALID, DISP_EVALUATION_BLOCKED. */
@@ -74,11 +76,10 @@ int elpis_context_reevaluate(
     const elpis_semantic_context_rebind_v1                *rebind_receipt,
     const elpis_semantic_context_requirement_set_v1       *rebound_set,
     const elpis_semantic_context_deficit_policy_v1        *P2_policy,
-    const elpis_semantic_embedding_collection_v1          *embedding_collections,
-    uint32_t                                               collection_count,
+    const elpis_semantic_context_deficit_report_v1        *P2_report,
     elpis_semantic_context_reevaluation_v1               *receipt);
 
-/* Compute reevaluation receipt identity. Domain: "elpis.semantic.context_reevaluation.v1" */
+/* Compute reevaluation receipt identity. Domain: "elpis.semantic.context_reevaluation.v2" */
 int elpis_context_reevaluation_identity(
     const elpis_semantic_context_reevaluation_v1 *receipt, hacf_digest *out);
 

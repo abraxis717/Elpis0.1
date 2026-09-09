@@ -109,7 +109,6 @@ int elpis_claim_candidate_validate(const elpis_evidence_claim_candidate_v1 *cand
 
     /* Polarity validation */
     switch (candidate->claim_polarity) {
-        case 0: /* UNSPECIFIED default */
         case CLAIM_POLARITY_AFFIRMATIVE:
         case CLAIM_POLARITY_NEGATIVE:
         case CLAIM_POLARITY_NEUTRAL:
@@ -121,7 +120,6 @@ int elpis_claim_candidate_validate(const elpis_evidence_claim_candidate_v1 *cand
 
     /* Modality validation */
     switch (candidate->claim_modality) {
-        case 0: /* UNSPECIFIED default */
         case CLAIM_MODALITY_ASSERTED:
         case CLAIM_MODALITY_POSSIBLE:
         case CLAIM_MODALITY_PROBABLE:

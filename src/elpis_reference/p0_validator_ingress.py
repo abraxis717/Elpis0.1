@@ -148,11 +148,7 @@ def _lineage_payload(lineage: P0ArtifactProposalLineageLike) -> dict[str, object
         "validator_id": lineage.validator_id,
         "validator_index": lineage.validator_index,
     }
-    semantic_request_digest = getattr(
-        lineage,
-        "semantic_request_digest",
-        "",
-    )
+    semantic_request_digest = lineage.semantic_request_digest
     if semantic_request_digest:
         payload["semantic_request_digest"] = (
             semantic_request_digest
@@ -185,16 +181,8 @@ def _verify_lineage_binding(
     if lineage.projection_digest != projection_trace.projection_digest:
         raise ValueError("projection trace does not match P0 lineage")
 
-    lineage_semantic_request_digest = getattr(
-        lineage,
-        "semantic_request_digest",
-        "",
-    )
-    trace_semantic_request_digest = getattr(
-        projection_trace,
-        "semantic_request_digest",
-        "",
-    )
+    lineage_semantic_request_digest = lineage.semantic_request_digest
+    trace_semantic_request_digest = projection_trace.semantic_request_digest
     if lineage_semantic_request_digest:
         require_digest(
             "semantic_request_digest",
@@ -253,7 +241,7 @@ class P0ProjectionTraceV1:
     cell_semantic_digests: tuple[str, ...]
     observations: tuple[StructuralObservationRecord, ...]
     trace_digest: str
-    semantic_request_digest: str = ""
+    semantic_request_digest: str
 
     def semantic_digest_for_row(self, row_name: str) -> str:
         matches = tuple(
@@ -288,7 +276,7 @@ def build_p0_projection_trace(
     projection_digest: str,
     grid81: Sequence[int],
     semantic_rows: Sequence[str],
-    semantic_request_digest: str = "",
+    semantic_request_digest: str,
 ) -> P0ProjectionTraceV1:
     """Freeze fixed-position P0 semantic/topology/P7 trace pre-validation."""
     require_digest("projection_digest", projection_digest)

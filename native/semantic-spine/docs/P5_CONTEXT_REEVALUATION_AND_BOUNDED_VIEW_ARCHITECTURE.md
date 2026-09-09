@@ -39,9 +39,11 @@ bindings. Consumable as a read-only index via `elpis_typed_evidence_view_v1`.
 
 ### 2. Context re-evaluation
 
-The application of the qualified P2 requirement set to the new typed-evidence view.
-P5 rebinds the original P2 requirements to the new view, invokes the P2 evaluator
-unchanged, and preserves the exact P2 disposition.
+P5 consumes an immutable P2 deficit report supplied by the caller after evaluation
+against the rebound requirement set. P5 verifies that the report is bound to the
+exact typed-evidence-view identity, rebound requirement-set identity, P2 policy
+identity, and embedding-collection identities, then preserves the exact P2
+disposition. P5 does **not** claim to invoke P2 in this successor ABI.
 
 ### 3. Context iteration
 
@@ -149,7 +151,7 @@ invalid requirement set: FAIL_CLOSED
 round limit reached with unresolved mandatory deficits: STOP_ROUND_LIMIT
 ```
 
-## Default P5 v1 bounded-view limits
+## Default P5 successor bounded-view limits
 
 ```
 maximum_semantic_nodes: 256
@@ -160,7 +162,7 @@ maximum_source_spans: 256
 maximum_transport_references: 256
 maximum_embedding_references: 256
 maximum_metric_observations: 512
-maximum_graph_hops: 2
+maximum_graph_hops: 1
 maximum_metric_neighbors_per_seed: 8
 ```
 
@@ -189,3 +191,20 @@ Lexicographic priority tuple (no floating point):
 11. Candidate record digest (lexicographic)
 
 Raw floating-point embedding scores never control canonical order.
+
+## Successor contract correction
+
+The frozen 2.1.9 P5 contract advertised two-hop bounded-view expansion while the
+active `retrieval_item_attachment.v1` verifier permits only `graph_hop` 0 or 1.
+Elpis2.1.10 contracts the active bounded-view policy to one hop and advances the
+policy identity domain to v2 rather than fabricating an unsupported second-hop
+representation.
+
+The previous P5 implementation also hardcoded `CONTEXT_SUFFICIENT` while claiming
+to invoke P2. The successor reevaluation contract consumes and verifies a supplied
+P2 deficit report instead.
+
+The P2 successor no longer treats a requirement set as an implicit object store.
+Callers provide the immutable requirement objects explicitly in the same canonical
+digest order as the set. P2 recomputes every object identity and requires an exact
+one-to-one match before evaluation, deficit counting, or disposition.

@@ -64,6 +64,25 @@ static int validate_sudoku_board(const uint32_t digits[GRID81_CELL_COUNT]) {
     return SEMANTIC_OK;
 }
 
+static int validate_mask_contract(
+    const uint32_t mask[GRID81_CELL_COUNT],
+    uint32_t expected_count,
+    const hacf_digest *expected_digest)
+{
+    if (!mask || !expected_digest) return SEMANTIC_E_INVAL;
+    uint32_t actual_count = 0;
+    for (uint32_t i = 0; i < GRID81_CELL_COUNT; ++i) {
+        if (mask[i] > 1) return SEMANTIC_E_INVAL;
+        actual_count += mask[i];
+    }
+    if (actual_count != expected_count) return SEMANTIC_E_INVAL;
+    hacf_digest actual_digest;
+    elpis_trm_digest_bytes((const uint8_t *)mask,
+        GRID81_CELL_COUNT * sizeof(uint32_t), &actual_digest);
+    return memcmp(&actual_digest, expected_digest, sizeof(actual_digest)) == 0
+        ? SEMANTIC_OK : SEMANTIC_E_INVAL;
+}
+
 int elpis_trm_guarded_result_construct(
     elpis_semantic_trm_guarded_result_v1 *result,
     const uint32_t input_digits[GRID81_CELL_COUNT],
@@ -87,75 +106,72 @@ int elpis_trm_guarded_result_construct(
     const hacf_digest *admitted_changed_mask_digest,
     const hacf_digest *fixed_violation_mask_digest)
 {
-    if (!result || !input_digits || !guarded_digits) return SEMANTIC_E_INVAL;
+    if (!result || !input_digits || !guarded_digits ||
+        !candidate_changed_mask || !admitted_changed_mask || !fixed_violation_mask ||
+        !candidate_changed_mask_digest || !admitted_changed_mask_digest ||
+        !fixed_violation_mask_digest)
+        return SEMANTIC_E_INVAL;
+    if (sudoku_valid != 0 && sudoku_valid != 1) return SEMANTIC_E_INVAL;
+    if (validate_sudoku_board(input_digits) != SEMANTIC_OK) return SEMANTIC_E_INVAL;
+
+    int actual_sudoku_valid =
+        validate_sudoku_board(guarded_digits) == SEMANTIC_OK ? 1 : 0;
+    if (actual_sudoku_valid != sudoku_valid) return SEMANTIC_E_INVAL;
+
+    if (validate_mask_contract(candidate_changed_mask, candidate_changed_count,
+                               candidate_changed_mask_digest) != SEMANTIC_OK ||
+        validate_mask_contract(admitted_changed_mask, admitted_changed_count,
+                               admitted_changed_mask_digest) != SEMANTIC_OK ||
+        validate_mask_contract(fixed_violation_mask, fixed_violation_count,
+                               fixed_violation_mask_digest) != SEMANTIC_OK)
+        return SEMANTIC_E_INVAL;
+
+    for (uint32_t i = 0; i < GRID81_CELL_COUNT; ++i) {
+        if (admitted_changed_mask[i] && !candidate_changed_mask[i])
+            return SEMANTIC_E_INVAL;
+        if (fixed_violation_mask[i] && !candidate_changed_mask[i])
+            return SEMANTIC_E_INVAL;
+    }
 
     elpis_trm_guarded_result_init(result);
-
-    /* Copy digests */
-    if (adapter_packet_digest)
-        memcpy(&result->adapter_packet_digest, adapter_packet_digest, sizeof(hacf_digest));
-    if (candidate_frame_digest)
-        memcpy(&result->candidate_frame_digest, candidate_frame_digest, sizeof(hacf_digest));
-    if (candidate_decode_receipt_digest)
-        memcpy(&result->candidate_decode_receipt_digest, candidate_decode_receipt_digest, sizeof(hacf_digest));
-    if (output_guard_policy_digest)
-        memcpy(&result->output_guard_policy_digest, output_guard_policy_digest, sizeof(hacf_digest));
-    if (input_digit_array_digest)
-        memcpy(&result->input_digit_array_digest, input_digit_array_digest, sizeof(hacf_digest));
-    if (candidate_digit_array_digest)
-        memcpy(&result->candidate_digit_array_digest, candidate_digit_array_digest, sizeof(hacf_digest));
-    if (fixed_mask_digest)
-        memcpy(&result->fixed_mask_digest, fixed_mask_digest, sizeof(hacf_digest));
-    if (writable_mask_digest)
-        memcpy(&result->writable_mask_digest, writable_mask_digest, sizeof(hacf_digest));
-    if (candidate_changed_mask_digest)
-        memcpy(&result->candidate_changed_mask_digest, candidate_changed_mask_digest, sizeof(hacf_digest));
-    if (admitted_changed_mask_digest)
-        memcpy(&result->admitted_changed_mask_digest, admitted_changed_mask_digest, sizeof(hacf_digest));
-    if (fixed_violation_mask_digest)
-        memcpy(&result->fixed_violation_attempt_mask_digest, fixed_violation_mask_digest, sizeof(hacf_digest));
-
+    if (adapter_packet_digest) result->adapter_packet_digest = *adapter_packet_digest;
+    if (candidate_frame_digest) result->candidate_frame_digest = *candidate_frame_digest;
+    if (candidate_decode_receipt_digest) result->candidate_decode_receipt_digest = *candidate_decode_receipt_digest;
+    if (output_guard_policy_digest) result->output_guard_policy_digest = *output_guard_policy_digest;
+    if (input_digit_array_digest) result->input_digit_array_digest = *input_digit_array_digest;
+    if (candidate_digit_array_digest) result->candidate_digit_array_digest = *candidate_digit_array_digest;
+    if (fixed_mask_digest) result->fixed_mask_digest = *fixed_mask_digest;
+    if (writable_mask_digest) result->writable_mask_digest = *writable_mask_digest;
+    result->candidate_changed_mask_digest = *candidate_changed_mask_digest;
+    result->admitted_changed_mask_digest = *admitted_changed_mask_digest;
+    result->fixed_violation_attempt_mask_digest = *fixed_violation_mask_digest;
     result->candidate_changed_cell_count = candidate_changed_count;
     result->admitted_changed_cell_count = admitted_changed_count;
     result->fixed_violation_attempt_count = fixed_violation_count;
 
-    if (!sudoku_valid) {
-        /* Invalid Sudoku: return exact input board */
+    const uint32_t *final_digits = guarded_digits;
+    if (!actual_sudoku_valid) {
         result->guard_disposition = TRM_GUARDED_PROPOSAL_REJECTED_SUDOKU_INVALID;
-        memcpy((void *)result->guarded_digit_array_digest.bytes, input_digits, sizeof(input_digits));
-        /* Actually compute the digest of the input digits */
-        elpis_trm_digest_bytes((const uint8_t *)input_digits,
-            GRID81_CELL_COUNT * sizeof(uint32_t), &result->guarded_digit_array_digest);
-
-        /* Zero admitted changes */
+        final_digits = input_digits;
         memset(&result->admitted_changed_mask_digest, 0, sizeof(hacf_digest));
         result->admitted_changed_cell_count = 0;
+    } else if (admitted_changed_count == 0) {
+        result->guard_disposition = TRM_GUARDED_PROPOSAL_ACCEPTED_NO_CHANGE;
     } else {
-        /* Sudoku valid: accept guarded board */
-        if (admitted_changed_count == 0) {
-            result->guard_disposition = TRM_GUARDED_PROPOSAL_ACCEPTED_NO_CHANGE;
-        } else {
-            result->guard_disposition = TRM_GUARDED_PROPOSAL_ACCEPTED;
-        }
-
-        elpis_trm_digest_bytes((const uint8_t *)guarded_digits,
-            GRID81_CELL_COUNT * sizeof(uint32_t), &result->guarded_digit_array_digest);
+        result->guard_disposition = TRM_GUARDED_PROPOSAL_ACCEPTED;
     }
 
-    /* Compute guarded digit-class tensor digest from guarded digits */
+    elpis_trm_digest_bytes((const uint8_t *)final_digits,
+        GRID81_CELL_COUNT * sizeof(uint32_t), &result->guarded_digit_array_digest);
     uint32_t guarded_classes[GRID81_CELL_COUNT][GRID81_DIGIT_CLASS_COUNT];
     memset(guarded_classes, 0, sizeof(guarded_classes));
-    for (uint32_t i = 0; i < GRID81_CELL_COUNT; i++) {
-        guarded_classes[i][guarded_digits[i]] = 1;
-    }
+    for (uint32_t i = 0; i < GRID81_CELL_COUNT; ++i)
+        guarded_classes[i][final_digits[i]] = 1;
     elpis_trm_digest_bytes((const uint8_t *)guarded_classes, sizeof(guarded_classes),
         &result->guarded_digit_class_tensor_digest);
-
-    /* Compute Sudoku validation receipt */
     elpis_trm_digest_domain("elpis.semantic.sudoku_validation.v1", 1,
-        (const uint8_t *)&sudoku_valid, sizeof(int),
+        (const uint8_t *)&actual_sudoku_valid, sizeof(actual_sudoku_valid),
         &result->Sudoku_validation_receipt_digest);
-
     memset(result->reserved, 0, sizeof(result->reserved));
     return SEMANTIC_OK;
 }

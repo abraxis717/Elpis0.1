@@ -7,7 +7,7 @@
 
 /* struct semantic_hypergraph_builder defined in builder_internal.h */
 
-static int ensure_capacity(void **mem, size_t elem_size, uint32_t *count, uint32_t *capacity, uint32_t needed) {
+static int ensure_capacity(void **mem, size_t elem_size, uint32_t *capacity, uint32_t needed) {
     if (*capacity >= needed) return SEMANTIC_OK;
     uint32_t new_cap = *capacity ? *capacity * 2 : 64;
     if (new_cap < needed) new_cap = needed;
@@ -33,7 +33,7 @@ static int sorted_insert_node(semantic_hypergraph_builder *b, const elpis_semant
         }
         return SEMANTIC_BUILDER_E_DUPLICATE; /* collapse silently — return dup code */
     }
-    if (ensure_capacity((void **)&b->nodes, sizeof(*node), &b->node_count, &b->node_capacity, b->node_count + 1) != SEMANTIC_OK)
+    if (ensure_capacity((void **)&b->nodes, sizeof(*node), &b->node_capacity, b->node_count + 1) != SEMANTIC_OK)
         return SEMANTIC_BUILDER_E_NOMEM;
     memmove(&b->nodes[i + 1], &b->nodes[i], (b->node_count - i) * sizeof(*node));
     b->nodes[i] = *node;
@@ -50,7 +50,7 @@ static int sorted_insert_assertion(semantic_hypergraph_builder *b, const elpis_s
     if (i < b->assertion_count && elpis_semantic_assertion_is_duplicate(&b->assertions[i], assertion)) {
         return SEMANTIC_BUILDER_E_DUPLICATE;
     }
-    if (ensure_capacity((void **)&b->assertions, sizeof(*assertion), &b->assertion_count, &b->assertion_capacity, b->assertion_count + 1) != SEMANTIC_OK)
+    if (ensure_capacity((void **)&b->assertions, sizeof(*assertion), &b->assertion_capacity, b->assertion_count + 1) != SEMANTIC_OK)
         return SEMANTIC_BUILDER_E_NOMEM;
     memmove(&b->assertions[i + 1], &b->assertions[i], (b->assertion_count - i) * sizeof(*assertion));
     b->assertions[i] = *assertion;
@@ -67,7 +67,7 @@ static int sorted_insert_hyperedge(semantic_hypergraph_builder *b, const elpis_s
     if (i < b->hyperedge_count && memcmp(b->hyperedges[i].hyperedge_identity.bytes, edge->hyperedge_identity.bytes, HACF_DIGEST_BYTES) == 0) {
         return SEMANTIC_BUILDER_E_DUPLICATE;
     }
-    if (ensure_capacity((void **)&b->hyperedges, sizeof(*edge), &b->hyperedge_count, &b->hyperedge_capacity, b->hyperedge_count + 1) != SEMANTIC_OK)
+    if (ensure_capacity((void **)&b->hyperedges, sizeof(*edge), &b->hyperedge_capacity, b->hyperedge_count + 1) != SEMANTIC_OK)
         return SEMANTIC_BUILDER_E_NOMEM;
     memmove(&b->hyperedges[i + 1], &b->hyperedges[i], (b->hyperedge_count - i) * sizeof(*edge));
     b->hyperedges[i] = *edge;
@@ -84,7 +84,7 @@ static int sorted_insert_incidence(semantic_hypergraph_builder *b, const elpis_s
     if (i < b->incidence_count && memcmp(b->incidences[i].incidence_identity.bytes, incidence->incidence_identity.bytes, HACF_DIGEST_BYTES) == 0) {
         return SEMANTIC_BUILDER_E_DUPLICATE;
     }
-    if (ensure_capacity((void **)&b->incidences, sizeof(*incidence), &b->incidence_count, &b->incidence_capacity, b->incidence_count + 1) != SEMANTIC_OK)
+    if (ensure_capacity((void **)&b->incidences, sizeof(*incidence), &b->incidence_capacity, b->incidence_count + 1) != SEMANTIC_OK)
         return SEMANTIC_BUILDER_E_NOMEM;
     memmove(&b->incidences[i + 1], &b->incidences[i], (b->incidence_count - i) * sizeof(*incidence));
     b->incidences[i] = *incidence;

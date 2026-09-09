@@ -66,6 +66,7 @@ def main():
         projection_digest=result.projection.digest,
         grid81=result.projection.grid81,
         semantic_rows=result.projection.semantic_rows,
+        semantic_request_digest="",
     )
     evidence = result.evidence[0]
     role = validator_failure_role(evidence.validator_id, evidence.code)

@@ -28,6 +28,9 @@ Generated source is never compiled, imported, invoked, or executed here.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from contextlib import contextmanager
+from typing import Callable, ClassVar
+import threading
 import hashlib
 import json
 
@@ -43,13 +46,13 @@ from .decoder_adapter import (
     DeterministicDecoderAdapterV1,
 )
 from .decoding_authority import (
-    _new_decoding_authority,
+    _DecodingAuthority,
 )
 from .hook import (
     project_semantic_request_and_admit,
 )
 from .materialization_authority import (
-    _new_resolved_topology_materialization_authority,
+    _ResolvedTopologyMaterializationAuthority,
 )
 from .materializer import (
     CANONICAL_STRUCTURAL_MATERIALIZER_ID,
@@ -65,7 +68,7 @@ from .planner import (
     DeterministicStructuralPlannerV1,
 )
 from .planning_authority import (
-    _new_planning_authority,
+    _PlanningAuthority,
 )
 from .planning_input import (
     build_planning_input,
@@ -74,7 +77,7 @@ from .resolved import (
     build_resolved_structural_topology,
 )
 from .source_emission_authority import (
-    _new_source_emission_authority,
+    _SourceEmissionAuthority,
 )
 from .source_emitter import (
     DETERMINISTIC_SOURCE_EMITTER_ID,
@@ -90,7 +93,7 @@ from .structural_validator import (
     StructuralPythonASTValidatorV1,
 )
 from .validation_authority import (
-    _new_validation_authority,
+    _ValidationAuthority,
 )
 
 
@@ -164,6 +167,9 @@ def _is_digest(
 @dataclass(frozen=True, slots=True)
 class StructuralGuidanceRuntimeResultV1:
     """Terminal authority-zero result of one structural-guidance request."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = STRUCTURAL_GUIDANCE_RUNTIME_RESULT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _RUNTIME_RESULT_DOMAIN
 
     schema: str
     status: str
@@ -259,7 +265,7 @@ class StructuralGuidanceRuntimeResultV1:
         self,
     ) -> str:
         return _domain_digest(
-            _RUNTIME_RESULT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -268,7 +274,7 @@ class StructuralGuidanceRuntimeResultV1:
     ) -> None:
         if (
             self.schema
-            != STRUCTURAL_GUIDANCE_RUNTIME_RESULT_SCHEMA
+            != self.EXPECTED_SCHEMA
         ):
             raise StructuralGuidanceRuntimeError(
                 "unsupported runtime result schema"
@@ -392,6 +398,14 @@ class StructuralGuidanceRuntimeResultV1:
         return True
 
 
+@dataclass(frozen=True, slots=True)
+class StructuralGuidanceRuntimeResultV2(StructuralGuidanceRuntimeResultV1):
+    """Static validation under externally issued, request-boundary authority."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.runtime-result.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
 def _terminal_result(
     *,
     request_id: str,
@@ -403,7 +417,7 @@ def _terminal_result(
     source_input,
     source_artifact,
     evidence,
-) -> StructuralGuidanceRuntimeResultV1:
+) -> StructuralGuidanceRuntimeResultV2:
     status = (
         RUNTIME_STATUS_VALIDATED_SOURCE
         if evidence.passed
@@ -412,7 +426,7 @@ def _terminal_result(
 
     base = {
         "schema": (
-            STRUCTURAL_GUIDANCE_RUNTIME_RESULT_SCHEMA
+            StructuralGuidanceRuntimeResultV2.EXPECTED_SCHEMA
         ),
         "status": status,
         "request_id": request_id,
@@ -464,14 +478,14 @@ def _terminal_result(
     }
 
     unsigned = (
-        StructuralGuidanceRuntimeResultV1(
+        StructuralGuidanceRuntimeResultV2(
             **base,
             runtime_result_digest="",
         )
     )
 
     signed = (
-        StructuralGuidanceRuntimeResultV1(
+        StructuralGuidanceRuntimeResultV2(
             **base,
             runtime_result_digest=(
                 unsigned
@@ -485,10 +499,99 @@ def _terminal_result(
     return signed
 
 
-def run_structural_guidance_runtime(
+class AuthorityContext:
+    """One caller-owned runtime boundary with separate issuance and consumption.
+
+    Each callback is supplied by the trusted composition owner and returns an
+    already-issued stage authorization. A callback may refuse issuance. No
+    default issuer exists, and this context neither creates authorities nor
+    precommits/reveals capabilities. The stage consumer is fixed independently
+    of each returned authorization; returned receipts cannot select a consumer.
+    Issuance callbacks may be interactive or use pre-issued handles. They are
+    trusted owner policy, not protection from hostile same-process reflection.
+    """
+
+    def __init__(
+        self, *,
+        materialization: _ResolvedTopologyMaterializationAuthority,
+        planning: _PlanningAuthority,
+        decoding: _DecodingAuthority,
+        source_emission: _SourceEmissionAuthority,
+        validation: _ValidationAuthority,
+        issue_materialization: Callable[..., object],
+        issue_planning: Callable[..., object],
+        issue_decoding: Callable[..., object],
+        issue_source_emission: Callable[..., object],
+        issue_validation: Callable[..., object],
+    ) -> None:
+        stages = (
+            (materialization, _ResolvedTopologyMaterializationAuthority, issue_materialization),
+            (planning, _PlanningAuthority, issue_planning),
+            (decoding, _DecodingAuthority, issue_decoding),
+            (source_emission, _SourceEmissionAuthority, issue_source_emission),
+            (validation, _ValidationAuthority, issue_validation),
+        )
+        for owner, expected, issue in stages:
+            if type(owner) is not expected or not callable(issue):
+                raise TypeError('context requires exact stage owners and explicit issuer callbacks')
+        bound = []
+        try:
+            for owner, _, _ in stages:
+                owner._bind_runtime_owner()
+                bound.append(owner)
+        except BaseException:
+            for owner in bound:
+                owner._close_from_owner()
+            raise
+        self.__stages = stages
+        self.__used = False
+        self.__running = False
+        self.__lock = threading.RLock()
+
+    @contextmanager
+    def boundary(self):
+        with self.__lock:
+            if self.__used:
+                raise StructuralGuidanceRuntimeError('authority context has already been used')
+            self.__used = True
+            self.__running = True
+        try:
+            yield
+        finally:
+            with self.__lock:
+                self.__running = False
+                for owner, _, _ in self.__stages:
+                    owner._close_from_owner()
+
+    def __consume(self, stage, *args, **kwargs):
+        with self.__lock:
+            if not self.__running:
+                raise StructuralGuidanceRuntimeError('authority consumption requires an active runtime boundary')
+            owner, _, issue = self.__stages[stage]
+            authorized = issue(*args, **kwargs)
+            return owner._consume_from_owner(authorized)
+
+    def consume_materialization(self, *args, **kwargs):
+        return self.__consume(0, *args, **kwargs)
+
+    def consume_planning(self, *args, **kwargs):
+        return self.__consume(1, *args, **kwargs)
+
+    def consume_decoding(self, *args, **kwargs):
+        return self.__consume(2, *args, **kwargs)
+
+    def consume_source_emission(self, *args, **kwargs):
+        return self.__consume(3, *args, **kwargs)
+
+    def consume_validation(self, *args, **kwargs):
+        return self.__consume(4, *args, **kwargs)
+
+
+def _run_structural_guidance_runtime(
     semantic_request: P0SemanticRequestV1,
     guidance_config: StructuralGuidanceAdmissionConfig,
     *,
+    authorities: AuthorityContext,
     request_id: str,
     prompt: str,
     domain: str = "python",
@@ -512,7 +615,7 @@ def run_structural_guidance_runtime(
     ),
     max_tokens: int = 512,
     debug_tag: str = "",
-) -> StructuralGuidanceRuntimeResultV1:
+) -> StructuralGuidanceRuntimeResultV2:
     """Run one opted-in request through terminal static validation.
 
     The learned-guidance gate remains explicit and default-OFF.
@@ -596,32 +699,12 @@ def run_structural_guidance_runtime(
         )
     )
 
-    materialization_authority = (
-        _new_resolved_topology_materialization_authority()
-    )
 
-    materialization_intent = (
-        materialization_authority
-        ._precommit_from_owner(
-            topology,
-            observation,
-            materializer_id=(
-                CANONICAL_STRUCTURAL_MATERIALIZER_ID
-            ),
-            materializer_version=(
-                CANONICAL_STRUCTURAL_MATERIALIZER_VERSION
-            ),
-        )
-    )
-
-    materialization_consumption = (
-        materialization_authority
-        ._consume_from_owner(
-            materialization_authority
-            ._reveal_from_owner(
-                materialization_intent
-            )
-        )
+    materialization_consumption = authorities.consume_materialization(
+        topology,
+        observation,
+        materializer_id=CANONICAL_STRUCTURAL_MATERIALIZER_ID,
+        materializer_version=CANONICAL_STRUCTURAL_MATERIALIZER_VERSION,
     )
 
     materialization = (
@@ -645,31 +728,11 @@ def run_structural_guidance_runtime(
         max_tokens=max_tokens,
     )
 
-    planning_authority = (
-        _new_planning_authority()
-    )
 
-    planning_intent = (
-        planning_authority
-        ._precommit_from_owner(
-            planning_input,
-            planner_id=(
-                DETERMINISTIC_STRUCTURAL_PLANNER_ID
-            ),
-            planner_version=(
-                DETERMINISTIC_STRUCTURAL_PLANNER_VERSION
-            ),
-        )
-    )
-
-    planning_consumption = (
-        planning_authority
-        ._consume_from_owner(
-            planning_authority
-            ._reveal_from_owner(
-                planning_intent
-            )
-        )
+    planning_consumption = authorities.consume_planning(
+        planning_input,
+        planner_id=DETERMINISTIC_STRUCTURAL_PLANNER_ID,
+        planner_version=DETERMINISTIC_STRUCTURAL_PLANNER_VERSION,
     )
 
     planning_artifact = (
@@ -680,31 +743,11 @@ def run_structural_guidance_runtime(
         )
     )
 
-    decoding_authority = (
-        _new_decoding_authority()
-    )
 
-    decoding_intent = (
-        decoding_authority
-        ._precommit_from_owner(
-            planning_artifact,
-            decoder_adapter_id=(
-                DETERMINISTIC_DECODER_ADAPTER_ID
-            ),
-            decoder_adapter_version=(
-                DETERMINISTIC_DECODER_ADAPTER_VERSION
-            ),
-        )
-    )
-
-    decoding_consumption = (
-        decoding_authority
-        ._consume_from_owner(
-            decoding_authority
-            ._reveal_from_owner(
-                decoding_intent
-            )
-        )
+    decoding_consumption = authorities.consume_decoding(
+        planning_artifact,
+        decoder_adapter_id=DETERMINISTIC_DECODER_ADAPTER_ID,
+        decoder_adapter_version=DETERMINISTIC_DECODER_ADAPTER_VERSION,
     )
 
     decoder_plan = (
@@ -723,31 +766,11 @@ def run_structural_guidance_runtime(
         )
     )
 
-    source_emission_authority = (
-        _new_source_emission_authority()
-    )
 
-    source_emission_intent = (
-        source_emission_authority
-        ._precommit_from_owner(
-            source_input,
-            source_emitter_id=(
-                DETERMINISTIC_SOURCE_EMITTER_ID
-            ),
-            source_emitter_version=(
-                DETERMINISTIC_SOURCE_EMITTER_VERSION
-            ),
-        )
-    )
-
-    source_emission_consumption = (
-        source_emission_authority
-        ._consume_from_owner(
-            source_emission_authority
-            ._reveal_from_owner(
-                source_emission_intent
-            )
-        )
+    source_emission_consumption = authorities.consume_source_emission(
+        source_input,
+        source_emitter_id=DETERMINISTIC_SOURCE_EMITTER_ID,
+        source_emitter_version=DETERMINISTIC_SOURCE_EMITTER_VERSION,
     )
 
     source_artifact = (
@@ -759,31 +782,11 @@ def run_structural_guidance_runtime(
         )
     )
 
-    validation_authority = (
-        _new_validation_authority()
-    )
 
-    validation_intent = (
-        validation_authority
-        ._precommit_from_owner(
-            source_artifact,
-            validator_id=(
-                STRUCTURAL_PYTHON_AST_VALIDATOR_ID
-            ),
-            validator_version=(
-                STRUCTURAL_PYTHON_AST_VALIDATOR_VERSION
-            ),
-        )
-    )
-
-    validation_consumption = (
-        validation_authority
-        ._consume_from_owner(
-            validation_authority
-            ._reveal_from_owner(
-                validation_intent
-            )
-        )
+    validation_consumption = authorities.consume_validation(
+        source_artifact,
+        validator_id=STRUCTURAL_PYTHON_AST_VALIDATOR_ID,
+        validator_version=STRUCTURAL_PYTHON_AST_VALIDATOR_VERSION,
     )
 
     evidence = (
@@ -806,3 +809,50 @@ def run_structural_guidance_runtime(
         source_artifact=source_artifact,
         evidence=evidence,
     )
+
+
+def run_structural_guidance_runtime(
+    semantic_request: P0SemanticRequestV1,
+    guidance_config: StructuralGuidanceAdmissionConfig,
+    *,
+    authorities: AuthorityContext,
+    request_id: str,
+    prompt: str,
+    domain: str = "python",
+    entrypoint: str = "solution",
+    parameters: tuple[str, ...] = (),
+    decoder_hints: tuple[
+        tuple[str, str],
+        ...,
+    ] = (),
+    allowed_experts: tuple[str, ...] = (
+        "python.codegen",
+        "python.ast",
+        "python.tests",
+        "python.typing",
+    ),
+    selected_experts: tuple[str, ...] = (
+        "python.codegen",
+        "python.ast",
+        "python.tests",
+        "python.typing",
+    ),
+    max_tokens: int = 512,
+    debug_tag: str = "",
+) -> StructuralGuidanceRuntimeResultV2:
+    """Consume caller-provided authority through terminal static validation.
+
+    Every remaining capability expires on success or failure. Issuance policy
+    belongs to the supplied owner callbacks; omitting authority is an error.
+    """
+    if type(authorities) is not AuthorityContext:
+        raise TypeError('authorities must be AuthorityContext')
+    with authorities.boundary():
+        return _run_structural_guidance_runtime(
+            semantic_request, guidance_config, authorities=authorities,
+            request_id=request_id, prompt=prompt, domain=domain,
+            entrypoint=entrypoint, parameters=parameters,
+            decoder_hints=decoder_hints, allowed_experts=allowed_experts,
+            selected_experts=selected_experts, max_tokens=max_tokens,
+            debug_tag=debug_tag,
+        )

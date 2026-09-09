@@ -4,7 +4,7 @@
  * bounded semantic view. These are bounded-view policy limits, not
  * Grid81 dimensions.
  *
- * Identity domain: "elpis.semantic.bounded_view_policy.v1"
+ * Identity domain: "elpis.semantic.bounded_view_policy.v2"
  */
 #ifndef ELPIS_SEMANTIC_BOUNDED_VIEW_POLICY_H
 #define ELPIS_SEMANTIC_BOUNDED_VIEW_POLICY_H
@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-#define BOUNDED_VIEW_POLICY_ABI_VERSION 1u
+#define BOUNDED_VIEW_POLICY_ABI_VERSION 2u
 
 /* ──────────────────────────────────────────────────────────────────── */
 /* Closure policy                                                        */
@@ -110,11 +110,11 @@ typedef struct elpis_semantic_bounded_view_policy_v1 {
 /* Default P5 v1 policy construction                                     */
 /* ──────────────────────────────────────────────────────────────────── */
 
-/* Construct default P5 v1 bounded-view policy:
+/* Construct default P5 successor bounded-view policy:
  *   max_nodes: 256, max_hyperedges: 512, max_incidences: 2048
  *   max_assertions: 1024, max_spans: 256, max_transport: 256
  *   max_embedding: 256, max_metric: 512
- *   max_graph_hops: 2, max_metric_neighbors: 8
+ *   max_graph_hops: 1, max_metric_neighbors: 8
  *   overflow: FAIL_CLOSED for mandatory, OMIT_OPTIONAL for optional
  * Returns SEMANTIC_OK on success. */
 int elpis_bounded_view_policy_default(
@@ -124,11 +124,13 @@ int elpis_bounded_view_policy_default(
 void elpis_bounded_view_policy_init(
     elpis_semantic_bounded_view_policy_v1 *policy);
 
-/* Compute policy identity. Domain: "elpis.semantic.bounded_view_policy.v1" */
+/* Compute policy identity. Domain: "elpis.semantic.bounded_view_policy.v2" */
 int elpis_bounded_view_policy_identity(
     const elpis_semantic_bounded_view_policy_v1 *policy, hacf_digest *out);
 
-/* Validate: known ABI, zero reserved, positive limits, valid enums. */
+/* Validate: known ABI, zero reserved, positive limits, valid enums.
+ * Active retrieval attachments represent graph_hop 0 or 1 only, so this
+ * successor policy requires maximum_graph_hops == 1. */
 int elpis_bounded_view_policy_validate(
     const elpis_semantic_bounded_view_policy_v1 *policy);
 

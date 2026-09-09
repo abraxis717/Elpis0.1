@@ -192,54 +192,69 @@ def verify_three_seed_determinism(config: dict) -> dict:
     }
 
 
-def verify_plan_nonexecutable() -> dict:
-    """Verify the promotion plan contains no executable content."""
-    import elpis_grid81_promotion_planner
-    pkg_dir = os.path.dirname(elpis_grid81_promotion_planner.__file__)
-    plan_module_path = os.path.join(pkg_dir, "plan.py")
+# Closed data contract declared by plan.py: labels describe a future transaction;
+# none is an instruction that this verifier executes.
+_PLAN_INTENTIONS = (
+    "VERIFY_CANONICAL_LEDGER_HEAD", "VERIFY_CAPABILITY_GRANTED_UNCONSUMED",
+    "VERIFY_ARTIFACT_CANONICALLY_UNAPPLIED", "RESERVE_TRANSACTION_IDENTIFIER",
+    "PERFORM_CANONICAL_APPLICATION", "APPEND_CANONICAL_RECEIPT",
+    "VERIFY_POST_COMMIT_STATE",
+)
+_PLAN_FIELDS = frozenset({
+    "intentions", "decision_digest", "source_chain_digest", "planner_version",
+    "executable", "self_applying", "authoritative", "canonical_write_permitted",
+})
 
-    with open(plan_module_path) as f:
-        content = f.read()
 
-    forbidden_patterns = [
-        "subprocess", "os.system", "os.popen", "exec(", "eval(",
-        "socket", "urllib", "requests", "import torch",
-        "callable", "lambda", "def _execute", "def _apply",
-        "def _commit", "def _write",
-    ]
+def verify_plan_nonexecutable(plan) -> dict:
+    """Validate the actual plan's closed data/capability surface.
 
+    This proves the data contract only, not runtime isolation or observed absence
+    of network access, mutation, or capability consumption.
+    """
+    from .canonical import CanonicalPromotionPlan
     violations = []
-    for pattern in forbidden_patterns:
-        if pattern in content:
-            violations.append(pattern)
-
-    return {
-        "plan_module": plan_module_path,
-        "forbidden_patterns_checked": len(forbidden_patterns),
+    if type(plan) is not CanonicalPromotionPlan:
+        violations.append("PLAN_TYPE")
+    else:
+        if set(vars(plan)) != _PLAN_FIELDS:
+            violations.append("PLAN_FIELDS")
+        if type(plan.intentions) is not tuple or any(type(i) is not str for i in plan.intentions) or plan.intentions != _PLAN_INTENTIONS:
+            violations.append("INTENTIONS")
+        for name in ("decision_digest", "source_chain_digest"):
+            value = getattr(plan, name)
+            if type(value) is not str or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
+                violations.append(name.upper())
+        if type(plan.planner_version) is not str or plan.planner_version != "1.0.0":
+            violations.append("PLANNER_VERSION")
+        for name in ("executable", "self_applying", "authoritative", "canonical_write_permitted"):
+            if getattr(plan, name) is not False:
+                violations.append(name.upper())
+    result = {
+        "schema": "elpis.grid81.promotion-plan-data-check.v2",
+        "plan_non_executable": not violations,
         "violations_found": len(violations),
         "violation_details": violations,
-        "plan_non_executable": len(violations) == 0,
     }
+    if not violations:
+        result["plan_digest"] = plan.digest
+    return result
 
 
-def generate_authority_audit(config: dict) -> AuthorityAudit:
-    """Generate the authority audit record."""
-    return AuthorityAudit(
-        planner_authoritative_for_application=False,
-        planner_authoritative_for_capability_consumption=False,
-        planner_authoritative_for_canonical_state=False,
-        promotion_plan_executable=False,
-        promotion_plan_self_applying=False,
-        canonical_write_permitted=False,
-        canonical_capabilities_consumed=0,
-        canonical_applications_committed=0,
-        source_g53b1_modified=False,
-        source_g53c_modified=False,
-        source_g53d_modified=False,
-        shadow_state_modified=False,
-        canonical_state_modified=False,
-        qubo_touched=False,
-        darwinian_life_touched=False,
-        production_trm_touched=False,
-        network_used=False,
-    )
+def generate_authority_audit(config: dict) -> dict:
+    """Observe configured plan data; omit all unobserved runtime authority claims."""
+    chain = build_source_chain(config)
+    decision = make_decision(evaluate_gates(chain), chain)
+    plan = render_plan(decision, chain)
+    observation = {
+        "schema": "elpis.grid81.promotion-plan-observation.v2",
+        "source_chain_digest": chain.chain_digest,
+        "decision_digest": decision.digest,
+        "plan_status": "NOT_RENDERED" if plan is None else "RENDERED",
+    }
+    if plan is not None:
+        observation["plan_check"] = verify_plan_nonexecutable(plan)
+    observation["observation_digest"] = hashlib.sha256(json.dumps(
+        observation, sort_keys=True, separators=(",", ":"), allow_nan=False,
+    ).encode()).hexdigest()
+    return observation

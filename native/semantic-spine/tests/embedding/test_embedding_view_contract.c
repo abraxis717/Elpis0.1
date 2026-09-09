@@ -25,7 +25,8 @@ int main(void) {
     const uint32_t offsets[]={0,1,3,4,UINT32_MAX}, limits[]={0,1,2,3,UINT32_MAX}, capacities[]={0,1,2,3,8};
     for(unsigned a=0;a<5;++a) for(unsigned b=0;b<5;++b) for(unsigned c=0;c<5;++c) {
         uint32_t want=offsets[a]<3 ? 3-offsets[a] : 0;
-        if(want>limits[b]) want=limits[b]; if(want>capacities[c]) want=capacities[c];
+        if(want>limits[b]) want=limits[b];
+        if(want>capacities[c]) want=capacities[c];
         for(unsigned repeat=0;repeat<2;++repeat) {
             for(unsigned i=0;i<8;++i) out[i]=expected[0];
             CHECK(embedding_composed_view_enumerate_embedded_nodes(v,offsets[a],limits[b],out,capacities[c])==want);

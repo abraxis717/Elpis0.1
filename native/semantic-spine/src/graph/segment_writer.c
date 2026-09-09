@@ -132,7 +132,11 @@ int semantic_segment_write(const semantic_segment_record *segment,
     else strcpy(dir, ".");
 
     char tmp_path[4096];
-    snprintf(tmp_path, sizeof(tmp_path), "%s.tmp_segment_XXXXXX", dir);
+    static const char tmp_suffix[] = ".tmp_segment_XXXXXX";
+    size_t dir_len = strlen(dir);
+    if (dir_len > sizeof(tmp_path) - sizeof(tmp_suffix)) return SEMANTIC_E_INVAL;
+    memcpy(tmp_path, dir, dir_len);
+    memcpy(tmp_path + dir_len, tmp_suffix, sizeof(tmp_suffix));
     int fd = mkstemp(tmp_path);
     if (fd < 0) return SEMANTIC_E_IO;
 

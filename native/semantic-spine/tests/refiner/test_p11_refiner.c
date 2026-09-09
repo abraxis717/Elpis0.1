@@ -18,8 +18,6 @@
 static int tests_run = 0;
 static int tests_pass = 0;
 
-static const uint8_t zeroes[64] = {0};
-
 #define TEST(name, expr) do { \
     tests_run++; \
     if (!(expr)) { \

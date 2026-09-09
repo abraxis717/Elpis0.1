@@ -11,29 +11,30 @@ void elpis_refiner_candidate_init(elpis_semantic_refiner_candidate_v1 *c) {
 
 int elpis_refiner_candidate_identity(const elpis_semantic_refiner_candidate_v1 *c,
     hacf_digest *out) {
-    /* Domain: "elpis.semantic.refiner_candidate.v1" */
-    const char *domain = "elpis.semantic.refiner_candidate.v1";
-    size_t domain_len = 38;
+    /* Domain: "elpis.semantic.refiner_candidate.v2" */
+    static const char domain[] = "elpis.semantic.refiner_candidate.v2";
+    const size_t domain_len = sizeof(domain) - 1u;
 
     uint8_t buf[256];
     size_t off = 0;
+    uint32_t encoded_u32;
 
     memcpy(buf + off, domain, domain_len); off += domain_len;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(c->abi_version);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(c->candidate_class);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(c->eligibility_disposition);
+    encoded_u32 = __builtin_bswap32(c->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4;
+    encoded_u32 = __builtin_bswap32(c->candidate_class); memcpy(buf + off, &encoded_u32, 4); off += 4;
+    encoded_u32 = __builtin_bswap32(c->eligibility_disposition); memcpy(buf + off, &encoded_u32, 4); off += 4;
 
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(c->source_digest_count);
+    encoded_u32 = __builtin_bswap32(c->source_digest_count); memcpy(buf + off, &encoded_u32, 4); off += 4;
     for (uint32_t i = 0; i < c->source_digest_count; i++) {
         memcpy(buf + off, c->source_digests[i].bytes, 32); off += 32;
     }
 
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(c->config_digest_count);
+    encoded_u32 = __builtin_bswap32(c->config_digest_count); memcpy(buf + off, &encoded_u32, 4); off += 4;
     for (uint32_t i = 0; i < c->config_digest_count; i++) {
         memcpy(buf + off, c->config_digests[i].bytes, 32); off += 32;
     }
 
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(c->weight_digest_count);
+    encoded_u32 = __builtin_bswap32(c->weight_digest_count); memcpy(buf + off, &encoded_u32, 4); off += 4;
     for (uint32_t i = 0; i < c->weight_digest_count; i++) {
         memcpy(buf + off, c->weight_digests[i].bytes, 32); off += 32;
     }

@@ -3,7 +3,7 @@
  * Immutable request for canonical refinement integration. Carries only numeric
  * Grid81 state and masks. No semantic sidecar, no reference solution.
  *
- * Identity domain: "elpis.semantic.refinement_integration_request.v1"
+ * Identity domain: "elpis.semantic.refinement_integration_request.v2"
  */
 #ifndef ELPIS_SEMANTIC_REFINEMENT_INTEGRATION_REQUEST_H
 #define ELPIS_SEMANTIC_REFINEMENT_INTEGRATION_REQUEST_H
@@ -68,7 +68,7 @@ typedef struct elpis_semantic_refinement_integration_request_v1 {
 void elpis_refinement_integration_request_init(
     elpis_semantic_refinement_integration_request_v1 *request);
 
-/* Compute request identity. Domain: "elpis.semantic.refinement_integration_request.v1" */
+/* Compute request identity. Domain: "elpis.semantic.refinement_integration_request.v2" */
 int elpis_refinement_integration_request_identity(
     const elpis_semantic_refinement_integration_request_v1 *request, hacf_digest *out);
 

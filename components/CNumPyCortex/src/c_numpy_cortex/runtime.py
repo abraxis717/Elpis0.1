@@ -6,12 +6,11 @@ import json
 import threading
 import time
 
-from .airgap import instrument_airgap, uninstrument_airgap
+from .airgap import instrument_airgap
 from .cache import WorkerCache
 from .chronos2 import ChronosWorker, Chronos2Forecaster
 from .config import (
     CortexConfig,
-    HEALTH_ENDPOINTS,
     PSUTIL_RATE_HZ,
     RETENTION_COUNT,
 )
@@ -103,7 +102,13 @@ def build_runtime(
     - NVIDIA worker (2 Hz): dedicated cache worker
     - Llama health worker (1 Hz): dedicated cache worker
     - Chronos worker (0.2 Hz): exactly one per runtime
+
+    Python socket instrumentation is installed before workers start. It is
+    defense-in-depth only; strong isolation is qualified independently at the
+    OS network namespace boundary.
     """
+    instrument_airgap()
+
     import os
 
     # Load channel schema

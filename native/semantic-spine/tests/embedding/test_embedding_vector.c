@@ -271,7 +271,6 @@ int main(void) {
     /* Test 16: vector validate normalization function */
     {
         elpis_semantic_embedding_profile_v1 *p = make_profile(2, EMBEDDING_NORMALIZATION_UNIT_L2, EMBEDDING_METRIC_COSINE);
-        float data[2] = {0.70710678f, 0.70710678f}; /* approximately unit */
         elpis_semantic_embedding_vector_v1 vec;
         uint8_t *bytes;
         uint32_t len;

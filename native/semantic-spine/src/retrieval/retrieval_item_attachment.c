@@ -16,12 +16,6 @@ static void write_be32(elpis_sha256_ctx *h, uint32_t v) {
     elpis_sha256_update(h, &be, 4);
 }
 
-static void write_le32(elpis_sha256_ctx *h, uint32_t v) {
-    uint8_t b[4] = {(uint8_t)v, (uint8_t)(v >> 8),
-                    (uint8_t)(v >> 16), (uint8_t)(v >> 24)};
-    elpis_sha256_update(h, b, 4);
-}
-
 static void write_le64(elpis_sha256_ctx *h, uint64_t v) {
     uint8_t b[8];
     for (unsigned i = 0; i < 8; ++i)

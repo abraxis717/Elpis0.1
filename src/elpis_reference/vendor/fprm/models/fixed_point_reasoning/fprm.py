@@ -81,7 +81,7 @@ class FixedPointReasoningModel_Inner(nn.Module):
         # Loop-attention add-on (Kimi AttnRes). Gated, zero-init: tanh(gate)=0 at
         # init so the model is a strict superset of the baseline. The history is
         # kept in the carry (NOT in the optimizer state).
-        if self.config.loop_attnres and getattr(self.config, "loop_attnres_grid", "") == "ema":
+        if self.config.loop_attnres and self.config.loop_attnres_grid == "ema":
             # Decay-fused trajectory readout (the TRM-host 'ema' structure), applied
             # OUTPUT-side on this host: the FP iteration runs untouched (per the
             # contraction note below), but the heads decode the EMA-weighted readout

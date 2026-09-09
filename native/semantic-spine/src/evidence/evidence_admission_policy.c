@@ -9,11 +9,6 @@
 
 #include <string.h>
 
-/* Helper: compare a digest against all-zero */
-static const uint8_t ZERO_DIGEST[32] = {0};
-static int digest_is_zero(const hacf_digest *d) {
-    return memcmp(d->bytes, ZERO_DIGEST, 32) == 0;
-}
 static const char ADMISSION_POLICY_DOMAIN[] = "elpis.semantic.evidence_admission_policy.v1";
 
 /* Default authority ceilings */

@@ -2,12 +2,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import hashlib
+import io
+from threading import Lock
 from pathlib import Path
 import random
 from collections import Counter
 from typing import Callable
 
 from elpis.optional_dependencies import require_torch
+from ..errors import AdmissionIntegrityViolation
 
 from .c2r6p1_bridge.contracts import CandidateMoveV1, RefinerInputV1
 from .c2r6p1_bridge import refiners as P1R
@@ -37,18 +40,26 @@ def FROZEN_COST_FN(grid, invariants):
     )
 
 
-def _load_model(checkpoint_path: Path):
+# Changing model architecture/default interpretation requires a new loader version.
+_LOADER_SCHEMA = "elpis.structural-trm0.weights-only-loader.v1"
+_LOADER_DEFAULTS = (64, 3, 6)  # hidden, h_cycles, l_cycles
+_PROPOSAL_SOURCE_CACHE = {}
+_PROPOSAL_SOURCE_CACHE_LOCK = Lock()
+
+
+def _load_model(data: bytes):
     torch = require_torch()
     from .c2r7c.structural_trm_model import StructuralTRM64
     checkpoint = torch.load(
-        checkpoint_path,
+        io.BytesIO(data),
         map_location="cpu",
+        weights_only=True,
     )
 
     config = checkpoint.get("config", {})
-    hidden = int(config.get("hidden", 64))
-    h_cycles = int(config.get("h_cycles", 3))
-    l_cycles = int(config.get("l_cycles", 6))
+    hidden = int(config.get("hidden", _LOADER_DEFAULTS[0]))
+    h_cycles = int(config.get("h_cycles", _LOADER_DEFAULTS[1]))
+    l_cycles = int(config.get("l_cycles", _LOADER_DEFAULTS[2]))
 
     model = StructuralTRM64(
         hidden=hidden,
@@ -146,7 +157,7 @@ def _stable_guidance_order(
     return ordered
 
 
-class GuidedRefinerError(RuntimeError):
+class GuidedRefinerError(AdmissionIntegrityViolation):
     pass
 
 
@@ -157,7 +168,7 @@ class GuidedSearchResult:
     iterations: int
     best_cost: int
     stats: dict[str, int]
-    authority_granted: int = 0
+    authority_granted: int
 
 
 def sha256_file(path: Path) -> str:
@@ -189,30 +200,30 @@ class FrozenTRM0ProposalSource:
         *,
         expected_sha256: str = EXPECTED_CHECKPOINT_SHA256,
     ) -> "FrozenTRM0ProposalSource":
-        path = Path(path)
-
-        if not path.is_file():
-            raise GuidedRefinerError(
-                f"checkpoint missing: {path}"
+        # SHA commits all checkpoint configuration. The schema commits the
+        # constructor, CPU mapping, state loader and defaults. Request search
+        # settings do not affect proposal-source interpretation.
+        key = (cls, expected_sha256, _LOADER_SCHEMA, _LOADER_DEFAULTS)
+        with _PROPOSAL_SOURCE_CACHE_LOCK:
+            if key in _PROPOSAL_SOURCE_CACHE:
+                return _PROPOSAL_SOURCE_CACHE[key]
+            try:
+                data = Path(path).read_bytes()
+            except FileNotFoundError as exc:
+                # This entry point requests an explicitly pinned checkpoint;
+                # it has no optional-checkpoint contract.
+                raise AdmissionIntegrityViolation("required checkpoint unavailable") from exc
+            actual = hashlib.sha256(data).hexdigest()
+            if actual != expected_sha256:
+                raise AdmissionIntegrityViolation("checkpoint identity mismatch")
+            model, checkpoint = _load_model(data)
+            source = cls(
+                model=model,
+                checkpoint_sha256=actual,
+                checkpoint_epoch=int(checkpoint["epoch"]),
             )
-
-        actual = sha256_file(path)
-
-        if actual != expected_sha256:
-            raise GuidedRefinerError(
-                "checkpoint identity mismatch: "
-                f"{actual} != {expected_sha256}"
-            )
-
-        model, checkpoint = _load_model(path)
-
-        return cls(
-            model=model,
-            checkpoint_sha256=actual,
-            checkpoint_epoch=int(
-                checkpoint.get("epoch", -1)
-            ),
-        )
+            _PROPOSAL_SOURCE_CACHE[key] = source
+            return source
 
     def __call__(
         self,
@@ -480,6 +491,7 @@ def run_guided_search(
                     iterations=iterations,
                     best_cost=0,
                     stats=stats,
+                    authority_granted=0,
                 )
 
             iterations += 1
@@ -618,6 +630,7 @@ def run_guided_search(
         iterations=iterations,
         best_cost=best_cost,
         stats=stats,
+        authority_granted=0,
     )
 
 

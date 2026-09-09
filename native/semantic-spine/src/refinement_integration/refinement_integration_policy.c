@@ -13,14 +13,15 @@ void elpis_refinement_integration_policy_init(
 
 int elpis_refinement_integration_policy_identity(
     const elpis_semantic_refinement_integration_policy_v1 *p, hacf_digest *out) {
-    const char *domain = "elpis.semantic.refinement_integration_policy.v1";
-    size_t domain_len = 49;
+    static const char domain[] = "elpis.semantic.refinement_integration_policy.v2";
+    const size_t domain_len = sizeof(domain) - 1u;
 
     uint8_t buf[1024];
     size_t off = 0;
+    uint32_t encoded_u32;
 
     memcpy(buf + off, domain, domain_len); off += domain_len;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(p->abi_version);
+    encoded_u32 = __builtin_bswap32(p->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4;
     memcpy(buf + off, p->backend_registry_digest.bytes, 32); off += 32;
     memcpy(buf + off, p->active_backend_digest.bytes, 32); off += 32;
     memcpy(buf + off, p->active_adapter_digest.bytes, 32); off += 32;
@@ -29,7 +30,7 @@ int elpis_refinement_integration_policy_identity(
     memcpy(buf + off, p->P8_mutability_policy_digest.bytes, 32); off += 32;
     memcpy(buf + off, p->P9_state_guard_digest.bytes, 32); off += 32;
     memcpy(buf + off, p->P9_refinement_policy_digest.bytes, 32); off += 32;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(p->maximum_steps);
+    encoded_u32 = __builtin_bswap32(p->maximum_steps); memcpy(buf + off, &encoded_u32, 4); off += 4;
 
     elpis_sha256(buf, off, out->bytes);
     return SEMANTIC_OK;

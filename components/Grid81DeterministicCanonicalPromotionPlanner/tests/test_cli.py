@@ -75,13 +75,13 @@ def test_cli_render_plan():
         assert data["plan"]["canonical_write_permitted"] is False
 
 
-def test_cli_authority():
-    r = _cli_command(["authority", "--source-config", CONFIG])
-    assert r.returncode == 0
-    data = json.loads(r.stdout)
-    assert data["planner_authoritative_for_application"] is False
-    assert data["canonical_write_permitted"] is False
-    assert data["qubo_touched"] is False
+def test_cli_authority_requires_observable_sources(tmp_path):
+    config = tmp_path / "absent-sources.json"
+    config.write_text(json.dumps({key: str(tmp_path / key) for key in
+        ("g53b1_directory", "g53c_directory", "g53d_directory")}))
+    r = _cli_command(["authority", "--source-config", str(config)])
+    assert r.returncode != 0
+    assert not r.stdout.strip()  # no invented audit when evidence cannot be read
 
 
 def test_cli_deterministic_output():

@@ -21,7 +21,7 @@ int trm_persist_native_contract(const char *path, const trm_native_contract_t *c
     fprintf(f, "  \"native_output_rank\": %u,\n", contract->native_output_rank);
     fprintf(f, "  \"native_output_dtype\": \"%s\",\n", contract->native_output_dtype);
     fprintf(f, "  \"contract_confidence\": \"%s\",\n", contract->contract_confidence);
-    fprintf(f, "  \"contract_digest\": \"%s\"\n", contract->contract_digest);
+    fprintf(f, "  \"contract_digest\": \"%.*s\"\n", TRM_NATIVE_CONTRACT_DIGEST_LEN, contract->contract_digest);
     fprintf(f, "}\n");
     fclose(f);
     return 1;
@@ -34,7 +34,7 @@ int trm_persist_report(const char *path, const trm_alignment_report_t *report) {
     fprintf(f, "  \"abi_version\": %u,\n", report->abi_version);
     fprintf(f, "  \"primary_diagnosis\": \"%s\",\n", trm_diagnosis_verdict_string(report->primary_diagnosis));
     fprintf(f, "  \"remediation\": \"%s\",\n", trm_remediation_string(report->remediation));
-    fprintf(f, "  \"diagnosis_digest\": \"%s\"\n", report->diagnosis_digest);
+    fprintf(f, "  \"diagnosis_digest\": \"%.*s\"\n", TRM_REPORT_DIGEST_LEN, report->diagnosis_digest);
     fprintf(f, "}\n");
     fclose(f);
     return 1;
@@ -47,7 +47,7 @@ int trm_persist_handoff(const char *path, const trm_alignment_handoff_t *handoff
     fprintf(f, "  \"abi_version\": %u,\n", handoff->abi_version);
     fprintf(f, "  \"handoff_kind\": \"FROZEN_TRM_ALIGNMENT_DIAGNOSIS\",\n");
     fprintf(f, "  \"p10r_statement\": \"%s\",\n", handoff->p10r_statement);
-    fprintf(f, "  \"handoff_digest\": \"%s\"\n", handoff->handoff_digest);
+    fprintf(f, "  \"handoff_digest\": \"%.*s\"\n", TRM_HANDOFF_DIGEST_LEN, handoff->handoff_digest);
     fprintf(f, "}\n");
     fclose(f);
     return 1;

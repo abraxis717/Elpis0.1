@@ -1,6 +1,7 @@
 """R1 tests — bounded pre-refinement retrieval, fail-closed, determinism."""
 from __future__ import annotations
 
+import ctypes
 import hashlib
 import json
 import os
@@ -35,8 +36,10 @@ from elpis_runtime_r1.errors import (
     R1BundleValidationError,
     R1BudgetOverflowError,
     R1Error,
+    R1HacfRetrievalError,
     R1QueryDerivationError,
 )
+from elpis_runtime_r1 import hacf_adapter
 from elpis_runtime_r1.hacf_adapter import (
     build_corpus_and_index,
     bundle_from_json,
@@ -168,6 +171,116 @@ class TestHacfRetrieval:
         r1 = hybrid_retrieve(handle, "alpha", lexical_limit=50, dense_limit=50)
         r2 = hybrid_retrieve(handle, "alpha", lexical_limit=50, dense_limit=50)
         assert r1["bundle_digest"] == r2["bundle_digest"]
+
+    def test_65_documents_refused_with_typed_limit(self):
+        td = tempfile.mkdtemp(prefix="r1_limit_")
+        documents = [
+            (
+                f"doc-{i:02d}",
+                f"bounded document {i}",
+                "elpis.docs",
+                "canonical",
+            )
+            for i in range(65)
+        ]
+        try:
+            with pytest.raises(R1HacfRetrievalError, match="E_LIMIT"):
+                build_corpus_and_index(td, documents)
+        finally:
+            import shutil
+            shutil.rmtree(td, ignore_errors=True)
+
+    def test_manifest_copy_boundary_via_compiled_ctypes_helper(self):
+        lib = hacf_adapter._load()
+        lib.r1_checked_manifest_copy.restype = ctypes.c_int
+        lib.r1_checked_manifest_copy.argtypes = [
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_size_t,
+            ctypes.POINTER(ctypes.c_size_t),
+            ctypes.c_char_p,
+        ]
+
+        capacity = 65536
+        dst = ctypes.create_string_buffer(capacity)
+        out_len = ctypes.c_size_t(0)
+        err = ctypes.create_string_buffer(256)
+
+        allowed = b"a" * 65535
+        rc = lib.r1_checked_manifest_copy(
+            allowed,
+            dst,
+            capacity,
+            ctypes.byref(out_len),
+            err,
+        )
+        assert rc == 0
+        assert out_len.value == 65535
+        assert dst.raw[:65535] == allowed
+        assert dst.raw[65535] == 0
+
+        refused = b"b" * 65536
+        dst2 = ctypes.create_string_buffer(capacity)
+        out_len2 = ctypes.c_size_t(999)
+        err2 = ctypes.create_string_buffer(256)
+        rc = lib.r1_checked_manifest_copy(
+            refused,
+            dst2,
+            capacity,
+            ctypes.byref(out_len2),
+            err2,
+        )
+        assert rc == -2
+        assert out_len2.value == 0
+        assert b"E_LIMIT" in err2.value
+        assert dst2.raw[0] == 0
+
+    def test_retrieval_json_buffer_truncation_is_refused(self, handle):
+        lib = hacf_adapter._load()
+
+        query = b"alpha"
+        vec = (ctypes.c_float * hacf_adapter.ELPIS_EMBEDDING_DIM)()
+        rc = lib.r1_env_embed(
+            handle._ptr,
+            query,
+            len(query),
+            vec,
+            hacf_adapter.ELPIS_EMBEDDING_DIM,
+        )
+        assert rc == 0
+
+        json_buf = ctypes.create_string_buffer(1)
+        bundle_digest = ctypes.create_string_buffer(65)
+        query_digest = ctypes.create_string_buffer(65)
+        corpus_manifest_digest = ctypes.create_string_buffer(65)
+        vindex_manifest_digest = ctypes.create_string_buffer(65)
+        fusion_policy_digest = ctypes.create_string_buffer(65)
+        item_count = ctypes.c_int(0)
+        err = ctypes.create_string_buffer(256)
+
+        rc = lib.r1_env_retrieve(
+            handle._ptr,
+            query,
+            vec,
+            hacf_adapter.ELPIS_EMBEDDING_DIM,
+            50,
+            50,
+            30,
+            60,
+            json_buf,
+            1,
+            bundle_digest,
+            query_digest,
+            corpus_manifest_digest,
+            vindex_manifest_digest,
+            fusion_policy_digest,
+            ctypes.byref(item_count),
+            err,
+        )
+
+        assert rc == -2
+        assert b"E_LIMIT" in err.value
+        assert json_buf.raw == b"\x00"
 
 
 # ====================================================================

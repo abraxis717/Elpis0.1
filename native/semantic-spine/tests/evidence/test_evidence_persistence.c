@@ -18,11 +18,6 @@
 
 #include <string.h>
 
-/* Helper: compare a digest against all-zero */
-static const uint8_t ZERO_DIGEST[32] = {0};
-static int digest_is_zero(const hacf_digest *d) {
-    return memcmp(d->bytes, ZERO_DIGEST, 32) == 0;
-}
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>

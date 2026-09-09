@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import os
 import shutil
@@ -214,13 +215,14 @@ def _extract_state_dict(payload: object) -> dict[str, torch.Tensor]:
 
 def _load_checkpoint_state(path: Path) -> dict[str, torch.Tensor]:
     torch = require_torch()
-    observed = _sha256(path)
+    data = path.read_bytes()
+    observed = hashlib.sha256(data).hexdigest()
     if observed != MODEL_SHA256:
         raise RuntimeError(
             f"FPRM checkpoint SHA-256 mismatch: {observed} != {MODEL_SHA256}"
         )
 
-    payload = torch.load(path, map_location="cpu", weights_only=True)
+    payload = torch.load(io.BytesIO(data), map_location="cpu", weights_only=True)
     state = _extract_state_dict(payload)
 
     if len(state) != STATE_KEY_COUNT:

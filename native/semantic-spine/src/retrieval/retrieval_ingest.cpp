@@ -192,7 +192,7 @@ int elpis_retrieval_ingest(
 
         /* Namespace digest: compute from ns string bytes */
         std::memset(&ns_dig, 0, sizeof(ns_dig));
-        if (view.ns && view.ns[0] != '\0') {
+        if (view.ns[0] != '\0') {
             uint8_t ns_hash[32];
             size_t ns_len = strnlen(view.ns, 96);
             elpis_sha256(view.ns, ns_len, ns_hash);

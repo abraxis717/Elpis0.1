@@ -82,19 +82,34 @@ void elpis_requirement_result_init(elpis_semantic_requirement_result_v1 *result)
 int elpis_requirement_result_diagnostic(
     const elpis_semantic_requirement_result_v1 *result, hacf_digest *out);
 
-/* Evaluate all requirements in the set against the composed view and
- * embedding collections. Results are ordered canonically by requirement
- * identity digest.
+/* Verify an explicit immutable requirement-object array against the canonical
+ * digest sequence in requirement_set. Objects MUST be in the same canonical
+ * digest order as requirement_set->requirement_digests. Every object is
+ * validated and its identity is recomputed before comparison.
+ *
+ * Returns SEMANTIC_OK only for an exact one-to-one binding. */
+int elpis_context_requirement_objects_validate_binding(
+    const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t requirement_count);
+
+/* Evaluate explicit immutable requirement objects against the composed view and
+ * embedding collections. The requirement set remains canonical digest/index
+ * authority; it is not an implicit object store. Results are ordered
+ * canonically by requirement identity digest.
  *
  * Returns SEMANTIC_OK on success. The caller owns the results array and
- * must free it. *result_count_out <= requirement_set->requirement_count.
+ * must free it. Placeholder/digest-only evaluation is not a successful path.
  *
- * Does NOT mutate: view, embedding_collections, requirement_set, policy. */
+ * Does NOT mutate: view, embedding_collections, requirement_set, requirements,
+ * policy. */
 int elpis_context_evaluate_requirements(
     const semantic_snapshot_view          *composed_view,
     const elpis_semantic_embedding_collection_v1 *embedding_collections,
     uint32_t                                    collection_count,
     const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t                                    requirement_count,
     const elpis_semantic_context_deficit_policy_v1  *policy,
     elpis_semantic_requirement_result_v1 **results_out,
     uint32_t                              *result_count_out);
@@ -108,10 +123,14 @@ int elpis_requirement_result_cmp(
     const elpis_semantic_requirement_result_v1 *a,
     const elpis_semantic_requirement_result_v1 *b);
 
-/* Count deficits by level from results. */
-void elpis_count_deficits(
+/* Count deficits by the level of the explicitly bound requirement objects.
+ * Returns SEMANTIC_OK only when results, objects, and requirement-set digests
+ * form an exact canonical one-to-one binding. */
+int elpis_count_deficits(
     const elpis_semantic_requirement_result_v1 *results, uint32_t count,
     const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t requirement_count,
     uint32_t *satisfied_out,
     uint32_t *mandatory_deficit_out,
     uint32_t *preferred_deficit_out,

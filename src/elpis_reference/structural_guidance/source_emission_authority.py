@@ -14,6 +14,7 @@ authorizes planning or execution.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import ClassVar
 import hashlib
 import json
 import re
@@ -134,6 +135,9 @@ def _require_nonempty(
 
 @dataclass(frozen=True, slots=True)
 class SourceEmissionAuthorizationIntentV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _SOURCE_EMISSION_INTENT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _INTENT_DOMAIN
+
     schema: str
 
     source_input_digest: str
@@ -198,7 +202,7 @@ class SourceEmissionAuthorizationIntentV1:
     ) -> None:
         if (
             self.schema
-            != _SOURCE_EMISSION_INTENT_SCHEMA
+            != self.EXPECTED_SCHEMA
         ):
             raise SourceEmissionAuthorityError(
                 "unsupported source-emission intent schema"
@@ -262,7 +266,7 @@ class SourceEmissionAuthorizationIntentV1:
         )
 
         expected = _domain_digest(
-            _INTENT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -274,6 +278,9 @@ class SourceEmissionAuthorizationIntentV1:
 
 @dataclass(frozen=True, slots=True)
 class SourceEmissionCapabilityReceiptV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _SOURCE_EMISSION_RECEIPT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _RECEIPT_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -363,7 +370,7 @@ class SourceEmissionCapabilityReceiptV1:
     ) -> None:
         if (
             self.schema
-            != _SOURCE_EMISSION_RECEIPT_SCHEMA
+            != self.EXPECTED_SCHEMA
         ):
             raise SourceEmissionAuthorityError(
                 "unsupported source-emission receipt schema"
@@ -464,7 +471,7 @@ class SourceEmissionCapabilityReceiptV1:
             )
 
         expected = _domain_digest(
-            _RECEIPT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -482,6 +489,9 @@ class AuthorizedSourceEmissionV1:
 
 @dataclass(frozen=True, slots=True)
 class SourceEmissionConsumptionV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _SOURCE_EMISSION_CONSUMPTION_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _CONSUMPTION_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -584,7 +594,7 @@ class SourceEmissionConsumptionV1:
     ) -> None:
         if (
             self.schema
-            != _SOURCE_EMISSION_CONSUMPTION_SCHEMA
+            != self.EXPECTED_SCHEMA
         ):
             raise SourceEmissionAuthorityError(
                 "unsupported source-emission consumption schema"
@@ -692,7 +702,7 @@ class SourceEmissionConsumptionV1:
             )
 
         expected = _domain_digest(
-            _CONSUMPTION_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -702,12 +712,36 @@ class SourceEmissionConsumptionV1:
             )
 
 
+@dataclass(frozen=True, slots=True)
+class SourceEmissionAuthorizationIntentV2(SourceEmissionAuthorizationIntentV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.source-emission-intent.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class SourceEmissionCapabilityReceiptV2(SourceEmissionCapabilityReceiptV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.source-emission-capability-receipt.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class SourceEmissionConsumptionV2(SourceEmissionConsumptionV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.source-emission-capability-consumption.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
 def _build_intent(
     source_input: DecoderSourceInputV1,
     *,
     source_emitter_id: str,
     source_emitter_version: str,
-) -> SourceEmissionAuthorizationIntentV1:
+) -> SourceEmissionAuthorizationIntentV2:
     if not isinstance(
         source_input,
         DecoderSourceInputV1,
@@ -749,7 +783,7 @@ def _build_intent(
 
     base = {
         "schema": (
-            _SOURCE_EMISSION_INTENT_SCHEMA
+            SourceEmissionAuthorizationIntentV2.EXPECTED_SCHEMA
         ),
         "source_input_digest": (
             source_input.source_input_digest
@@ -787,10 +821,10 @@ def _build_intent(
     }
 
     intent = (
-        SourceEmissionAuthorizationIntentV1(
+        SourceEmissionAuthorizationIntentV2(
             **base,
             intent_digest=_domain_digest(
-                _INTENT_DOMAIN,
+                SourceEmissionAuthorizationIntentV2.DIGEST_DOMAIN,
                 base,
             ),
         )
@@ -810,6 +844,8 @@ class _SourceEmissionAuthority:
         "__pending",
         "__sequence",
         "__lock",
+        "__closed",
+        "__runtime_bound",
     )
 
     def __init__(
@@ -818,7 +854,7 @@ class _SourceEmissionAuthority:
         seed = secrets.token_hex(32)
 
         self.__instance_id = _domain_digest(
-            _INSTANCE_DOMAIN,
+            _INSTANCE_DOMAIN.removesuffix('.v1') + '.v2',
             {
                 "seed": seed,
             },
@@ -827,15 +863,17 @@ class _SourceEmissionAuthority:
         self.__active: dict[str, str] = {}
 
         self.__pending: dict[
-            int,
+            str,
             tuple[
-                SourceEmissionAuthorizationIntentV1,
-                SourceEmissionCapabilityReceiptV1,
+                SourceEmissionAuthorizationIntentV2,
+                SourceEmissionCapabilityReceiptV2,
             ],
         ] = {}
 
         self.__sequence = 0
         self.__lock = threading.RLock()
+        self.__closed = False
+        self.__runtime_bound = False
 
     def _precommit_from_owner(
         self,
@@ -843,16 +881,18 @@ class _SourceEmissionAuthority:
         *,
         source_emitter_id: str,
         source_emitter_version: str,
-    ) -> SourceEmissionAuthorizationIntentV1:
+    ) -> SourceEmissionAuthorizationIntentV2:
         intent = _build_intent(
             source_input,
             source_emitter_id=source_emitter_id,
             source_emitter_version=source_emitter_version,
         )
 
-        key = id(intent)
+        key = intent.intent_digest
 
         with self.__lock:
+            if self.__closed:
+                raise SourceEmissionAuthorityError("authority runtime boundary is closed")
             if key in self.__pending:
                 raise SourceEmissionAuthorityError(
                     "source-emission intent already precommitted"
@@ -873,7 +913,7 @@ class _SourceEmissionAuthority:
 
             base = {
                 "schema": (
-                    _SOURCE_EMISSION_RECEIPT_SCHEMA
+                    SourceEmissionCapabilityReceiptV2.EXPECTED_SCHEMA
                 ),
                 "authority_instance_id": (
                     self.__instance_id
@@ -921,10 +961,10 @@ class _SourceEmissionAuthority:
             }
 
             receipt = (
-                SourceEmissionCapabilityReceiptV1(
+                SourceEmissionCapabilityReceiptV2(
                     **base,
                     receipt_digest=_domain_digest(
-                        _RECEIPT_DOMAIN,
+                        SourceEmissionCapabilityReceiptV2.DIGEST_DOMAIN,
                         base,
                     ),
                 )
@@ -947,22 +987,24 @@ class _SourceEmissionAuthority:
 
     def _reveal_from_owner(
         self,
-        intent: SourceEmissionAuthorizationIntentV1,
+        intent: SourceEmissionAuthorizationIntentV2,
     ) -> AuthorizedSourceEmissionV1:
         if not isinstance(
             intent,
-            SourceEmissionAuthorizationIntentV1,
+            SourceEmissionAuthorizationIntentV2,
         ):
             raise TypeError(
                 "intent must be "
-                "SourceEmissionAuthorizationIntentV1"
+                "SourceEmissionAuthorizationIntentV2"
             )
 
         intent.validate()
 
         with self.__lock:
+            if self.__closed:
+                raise SourceEmissionAuthorityError("authority runtime boundary is closed")
             entry = self.__pending.get(
-                id(intent)
+                intent.intent_digest
             )
 
             if entry is None:
@@ -973,9 +1015,9 @@ class _SourceEmissionAuthority:
 
             stored, receipt = entry
 
-            if stored is not intent:
+            if stored != intent:
                 raise SourceEmissionAuthorityError(
-                    "source-emission intent object differs from precommit"
+                    "source-emission intent content differs from precommit"
                 )
 
             intent.validate()
@@ -989,7 +1031,7 @@ class _SourceEmissionAuthority:
                 )
 
             del self.__pending[
-                id(intent)
+                intent.intent_digest
             ]
 
             return AuthorizedSourceEmissionV1(
@@ -1000,7 +1042,7 @@ class _SourceEmissionAuthority:
     def _consume_from_owner(
         self,
         authorized: AuthorizedSourceEmissionV1,
-    ) -> SourceEmissionConsumptionV1:
+    ) -> SourceEmissionConsumptionV2:
         if not isinstance(
             authorized,
             AuthorizedSourceEmissionV1,
@@ -1044,6 +1086,8 @@ class _SourceEmissionAuthority:
                 )
 
         with self.__lock:
+            if self.__closed:
+                raise SourceEmissionAuthorityError("authority runtime boundary is closed")
             active = self.__active.get(
                 receipt.capability_id
             )
@@ -1064,7 +1108,7 @@ class _SourceEmissionAuthority:
 
         base = {
             "schema": (
-                _SOURCE_EMISSION_CONSUMPTION_SCHEMA
+                SourceEmissionConsumptionV2.EXPECTED_SCHEMA
             ),
             "authority_instance_id": (
                 receipt.authority_instance_id
@@ -1121,10 +1165,10 @@ class _SourceEmissionAuthority:
         }
 
         consumption = (
-            SourceEmissionConsumptionV1(
+            SourceEmissionConsumptionV2(
                 **base,
                 consumption_digest=_domain_digest(
-                    _CONSUMPTION_DOMAIN,
+                    SourceEmissionConsumptionV2.DIGEST_DOMAIN,
                     base,
                 ),
             )
@@ -1133,6 +1177,21 @@ class _SourceEmissionAuthority:
         consumption.validate()
 
         return consumption
+
+
+    def _bind_runtime_owner(self) -> None:
+        """Reserve this issuer/consumer for exactly one caller-owned context."""
+        with self.__lock:
+            if self.__closed or self.__runtime_bound:
+                raise SourceEmissionAuthorityError("authority already bound or closed")
+            self.__runtime_bound = True
+
+    def _close_from_owner(self) -> None:
+        """Expire pending and revealed capabilities at the request boundary."""
+        with self.__lock:
+            self.__closed = True
+            self.__pending.clear()
+            self.__active.clear()
 
 
 def _new_source_emission_authority(

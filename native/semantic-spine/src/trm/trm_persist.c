@@ -3,7 +3,7 @@
 #define _GNU_SOURCE
 #include "elpis_semantic/trm_persist.h"
 #include "elpis/cascade.h"
-#include <openssl/sha.h>
+#include "elpis/sha256.h"
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -49,7 +49,7 @@ static int fsync_file_and_dir(const char *path) {
 
 int elpis_trm_digest_bytes(const uint8_t *data, size_t len, hacf_digest *out) {
     if (!data || !out || len == 0) return -1;
-    SHA256(data, len, out->bytes);
+    elpis_sha256(data, len, out->bytes);
     return 0;
 }
 
@@ -60,24 +60,24 @@ int elpis_trm_digest_domain(const char *domain, uint32_t abi_version,
     /* Domain tag = SHA256(domain_string) */
     hacf_digest domain_tag;
     size_t domain_len = strlen(domain);
-    SHA256((const uint8_t *)domain, domain_len, domain_tag.bytes);
+    elpis_sha256((const uint8_t *)domain, domain_len, domain_tag.bytes);
 
     /* Identity = SHA256(domain_tag || abi_version(4 BE) || payload) */
-    SHA256_CTX ctx;
-    SHA256_Init(&ctx);
-    SHA256_Update(&ctx, domain_tag.bytes, HACF_DIGEST_BYTES);
+    elpis_sha256_ctx ctx;
+    elpis_sha256_init(&ctx);
+    elpis_sha256_update(&ctx, domain_tag.bytes, HACF_DIGEST_BYTES);
 
     uint8_t ver_be[4];
     ver_be[0] = (uint8_t)((abi_version >> 24) & 0xFF);
     ver_be[1] = (uint8_t)((abi_version >> 16) & 0xFF);
     ver_be[2] = (uint8_t)((abi_version >> 8) & 0xFF);
     ver_be[3] = (uint8_t)(abi_version & 0xFF);
-    SHA256_Update(&ctx, ver_be, 4);
+    elpis_sha256_update(&ctx, ver_be, 4);
 
     if (payload && payload_len > 0) {
-        SHA256_Update(&ctx, payload, payload_len);
+        elpis_sha256_update(&ctx, payload, payload_len);
     }
-    SHA256_Final(out->bytes, &ctx);
+    elpis_sha256_final(&ctx, out->bytes);
     return 0;
 }
 

@@ -3,11 +3,13 @@
 #include <stdio.h>
 #include <openssl/sha.h>
 
-static void sha256_hex(const void *data, size_t len, char *out, size_t out_len) {
+static void sha256_hex64(const void *data, size_t len, char out[64]) {
+    static const char hex[] = "0123456789abcdef";
     unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256(data, len, hash);
-    for (int i = 0; i < SHA256_DIGEST_LENGTH && (size_t)(i * 2 + 2) < out_len; i++) {
-        sprintf(out + i * 2, "%02x", hash[i]);
+    for (size_t i = 0; i < SHA256_DIGEST_LENGTH; ++i) {
+        out[i * 2] = hex[hash[i] >> 4];
+        out[i * 2 + 1] = hex[hash[i] & 0x0f];
     }
 }
 
@@ -53,10 +55,11 @@ int trm_native_contract_validate(const trm_native_contract_t *contract) {
     return 1;
 }
 
-void trm_native_contract_compute_digest(const trm_native_contract_t *contract) {
+void trm_native_contract_compute_digest(trm_native_contract_t *contract) {
     if (!contract) return;
-    sha256_hex(contract, sizeof(trm_native_contract_t),
-               contract->contract_digest, TRM_NATIVE_CONTRACT_DIGEST_LEN);
+    trm_native_contract_t normalized = *contract;
+    memset(normalized.contract_digest, 0, sizeof(normalized.contract_digest));
+    sha256_hex64(&normalized, sizeof(normalized), contract->contract_digest);
 }
 
 int trm_native_contract_has_unknown_fields(const trm_native_contract_t *contract) {

@@ -1,8 +1,27 @@
 # Grid81
 
-Grid81 is the sealed structural substrate used by Elpis to promote, verify, load, and consume a canonical Grid81 generation.
+Grid81 contains historical sealed state and a reader used by Elpis to verify, load, and consume a canonical Grid81 generation.
 
-The current qualified state is **canonical generation `000001`**, committed under `Canonical/Grid81`, loaded through a reusable production reader, and consumed by the Elpis Header runtime observer.
+The supplied historical state is **canonical generation `000001`**, committed under `state/Canonical/Grid81`, loaded through a reusable production reader, and consumed by the Elpis Header runtime observer.
+
+## Qualified mutation and replay boundary
+
+This repository contains no canonical-state writer for `HEAD.json` or generations.
+Durable canonical-state mutation, atomic publication, and cross-process replay
+rejection are outside this repository's qualified boundary. Reading a manifest
+that declares those properties does not independently establish how it was
+published or whether a capability was consumed by another process.
+
+The capability evaluator's nonce is a deterministic digest-derived identity.
+Equal bound inputs produce equal nonce digests; the digest does not establish
+one-time consumption. `ApplicationLedger` maintains lists and sets in memory and
+proves consumption only within the same process-local ledger instance. A fresh
+ledger or process has no durable consumption history, and no cross-process
+synchronization or atomic publication is qualified here.
+
+The historical `.authority_audit.json` was produced by a constant generator; its
+fields are historical assertions, not independent observations of authority,
+network use, mutation, or publication. All supplied state bytes remain frozen.
 
 ## Current runtime path
 
@@ -71,7 +90,7 @@ state: Grid81CanonicalState = load_current_grid81(
 - verifies the raw generation file hash;
 - verifies the generation semantic digest;
 - preserves transaction and capability identity;
-- verifies that the canonical capability is consumed exactly once;
+- checks that stored capability fields declare one consumption; this does not prove one-time consumption;
 - rejects replay-permitted capability state;
 - verifies the six ordinary transaction-manifest hashes;
 - applies the `INTENTIONALLY_UNHASHED_SELF_ENTRY` policy to the manifest self-entry;
@@ -186,7 +205,7 @@ Qualified result:
 ## Development rules
 
 1. **Never modify `Canonical/Grid81` during reader, consumer, or integration development.**
-2. **Never call the promotion writer from runtime code.**
+2. **No canonical-state writer is supplied or qualified here; runtime code must remain read-only.**
 3. **Never create generation `000002` without a separately authorized promotion phase.**
 4. **Never add files to the canonical directory.**
 5. **Never treat a phase verifier as a runtime consumer.**
@@ -201,12 +220,11 @@ Qualified result:
 ```text
 Grid81/canonical_reader.py
 Grid81/test_g53ig1_adversarial_runtime_consumer.py
-Grid81/g53ie_production_atomic_grid81_canonical_promotion_executor.py
 components/elpis_header/src/elpis_header/observer/grid81_reducer.py
 components/elpis_header/src/elpis_header/observer/__init__.py
 ```
 
-The phase-named `g53i*` modules are promotion, qualification, forensic, or evidence machinery. They are not the normal runtime API.
+The earlier documentation referenced `g53ie_production_atomic_grid81_canonical_promotion_executor.py`, which is absent from this repository. That historical reference does not qualify an in-repository writer. Available phase-named `g53i*` modules are qualification, forensic, or evidence machinery, not the normal runtime API.
 
 ## Evidence and reports
 

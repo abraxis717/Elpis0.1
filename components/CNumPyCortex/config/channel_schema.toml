@@ -1,6 +1,6 @@
 [metadata]
-schema_id = "cortex_default_v1"
-version = "1.0"
+schema_id = "cortex_default_v2"
+version = "2.0"
 
 [[channels]]
 channel_id = "cpu.total_pct"
@@ -52,23 +52,24 @@ stale_after_ns = 1_500_000_000
 transform_id = "robust_z"
 required = false
 
+
 [[channels]]
-channel_id = "llama.cpu_8080.healthy"
-source_kind = "llama"
-unit = "binary"
-sampling_class = "llama"
-expected_period_ns = 1_000_000_000
-stale_after_ns = 3_000_000_000
+channel_id = "__MISSING__"
+source_kind = "missing"
+unit = "none"
+sampling_class = "psutil"
+expected_period_ns = 50_000_000
+stale_after_ns = 100_000_000
 transform_id = "none"
 required = false
 
 [[channels]]
-channel_id = "llama.blackwell_8081.healthy"
-source_kind = "llama"
-unit = "binary"
-sampling_class = "llama"
-expected_period_ns = 1_000_000_000
-stale_after_ns = 3_000_000_000
+channel_id = "__MISSING__"
+source_kind = "missing"
+unit = "none"
+sampling_class = "psutil"
+expected_period_ns = 50_000_000
+stale_after_ns = 100_000_000
 transform_id = "none"
 required = false
 

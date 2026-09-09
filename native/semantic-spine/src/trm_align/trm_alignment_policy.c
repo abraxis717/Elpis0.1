@@ -3,11 +3,13 @@
 #include <stdio.h>
 #include <openssl/sha.h>
 
-static void sha256_hex(const void *data, size_t len, char *out, size_t out_len) {
+static void sha256_hex64(const void *data, size_t len, char out[64]) {
+    static const char hex[] = "0123456789abcdef";
     unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256(data, len, hash);
-    for (int i = 0; i < SHA256_DIGEST_LENGTH && (size_t)(i * 2 + 2) < out_len; i++) {
-        sprintf(out + i * 2, "%02x", hash[i]);
+    for (size_t i = 0; i < SHA256_DIGEST_LENGTH; ++i) {
+        out[i * 2] = hex[hash[i] >> 4];
+        out[i * 2 + 1] = hex[hash[i] & 0x0f];
     }
 }
 
@@ -18,7 +20,7 @@ trm_alignment_policy_t trm_alignment_policy_create(const trm_native_contract_t *
     policy.sealed = 0;
 
     if (native) {
-        strncpy(policy.native_contract_digest, native->contract_digest, TRM_DIGEST_LEN - 1);
+        memcpy(policy.native_contract_digest, native->contract_digest, TRM_DIGEST_LEN);
     }
 
     // Default enabled lanes
@@ -58,8 +60,9 @@ int trm_alignment_policy_validate(const trm_alignment_policy_t *policy) {
 
 void trm_alignment_policy_compute_digest(trm_alignment_policy_t *policy) {
     if (!policy) return;
-    sha256_hex(policy, sizeof(trm_alignment_policy_t),
-               policy->alignment_policy_digest, TRM_DIGEST_LEN);
+    trm_alignment_policy_t normalized = *policy;
+    memset(normalized.alignment_policy_digest, 0, sizeof(normalized.alignment_policy_digest));
+    sha256_hex64(&normalized, sizeof(normalized), policy->alignment_policy_digest);
 }
 
 int trm_alignment_policy_add_hypothesis(trm_alignment_policy_t *policy, trm_hypothesis_t h) {

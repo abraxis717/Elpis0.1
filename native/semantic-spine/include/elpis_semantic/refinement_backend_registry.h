@@ -3,7 +3,7 @@
  * Maintains the set of registered refinement backends. Exactly one backend
  * may be ACTIVE_CANONICAL. Registry fails closed on any identity mismatch.
  *
- * Identity domain: "elpis.semantic.refinement_backend_registry.v1"
+ * Identity domain: "elpis.semantic.refinement_backend_registry.v2"
  */
 #ifndef ELPIS_SEMANTIC_REFINEMENT_BACKEND_REGISTRY_H
 #define ELPIS_SEMANTIC_REFINEMENT_BACKEND_REGISTRY_H
@@ -73,7 +73,7 @@ elpis_refinement_backend_registry_resolve_by_name(
 int elpis_refinement_backend_registry_validate(
     const elpis_semantic_refinement_backend_registry_v1 *registry);
 
-/* Compute registry identity. Domain: "elpis.semantic.refinement_backend_registry.v1" */
+/* Compute registry identity. Domain: "elpis.semantic.refinement_backend_registry.v2" */
 int elpis_refinement_backend_registry_identity(
     const elpis_semantic_refinement_backend_registry_v1 *registry, hacf_digest *out);
 

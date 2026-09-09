@@ -42,3 +42,40 @@ def test_core_bans_cannot_be_subtracted(bans, name):
 ])
 def test_ordinary_generated_python(source):
     assert evaluate_python_ast_policy(language='python', source=source, entrypoint='solution').passed
+
+
+@pytest.mark.parametrize('source', [
+    '@help\ndef solution():\n    pass',
+    '@memoryview\ndef solution():\n    pass',
+    '@help\nasync def solution():\n    pass',
+    '@help\nclass K:\n    pass\ndef solution():\n    pass',
+    'class K(metaclass=type):\n    pass\ndef solution():\n    pass',
+    'class K(int):\n    pass\ndef solution():\n    pass',
+    'class K:\n    pass\ndef solution():\n    pass',
+    'def solution(x):\n    with x as y:\n        pass',
+    'async def solution(x):\n    async with x as y:\n        pass',
+    't = type\ndef solution():\n    pass',
+    'def solution():\n    return len',
+    'def solution():\n    return [help, memoryview]',
+    'def solution():\n    raise BaseException',
+    'def solution():\n    raise SystemExit',
+    'def solution():\n    raise KeyboardInterrupt',
+    'def solution():\n    raise GeneratorExit',
+    'def solution(error):\n    raise error',
+    'def solution():\n    raise OSError()',
+])
+def test_implicit_capability_forms_rejected(source):
+    decision = evaluate_python_ast_policy(language='python', source=source, entrypoint='solution')
+    assert decision.code == 'BANNED_CALL' and not decision.passed
+    evidence = PythonASTValidator().validate(
+        RequestContext(request_id='implicit', prompt='', entrypoint='solution'),
+        ArtifactCandidate(language='python', source=source, digest=''),
+    )
+    assert not evidence.passed and evidence.code == 'BANNED_CALL'
+
+
+@pytest.mark.parametrize('exception', ['ValueError', 'TypeError', 'IndexError', 'KeyError', 'RuntimeError', 'Exception'])
+def test_explicitly_admitted_raised_exceptions(exception):
+    for expression in (exception, f'{exception}("invalid input")'):
+        assert evaluate_python_ast_policy(language='python', entrypoint='solution',
+            source=f'def solution():\n    raise {expression}').passed

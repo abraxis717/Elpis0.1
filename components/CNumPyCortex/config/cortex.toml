@@ -34,11 +34,3 @@ state_json = "$ELPIS_CANON_ROOT/Elpis_Canon/CNumPyCortex/runtime/state_latest.js
 generations = 4
 
 channel_schema_path = "config/channel_schema.toml"
-
-[[llama.endpoints]]
-name = "cpu_8080"
-url = "http://127.0.0.1:8080"
-
-[[llama.endpoints]]
-name = "blackwell_8081"
-url = "http://127.0.0.1:8081"

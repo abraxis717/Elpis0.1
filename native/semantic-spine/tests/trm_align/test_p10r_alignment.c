@@ -6,10 +6,18 @@
 #include "elpis_semantic/trm_alignment_handoff.h"
 #include <string.h>
 
+static int is_lower_hex64(const char digest[64]) {
+    for (size_t i = 0; i < 64; ++i) {
+        char c = digest[i];
+        if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'))) return 0;
+    }
+    return 1;
+}
+
 int main(void) {
     /* Test report creation */
     trm_alignment_report_t report = trm_alignment_report_create();
-    assert(report.abi_version == 1);
+    assert(report.abi_version == TRM_ALIGNMENT_REPORT_ABI_VERSION);
 
     /* Test diagnosis strings */
     assert(strcmp(trm_diagnosis_verdict_string(TRM_DIAGNOSIS_INTRINSIC_MODEL_INSUFFICIENCY),
@@ -51,7 +59,11 @@ int main(void) {
 
     /* Test digest computation */
     trm_alignment_report_compute_digest(&report);
-    assert(report.diagnosis_digest[0] != '\0');
+    assert(is_lower_hex64(report.diagnosis_digest));
+    char report_digest[TRM_REPORT_DIGEST_LEN];
+    memcpy(report_digest, report.diagnosis_digest, sizeof(report_digest));
+    trm_alignment_report_compute_digest(&report);
+    assert(memcmp(report_digest, report.diagnosis_digest, sizeof(report_digest)) == 0);
 
     /* Test policy */
     trm_native_contract_t native = trm_native_contract_create();
@@ -66,20 +78,29 @@ int main(void) {
     assert(trm_alignment_policy_seal(&policy));
     assert(trm_alignment_policy_is_sealed(&policy));
     assert(trm_alignment_policy_validate(&policy));
+    assert(is_lower_hex64(policy.alignment_policy_digest));
+    char policy_digest[TRM_DIGEST_LEN];
+    memcpy(policy_digest, policy.alignment_policy_digest, sizeof(policy_digest));
+    trm_alignment_policy_compute_digest(&policy);
+    assert(memcmp(policy_digest, policy.alignment_policy_digest, sizeof(policy_digest)) == 0);
     trm_alignment_policy_t sealed = policy;
     assert(!trm_alignment_policy_add_hypothesis(&policy, hypothesis));
     assert(memcmp(&sealed, &policy, sizeof(policy)) == 0);
 
     /* Test handoff */
     trm_alignment_handoff_t handoff = trm_alignment_handoff_create();
-    assert(handoff.abi_version == 1);
+    assert(handoff.abi_version == TRM_ALIGNMENT_HANDOFF_ABI_VERSION);
     assert(handoff.handoff_kind == TRM_HANDOFF_FROZEN_TRM_ALIGNMENT_DIAGNOSIS);
     assert(handoff.runtime_admission == 0);
     assert(handoff.no_weights_changed == 1);
     assert(handoff.no_training == 1);
     assert(trm_alignment_handoff_validate(&handoff));
     trm_alignment_handoff_compute_digest(&handoff);
-    assert(handoff.handoff_digest[0] != '\0');
+    assert(is_lower_hex64(handoff.handoff_digest));
+    char handoff_digest[TRM_HANDOFF_DIGEST_LEN];
+    memcpy(handoff_digest, handoff.handoff_digest, sizeof(handoff_digest));
+    trm_alignment_handoff_compute_digest(&handoff);
+    assert(memcmp(handoff_digest, handoff.handoff_digest, sizeof(handoff_digest)) == 0);
 
     printf("PASS: test_alignment_report\n");
     return 0;

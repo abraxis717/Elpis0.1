@@ -33,7 +33,7 @@ static void write_u32_be(elpis_sha256_ctx *ctx, uint32_t val) {
 
 
 
-static const char *POLICY_DOMAIN = "elpis.semantic.bounded_view_policy.v1";
+static const char *POLICY_DOMAIN = "elpis.semantic.bounded_view_policy.v2";
 
 void elpis_bounded_view_policy_init(
     elpis_semantic_bounded_view_policy_v1 *policy) {
@@ -53,7 +53,7 @@ int elpis_bounded_view_policy_default(
     policy->maximum_transport_references = 256;
     policy->maximum_embedding_references = 256;
     policy->maximum_metric_observations = 512;
-    policy->maximum_graph_hops = 2;
+    policy->maximum_graph_hops = 1;
     policy->maximum_metric_neighbors_per_seed = 8;
     policy->minimum_assertion_authority = 0;
     policy->minimum_source_authority = 0;
@@ -123,7 +123,7 @@ int elpis_bounded_view_policy_validate(
     for (size_t i = 0; i < sizeof(policy->reserved); i++) {
         if (policy->reserved[i] != 0) return SEMANTIC_E_RESERVATION;
     }
-    if (policy->maximum_graph_hops == 0) return SEMANTIC_E_INVAL;
+    if (policy->maximum_graph_hops != 1) return SEMANTIC_E_INVAL;
     if (policy->maximum_metric_neighbors_per_seed == 0) return SEMANTIC_E_INVAL;
     if (policy->maximum_semantic_nodes == 0) return SEMANTIC_E_INVAL;
     if ((policy->policy_flags & ~BOUNDED_VIEW_FLAG_MASK) != 0) return SEMANTIC_E_INVAL;

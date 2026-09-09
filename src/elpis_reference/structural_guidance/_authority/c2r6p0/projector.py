@@ -49,7 +49,9 @@ from .residual import (
     build_masks,
     derive_residual_state,
 )
-from .rules import Ruleset, load_ruleset
+from .rules import Ruleset, BudgetedRulesetV2, load_ruleset
+from .contracts import ProjectionResultV2, ProjectionBudgetExhaustedV2, PROJECTION_DOMAIN_V2
+from .trace import bind_search_budget
 from .trace import build_rejection_trace, build_trace
 
 _RULES_CACHE: Ruleset | None = None
@@ -64,7 +66,7 @@ def _ruleset() -> Ruleset:
 
 def _rejection_result(
     content_digest: str,
-    ruleset: Ruleset,
+    ruleset: BudgetedRulesetV2,
     status: ProjectionStatus,
     error,
     trace_rule: str = R.R_CONTRACT_ACCEPT,
@@ -78,8 +80,13 @@ def _rejection_result(
         rule=trace_rule,
         detail=trace_detail,
     )
-    return ProjectionResultV1(
-        schema=C2R6P0_SCHEMA_VERSION,
+    trace = bind_search_budget(
+        trace, content_digest, ruleset.digest(), ruleset.node_budget,
+        ((error.detail["search_entries"],) if "search_entries" in error.detail else
+         (error.detail["capacity"]["search_entries"],) if "capacity" in error.detail and "search_entries" in error.detail["capacity"] else ()),
+    )
+    return ProjectionResultV2(
+        schema="c2r6p0.projection.v2",
         status=status.value,
         semantic_input_digest=content_digest,
         rule_set_digest=ruleset.digest(),
@@ -113,17 +120,20 @@ def _finalize_digest(result: ProjectionResultV1) -> ProjectionResultV1:
     from dataclasses import replace
 
     digest = domain_digest(
-        PROJECTION_DOMAIN, result_digest_payload(result)
+        (PROJECTION_DOMAIN_V2 if isinstance(result, (ProjectionResultV2, ProjectionBudgetExhaustedV2)) else PROJECTION_DOMAIN), result_digest_payload(result)
     )
     return replace(result, projection_digest=digest)
 
 
 def project(
     pin: ProjectionInputV1,
-    ruleset: Ruleset | None = None,
-) -> ProjectionResultV1:
+    ruleset: BudgetedRulesetV2 | None = None,
+) -> ProjectionResultV2 | ProjectionBudgetExhaustedV2:
     """Project one explicit semantic graph into a Grid81 structural seed."""
     rules = ruleset if ruleset is not None else _ruleset()
+    if not isinstance(rules, BudgetedRulesetV2):
+        raise TypeError("production projection requires BudgetedRulesetV2")
+    rules.__post_init__()
     # Single identity space for all outcomes: the canonical content digest
     # (request_id excluded). It is computable for every input, valid or not.
     input_digest = content_digest_of(pin.semantic_graph)
@@ -156,6 +166,13 @@ def project(
     placement, err, capacity = allocate(graph.payload, analysis, rules)
     if placement is None:
         assert err is not None
+        if err.status == "SEARCH_BUDGET_EXHAUSTED":
+            trace = build_rejection_trace(graph.content_digest, rules.digest(), err.status, err, rule=err.rule)
+            trace = bind_search_budget(trace, graph.content_digest, rules.digest(), rules.node_budget, (capacity["search_entries"],))
+            return _finalize_digest(ProjectionBudgetExhaustedV2(
+                semantic_input_digest=graph.content_digest, rule_set_digest=rules.digest(),
+                trace=trace, error=err, projection_digest="",
+            ))
         return _finalize_digest(
             _rejection_result(
                 graph.content_digest, rules,
@@ -268,8 +285,9 @@ def project(
         rules.digest(),
     )
 
-    result = ProjectionResultV1(
-        schema=C2R6P0_SCHEMA_VERSION,
+    trace = bind_search_budget(trace, graph.content_digest, rules.digest(), rules.node_budget, (capacity["search_entries"],))
+    result = ProjectionResultV2(
+        schema="c2r6p0.projection.v2",
         status=ProjectionStatus.PROJECTED.value,
         semantic_input_digest=graph.content_digest,
         rule_set_digest=rules.digest(),

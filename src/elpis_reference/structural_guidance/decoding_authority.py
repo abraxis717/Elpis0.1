@@ -19,6 +19,7 @@ anything.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import ClassVar
 import hashlib
 import json
 import re
@@ -136,6 +137,9 @@ def _require_nonempty(
 
 @dataclass(frozen=True, slots=True)
 class DecodingAuthorizationIntentV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _DECODING_INTENT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _INTENT_DOMAIN
+
     schema: str
 
     planning_artifact_digest: str
@@ -188,7 +192,7 @@ class DecodingAuthorizationIntentV1:
     def validate(
         self,
     ) -> None:
-        if self.schema != _DECODING_INTENT_SCHEMA:
+        if self.schema != self.EXPECTED_SCHEMA:
             raise DecodingAuthorityError(
                 "unsupported decoding intent schema"
             )
@@ -243,7 +247,7 @@ class DecodingAuthorizationIntentV1:
         )
 
         expected = _domain_digest(
-            _INTENT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -255,6 +259,9 @@ class DecodingAuthorizationIntentV1:
 
 @dataclass(frozen=True, slots=True)
 class DecodingCapabilityReceiptV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _DECODING_RECEIPT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _RECEIPT_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -335,7 +342,7 @@ class DecodingCapabilityReceiptV1:
     def validate(
         self,
     ) -> None:
-        if self.schema != _DECODING_RECEIPT_SCHEMA:
+        if self.schema != self.EXPECTED_SCHEMA:
             raise DecodingAuthorityError(
                 "unsupported decoding receipt schema"
             )
@@ -423,7 +430,7 @@ class DecodingCapabilityReceiptV1:
             )
 
         expected = _domain_digest(
-            _RECEIPT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -441,6 +448,9 @@ class AuthorizedDecodingV1:
 
 @dataclass(frozen=True, slots=True)
 class DecodingConsumptionV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _DECODING_CONSUMPTION_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _CONSUMPTION_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -529,7 +539,7 @@ class DecodingConsumptionV1:
     def validate(
         self,
     ) -> None:
-        if self.schema != _DECODING_CONSUMPTION_SCHEMA:
+        if self.schema != self.EXPECTED_SCHEMA:
             raise DecodingAuthorityError(
                 "unsupported decoding consumption schema"
             )
@@ -620,7 +630,7 @@ class DecodingConsumptionV1:
             )
 
         expected = _domain_digest(
-            _CONSUMPTION_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -630,12 +640,36 @@ class DecodingConsumptionV1:
             )
 
 
+@dataclass(frozen=True, slots=True)
+class DecodingAuthorizationIntentV2(DecodingAuthorizationIntentV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.decoding-intent.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class DecodingCapabilityReceiptV2(DecodingCapabilityReceiptV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.decoding-capability-receipt.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class DecodingConsumptionV2(DecodingConsumptionV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.decoding-capability-consumption.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
 def _build_intent(
     planning_artifact: StructuralPlanningArtifactV1,
     *,
     decoder_adapter_id: str,
     decoder_adapter_version: str,
-) -> DecodingAuthorizationIntentV1:
+) -> DecodingAuthorizationIntentV2:
     if not isinstance(
         planning_artifact,
         StructuralPlanningArtifactV1,
@@ -677,7 +711,7 @@ def _build_intent(
     )
 
     base = {
-        "schema": _DECODING_INTENT_SCHEMA,
+        "schema": DecodingAuthorizationIntentV2.EXPECTED_SCHEMA,
         "planning_artifact_digest": (
             planning_artifact.planning_artifact_digest
         ),
@@ -707,10 +741,10 @@ def _build_intent(
         ),
     }
 
-    intent = DecodingAuthorizationIntentV1(
+    intent = DecodingAuthorizationIntentV2(
         **base,
         intent_digest=_domain_digest(
-            _INTENT_DOMAIN,
+            DecodingAuthorizationIntentV2.DIGEST_DOMAIN,
             base,
         ),
     )
@@ -729,6 +763,8 @@ class _DecodingAuthority:
         "__pending",
         "__sequence",
         "__lock",
+        "__closed",
+        "__runtime_bound",
     )
 
     def __init__(
@@ -737,7 +773,7 @@ class _DecodingAuthority:
         seed = secrets.token_hex(32)
 
         self.__instance_id = _domain_digest(
-            _INSTANCE_DOMAIN,
+            _INSTANCE_DOMAIN.removesuffix('.v1') + '.v2',
             {
                 "seed": seed,
             },
@@ -746,15 +782,17 @@ class _DecodingAuthority:
         self.__active: dict[str, str] = {}
 
         self.__pending: dict[
-            int,
+            str,
             tuple[
-                DecodingAuthorizationIntentV1,
-                DecodingCapabilityReceiptV1,
+                DecodingAuthorizationIntentV2,
+                DecodingCapabilityReceiptV2,
             ],
         ] = {}
 
         self.__sequence = 0
         self.__lock = threading.RLock()
+        self.__closed = False
+        self.__runtime_bound = False
 
     def _precommit_from_owner(
         self,
@@ -762,16 +800,18 @@ class _DecodingAuthority:
         *,
         decoder_adapter_id: str,
         decoder_adapter_version: str,
-    ) -> DecodingAuthorizationIntentV1:
+    ) -> DecodingAuthorizationIntentV2:
         intent = _build_intent(
             planning_artifact,
             decoder_adapter_id=decoder_adapter_id,
             decoder_adapter_version=decoder_adapter_version,
         )
 
-        key = id(intent)
+        key = intent.intent_digest
 
         with self.__lock:
+            if self.__closed:
+                raise DecodingAuthorityError("authority runtime boundary is closed")
             if key in self.__pending:
                 raise DecodingAuthorityError(
                     "decoding intent already precommitted"
@@ -791,7 +831,7 @@ class _DecodingAuthority:
             self.__sequence += 1
 
             base = {
-                "schema": _DECODING_RECEIPT_SCHEMA,
+                "schema": DecodingCapabilityReceiptV2.EXPECTED_SCHEMA,
                 "authority_instance_id": (
                     self.__instance_id
                 ),
@@ -834,10 +874,10 @@ class _DecodingAuthority:
             }
 
             receipt = (
-                DecodingCapabilityReceiptV1(
+                DecodingCapabilityReceiptV2(
                     **base,
                     receipt_digest=_domain_digest(
-                        _RECEIPT_DOMAIN,
+                        DecodingCapabilityReceiptV2.DIGEST_DOMAIN,
                         base,
                     ),
                 )
@@ -858,21 +898,23 @@ class _DecodingAuthority:
 
     def _reveal_from_owner(
         self,
-        intent: DecodingAuthorizationIntentV1,
+        intent: DecodingAuthorizationIntentV2,
     ) -> AuthorizedDecodingV1:
         if not isinstance(
             intent,
-            DecodingAuthorizationIntentV1,
+            DecodingAuthorizationIntentV2,
         ):
             raise TypeError(
-                "intent must be DecodingAuthorizationIntentV1"
+                "intent must be DecodingAuthorizationIntentV2"
             )
 
         intent.validate()
 
         with self.__lock:
+            if self.__closed:
+                raise DecodingAuthorityError("authority runtime boundary is closed")
             entry = self.__pending.get(
-                id(intent)
+                intent.intent_digest
             )
 
             if entry is None:
@@ -883,9 +925,9 @@ class _DecodingAuthority:
 
             stored, receipt = entry
 
-            if stored is not intent:
+            if stored != intent:
                 raise DecodingAuthorityError(
-                    "decoding intent object differs from precommit"
+                    "decoding intent content differs from precommit"
                 )
 
             intent.validate()
@@ -899,7 +941,7 @@ class _DecodingAuthority:
                 )
 
             del self.__pending[
-                id(intent)
+                intent.intent_digest
             ]
 
             return AuthorizedDecodingV1(
@@ -910,7 +952,7 @@ class _DecodingAuthority:
     def _consume_from_owner(
         self,
         authorized: AuthorizedDecodingV1,
-    ) -> DecodingConsumptionV1:
+    ) -> DecodingConsumptionV2:
         if not isinstance(
             authorized,
             AuthorizedDecodingV1,
@@ -953,6 +995,8 @@ class _DecodingAuthority:
                 )
 
         with self.__lock:
+            if self.__closed:
+                raise DecodingAuthorityError("authority runtime boundary is closed")
             active = self.__active.get(
                 receipt.capability_id
             )
@@ -972,7 +1016,7 @@ class _DecodingAuthority:
             ]
 
         base = {
-            "schema": _DECODING_CONSUMPTION_SCHEMA,
+            "schema": DecodingConsumptionV2.EXPECTED_SCHEMA,
             "authority_instance_id": (
                 receipt.authority_instance_id
             ),
@@ -1020,10 +1064,10 @@ class _DecodingAuthority:
             ),
         }
 
-        consumption = DecodingConsumptionV1(
+        consumption = DecodingConsumptionV2(
             **base,
             consumption_digest=_domain_digest(
-                _CONSUMPTION_DOMAIN,
+                DecodingConsumptionV2.DIGEST_DOMAIN,
                 base,
             ),
         )
@@ -1031,6 +1075,21 @@ class _DecodingAuthority:
         consumption.validate()
 
         return consumption
+
+
+    def _bind_runtime_owner(self) -> None:
+        """Reserve this issuer/consumer for exactly one caller-owned context."""
+        with self.__lock:
+            if self.__closed or self.__runtime_bound:
+                raise DecodingAuthorityError("authority already bound or closed")
+            self.__runtime_bound = True
+
+    def _close_from_owner(self) -> None:
+        """Expire pending and revealed capabilities at the request boundary."""
+        with self.__lock:
+            self.__closed = True
+            self.__pending.clear()
+            self.__active.clear()
 
 
 def _new_decoding_authority(

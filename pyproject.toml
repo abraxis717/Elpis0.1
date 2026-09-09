@@ -1,6 +1,6 @@
 [project]
 name = "elpis"
-version = "2.1.9"
+version = "2.1.10"
 description = "Elpis structural-guidance primitive with an end-to-end validated-source runtime"
 requires-python = ">=3.11"
 license = {text = "MIT"}
@@ -27,7 +27,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 package-dir = {"" = "src", "DarwinianMatrix" = "components/DarwinianMatrix"}
-py-modules = ["DarwinianMatrix.geometry"]
+py-modules = ["DarwinianMatrix.geometry", "DarwinianMatrix.grid_constants"]
 
 [tool.setuptools.packages.find]
 where = ["src", "components"]

@@ -439,3 +439,59 @@ def result_digest_payload(result: "ProjectionResultV1") -> dict[str, Any]:
     d = result.to_dict()
     d.pop("projection_digest", None)
     return d
+
+
+# Explicit successors: no new outcome or committed field uses a v1 identifier.
+PROJECTION_DOMAIN_V2 = "elpis.c2r6p0.projection-result.v2"
+
+
+@dataclass(frozen=True)
+class ProjectionTraceV2(ProjectionTraceV1):
+    node_budget: int
+    search_entries: tuple[int, ...]  # empty means search was not invoked
+
+    def to_dict(self):
+        return {
+            **super().to_dict(),
+            "node_budget": self.node_budget,
+            "search": ({"state": "NOT_RUN"} if not self.search_entries else
+                       {"state": "MEASURED", "entries": self.search_entries[0]}),
+        }
+
+
+@dataclass(frozen=True)
+class ProjectionResultV2(ProjectionResultV1):
+    """Projection bound to a v2 ruleset and budget-bearing trace."""
+
+
+@dataclass(frozen=True)
+class ProjectionBudgetExhaustedV2:
+    """No structural result was established; no placeholder grid is evidence."""
+    semantic_input_digest: str
+    rule_set_digest: str
+    trace: ProjectionTraceV2
+    error: ProjectionError
+    projection_digest: str
+    schema: str = "c2r6p0.projection-budget-exhausted.v2"
+    status: str = "SEARCH_BUDGET_EXHAUSTED"
+
+    def to_dict(self):
+        return {
+            "schema": self.schema, "status": self.status,
+            "semantic_input_digest": self.semantic_input_digest,
+            "rule_set_digest": self.rule_set_digest,
+            "trace": self.trace.to_dict(), "error": self.error.to_dict(),
+            "projection_digest": self.projection_digest,
+        }
+
+    def to_canonical_bytes(self):
+        return canonical_bytes(self.to_dict())
+
+
+class ProjectionSearchBudgetExhausted(RuntimeError):
+    """Admission cannot turn an uncomputed projection into a fallback receipt."""
+    status = "SEARCH_BUDGET_EXHAUSTED"
+
+    def __init__(self, projection: ProjectionBudgetExhaustedV2):
+        self.projection = projection
+        super().__init__(self.status)

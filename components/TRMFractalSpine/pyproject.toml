@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "TRM Orthogonal Recursive Embedding Foundation (FS0.1)"
 requires-python = ">=3.11"
 dependencies = [
-    "numpy>=2.0",
+    "numpy>=1.26",
     "tomllib; python_version < '3.11'",
 ]
 

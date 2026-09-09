@@ -41,7 +41,7 @@ int trm_fixture_count_correct(const int8_t board[TRM_FIXTURE_CELL_COUNT],
                                const int8_t solution[TRM_FIXTURE_CELL_COUNT]);
 int trm_fixture_count_wrong(const int8_t board[TRM_FIXTURE_CELL_COUNT],
                              const int8_t solution[TRM_FIXTURE_CELL_COUNT]);
-void trm_fixture_compute_digest(const trm_fixture_t *fixture);
-void trm_fixture_set_compute_digest(const trm_fixture_set_t *set);
+void trm_fixture_compute_digest(trm_fixture_t *fixture);
+void trm_fixture_set_compute_digest(trm_fixture_set_t *set);
 
 #endif

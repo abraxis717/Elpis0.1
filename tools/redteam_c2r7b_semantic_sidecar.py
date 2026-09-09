@@ -248,6 +248,7 @@ def ingress_substitution():
         projection_digest=result.projection.digest,
         grid81=result.projection.grid81,
         semantic_rows=result.projection.semantic_rows,
+        semantic_request_digest="",
     )
     rejected = False
     try:

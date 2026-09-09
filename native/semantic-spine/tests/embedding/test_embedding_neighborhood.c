@@ -10,14 +10,6 @@ static void set_digest(hacf_digest *d, unsigned char v) {
     d->bytes[0] = v;
 }
 
-static void write_f32_le(uint8_t *out, float val) {
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-    memcpy(out, &val, 4);
-#else
-    uint32_t bits; memcpy(&bits, &val, 4); bits = __builtin_bswap32(bits); memcpy(out, &bits, 4);
-#endif
-}
-
 int main(void) {
     int passed = 0, failed = 0;
 
@@ -279,6 +271,30 @@ int main(void) {
     /* We never write to the overlay — Pass. */
     {
         passed++;
+    }
+
+    /* Test 11: references outside the composed view are excluded */
+    {
+        embedding_neighborhood_query query;
+        memset(&query, 0, sizeof(query));
+        memcpy(&query.profile_digest, &profile_digest, sizeof(hacf_digest));
+        memcpy(&query.query_vector_digest, &q_vec.vector_identity, sizeof(hacf_digest));
+        query.query_vector_bytes = q_bytes;
+        query.query_vector_dimensions = 3;
+        query.limit = 10;
+
+        elpis_semantic_embedding_neighborhood_v1 *nb = elpis_embedding_neighborhood_create();
+        elpis_embedding_resolve_neighborhood(
+            composed_nodes, 2, refs, 3, vectors, 4, vbytes,
+            profile, &query, nb);
+        int outside_found = 0;
+        for (uint32_t i = 0; i < nb->result_count; ++i) {
+            if (memcmp(&nb->results[i].semantic_node_digest, &node_c,
+                       sizeof(hacf_digest)) == 0) outside_found = 1;
+        }
+        if (!outside_found) passed++;
+        else { printf("FAIL: node outside composed view admitted\n"); failed++; }
+        elpis_embedding_neighborhood_destroy(nb);
     }
 
     /* Cleanup */

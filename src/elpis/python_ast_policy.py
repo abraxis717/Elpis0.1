@@ -9,6 +9,7 @@ passing source must never be executed with ambient capabilities.
 from __future__ import annotations
 
 import ast
+import builtins
 from typing import AbstractSet
 from dataclasses import dataclass
 
@@ -81,6 +82,12 @@ ValueError TypeError IndexError KeyError RuntimeError Exception
 """.split())
 
 
+_EXCEPTION_NAMES = frozenset({
+    "ValueError", "TypeError", "IndexError", "KeyError", "RuntimeError", "Exception",
+})
+_BUILTIN_NAMES = frozenset(vars(builtins))
+
+
 def evaluate_python_ast_policy(
     *,
     language: str,
@@ -137,7 +144,30 @@ def evaluate_python_ast_policy(
     method_nodes = {id(node.func) for node in ast.walk(tree)
                     if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)}
 
+    call_nodes = {id(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+    raised_names = {id(node.exc) for node in ast.walk(tree)
+                    if isinstance(node, ast.Raise) and isinstance(node.exc, ast.Name)
+                    and node.exc.id in _EXCEPTION_NAMES}
+
     for node in ast.walk(tree):
+        # These forms invoke capabilities without passing through Call.func.
+        # Class creation invokes type/base/metaclass hooks, context managers
+        # invoke enter/exit protocols, and decorators are implicit calls.
+        implicit = isinstance(node, (ast.ClassDef, ast.With, ast.AsyncWith))
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            implicit |= bool(node.decorator_list)
+        if isinstance(node, ast.Raise) and node.exc is not None:
+            exception = node.exc.func if isinstance(node.exc, ast.Call) else node.exc
+            implicit |= not isinstance(exception, ast.Name) or exception.id not in _EXCEPTION_NAMES
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
+            implicit |= (node.id in _BUILTIN_NAMES and id(node) not in call_nodes
+                         and id(node) not in raised_names)
+        if implicit:
+            return PythonASTPolicyDecisionV1(
+                passed=False, code="BANNED_CALL", lineno=node.lineno,
+                call_name=type(node).__name__,
+            )
+
         if isinstance(
             node,
             (
@@ -148,11 +178,7 @@ def evaluate_python_ast_policy(
             return PythonASTPolicyDecisionV1(
                 passed=False,
                 code="IMPORT_FORBIDDEN",
-                lineno=getattr(
-                    node,
-                    "lineno",
-                    -1,
-                ),
+                lineno=node.lineno,
             )
 
         if isinstance(
@@ -165,11 +191,7 @@ def evaluate_python_ast_policy(
             return PythonASTPolicyDecisionV1(
                 passed=False,
                 code="SCOPE_MUTATION_FORBIDDEN",
-                lineno=getattr(
-                    node,
-                    "lineno",
-                    -1,
-                ),
+                lineno=node.lineno,
             )
 
         if isinstance(node, ast.Call):
@@ -179,11 +201,7 @@ def evaluate_python_ast_policy(
                 return PythonASTPolicyDecisionV1(
                     passed=False,
                     code="BANNED_CALL",
-                    lineno=getattr(
-                        node,
-                        "lineno",
-                        -1,
-                    ),
+                    lineno=node.lineno,
                     call_name=name or "",
                 )
 
@@ -207,11 +225,7 @@ def evaluate_python_ast_policy(
             return PythonASTPolicyDecisionV1(
                 passed=False,
                 code="BANNED_CALL",
-                lineno=getattr(
-                    node,
-                    "lineno",
-                    -1,
-                ),
+                lineno=node.lineno,
                 call_name=reference_name,
             )
 

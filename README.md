@@ -10,34 +10,18 @@ The current repository contains a qualified structural-guidance runtime and a se
 
 Elpis is therefore presented as a falsifiable systems-research program rather than a general intelligence claim. It does not claim solved alignment, general Grid81 satisfiability, arbitrary autonomous execution, general semantic correctness, cross-process attestation, autonomous implementation synthesis, AGI, or ASI. The intended standard is narrower: each mechanism should state the authority it possesses, the evidence that qualifies it, the conditions under which it fails, and the observations that would falsify the claim being made.
 
-### Latest Release — Elpis2.1.9
+### Elpis2.1.10
 
-**Release line: Elpis2.1.9**
+**Release line: Elpis2.1.10**
 
-Elpis2.1.9 is a structural-correctness and runtime-boundary successor to
-Elpis2.1.8.
+Elpis2.1.10 contains the qualified native, authority, bounded-allocation,
+packaging, CI-attribution, and claim-scope repairs summarized in the release
+notes. The release candidate is qualified by the canonical release guard,
+mutation checks, write-once sealer, public verifier, and sealed-tree controls.
 
-- Rejects negative structural relations instead of silently converting them
-  into positive obligations.
-- Restricts dependency scheduling to `precedes`; relation-form `state_feeds`
-  remains the memory-span representation.
-- Enforces exact structural-invariant arity and clarifies residual-clearance
-  and capacity-diagnostic contracts.
-- Permanently gates HACF and the real Python/ctypes boundary under ASAN+UBSAN.
-- Replaces the vacuous R0 authority-integrity check with executable bounded
-  authority invariants and negative regressions.
-- Retires the stale generic public manifest while preserving all versioned
-  historical release manifests.
-- Blocks `socket.create_connection()` hostnames before name resolution and
-  binds the airgap policy into hosted CI.
-- Preserves FuryanLocusOracle R0 byte-for-byte as independent frozen evidence.
-
-Generated source remains non-executable and authority-zero at the qualified
-terminal boundary. No performance claim is made.
-
-See [`RELEASE_NOTES_Elpis2.1.9.md`](RELEASE_NOTES_Elpis2.1.9.md) for the exact
-release scope and qualification boundary.
-
+Technical limitations remain explicit in the release notes. Generated source
+retains no execution authority, and no performance, AGI, ASI, universal semantic
+correctness, or universal security claim is made.
 ## 1. Research Question and Scope
 
 The central question is:
@@ -189,6 +173,36 @@ The terminal structural-guidance runtime composes already-qualified stages throu
 
 The canonical Python AST policy distinguishes syntax, entrypoint, import, scope-mutation, banned-call, and valid-policy outcomes. Elpis2.1.8 retains the earlier bypass hardening, makes canonical restrictions non-subtractive, and rejects the qualified frame, generator, coroutine, async-generator, traceback, and code-object introspection families.
 
+The closure policy requires Python source that parses and contains the named
+function entrypoint. Imports, global/nonlocal declarations, indirect calls,
+recovered method values, unknown attributes, decorators, all class definitions,
+`with` and `async with` are rejected. Builtin names loaded as values are rejected
+except in an admitted direct-call position or as an expressly approved raised
+exception. Raised expressions must be an approved exception name or its direct
+constructor call: `ValueError`, `TypeError`, `IndexError`, `KeyError`,
+`RuntimeError`, or `Exception`. Bare re-raise remains admitted. `BaseException`,
+`SystemExit`, `KeyboardInterrupt`, `GeneratorExit`, and other raised names are
+rejected. Canonical bans remain non-subtractive.
+
+Direct named calls are limited to source-defined functions and:
+`abs all any bool dict divmod enumerate filter float frozenset int isinstance
+issubclass iter len list map max min next pow range reversed round set slice
+sorted str sum tuple zip chr ord bin hex oct repr`, plus the six approved
+exception constructors. Direct attribute calls are limited to:
+`append extend insert pop remove clear copy count index reverse sort get keys
+values items setdefault update add discard union intersection difference strip
+lstrip rstrip split rsplit splitlines join replace lower upper casefold startswith
+endswith find rfind isdigit isalpha isalnum isspace`.
+
+Other parsed AST forms pass these filters when they contain no prohibited child.
+This remains an exclusion policy, **not a fully closed admitted grammar**.
+Undecorated async functions, `await`, async iteration, generators and
+`yield`/`yield from` have no resolved synchronous-language contract here; full
+P0.5 closure is blocked on that disposition. Ordinary data loops, comprehensions,
+lambdas used as data-operation callbacks, and calls between defined functions
+remain regression-covered. Static acceptance still grants no execution authority.
+
+
 A result of:
 
 ```text
@@ -243,6 +257,15 @@ This qualification remains bounded to the admitted finite model. It does not
 establish general Grid81 satisfiability or promote Furyan into runtime
 authority.
 
+The closure successor imposes a deterministic search-entry budget through
+`c2r6p0.ruleset.v2` and records it in `c2r6p0.projection-trace.v2`. The default is
+84 entries (4 × the measured maximum of 21 over the predeclared 44,202-case
+corpus), with an explicit maximum configurable budget of 4,096. A cutoff returns
+`SEARCH_BUDGET_EXHAUSTED`, independently of UNSAT or decomposition. Admission
+propagates that status through a typed exception carrying the projection and
+trace. This is an operational bound, not a completeness theorem.
+
+
 ### 5.2 Static validity without functional correctness
 
 A separate validated-source experiment supplied the runtime with a typed `merge_intervals` semantic representation, the natural-language task, the frozen structural TRM0, and the full validated-source composition, but no correct implementation body.
@@ -263,6 +286,20 @@ This negative result localizes the present boundary: semantic representation, st
 ### 5.3 Process-local receipt verification
 
 Receipt verification is process-local. The current mechanism does not claim cross-process persistence, asymmetric attestation, or globally reusable capability proofs. Bounded receipt retention is also an explicit implementation constraint rather than an unbounded audit log.
+
+### Grid81 publication and consumption limits
+
+The repository supplies a canonical-state reader and historical frozen state;
+it contains no qualified writer for `HEAD.json` or generations. Durable
+canonical-state mutation, atomic publication, and cross-process replay rejection
+are outside its qualified boundary. A stored declaration of these properties is
+not independent publication evidence.
+
+Grid81 capability nonce digests identify deterministic bound inputs; they do not
+establish one-time consumption. `ApplicationLedger` proves process-local
+consumption only within the same in-memory ledger instance. The frozen
+`.authority_audit.json` was produced by a constant generator and is not independent
+proof of its claimed properties. See [Grid81's boundary](components/Grid81/README.md).
 
 ### 5.4 Semantic replay identity and process-local security identity
 

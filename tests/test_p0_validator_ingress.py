@@ -84,6 +84,7 @@ def rejected(request_id="c2r6cb-ingress"):
         projection_digest=result.projection.digest,
         grid81=result.projection.grid81,
         semantic_rows=result.projection.semantic_rows,
+        semantic_request_digest="",
     )
     return controller, ingress, result, authorized, trace
 

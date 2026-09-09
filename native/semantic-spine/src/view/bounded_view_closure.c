@@ -84,10 +84,8 @@ int elpis_bounded_view_compute_mandatory_closure(
     uint32_t hyperedge_count = 0;
     uint32_t assertion_count = 0;
     uint32_t span_count = 0;
-    uint32_t transport_count = 0;
     uint32_t embedding_count = 0;
     uint32_t metric_count = 0;
-    uint32_t inclusion_count = 0;
     uint32_t omission_count = 0;
 
     /* Add all seed objects as mandatory nodes */
@@ -225,11 +223,10 @@ int elpis_bounded_view_closure_verify(
     if (view->assertion_count == 0) return SEMANTIC_E_INVAL;
 
     /* Verify plane digests are non-zero */
-    int semantic_zero = 1, provenance_zero = 1, metric_zero = 1, control_zero = 1;
-    for (int i = 0; i < HACF_DIGEST_BYTES; i++) {
+    int semantic_zero = 1, provenance_zero = 1, control_zero = 1;
+    for (uint32_t i = 0; i < HACF_DIGEST_BYTES; i++) {
         if (view->semantic_plane_digest.bytes[i] != 0) semantic_zero = 0;
         if (view->provenance_plane_digest.bytes[i] != 0) provenance_zero = 0;
-        if (view->metric_plane_digest.bytes[i] != 0) metric_zero = 0;
         if (view->control_plane_digest.bytes[i] != 0) control_zero = 0;
     }
     if (semantic_zero || provenance_zero || control_zero)

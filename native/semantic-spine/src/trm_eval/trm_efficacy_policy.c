@@ -26,7 +26,6 @@ void elpis_trm_efficacy_policy_init(
 int elpis_trm_efficacy_policy_identity(
     const elpis_semantic_trm_efficacy_policy_v1 *policy,
     hacf_digest *out) {
-    const char *domain = "elpis.semantic.trm_efficacy_policy.v1";
     uint8_t hash[32];
     elpis_sha256((const void *)policy, offsetof(elpis_semantic_trm_efficacy_policy_v1, reserved), hash);
     memcpy(out->bytes, hash, sizeof(out->bytes));

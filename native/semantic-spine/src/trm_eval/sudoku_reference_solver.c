@@ -5,10 +5,6 @@
 #include "elpis_semantic/sudoku_reference_solution.h"
 #include <string.h>
 
-static const uint32_t BOX_STARTS[9] = {
-    0, 3, 6, 27, 30, 33, 54, 57, 60
-};
-
 static int is_legal(const uint32_t board[SUDOKU_CELL_COUNT],
                     uint32_t cell, uint32_t digit) {
     if (digit < 1 || digit > 9) return 0;

@@ -1,3 +1,15 @@
+## Elpis2.1.10 — Locally Verified Release Candidate
+
+- Finalize the 2.1.10 root package, declared-text and citation identity.
+- Preserve the bounded pre-review repairs and qualification documented in
+  RELEASE_NOTES_Elpis2.1.10.md; technical limitations remain explicit.
+- Reconcile the exact public-scan fixed-point allowlist against the qualified
+  tree, then run the canonical release guard, mutation, sealer and verifier.
+- Create the write-once Elpis2.1.10 release manifest after all local pre-seal
+  guards pass.
+- Release publication follows the hosted verification and annotated-tag policy
+  defined in `docs/RELEASE_GUARD_POLICY.md`.
+
 ## Elpis2.1.9 — Structural Correctness and Runtime Boundary Hardening
 
 - Reject negative structural relations as unsupported semantic shapes rather

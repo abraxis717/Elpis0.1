@@ -145,7 +145,6 @@ static int test_zero_limits_rejected(void) {
 }
 
 static int test_null_input(void) {
-    elpis_semantic_context_iteration_policy_v1 policy;
     hacf_digest digest;
 
     if (elpis_context_iteration_policy_default(NULL) != SEMANTIC_E_INVAL) {

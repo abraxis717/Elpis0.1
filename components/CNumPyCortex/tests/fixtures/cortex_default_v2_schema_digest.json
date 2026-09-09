@@ -1,0 +1,97 @@
+{
+  "digest": "fb44bac1643cfa0c91fc2f4532a281ae3418a93fbc094c205a877afcc5c6abed",
+  "rows": [
+    {
+      "channel_id": "cpu.total_pct",
+      "expected_period_ns": 50000000,
+      "required": true,
+      "sampling_class": "psutil",
+      "source_kind": "psutil",
+      "stale_after_ns": 100000000,
+      "transform_id": "robust_z",
+      "unit": "percent"
+    },
+    {
+      "channel_id": "memory.used_pct",
+      "expected_period_ns": 50000000,
+      "required": true,
+      "sampling_class": "psutil",
+      "source_kind": "psutil",
+      "stale_after_ns": 100000000,
+      "transform_id": "robust_z",
+      "unit": "percent"
+    },
+    {
+      "channel_id": "temp.system.cpu",
+      "expected_period_ns": 100000000,
+      "required": false,
+      "sampling_class": "hwmon",
+      "source_kind": "hwmon",
+      "stale_after_ns": 300000000,
+      "transform_id": "robust_z",
+      "unit": "celsius"
+    },
+    {
+      "channel_id": "gpu.0.temp_c",
+      "expected_period_ns": 500000000,
+      "required": false,
+      "sampling_class": "nvidia",
+      "source_kind": "nvidia",
+      "stale_after_ns": 1500000000,
+      "transform_id": "robust_z",
+      "unit": "celsius"
+    },
+    {
+      "channel_id": "gpu.0.util_pct",
+      "expected_period_ns": 500000000,
+      "required": false,
+      "sampling_class": "nvidia",
+      "source_kind": "nvidia",
+      "stale_after_ns": 1500000000,
+      "transform_id": "robust_z",
+      "unit": "percent"
+    },
+    {
+      "channel_id": "__MISSING__",
+      "expected_period_ns": 50000000,
+      "required": false,
+      "sampling_class": "psutil",
+      "source_kind": "missing",
+      "stale_after_ns": 100000000,
+      "transform_id": "none",
+      "unit": "none"
+    },
+    {
+      "channel_id": "__MISSING__",
+      "expected_period_ns": 50000000,
+      "required": false,
+      "sampling_class": "psutil",
+      "source_kind": "missing",
+      "stale_after_ns": 100000000,
+      "transform_id": "none",
+      "unit": "none"
+    },
+    {
+      "channel_id": "__MISSING__",
+      "expected_period_ns": 50000000,
+      "required": false,
+      "sampling_class": "psutil",
+      "source_kind": "missing",
+      "stale_after_ns": 100000000,
+      "transform_id": "none",
+      "unit": "none"
+    },
+    {
+      "channel_id": "__MISSING__",
+      "expected_period_ns": 50000000,
+      "required": false,
+      "sampling_class": "psutil",
+      "source_kind": "missing",
+      "stale_after_ns": 100000000,
+      "transform_id": "none",
+      "unit": "none"
+    }
+  ],
+  "schema_id": "cortex_default_v2",
+  "version": "2.0"
+}

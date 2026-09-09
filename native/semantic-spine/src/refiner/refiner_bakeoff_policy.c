@@ -12,16 +12,16 @@ void elpis_refiner_bakeoff_policy_init(elpis_semantic_refiner_bakeoff_policy_v1 
 
 int elpis_refiner_bakeoff_policy_identity(const elpis_semantic_refiner_bakeoff_policy_v1 *p,
     hacf_digest *out) {
-    const char *domain = "elpis.semantic.refiner_bakeoff_policy.v1";
-    size_t domain_len = 43;
+    static const char domain[] = "elpis.semantic.refiner_bakeoff_policy.v2";
+    const size_t domain_len = sizeof(domain) - 1u;
     uint8_t buf[384];
     size_t off = 0;
 
     memcpy(buf + off, domain, domain_len); off += domain_len;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(p->abi_version);
+    { uint32_t encoded_u32 = __builtin_bswap32(p->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     memcpy(buf + off, p->P10_corpus_digest.bytes, 32); off += 32;
     memcpy(buf + off, p->P10_efficacy_policy_digest.bytes, 32); off += 32;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(p->enabled_candidate_count);
+    { uint32_t encoded_u32 = __builtin_bswap32(p->enabled_candidate_count); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     for (uint32_t i = 0; i < p->enabled_candidate_count; i++) {
         memcpy(buf + off, p->enabled_candidate_digests[i].bytes, 32); off += 32;
     }

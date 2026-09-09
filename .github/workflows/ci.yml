@@ -66,14 +66,24 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install airgap test dependencies
-        run: python -m pip install pytest==9.0.2
-      - name: Run airgap and subprocess policy regressions
+        run: |
+          python -m pip install pytest==9.0.2 numpy
+          sudo apt-get update
+          sudo apt-get install -y iproute2
+      - name: Run Python defense-in-depth and subprocess regressions
         run: |
           PYTHONPATH=components/CNumPyCortex/src \
             python -m pytest \
               -q -p no:cacheprovider \
               components/CNumPyCortex/tests/test_airgap.py \
+              components/CNumPyCortex/tests/test_airgap_config.py \
               components/CNumPyCortex/tests/test_subprocess_policy.py
+      - name: Prove OS-level network isolation independently of Python
+        run: |
+          sudo unshare --net -- bash -eu -c '
+            ip link set lo up
+            python components/CNumPyCortex/tests/os_airgap_witness.py
+          '
 
   runtime-r0:
     name: Runtime R0 suite
@@ -433,3 +443,74 @@ jobs:
       - run: python -m pip install . pytest==9.0.2
       - name: Frozen Furyan R0 release integration
         run: python -m pytest -q -p no:cacheprovider tests/test_furyan_release_integration.py tests/test_joint_allocator.py
+
+  semantic-spine-native:
+    name: Root semantic-spine native qualification
+    runs-on: ubuntu-latest
+    env:
+      ASAN_OPTIONS: halt_on_error=1:abort_on_error=1:detect_leaks=1:strict_string_checks=1
+      UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            libsqlite3-dev \
+            libssl-dev \
+            libpcre2-dev \
+            pkg-config
+      - name: Root configure and build
+        run: |
+          cmake \
+            -S . \
+            -B /tmp/elpis-root-native \
+            -DCMAKE_BUILD_TYPE=Debug
+          cmake --build /tmp/elpis-root-native --parallel
+      - name: Require complete root native test registry
+        run: |
+          COUNT="$(
+            ctest --test-dir /tmp/elpis-root-native -N \
+              | sed -n 's/^Total Tests: //p'
+          )"
+          test "$COUNT" = "96"
+          echo "ROOT_NATIVE_TEST_COUNT=$COUNT"
+      - name: Run root native suite
+        run: |
+          ctest \
+            --test-dir /tmp/elpis-root-native \
+            --output-on-failure
+      - name: Root warning-as-error build
+        run: |
+          cmake \
+            -S . \
+            -B /tmp/elpis-root-werror \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_C_FLAGS=-Werror \
+            -DCMAKE_CXX_FLAGS=-Werror
+          cmake --build /tmp/elpis-root-werror --parallel
+      - name: Configure semantic-spine ASAN and UBSAN
+        run: |
+          cmake \
+            -S native/semantic-spine \
+            -B /tmp/elpis-semantic-sanitized \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DELPIS_HACF_ROOT="$GITHUB_WORKSPACE/native/hacf" \
+            -DELPIS_ENABLE_ASAN=ON \
+            -DELPIS_ENABLE_UBSAN=ON
+          cmake --build /tmp/elpis-semantic-sanitized --parallel
+      - name: Require complete sanitizer test registry
+        run: |
+          COUNT="$(
+            ctest --test-dir /tmp/elpis-semantic-sanitized -N \
+              | sed -n 's/^Total Tests: //p'
+          )"
+          test "$COUNT" = "96"
+          echo "SEMANTIC_SANITIZER_TEST_COUNT=$COUNT"
+      - name: Run semantic-spine ASAN and UBSAN suite
+        run: |
+          ctest \
+            --test-dir /tmp/elpis-semantic-sanitized \
+            --output-on-failure

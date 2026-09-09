@@ -13,12 +13,20 @@ from dataclasses import dataclass
 from enum import Enum
 import hashlib
 import json
-from typing import Iterable
+from typing import Any, TYPE_CHECKING, Iterable
 
-import torch
-from torch import Tensor
+from elpis.optional_dependencies import require_torch
 
-from ..geometry import GRID_CELLS
+from ..grid_constants import GRID_CELLS
+
+
+if TYPE_CHECKING:
+    import torch
+    from torch import Tensor
+    TorchDevice = torch.device
+else:
+    Tensor = Any
+    TorchDevice = Any
 
 
 CLAMP_STATE_SCHEMA = "darwinian.clamp-state.v1"
@@ -232,6 +240,8 @@ class ClampState:
         self._version = int(version)
         self._closed = bool(closed)
 
+        torch = require_torch()
+
         if active_mask is None:
             active_mask = torch.zeros(
                 GRID_CELLS,
@@ -374,9 +384,10 @@ class ClampState:
     def trm_inputs(
         self,
         *,
-        device: str | torch.device = "cpu",
+        device: str | TorchDevice = "cpu",
     ) -> tuple[Tensor, Tensor]:
         """Return detached clamp values and mask for the frozen TRM."""
+        torch = require_torch()
         return (
             self._values.to(
                 device=device,

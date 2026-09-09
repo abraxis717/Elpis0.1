@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include "trm_alignment_metrics.h"
 
+#define TRM_ALIGNMENT_REPORT_ABI_VERSION 2
+#define TRM_ALIGNMENT_REPORT_DOMAIN "elpis.semantic.trm_alignment_report.v2"
 #define TRM_REPORT_DIGEST_LEN 64
 #define TRM_DIAGNOSIS_LEN 128
 

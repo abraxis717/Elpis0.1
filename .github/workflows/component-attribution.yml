@@ -1,0 +1,133 @@
+name: Component attribution
+
+on:
+  push:
+    branches:
+      - main
+      - 'ci/**'
+    tags: ['v*', 'Elpis*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  python-component-suites:
+    name: Python component / ${{ matrix.owner }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - owner: components/CNumPyCortex
+            command: "python -m pytest -q -p no:cacheprovider components/CNumPyCortex/tests"
+            needs_torch: false
+            attribution: configured-complete-suite
+          - owner: components/DarwinianMatrix
+            command: "python -m pytest -q -p no:cacheprovider components/DarwinianMatrix/tests"
+            needs_torch: true
+            attribution: configured-complete-suite
+          - owner: components/Grid81
+            command: "mkdir -p \"$RUNNER_TEMP/grid81-fixture/\\$ELPIS_CANON_ROOT/Elpis_Canon/Canonical\" && cp -a components/Grid81/state/Canonical/Grid81 \"$RUNNER_TEMP/grid81-fixture/\\$ELPIS_CANON_ROOT/Elpis_Canon/Canonical/Grid81\" && cd \"$RUNNER_TEMP/grid81-fixture\" && PYTHONPATH=\"$GITHUB_WORKSPACE/runtime/R0/src:$GITHUB_WORKSPACE/runtime/R1/src:$GITHUB_WORKSPACE/native/elpis-header/src:$GITHUB_WORKSPACE/components/CNumPyCortex/src:$GITHUB_WORKSPACE/components/TRMFractalSpine/src:$GITHUB_WORKSPACE/components/Grid81DeterministicCanonicalPromotionPlanner/src:$GITHUB_WORKSPACE/components/Grid81DeterministicCapabilityApplicationExecutor/src:$GITHUB_WORKSPACE/components/Grid81DeterministicCapabilityAuthorityEvaluator/src:$GITHUB_WORKSPACE/components/Grid81DeterministicCapabilityConsumptionCompiler/src:$GITHUB_WORKSPACE/components/Grid81DeterministicStructuralAdjudicator/src:$GITHUB_WORKSPACE/components/Grid81StructuralGroupProjectionCompiler/src:$GITHUB_WORKSPACE/components/Grid81TypedProjectionCompiler/src:$GITHUB_WORKSPACE/components/Grid81StructuralSemantics/src:$GITHUB_WORKSPACE/components/Pipeline/P0ControlProtocol/src:$GITHUB_WORKSPACE/components:$GITHUB_WORKSPACE/src\" python -m pytest -q -p no:cacheprovider \"$GITHUB_WORKSPACE/components/Grid81/test_g53ig1_adversarial_runtime_consumer.py\""
+            needs_torch: false
+            attribution: configured-complete-suite
+          - owner: components/Grid81DeterministicCanonicalPromotionPlanner
+            command: "python -m pytest -q -p no:cacheprovider components/Grid81DeterministicCanonicalPromotionPlanner/tests/test_canonical.py components/Grid81DeterministicCanonicalPromotionPlanner/tests/test_digest_golden.py components/Grid81DeterministicCanonicalPromotionPlanner/tests/test_plan_observation.py"
+            needs_torch: false
+            attribution: configured-hermetic-subset-external-full-unverified
+          - owner: components/Grid81DeterministicCapabilityApplicationExecutor
+            command: "python -m pytest -q -p no:cacheprovider components/Grid81DeterministicCapabilityApplicationExecutor/tests"
+            needs_torch: false
+            attribution: configured-complete-suite
+          - owner: components/Grid81DeterministicCapabilityAuthorityEvaluator
+            command: "python -m pytest -q -p no:cacheprovider components/Grid81DeterministicCapabilityAuthorityEvaluator/tests/test_lifecycle.py components/Grid81DeterministicCapabilityAuthorityEvaluator/tests/test_limits.py components/Grid81DeterministicCapabilityAuthorityEvaluator/tests/test_policy.py components/Grid81DeterministicCapabilityAuthorityEvaluator/tests/test_scope.py components/Grid81DeterministicCapabilityAuthorityEvaluator/tests/test_upstream.py"
+            needs_torch: false
+            attribution: configured-hermetic-subset-external-full-unverified
+          - owner: components/Grid81DeterministicCapabilityConsumptionCompiler
+            command: "python -m pytest -q -p no:cacheprovider components/Grid81DeterministicCapabilityConsumptionCompiler/tests"
+            needs_torch: false
+            attribution: configured-complete-suite
+          - owner: components/Grid81DeterministicStructuralAdjudicator
+            command: "python -m pytest -q -p no:cacheprovider components/Grid81DeterministicStructuralAdjudicator/tests/test_abstention.py components/Grid81DeterministicStructuralAdjudicator/tests/test_boundary.py components/Grid81DeterministicStructuralAdjudicator/tests/test_dispositions.py components/Grid81DeterministicStructuralAdjudicator/tests/test_policy.py components/Grid81DeterministicStructuralAdjudicator/tests/test_review_request.py components/Grid81DeterministicStructuralAdjudicator/tests/test_semantic_identity.py"
+            needs_torch: false
+            attribution: configured-hermetic-subset-external-full-unverified
+          - owner: components/Grid81StructuralGroupProjectionCompiler
+            command: "python -m pytest -q -p no:cacheprovider components/Grid81StructuralGroupProjectionCompiler/tests/test_conflicts.py components/Grid81StructuralGroupProjectionCompiler/tests/test_derivation.py components/Grid81StructuralGroupProjectionCompiler/tests/test_mutations.py components/Grid81StructuralGroupProjectionCompiler/tests/test_orbits.py components/Grid81StructuralGroupProjectionCompiler/tests/test_ordering.py components/Grid81StructuralGroupProjectionCompiler/tests/test_proposals.py"
+            needs_torch: false
+            attribution: configured-hermetic-subset-external-full-unverified
+          - owner: components/Grid81TypedProjectionCompiler
+            command: "python -m pytest -q -p no:cacheprovider components/Grid81TypedProjectionCompiler/tests"
+            needs_torch: false
+            attribution: configured-complete-suite
+          - owner: components/Pipeline/P0ControlProtocol
+            command: "python -m pytest -q -p no:cacheprovider components/Pipeline/P0ControlProtocol/tests"
+            needs_torch: false
+            attribution: configured-complete-suite
+          - owner: components/TRMFractalSpine
+            command: "python -m pytest -q -p no:cacheprovider components/TRMFractalSpine/tests"
+            needs_torch: false
+            attribution: configured-complete-suite
+          - owner: native/elpis-header
+            command: "python -m compileall -q native/elpis-header/src"
+            needs_torch: false
+            attribution: configured-structural-external-full-unverified
+            release_boundary: QUALIFIED_BUT_RELEASE_BOUNDARY_UNDEFINED
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONPYCACHEPREFIX: /tmp/elpis-component-pycache
+      PYTHONNOUSERSITE: '1'
+      ELPIS_COMPONENT_PYTHONPATH: >-
+        runtime/R0/src:runtime/R1/src:native/elpis-header/src:
+        components/CNumPyCortex/src:components/TRMFractalSpine/src:
+        components/Grid81DeterministicCanonicalPromotionPlanner/src:
+        components/Grid81DeterministicCapabilityApplicationExecutor/src:
+        components/Grid81DeterministicCapabilityAuthorityEvaluator/src:
+        components/Grid81DeterministicCapabilityConsumptionCompiler/src:
+        components/Grid81DeterministicStructuralAdjudicator/src:
+        components/Grid81StructuralGroupProjectionCompiler/src:
+        components/Grid81TypedProjectionCompiler/src:
+        components/Grid81StructuralSemantics/src:
+        components/Pipeline/P0ControlProtocol/src:components:src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install shared component test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install . ./components/TRMFractalSpine ./components/Pipeline/P0ControlProtocol pytest==9.0.2 pandas psutil requests
+      - name: Install Torch for Torch-owned suite
+        if: ${{ matrix.needs_torch }}
+        run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Run attributed component suite
+        env:
+          MATRIX_COMMAND: ${{ matrix.command }}
+        run: |
+          export PYTHONPATH="$(printf '%s' "$ELPIS_COMPONENT_PYTHONPATH" | tr -d ' ')"
+          bash -euxo pipefail -c "$MATRIX_COMMAND"
+
+  native-component-suites:
+    name: Native component / ${{ matrix.owner }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - owner: components/QueryLocalProposalIngress
+            command: "cc -std=c11 -Wall -Wextra -Werror -pthread -Icomponents/QueryLocalProposalIngress/include -Icomponents/QueryLocalProposalIngress/tests -Inative/semantic-spine/include -Inative/semantic-spine/src/graph -Inative/hacf/include components/QueryLocalProposalIngress/tests/test_atomic_batch.c components/QueryLocalProposalIngress/src/query_local_proposal.c components/QueryLocalProposalIngress/src/query_local_proposal_batch.c native/semantic-spine/src/graph/identity.c native/semantic-spine/src/graph/type_registry.c native/semantic-spine/src/graph/incidence_validate.c native/semantic-spine/src/graph/hypergraph_builder.c native/semantic-spine/src/graph/query_overlay.c native/semantic-spine/src/graph/snapshot_manifest.c native/semantic-spine/src/graph/snapshot_view.c native/hacf/src/hash/sha256.c -o \"$RUNNER_TEMP/test_atomic_batch\" && \"$RUNNER_TEMP/test_atomic_batch\""
+          - owner: components/RegexHACFQueryIngress
+            command: "cmake -S . -B \"$RUNNER_TEMP/regex-hacf\" -DCMAKE_BUILD_TYPE=Release -DELPIS_BUILD_BASIC_REGEX=ON && cmake --build \"$RUNNER_TEMP/regex-hacf\" --target elpis_regex_hacf_b01_regression --parallel && exe=\"$RUNNER_TEMP/regex-hacf/components/RegexHACFQueryIngress/elpis_regex_hacf_b01_regression\" && test -x \"$exe\" && state=\"$RUNNER_TEMP/regex-hacf-state\" && rm -rf \"$state\" && \"$exe\" \"$state\""
+          - owner: components/StreamingRegexIngress
+            command: "cmake -S components/StreamingRegexIngress -B \"$RUNNER_TEMP/streaming-regex\" -DCMAKE_BUILD_TYPE=Release && cmake --build \"$RUNNER_TEMP/streaming-regex\" --target elpis_streaming_regex_b01_regression elpis_streaming_regex_b01_cli_io_regression --parallel && \"$RUNNER_TEMP/streaming-regex/elpis_streaming_regex_b01_regression\" && \"$RUNNER_TEMP/streaming-regex/elpis_streaming_regex_b01_cli_io_regression\""
+          - owner: native/semantic-spine
+            command: "cmake -S native/semantic-spine -B \"$RUNNER_TEMP/semantic-spine\" -DCMAKE_BUILD_TYPE=Release -DELPIS_HACF_ROOT=\"$GITHUB_WORKSPACE/native/hacf\" && cmake --build \"$RUNNER_TEMP/semantic-spine\" --parallel && total=\"$(ctest --test-dir \"$RUNNER_TEMP/semantic-spine\" -N | sed -n 's/^Total Tests: //p')\" && nested=\"$(ctest --test-dir \"$RUNNER_TEMP/semantic-spine/hacf\" -N | sed -n 's/^Total Tests: //p')\" && test \"$total\" = 96 && test \"$nested\" = 21 && test \"$((total - nested))\" = 75 && ctest --test-dir \"$RUNNER_TEMP/semantic-spine\" --output-on-failure"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libsqlite3-dev libssl-dev pkg-config libpcre2-dev
+      - name: Run complete native component suite
+        env:
+          MATRIX_COMMAND: ${{ matrix.command }}
+        run: bash -euxo pipefail -c "$MATRIX_COMMAND"

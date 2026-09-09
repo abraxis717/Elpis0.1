@@ -79,7 +79,7 @@ void semantic_view_set_records(semantic_snapshot_view *view,
     next.manifest = view->manifest;
     /* Stage all storage first, including when sources alias the current view. */
 #define COPY_RECORDS(member, source, count, compare) do { \
-    if ((size_t)(count) > SIZE_MAX / sizeof(*next.member)) goto failed; \
+    if ((count) != 0 && SIZE_MAX / (size_t)(count) < sizeof(*next.member)) goto failed; \
     if (count) { \
         next.member = malloc((size_t)(count) * sizeof(*next.member)); \
         if (!next.member) goto failed; \

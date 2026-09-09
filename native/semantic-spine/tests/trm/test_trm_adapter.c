@@ -69,13 +69,6 @@ static void create_test_board(uint32_t digits[81], uint32_t occupied[81]) {
     memset(digits, 0, sizeof(uint32_t) * 81);
     memset(occupied, 0, sizeof(uint32_t) * 81);
 
-    /* Known-valid 17-clue Sudoku puzzle (Arto Inkala minimal) */
-    uint32_t clues[17][2] = {
-        {0, 1}, {1, 0}, {2, 0}, {3, 0}, {4, 0},
-        {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0},
-        {10, 0}, {11, 0}, {12, 0}, {13, 0}, {14, 0},
-        {15, 0}, {16, 0}
-    };
     /* Use a simple valid partial: just 5 non-conflicting clues */
     memset(digits, 0, 81 * sizeof(*digits));
     memset(occupied, 0, 81 * sizeof(*occupied));
@@ -388,7 +381,7 @@ static void test_input_tensor(void) {
     hacf_digest dc_digest = make_digest("dc");
 
     TEST("tensor_construct",
-        elpis_trm_input_tensor_construct(&tensor, digit_classes, &abi_digest, &dc_digest) == SEMANTIC_OK);
+        elpis_trm_input_tensor_construct(&tensor, (const uint32_t (*)[10])digit_classes, &abi_digest, &dc_digest) == SEMANTIC_OK);
 
     TEST("tensor_shape", tensor.dimensions[0] == 1 && tensor.dimensions[1] == 81 && tensor.dimensions[2] == 10);
     TEST("tensor_elements", tensor.element_count == 810);
@@ -441,8 +434,8 @@ static void test_sidecar_isolation(void) {
     hacf_digest dc_digest_s2 = make_digest("sidecar_2_different");
 
     elpis_semantic_trm_input_tensor_v1 tensor_a, tensor_b;
-    elpis_trm_input_tensor_construct(&tensor_a, digit_classes, &abi_digest, &dc_digest_s1);
-    elpis_trm_input_tensor_construct(&tensor_b, digit_classes, &abi_digest, &dc_digest_s2);
+    elpis_trm_input_tensor_construct(&tensor_a, (const uint32_t (*)[10])digit_classes, &abi_digest, &dc_digest_s1);
+    elpis_trm_input_tensor_construct(&tensor_b, (const uint32_t (*)[10])digit_classes, &abi_digest, &dc_digest_s2);
 
     /* Tensor payloads identical (numeric only) */
     TEST("sidecar_tensor_payload_identical",
@@ -835,7 +828,7 @@ static void test_sudoku_gate(void) {
     memset(candidate, 0, sizeof(candidate));
     for (uint32_t i = 0; i < 81; i++) {
         if (mut.writable_mask81[i] == 1) {
-            candidate[i] = 7;
+            candidate[i] = 4;
             break;
         }
     }
@@ -863,6 +856,29 @@ static void test_sudoku_gate(void) {
 
     TEST("sudoku_gate_construct", ret == SEMANTIC_OK);
     TEST("sudoku_gate_validate", elpis_trm_guarded_result_validate(&result) == SEMANTIC_OK);
+
+    TEST("sudoku_flag_mismatch_rejected",
+        elpis_trm_guarded_result_construct(&result, digits, guard.guarded_digit,
+            guard.candidate_changed_mask81, guard.admitted_changed_mask81,
+            guard.fixed_cell_violation_attempt_mask81,
+            guard.candidate_changed_cell_count, guard.admitted_changed_cell_count,
+            guard.fixed_violation_attempt_count, 0,
+            &pkt_d, &cand_d, &dec_d, &pol_d,
+            &inp_d, &cand_arr_d, &fix_d, &wrt_d, &cc_d, &ac_d, &fv_d)
+        == SEMANTIC_E_INVAL);
+
+    uint32_t tampered_mask[81];
+    memcpy(tampered_mask, guard.candidate_changed_mask81, sizeof(tampered_mask));
+    tampered_mask[0] ^= 1u;
+    TEST("mask_digest_or_count_mismatch_rejected",
+        elpis_trm_guarded_result_construct(&result, digits, guard.guarded_digit,
+            tampered_mask, guard.admitted_changed_mask81,
+            guard.fixed_cell_violation_attempt_mask81,
+            guard.candidate_changed_cell_count, guard.admitted_changed_cell_count,
+            guard.fixed_violation_attempt_count, 1,
+            &pkt_d, &cand_d, &dec_d, &pol_d,
+            &inp_d, &cand_arr_d, &fix_d, &wrt_d, &cc_d, &ac_d, &fv_d)
+        == SEMANTIC_E_INVAL);
 
     /* Accepted disposition */
     TEST("sudoku_accepted",
@@ -898,7 +914,10 @@ static void test_sudoku_gate(void) {
             guard_bad.fixed_violation_attempt_count,
             0, /* sudoku invalid */
             &pkt_d, &cand_d, &dec_d, &pol_d,
-            &inp_d, &cand_arr_d, &fix_d, &wrt_d, &cc_d, &ac_d, &fv_d);
+            &inp_d, &cand_arr_d, &fix_d, &wrt_d,
+            &guard_bad.candidate_changed_mask_digest,
+            &guard_bad.admitted_changed_mask_digest,
+            &guard_bad.fixed_violation_attempt_mask_digest);
 
         TEST("sudoku_invalid_construct", ret_bad == SEMANTIC_OK);
         TEST("sudoku_rejected_disposition",
@@ -920,7 +939,10 @@ static void test_sudoku_gate(void) {
         guardNoChange.fixed_violation_attempt_count,
         1, /* sudoku valid */
         &pkt_d, &cand_d, &dec_d, &pol_d,
-        &inp_d, &cand_arr_d, &fix_d, &wrt_d, &cc_d, &ac_d, &fv_d);
+        &inp_d, &cand_arr_d, &fix_d, &wrt_d,
+        &guardNoChange.candidate_changed_mask_digest,
+        &guardNoChange.admitted_changed_mask_digest,
+        &guardNoChange.fixed_violation_attempt_mask_digest);
 
     TEST("no_change_disposition",
         result_nc.guard_disposition == TRM_GUARDED_PROPOSAL_ACCEPTED_NO_CHANGE);

@@ -13,8 +13,8 @@ Issuance follows the existing Elpis lineage-capability discipline:
 2. reveal the capability once;
 3. consume the capability once against the issuing authority instance.
 
-The authority object and factory remain module-private. A future trusted
-composition owner may hold one authority instance. Hostile same-process
+The authority object and factory remain module-private. The caller supplies
+the trusted composition owner and its explicit issuance policy. Hostile same-process
 reflection/isolation is outside this contract, matching the existing P0
 lineage-authority threat model.
 
@@ -24,6 +24,7 @@ This module does not materialize anything.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import ClassVar
 import hashlib
 import json
 import re
@@ -140,6 +141,9 @@ def _require_identity(
 
 @dataclass(frozen=True, slots=True)
 class ResolvedTopologyMaterializationIntentV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _INTENT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _INTENT_DOMAIN
+
     schema: str
 
     topology_digest: str
@@ -176,7 +180,7 @@ class ResolvedTopologyMaterializationIntentV1:
     def validate(
         self,
     ) -> None:
-        if self.schema != _INTENT_SCHEMA:
+        if self.schema != self.EXPECTED_SCHEMA:
             raise ResolvedTopologyMaterializationAuthorityError(
                 "unsupported materialization intent schema"
             )
@@ -213,7 +217,7 @@ class ResolvedTopologyMaterializationIntentV1:
         )
 
         expected = _domain_digest(
-            _INTENT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -225,6 +229,9 @@ class ResolvedTopologyMaterializationIntentV1:
 
 @dataclass(frozen=True, slots=True)
 class ResolvedTopologyMaterializationCapabilityReceiptV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _RECEIPT_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _RECEIPT_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -281,7 +288,7 @@ class ResolvedTopologyMaterializationCapabilityReceiptV1:
     def validate(
         self,
     ) -> None:
-        if self.schema != _RECEIPT_SCHEMA:
+        if self.schema != self.EXPECTED_SCHEMA:
             raise ResolvedTopologyMaterializationAuthorityError(
                 "unsupported materialization receipt schema"
             )
@@ -356,7 +363,7 @@ class ResolvedTopologyMaterializationCapabilityReceiptV1:
             )
 
         expected = _domain_digest(
-            _RECEIPT_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -374,6 +381,9 @@ class AuthorizedResolvedTopologyMaterializationV1:
 
 @dataclass(frozen=True, slots=True)
 class ResolvedTopologyMaterializationConsumptionV1:
+    EXPECTED_SCHEMA: ClassVar[str] = _CONSUMPTION_SCHEMA
+    DIGEST_DOMAIN: ClassVar[str] = _CONSUMPTION_DOMAIN
+
     schema: str
 
     authority_instance_id: str
@@ -424,7 +434,7 @@ class ResolvedTopologyMaterializationConsumptionV1:
     def validate(
         self,
     ) -> None:
-        if self.schema != _CONSUMPTION_SCHEMA:
+        if self.schema != self.EXPECTED_SCHEMA:
             raise ResolvedTopologyMaterializationAuthorityError(
                 "unsupported materialization consumption schema"
             )
@@ -493,7 +503,7 @@ class ResolvedTopologyMaterializationConsumptionV1:
             )
 
         expected = _domain_digest(
-            _CONSUMPTION_DOMAIN,
+            self.DIGEST_DOMAIN,
             self.payload(),
         )
 
@@ -566,13 +576,37 @@ def _validate_observation(
         )
 
 
+@dataclass(frozen=True, slots=True)
+class ResolvedTopologyMaterializationIntentV2(ResolvedTopologyMaterializationIntentV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.materialization-intent.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class ResolvedTopologyMaterializationCapabilityReceiptV2(ResolvedTopologyMaterializationCapabilityReceiptV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.materialization-capability-receipt.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class ResolvedTopologyMaterializationConsumptionV2(ResolvedTopologyMaterializationConsumptionV1):
+    """Successor content-bound intent and runtime-boundary capability contract."""
+
+    EXPECTED_SCHEMA: ClassVar[str] = 'elpis.structural-guidance.materialization-capability-consumption.v2'
+    DIGEST_DOMAIN: ClassVar[str] = EXPECTED_SCHEMA
+
+
 def _build_intent(
     topology: ResolvedStructuralTopologyV1,
     observation: ResolvedTopologyConsumerReceiptV1,
     *,
     materializer_id: str,
     materializer_version: str,
-) -> ResolvedTopologyMaterializationIntentV1:
+) -> ResolvedTopologyMaterializationIntentV2:
     _validate_observation(
         topology,
         observation,
@@ -588,7 +622,7 @@ def _build_intent(
     )
 
     base = {
-        "schema": _INTENT_SCHEMA,
+        "schema": ResolvedTopologyMaterializationIntentV2.EXPECTED_SCHEMA,
         "topology_digest": (
             topology.topology_digest
         ),
@@ -607,10 +641,10 @@ def _build_intent(
         ),
     }
 
-    intent = ResolvedTopologyMaterializationIntentV1(
+    intent = ResolvedTopologyMaterializationIntentV2(
         **base,
         intent_digest=_domain_digest(
-            _INTENT_DOMAIN,
+            ResolvedTopologyMaterializationIntentV2.DIGEST_DOMAIN,
             base,
         ),
     )
@@ -629,6 +663,8 @@ class _ResolvedTopologyMaterializationAuthority:
         "__pending",
         "__sequence",
         "__lock",
+        "__closed",
+        "__runtime_bound",
     )
 
     def __init__(
@@ -637,7 +673,7 @@ class _ResolvedTopologyMaterializationAuthority:
         seed = secrets.token_hex(32)
 
         self.__instance_id = _domain_digest(
-            _INSTANCE_DOMAIN,
+            _INSTANCE_DOMAIN.removesuffix('.v1') + '.v2',
             {
                 "seed": seed,
             },
@@ -646,15 +682,17 @@ class _ResolvedTopologyMaterializationAuthority:
         self.__active: dict[str, str] = {}
 
         self.__pending: dict[
-            int,
+            str,
             tuple[
-                ResolvedTopologyMaterializationIntentV1,
-                ResolvedTopologyMaterializationCapabilityReceiptV1,
+                ResolvedTopologyMaterializationIntentV2,
+                ResolvedTopologyMaterializationCapabilityReceiptV2,
             ],
         ] = {}
 
         self.__sequence = 0
         self.__lock = threading.RLock()
+        self.__closed = False
+        self.__runtime_bound = False
 
     def _precommit_from_owner(
         self,
@@ -663,7 +701,7 @@ class _ResolvedTopologyMaterializationAuthority:
         *,
         materializer_id: str,
         materializer_version: str,
-    ) -> ResolvedTopologyMaterializationIntentV1:
+    ) -> ResolvedTopologyMaterializationIntentV2:
         intent = _build_intent(
             topology,
             observation,
@@ -671,9 +709,11 @@ class _ResolvedTopologyMaterializationAuthority:
             materializer_version=materializer_version,
         )
 
-        key = id(intent)
+        key = intent.intent_digest
 
         with self.__lock:
+            if self.__closed:
+                raise ResolvedTopologyMaterializationAuthorityError("authority runtime boundary is closed")
             if key in self.__pending:
                 raise ResolvedTopologyMaterializationAuthorityError(
                     "materialization intent already precommitted"
@@ -693,7 +733,7 @@ class _ResolvedTopologyMaterializationAuthority:
             self.__sequence += 1
 
             base = {
-                "schema": _RECEIPT_SCHEMA,
+                "schema": ResolvedTopologyMaterializationCapabilityReceiptV2.EXPECTED_SCHEMA,
                 "authority_instance_id": (
                     self.__instance_id
                 ),
@@ -723,10 +763,10 @@ class _ResolvedTopologyMaterializationAuthority:
             }
 
             receipt = (
-                ResolvedTopologyMaterializationCapabilityReceiptV1(
+                ResolvedTopologyMaterializationCapabilityReceiptV2(
                     **base,
                     receipt_digest=_domain_digest(
-                        _RECEIPT_DOMAIN,
+                        ResolvedTopologyMaterializationCapabilityReceiptV2.DIGEST_DOMAIN,
                         base,
                     ),
                 )
@@ -747,22 +787,24 @@ class _ResolvedTopologyMaterializationAuthority:
 
     def _reveal_from_owner(
         self,
-        intent: ResolvedTopologyMaterializationIntentV1,
+        intent: ResolvedTopologyMaterializationIntentV2,
     ) -> AuthorizedResolvedTopologyMaterializationV1:
         if not isinstance(
             intent,
-            ResolvedTopologyMaterializationIntentV1,
+            ResolvedTopologyMaterializationIntentV2,
         ):
             raise TypeError(
                 "intent must be "
-                "ResolvedTopologyMaterializationIntentV1"
+                "ResolvedTopologyMaterializationIntentV2"
             )
 
         intent.validate()
 
         with self.__lock:
+            if self.__closed:
+                raise ResolvedTopologyMaterializationAuthorityError("authority runtime boundary is closed")
             entry = self.__pending.get(
-                id(intent)
+                intent.intent_digest
             )
 
             if entry is None:
@@ -773,9 +815,9 @@ class _ResolvedTopologyMaterializationAuthority:
 
             stored, receipt = entry
 
-            if stored is not intent:
+            if stored != intent:
                 raise ResolvedTopologyMaterializationAuthorityError(
-                    "intent object differs from precommit"
+                    "intent content differs from precommit"
                 )
 
             intent.validate()
@@ -789,7 +831,7 @@ class _ResolvedTopologyMaterializationAuthority:
                 )
 
             del self.__pending[
-                id(intent)
+                intent.intent_digest
             ]
 
             return (
@@ -802,7 +844,7 @@ class _ResolvedTopologyMaterializationAuthority:
     def _consume_from_owner(
         self,
         authorized: AuthorizedResolvedTopologyMaterializationV1,
-    ) -> ResolvedTopologyMaterializationConsumptionV1:
+    ) -> ResolvedTopologyMaterializationConsumptionV2:
         if not isinstance(
             authorized,
             AuthorizedResolvedTopologyMaterializationV1,
@@ -868,6 +910,8 @@ class _ResolvedTopologyMaterializationAuthority:
             )
 
         with self.__lock:
+            if self.__closed:
+                raise ResolvedTopologyMaterializationAuthorityError("authority runtime boundary is closed")
             active = self.__active.get(
                 receipt.capability_id
             )
@@ -887,7 +931,7 @@ class _ResolvedTopologyMaterializationAuthority:
             ]
 
         base = {
-            "schema": _CONSUMPTION_SCHEMA,
+            "schema": ResolvedTopologyMaterializationConsumptionV2.EXPECTED_SCHEMA,
             "authority_instance_id": (
                 receipt.authority_instance_id
             ),
@@ -916,10 +960,10 @@ class _ResolvedTopologyMaterializationAuthority:
         }
 
         consumption = (
-            ResolvedTopologyMaterializationConsumptionV1(
+            ResolvedTopologyMaterializationConsumptionV2(
                 **base,
                 consumption_digest=_domain_digest(
-                    _CONSUMPTION_DOMAIN,
+                    ResolvedTopologyMaterializationConsumptionV2.DIGEST_DOMAIN,
                     base,
                 ),
             )
@@ -928,6 +972,21 @@ class _ResolvedTopologyMaterializationAuthority:
         consumption.validate()
 
         return consumption
+
+
+    def _bind_runtime_owner(self) -> None:
+        """Reserve this issuer/consumer for exactly one caller-owned context."""
+        with self.__lock:
+            if self.__closed or self.__runtime_bound:
+                raise ResolvedTopologyMaterializationAuthorityError("authority already bound or closed")
+            self.__runtime_bound = True
+
+    def _close_from_owner(self) -> None:
+        """Expire pending and revealed capabilities at the request boundary."""
+        with self.__lock:
+            self.__closed = True
+            self.__pending.clear()
+            self.__active.clear()
 
 
 def _new_resolved_topology_materialization_authority(

@@ -16,9 +16,9 @@ int elpis_refiner_metrics_identity(const elpis_semantic_refiner_metrics_v1 *m,
     size_t off = 0;
 
     memcpy(buf + off, domain, strlen(domain)); off += strlen(domain);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(m->abi_version);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(m->positive_bounded_fixtures);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(m->exactly_solved_fixtures);
+    { uint32_t encoded_u32 = __builtin_bswap32(m->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4; }
+    { uint32_t encoded_u32 = __builtin_bswap32(m->positive_bounded_fixtures); memcpy(buf + off, &encoded_u32, 4); off += 4; }
+    { uint32_t encoded_u32 = __builtin_bswap32(m->exactly_solved_fixtures); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     off += 4; *(int32_t *)(buf + off - 4) = __builtin_bswap32(m->aggregate_bounded_net_correct_gain);
 
     elpis_sha256(buf, off, out->bytes);

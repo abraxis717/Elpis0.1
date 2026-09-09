@@ -138,14 +138,7 @@ def _render_plan(config: dict) -> dict:
 
 
 def _authority(config: dict) -> dict:
-    audit = generate_authority_audit(config)
-    plan_check = verify_plan_nonexecutable()
-    return {
-        **audit.__dict__,
-        "authority_digest": audit.digest,
-        "plan_non_executable": plan_check["plan_non_executable"],
-        "plan_violations": plan_check["violation_details"],
-    }
+    return generate_authority_audit(config)
 
 
 def _json_output(obj: any) -> str:

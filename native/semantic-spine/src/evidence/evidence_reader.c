@@ -67,11 +67,6 @@ extern int elpis_evidence_read_record(
 
 #include <string.h>
 
-/* Helper: compare a digest against all-zero */
-static const uint8_t ZERO_DIGEST[32] = {0};
-static int digest_is_zero(const hacf_digest *d) {
-    return memcmp(d->bytes, ZERO_DIGEST, 32) == 0;
-}
 #include <stdio.h>
 
 /* Reuse reader function from evidence_writer.c */

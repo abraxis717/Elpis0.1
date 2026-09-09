@@ -110,3 +110,22 @@ assert first.receipt_bytes() == second.receipt_bytes()
 assert 'torch' not in sys.modules
 '''
     subprocess.run([sys.executable, '-c', code], cwd=ROOT, env=env, check=True)
+
+def test_darwinian_projector_import_is_torch_lazy():
+    code = BLOCK_TORCH + """
+import sys
+from DarwinianMatrix.projector import constraints
+assert 'torch' not in sys.modules
+try:
+    constraints.ClampState.empty('no-torch')
+except ModuleNotFoundError as exc:
+    assert 'elpis[trm]' in str(exc)
+else:
+    raise AssertionError('ClampState construction must acquire the optional Torch boundary')
+print('PASS_DARWINIAN_LAZY_TORCH')
+"""
+    env = dict(os.environ)
+    env['PYTHONPATH'] = str(ROOT / 'src') + os.pathsep + str(ROOT / 'components')
+    result = subprocess.run([sys.executable, '-c', code], cwd=ROOT, env=env, capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == 'PASS_DARWINIAN_LAZY_TORCH'

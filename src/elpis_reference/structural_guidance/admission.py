@@ -3,6 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from .errors import AdmissionIntegrityViolation, AdmissionUnavailable
+from .inactive_receipt import InactiveGuidanceReceiptV2, UnavailableDetail
+
 from .authority import (
     FROZEN_TRM0_CHECKPOINT_SHA256,
 )
@@ -12,6 +15,8 @@ from .receipt import (
 )
 from ._authority.c2r6p0.contracts import (
     ProjectionResultV1,
+    ProjectionBudgetExhaustedV2,
+    ProjectionSearchBudgetExhausted,
 )
 from ._authority.c2r6p1_bridge.adapter import (
     adapt_projection_to_refiner_input,
@@ -22,6 +27,7 @@ from ._authority.c2r6p1_bridge.contracts import (
 )
 from ._authority.core import (
     FrozenTRM0ProposalSource,
+    GuidedSearchResult as RefinerResult,
     TRM0GuidedRefiner,
     replay_candidate_path,
 )
@@ -74,101 +80,7 @@ class StructuralGuidanceAdmissionResult:
 
     envelope: object | None
 
-    receipt: StructuralGuidanceReceiptV1
-
-
-def _projection_digest(
-    projection: object,
-) -> str:
-    return str(
-        getattr(
-            projection,
-            "projection_digest",
-            "",
-        )
-    )
-
-
-def _projection_fingerprint(
-    projection: object,
-) -> str:
-    return str(
-        getattr(
-            projection,
-            "structural_input_fingerprint",
-            "",
-        )
-    )
-
-
-def _stats_value(
-    result: object,
-    name: str,
-    default: int,
-) -> int:
-    direct = getattr(
-        result,
-        name,
-        None,
-    )
-
-    if direct is not None:
-        return int(direct)
-
-    stats = getattr(
-        result,
-        "stats",
-        None,
-    )
-
-    if stats is not None:
-        value = getattr(
-            stats,
-            name,
-            None,
-        )
-
-        if value is not None:
-            return int(value)
-
-    return int(default)
-
-
-def _chosen_path(
-    result: object,
-):
-    path = getattr(
-        result,
-        "chosen_path",
-        None,
-    )
-
-    if path is None:
-        raise RuntimeError(
-            "guided refiner returned no replay path"
-        )
-
-    return tuple(path)
-
-
-def _final_input(
-    result: object,
-) -> RefinerInputV1:
-    value = getattr(
-        result,
-        "final_input",
-        None,
-    )
-
-    if not isinstance(
-        value,
-        RefinerInputV1,
-    ):
-        raise RuntimeError(
-            "guided refiner returned no typed final input"
-        )
-
-    return value
+    receipt: StructuralGuidanceReceiptV1 | InactiveGuidanceReceiptV2
 
 
 def _receipt(
@@ -181,9 +93,9 @@ def _receipt(
     output_fp: str,
     checkpoint_sha256: str,
     config: StructuralGuidanceAdmissionConfig,
-    iterations: int = 0,
-    best_cost: int = -1,
-    applied_moves: int = 0,
+    iterations: int,
+    best_cost: int,
+    applied_moves: int,
     error_code: str = "",
 ) -> StructuralGuidanceReceiptV1:
     return StructuralGuidanceReceiptV1(
@@ -213,48 +125,27 @@ def admit_projection(
         StructuralGuidanceAdmissionConfig()
     ),
 ) -> StructuralGuidanceAdmissionResult:
-    projection_digest = _projection_digest(
-        projection
-    )
-
-    projection_fp = _projection_fingerprint(
-        projection
-    )
+    if isinstance(projection, ProjectionBudgetExhaustedV2):
+        raise ProjectionSearchBudgetExhausted(projection)
+    if not isinstance(projection, ProjectionResultV1):
+        raise TypeError("projection must be production ProjectionResultV1")
+    projection_digest = projection.projection_digest
+    projection_fp = projection.structural_input_fingerprint
 
     if not config.enabled:
-        receipt = _receipt(
-            outcome="BYPASSED",
-            enabled=False,
-            projection_digest=projection_digest,
-            envelope_digest="",
-            input_fp=projection_fp,
-            output_fp="",
-            checkpoint_sha256="",
-            config=config,
+        return StructuralGuidanceAdmissionResult(
+            admitted=False, fallback_required=False,
+            final_input=None, envelope=None,
+            receipt=InactiveGuidanceReceiptV2(
+                outcome="BYPASSED", projection_digest=projection_digest,
+                input_refinement_fingerprint=projection_fp, errors=(),
+            ),
         )
 
-        return StructuralGuidanceAdmissionResult(
-            admitted=False,
-            fallback_required=False,
-            final_input=None,
-            envelope=None,
-            receipt=receipt,
-        )
+    if not config.checkpoint_path:
+        raise AdmissionIntegrityViolation("enabled guidance requires a pinned checkpoint")
 
     try:
-        if not isinstance(
-            projection,
-            ProjectionResultV1,
-        ):
-            raise TypeError(
-                "projection must be production ProjectionResultV1"
-            )
-
-        if not config.checkpoint_path:
-            raise ValueError(
-                "enabled structural guidance requires checkpoint_path"
-            )
-
         ri = adapt_projection_to_refiner_input(
             projection
         )
@@ -264,15 +155,15 @@ def admit_projection(
             ri,
         )
 
-        source = (
-            FrozenTRM0ProposalSource
-            .from_checkpoint(
+        try:
+            source = FrozenTRM0ProposalSource.from_checkpoint(
                 Path(config.checkpoint_path),
-                expected_sha256=(
-                    FROZEN_TRM0_CHECKPOINT_SHA256
-                ),
+                expected_sha256=FROZEN_TRM0_CHECKPOINT_SHA256,
             )
-        )
+        except ModuleNotFoundError as exc:
+            if exc.name != "torch":
+                raise
+            raise AdmissionUnavailable("TORCH_UNAVAILABLE") from exc
 
         refiner = TRM0GuidedRefiner(
             proposal_source=source,
@@ -282,15 +173,27 @@ def admit_projection(
             plateau=config.plateau,
         )
 
+        from copy import deepcopy
+        original = deepcopy(ri)
         result = refiner.refine(ri)
+        if ri != original:
+            raise AdmissionIntegrityViolation("refiner mutated its input")
 
-        chosen_path = _chosen_path(
-            result
-        )
-
-        declared_final = _final_input(
-            result
-        )
+        if not isinstance(result, RefinerResult):
+            raise TypeError("guided refiner must return RefinerResult")
+        if not isinstance(result.final_input, RefinerInputV1):
+            raise TypeError("refiner final input must be RefinerInputV1")
+        if type(result.authority_granted) is not int:
+            raise TypeError("refiner authority_granted must be int")
+        if result.authority_granted != 0:
+            raise AdmissionIntegrityViolation("runtime guidance authority widened")
+        if type(result.iterations) is not int or type(result.best_cost) is not int:
+            raise TypeError("refiner measurements must be required integer fields")
+        chosen_path = tuple(result.chosen_path)
+        declared_final = result.final_input
+        for field in ("frozen_mask", "writable_mask", "invariants"):
+            if getattr(declared_final, field) != getattr(ri, field):
+                raise AdmissionIntegrityViolation("runtime guidance changed " + field)
 
         replayed = replay_candidate_path(
             ri,
@@ -301,7 +204,7 @@ def admit_projection(
             replayed.refinement_state_fingerprint
             != declared_final.refinement_state_fingerprint
         ):
-            raise RuntimeError(
+            raise AdmissionIntegrityViolation(
                 "runtime replay fingerprint mismatch"
             )
 
@@ -309,12 +212,12 @@ def admit_projection(
             replayed.grid81
             != declared_final.grid81
         ):
-            raise RuntimeError(
+            raise AdmissionIntegrityViolation(
                 "runtime replay grid mismatch"
             )
 
         if replayed.frozen_mask != ri.frozen_mask:
-            raise RuntimeError(
+            raise AdmissionIntegrityViolation(
                 "runtime guidance changed frozen mask"
             )
 
@@ -322,37 +225,20 @@ def admit_projection(
             replayed.writable_mask
             != ri.writable_mask
         ):
-            raise RuntimeError(
+            raise AdmissionIntegrityViolation(
                 "runtime guidance changed writable mask"
             )
 
         if replayed.invariants != ri.invariants:
-            raise RuntimeError(
+            raise AdmissionIntegrityViolation(
                 "runtime guidance changed invariants"
-            )
-
-        authority = _stats_value(
-            result,
-            "authority_granted",
-            0,
-        )
-
-        if authority != 0:
-            raise RuntimeError(
-                "runtime guidance authority widened"
             )
 
         receipt = _receipt(
             outcome="ADMITTED",
             enabled=True,
             projection_digest=projection_digest,
-            envelope_digest=str(
-                getattr(
-                    envelope,
-                    "envelope_digest",
-                    "",
-                )
-            ),
+            envelope_digest=envelope.envelope_digest,
             input_fp=(
                 ri.refinement_state_fingerprint
             ),
@@ -364,16 +250,8 @@ def admit_projection(
                 source.checkpoint_sha256
             ),
             config=config,
-            iterations=_stats_value(
-                result,
-                "iterations",
-                0,
-            ),
-            best_cost=_stats_value(
-                result,
-                "best_cost",
-                -1,
-            ),
+            iterations=result.iterations,
+            best_cost=result.best_cost,
             applied_moves=len(
                 chosen_path
             ),
@@ -387,23 +265,13 @@ def admit_projection(
             receipt=receipt,
         )
 
-    except Exception as exc:
-        receipt = _receipt(
-            outcome="FALLBACK_REQUIRED",
-            enabled=True,
-            projection_digest=projection_digest,
-            envelope_digest="",
-            input_fp=projection_fp,
-            output_fp="",
-            checkpoint_sha256="",
-            config=config,
-            error_code=type(exc).__name__,
-        )
-
+    except AdmissionUnavailable as exc:
         return StructuralGuidanceAdmissionResult(
-            admitted=False,
-            fallback_required=True,
-            final_input=None,
-            envelope=None,
-            receipt=receipt,
+            admitted=False, fallback_required=True,
+            final_input=None, envelope=None,
+            receipt=InactiveGuidanceReceiptV2(
+                outcome="FALLBACK_REQUIRED", projection_digest=projection_digest,
+                input_refinement_fingerprint=projection_fp,
+                errors=(UnavailableDetail.from_error(exc),),
+            ),
         )

@@ -1,6 +1,8 @@
 """Test channel schema loading and validation."""
 from __future__ import annotations
 
+import json
+from pathlib import Path
 import pytest
 import tempfile
 import os
@@ -72,22 +74,22 @@ transform_id = "robust_z"
 required = false
 
 [[channels]]
-channel_id = "llama.cpu_8080.healthy"
-source_kind = "llama"
-unit = "binary"
-sampling_class = "llama"
-expected_period_ns = 1_000_000_000
-stale_after_ns = 3_000_000_000
+channel_id = "__MISSING__"
+source_kind = "missing"
+unit = "none"
+sampling_class = "psutil"
+expected_period_ns = 50_000_000
+stale_after_ns = 100_000_000
 transform_id = "none"
 required = false
 
 [[channels]]
-channel_id = "llama.blackwell_8081.healthy"
-source_kind = "llama"
-unit = "binary"
-sampling_class = "llama"
-expected_period_ns = 1_000_000_000
-stale_after_ns = 3_000_000_000
+channel_id = "__MISSING__"
+source_kind = "missing"
+unit = "none"
+sampling_class = "psutil"
+expected_period_ns = 50_000_000
+stale_after_ns = 100_000_000
 transform_id = "none"
 required = false
 
@@ -208,3 +210,44 @@ def test_stable_hwmon_identity_uses_driver():
         required=False,
     )
     assert "coretemp" in cd.channel_id
+
+def _descriptor_from_fixture(raw):
+    return ChannelDescriptor(
+        channel_id=raw["channel_id"],
+        source_kind=raw["source_kind"],
+        unit=raw["unit"],
+        sampling_class=raw["sampling_class"],
+        expected_period_ns=raw["expected_period_ns"],
+        stale_after_ns=raw["stale_after_ns"],
+        transform_id=raw["transform_id"],
+        required=raw["required"],
+    )
+
+
+def test_default_schema_digest_golden_fixtures():
+    fixture_root = Path(__file__).resolve().parent / "fixtures"
+
+    for name in (
+        "cortex_default_v1_schema_digest.json",
+        "cortex_default_v2_schema_digest.json",
+    ):
+        data = json.loads((fixture_root / name).read_text())
+        descriptors = tuple(
+            _descriptor_from_fixture(raw)
+            for raw in data["rows"]
+        )
+        assert compute_schema_digest(descriptors) == data["digest"]
+
+    historical = json.loads(
+        (fixture_root / "cortex_default_v1_schema_digest.json").read_text()
+    )
+    successor = json.loads(
+        (fixture_root / "cortex_default_v2_schema_digest.json").read_text()
+    )
+    assert historical["digest"] == (
+        "c148b5703aee47624e70675c7fcdbf28d1e0c3898e58569cf538d3b12bf024e9"
+    )
+    assert successor["digest"] == (
+        "fb44bac1643cfa0c91fc2f4532a281ae3418a93fbc094c205a877afcc5c6abed"
+    )
+    assert successor["digest"] != historical["digest"]

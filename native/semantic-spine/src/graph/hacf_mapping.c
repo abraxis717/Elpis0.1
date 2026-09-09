@@ -153,16 +153,6 @@ int semantic_map_to_hacf_ops(const semantic_hypergraph_builder *builder,
             if (memcmp(asrt->asserted_object_digest.bytes, inc->hyperedge_digest.bytes, HACF_DIGEST_BYTES) != 0)
                 continue;
 
-            /* Find the incidence role for this hyperedge. */
-            uint32_t edge_type = 0;
-            for (uint32_t j = 0; j < builder->hyperedge_count; j++) {
-                const elpis_semantic_hyperedge_v1 *e = &builder->hyperedges[j];
-                if (memcmp(e->hyperedge_identity.bytes, inc->hyperedge_digest.bytes, HACF_DIGEST_BYTES) == 0) {
-                    edge_type = e->hyperedge_type;
-                    break;
-                }
-            }
-
             ops[idx].type = HACF_GRAPH_ADD_EDGE;
             ops[idx].subject = inc->hyperedge_digest;
             ops[idx].object = inc->node_digest;

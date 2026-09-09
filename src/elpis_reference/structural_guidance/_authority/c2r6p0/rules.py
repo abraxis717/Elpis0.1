@@ -64,12 +64,33 @@ class Ruleset:
         ).hexdigest()
 
 
-def load_ruleset() -> Ruleset:
+DEFAULT_NODE_BUDGET = 84
+MAX_NODE_BUDGET = 4096
+
+
+@dataclass(frozen=True)
+class BudgetedRulesetV2(Ruleset):
+    """Operational search bound; it is not a completeness theorem."""
+    node_budget: int = DEFAULT_NODE_BUDGET
+
+    def __post_init__(self):
+        if type(self.node_budget) is not int or not 1 <= self.node_budget <= MAX_NODE_BUDGET:
+            raise ValueError(f"node_budget must be an integer in [1, {MAX_NODE_BUDGET}]")
+
+    def digest(self) -> str:
+        from dataclasses import asdict
+        payload = {**asdict(self), "ruleset_version": "c2r6p0.ruleset.v2"}
+        return hashlib.sha256(json.dumps(
+            payload, sort_keys=True, separators=(",", ":"),
+        ).encode()).hexdigest()
+
+
+def load_ruleset() -> BudgetedRulesetV2:
     """Build the pinned ruleset from the frozen authority sources."""
     from ..elpis_p0 import structural_residual as SR
     from ..c2r7c import structural_trm_features as F
 
-    return Ruleset(
+    return BudgetedRulesetV2(
         grid_size=SR.GRID_SIZE,
         lanes=SR.LANES,
         ranks=SR.RANKS,

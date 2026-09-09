@@ -797,6 +797,8 @@ int main(void) {
     TEST(policy_identity_determinism);
     TEST(policy_capacity_overflow_fail_closed);
     TEST(policy_writable_mask_fixed_zero);
+    TEST(policy_fixed_width);
+    TEST(codebook_fixed_width);
 
     printf("\n[Codebook]\n");
     TEST(codebook_init_all_lanes);

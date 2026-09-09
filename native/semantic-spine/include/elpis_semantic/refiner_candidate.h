@@ -1,7 +1,7 @@
 /* elpis_semantic/refiner_candidate.h — Refiner candidate identity v1.
  *
  * Immutable candidate manifest for P11 bakeoff.
- * Identity domain: "elpis.semantic.refiner_candidate.v1"
+ * Identity domain: "elpis.semantic.refiner_candidate.v2"
  */
 #ifndef ELPIS_SEMANTIC_REFINER_CANDIDATE_H
 #define ELPIS_SEMANTIC_REFINER_CANDIDATE_H
@@ -101,7 +101,7 @@ typedef struct elpis_semantic_refiner_candidate_v1 {
 void elpis_refiner_candidate_init(
     elpis_semantic_refiner_candidate_v1 *candidate);
 
-/* Compute manifest identity. Domain: "elpis.semantic.refiner_candidate.v1" */
+/* Compute manifest identity. Domain: "elpis.semantic.refiner_candidate.v2" */
 int elpis_refiner_candidate_identity(
     const elpis_semantic_refiner_candidate_v1 *candidate, hacf_digest *out);
 

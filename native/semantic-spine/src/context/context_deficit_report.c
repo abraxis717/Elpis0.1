@@ -1,6 +1,6 @@
 /* context_deficit_report.c — Deficit report identity and disposition.
  *
- * Identity domain: "elpis.semantic.context_deficit_report.v1"
+ * Identity domain: "elpis.semantic.context_deficit_report.v2"
  */
 #include "elpis_semantic/context_deficit_report.h"
 #include "elpis_semantic/identity.h"
@@ -25,7 +25,7 @@ static void write_digest(elpis_sha256_ctx *ctx, const hacf_digest *d) {
     elpis_sha256_update(ctx, d->bytes, HACF_DIGEST_BYTES);
 }
 
-static const char DOMAIN[] = "elpis.semantic.context_deficit_report.v1";
+static const char DOMAIN[] = "elpis.semantic.context_deficit_report.v2";
 
 void elpis_context_deficit_report_init(
     elpis_semantic_context_deficit_report_v1 *report) {
@@ -65,6 +65,8 @@ int elpis_context_deficit_report_identity(
 int elpis_context_deficit_report_disposition(
     const elpis_semantic_requirement_result_v1 *results, uint32_t result_count,
     const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t requirement_count,
     const elpis_semantic_context_deficit_policy_v1 *policy,
     uint32_t *disposition_out) {
     if (!results || !requirement_set || !policy || !disposition_out) {
@@ -74,68 +76,73 @@ int elpis_context_deficit_report_disposition(
         *disposition_out = DISP_EVALUATION_BLOCKED;
         return SEMANTIC_OK;
     }
+    if (!requirements || result_count != requirement_count)
+        return SEMANTIC_E_INVAL;
 
-    uint32_t mandatory_deficit = 0;
-    uint32_t preferred_deficit = 0;
-    uint32_t diagnostic_deficit = 0;
-    uint32_t blocked = 0;
-
-    for (uint32_t i = 0; i < result_count; i++) {
-        if (results[i].evaluation_status != EVAL_STATUS_EVALUATED) {
-            blocked++;
-            continue;
-        }
-        if (results[i].satisfaction_status == SAT_STATUS_UNSATISFIED) {
-            /* In full implementation: look up the requirement level from the set */
-            /* For now, classify all unsatisfied as mandatory (fail-safe) */
-            mandatory_deficit++;
-        }
-        (void)diagnostic_deficit; /* suppress unused */
-        (void)preferred_deficit; /* suppress unused */
-    }
-
-    /* Validation error → REQUIREMENT_SET_INVALID */
     if (elpis_context_requirement_set_validate(requirement_set) != SET_VALID) {
         *disposition_out = DISP_REQUIREMENT_SET_INVALID;
         return SEMANTIC_OK;
     }
 
-    /* Blocked evaluations that prevent a valid report → EVALUATION_BLOCKED */
+    uint32_t satisfied = 0;
+    uint32_t mandatory_deficit = 0;
+    uint32_t preferred_deficit = 0;
+    uint32_t diagnostic_deficit = 0;
+    uint32_t blocked = 0;
+    int rc = elpis_count_deficits(
+        results, result_count, requirement_set, requirements, requirement_count,
+        &satisfied, &mandatory_deficit, &preferred_deficit,
+        &diagnostic_deficit, &blocked);
+    if (rc != SEMANTIC_OK) return rc;
+
+    (void)satisfied;
+    (void)diagnostic_deficit;
+
     if (blocked > 0) {
-        /* Check if any blocked was for a mandatory requirement */
-        /* For now: any blocked evaluation yields EVALUATION_BLOCKED (fail-safe) */
         *disposition_out = DISP_EVALUATION_BLOCKED;
         return SEMANTIC_OK;
     }
-
-    /* Mandatory failure → RETRIEVAL_REQUIRED (policy mandates this) */
     if (mandatory_deficit > 0) {
         *disposition_out = DISP_RETRIEVAL_REQUIRED;
         return SEMANTIC_OK;
     }
-
-    /* Preferred deficits may trigger retrieval if policy says so */
     if (preferred_deficit > 0 &&
         policy->preferred_failure_behavior == PREFERRED_BEHAVIOR_RETRIEVAL_REQUIRED) {
         *disposition_out = DISP_RETRIEVAL_REQUIRED;
         return SEMANTIC_OK;
     }
 
-    /* All satisfied */
     *disposition_out = DISP_CONTEXT_SUFFICIENT;
     return SEMANTIC_OK;
 }
 
 int elpis_context_deficit_report_build(
-    const semantic_snapshot_view          *composed_view,
+    const hacf_digest                     *composed_view_digest,
     const elpis_semantic_embedding_collection_v1 *embedding_collections,
     uint32_t                                     collection_count,
     const elpis_semantic_context_requirement_set_v1 *requirement_set,
+    const elpis_semantic_context_requirement_v1 *requirements,
+    uint32_t requirement_count,
     const elpis_semantic_context_deficit_policy_v1  *policy,
     const elpis_semantic_requirement_result_v1 *results,
     uint32_t result_count,
     elpis_semantic_context_deficit_report_v1 **report_out) {
-    if (!requirement_set || !policy || !results || !report_out) {
+    if (!composed_view_digest || !requirement_set || !requirements || !policy ||
+        !results || !report_out) {
+        return SEMANTIC_E_INVAL;
+    }
+    if (collection_count > CONTEXT_MAX_EMBEDDING_COLLECTIONS ||
+        result_count > CONTEXT_MAX_REQUIREMENTS ||
+        requirement_count != result_count ||
+        requirement_count != requirement_set->requirement_count) {
+        return SEMANTIC_E_INVAL;
+    }
+    if (collection_count > 0 && !embedding_collections) {
+        return SEMANTIC_E_INVAL;
+    }
+    if (memcmp(composed_view_digest,
+               &requirement_set->target_composed_view_digest,
+               HACF_DIGEST_BYTES) != 0) {
         return SEMANTIC_E_INVAL;
     }
 
@@ -145,9 +152,9 @@ int elpis_context_deficit_report_build(
 
     elpis_context_deficit_report_init(report);
 
-    /* Copy composed view digest from requirement set target */
+    /* Bind the explicit evaluated-view identity. */
     memcpy(report->composed_view_digest.bytes,
-           requirement_set->target_composed_view_digest.bytes, HACF_DIGEST_BYTES);
+           composed_view_digest->bytes, HACF_DIGEST_BYTES);
 
     /* Copy embedding collection digests */
     report->embedding_collection_count = collection_count;
@@ -171,17 +178,27 @@ int elpis_context_deficit_report_build(
                results[i].diagnostic_digest.bytes, HACF_DIGEST_BYTES);
     }
 
-    /* Count deficits */
-    elpis_count_deficits(results, result_count, requirement_set,
-                         &report->satisfied_count,
-                         &report->mandatory_deficit_count,
-                         &report->preferred_deficit_count,
-                         &report->diagnostic_deficit_count,
-                         &report->blocked_evaluation_count);
+    /* Count deficits from the exact bound requirement objects. */
+    int rc = elpis_count_deficits(
+        results, result_count, requirement_set, requirements, requirement_count,
+        &report->satisfied_count,
+        &report->mandatory_deficit_count,
+        &report->preferred_deficit_count,
+        &report->diagnostic_deficit_count,
+        &report->blocked_evaluation_count);
+    if (rc != SEMANTIC_OK) {
+        free(report);
+        return rc;
+    }
 
-    /* Determine disposition */
-    elpis_context_deficit_report_disposition(results, result_count,
-        requirement_set, policy, &report->overall_disposition);
+    /* Determine disposition from the same exact binding. */
+    rc = elpis_context_deficit_report_disposition(
+        results, result_count, requirement_set, requirements, requirement_count,
+        policy, &report->overall_disposition);
+    if (rc != SEMANTIC_OK) {
+        free(report);
+        return rc;
+    }
 
     /* Compute report identity */
     elpis_context_deficit_report_identity(report, &report->report_identity);

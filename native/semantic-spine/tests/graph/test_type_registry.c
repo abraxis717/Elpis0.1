@@ -6,47 +6,6 @@
 #include <string.h>
 #include <assert.h>
 
-static void setup_registry(semantic_type_registry **reg) {
-    *reg = semantic_type_registry_create();
-
-    /* Add incidence roles. */
-    semantic_incidence_role_entry role1 = {
-        .incidence_role = SEMANTIC_INCIDENCE_NAMESPACE | 1,
-        .participant_flag_mask = SEMANTIC_PARTICIPANT_FLAG_MASK
-    };
-    semantic_incidence_role_entry role2 = {
-        .incidence_role = SEMANTIC_INCIDENCE_NAMESPACE | 2,
-        .participant_flag_mask = SEMANTIC_PARTICIPANT_FLAG_MASK
-    };
-    semantic_type_registry_add_incidence_role(*reg, &role1);
-    semantic_type_registry_add_incidence_role(*reg, &role2);
-
-    /* Add node types. */
-    semantic_node_type_entry node1 = {
-        .node_type = SEMANTIC_NODE_NAMESPACE | 1,
-        .semantic_flag_mask = SEMANTIC_NODE_FLAG_MASK,
-        .min_authority = 0,
-        .max_authority = 3
-    };
-    semantic_type_registry_add_node_type(*reg, &node1);
-
-    /* Add hyperedge types. */
-    semantic_role_rule rules[] = {
-        {.incidence_role = SEMANTIC_INCIDENCE_NAMESPACE | 1,
-         .min_cardinality = 1, .max_cardinality = 1, .is_ordered = 0, .allows_repeat = 0},
-        {.incidence_role = SEMANTIC_INCIDENCE_NAMESPACE | 2,
-         .min_cardinality = 1, .max_cardinality = 4, .is_ordered = 1, .allows_repeat = 0},
-    };
-    semantic_hyperedge_type_entry edge1 = {
-        .hyperedge_type = SEMANTIC_HYPEREDGE_NAMESPACE | 1,
-        .min_participants = 2,
-        .max_participants = 5,
-        .role_count = 2,
-        .roles = {rules[0], rules[1]}
-    };
-    semantic_type_registry_add_hyperedge_type(*reg, &edge1);
-}
-
 int test_unknown_node_type_rejected(void) {
     semantic_type_registry *reg = semantic_type_registry_create();
     semantic_node_type_entry bad = {

@@ -129,6 +129,8 @@ int elpis_bounded_view_enumerate_candidates(
 {
     if (!typed_view || !seed_set || !policy || !candidate_set)
         return SEMANTIC_E_INVAL;
+    if (elpis_bounded_view_policy_validate(policy) != SEMANTIC_OK)
+        return SEMANTIC_E_INVAL;
 
     elpis_bounded_view_candidate_set_init(candidate_set);
 
@@ -168,9 +170,8 @@ int elpis_bounded_view_enumerate_candidates(
         cand_idx++;
     }
 
-    /* Graph expansion: for each admitted relation in typed view, add neighbors
-     * within max_graph_hops. */
-    uint32_t max_hops = policy->maximum_graph_hops;
+    /* Graph expansion is exactly one hop in this successor policy because
+     * retrieval_item_attachment.v1 represents graph_hop 0 or 1 only. */
     for (uint32_t r = 0; r < typed_view->admitted_relation_count &&
          cand_idx < BOUNDED_VIEW_MAX_CANDIDATES; r++) {
         /* Check if any seed is a target of this relation */

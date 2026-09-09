@@ -215,11 +215,11 @@ int elpis_bounded_semantic_view_validate(
         if (view->reserved[i] != 0) return SEMANTIC_E_RESERVATION;
     }
     /* Plane digests must resolve (non-zero) */
-    for (int i = 0; i < HACF_DIGEST_BYTES; i++) {
+    for (uint32_t i = 0; i < HACF_DIGEST_BYTES; i++) {
         if (view->semantic_plane_digest.bytes[i] != 0) break;
         if (i == HACF_DIGEST_BYTES - 1) return SEMANTIC_E_INVAL;
     }
-    for (int i = 0; i < HACF_DIGEST_BYTES; i++) {
+    for (uint32_t i = 0; i < HACF_DIGEST_BYTES; i++) {
         if (view->provenance_plane_digest.bytes[i] != 0) break;
         if (i == HACF_DIGEST_BYTES - 1) return SEMANTIC_E_INVAL;
     }

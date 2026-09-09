@@ -20,8 +20,8 @@ int elpis_refinement_integration_handoff_identity(
     size_t off = 0;
 
     memcpy(buf + off, domain, domain_len); off += domain_len;
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(h->abi_version);
-    off += 4; *(uint32_t *)(buf + off - 4) = __builtin_bswap32(h->handoff_kind);
+    { uint32_t encoded_u32 = __builtin_bswap32(h->abi_version); memcpy(buf + off, &encoded_u32, 4); off += 4; }
+    { uint32_t encoded_u32 = __builtin_bswap32(h->handoff_kind); memcpy(buf + off, &encoded_u32, 4); off += 4; }
     memcpy(buf + off, h->P11_replacement_handoff_digest.bytes, 32); off += 32;
     memcpy(buf + off, h->backend_registry_digest.bytes, 32); off += 32;
     memcpy(buf + off, h->selected_candidate_digest.bytes, 32); off += 32;

@@ -18,7 +18,7 @@ static int test_default_policy_limits(void) {
     if (policy.maximum_transport_references != 256) { printf("FAIL: transport\n"); return 1; }
     if (policy.maximum_embedding_references != 256) { printf("FAIL: embedding\n"); return 1; }
     if (policy.maximum_metric_observations != 512) { printf("FAIL: metric\n"); return 1; }
-    if (policy.maximum_graph_hops != 2) { printf("FAIL: hops\n"); return 1; }
+    if (policy.maximum_graph_hops != 1) { printf("FAIL: hops\n"); return 1; }
     if (policy.maximum_metric_neighbors_per_seed != 8) { printf("FAIL: neighbors\n"); return 1; }
 
     printf("PASS: default_policy_limits\n");
@@ -69,6 +69,18 @@ static int test_null_input(void) {
     return 0;
 }
 
+static int test_multi_hop_rejected_by_active_attachment_contract(void) {
+    elpis_semantic_bounded_view_policy_v1 policy;
+    elpis_bounded_view_policy_default(&policy);
+    policy.maximum_graph_hops = 2;
+    if (elpis_bounded_view_policy_validate(&policy) == SEMANTIC_OK) {
+        printf("FAIL: two-hop policy accepted against one-hop attachment ABI\n");
+        return 1;
+    }
+    printf("PASS: multi_hop_rejected_by_active_attachment_contract\n");
+    return 0;
+}
+
 static int test_zero_limits_rejected(void) {
     elpis_semantic_bounded_view_policy_v1 policy;
     elpis_bounded_view_policy_default(&policy);
@@ -87,6 +99,7 @@ int main(void) {
     failures += test_identity_deterministic();
     failures += test_capacity_change_changes_policy_identity();
     failures += test_null_input();
+    failures += test_multi_hop_rejected_by_active_attachment_contract();
     failures += test_zero_limits_rejected();
     if (failures == 0) printf("ALL test_bounded_view_policy TESTS PASSED\n");
     else printf("FAILURES: %d\n", failures);

@@ -3,7 +3,7 @@
  * Immutable policy governing canonical refinement integration. Binds backend,
  * adapter, P8/P9 guards, and execution limits.
  *
- * Identity domain: "elpis.semantic.refinement_integration_policy.v1"
+ * Identity domain: "elpis.semantic.refinement_integration_policy.v2"
  */
 #ifndef ELPIS_SEMANTIC_REFINEMENT_INTEGRATION_POLICY_H
 #define ELPIS_SEMANTIC_REFINEMENT_INTEGRATION_POLICY_H
@@ -71,7 +71,7 @@ typedef struct elpis_semantic_refinement_integration_policy_v1 {
 void elpis_refinement_integration_policy_init(
     elpis_semantic_refinement_integration_policy_v1 *policy);
 
-/* Compute policy identity. Domain: "elpis.semantic.refinement_integration_policy.v1" */
+/* Compute policy identity. Domain: "elpis.semantic.refinement_integration_policy.v2" */
 int elpis_refinement_integration_policy_identity(
     const elpis_semantic_refinement_integration_policy_v1 *policy, hacf_digest *out);
 

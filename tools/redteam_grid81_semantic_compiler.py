@@ -464,6 +464,11 @@ def audit_n1b(projector, contracts, projections: dict[str, object]) -> dict[str,
         projection_digest=projection.digest,
         grid81=projection.grid81,
         semantic_rows=projection.semantic_rows,
+        semantic_request_digest=getattr(
+            projection,
+            "semantic_request_digest",
+            "",
+        ),
     )
     try:
         release = importlib.import_module("elpis_reference.projector_release")
