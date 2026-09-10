@@ -78,13 +78,9 @@ TEST_FIXTURE_NAMES: set[str] = {
     "test_ci_secret_scan.py",
 }
 
-# Files that contain FORBIDDEN_PREFIXES security guard patterns with intentional
-# workstation paths — skip to avoid false positives on security guards
-GUARD_NAMES: set[str] = {
-    "transaction.py",
-    "test_r0_transaction.py",
-    "verify_public_release.py",
-}
+# The release verifier constructs private-path detector literals itself;
+# no runtime transaction source is exempt from workstation-path scanning.
+GUARD_NAMES: set[str] = {"verify_public_release.py"}
 
 
 def scan_secrets(repo_root: Path) -> list[str]:

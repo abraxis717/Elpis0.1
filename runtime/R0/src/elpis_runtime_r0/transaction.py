@@ -51,19 +51,31 @@ from .errors import (
 # Canonical input
 # ---------------------------------------------------------------------------
 
-def _resolve_canonical_root() -> str:
-    """Resolve the canonical assembly root portably.
+def _validate_canonical_root(root: str) -> str:
+    """Return a real canonical components root or fail closed."""
+    if not isinstance(root, str) or not root:
+        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: empty/non-string root")
+    absolute = os.path.abspath(root)
+    real = os.path.realpath(absolute)
+    if real == os.path.sep:
+        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: filesystem root")
+    if os.path.islink(absolute):
+        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: symlink root")
+    required = (
+        os.path.join(real, "Grid81", "COMPONENT_MANIFEST.json"),
+        os.path.join(real, "DarwinianMatrix", "COMPONENT_MANIFEST.json"),
+        os.path.join(real, "Pipeline", "P0ControlProtocol", "COMPONENT_MANIFEST.json"),
+    )
+    if not all(os.path.isfile(path) for path in required):
+        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: required component manifests absent")
+    return real
 
-    Priority:
-      1. ELPIS_CANON_ROOT env override
-      2. <repo_root>/components  (where Grid81, DarwinianMatrix, etc. live)
-    """
+
+def _resolve_canonical_root() -> str:
+    """Resolve source-layout root; validate every explicit environment override."""
     env_root = os.environ.get("ELPIS_CANON_ROOT")
     if env_root:
-        return env_root
-    # This file lives at runtime/R0/src/elpis_runtime_r0/transaction.py
-    # dirname(__file__) = .../elpis_runtime_r0
-    # + 4 x ".." reaches repo_root: elpis_runtime_r0 -> src -> R0 -> runtime -> repo_root
+        return _validate_canonical_root(env_root)
     repo_root = os.path.abspath(
         os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
     )
@@ -113,9 +125,9 @@ def _ensure_build_dir() -> str:
 # Component manifest digests
 # ---------------------------------------------------------------------------
 
-def _compute_component_manifest_digests() -> str:
+def _compute_component_manifest_digests(canon_root: str) -> str:
     """Compute digests of all component manifests in the canonical assembly."""
-    canon_root = CANONICAL_ROOT
+    canon_root = _validate_canonical_root(canon_root)
     manifests = {}
     for root, dirs, files in sorted(os.walk(canon_root)):
         dirs[:] = sorted(d for d in dirs if d not in (
@@ -136,26 +148,32 @@ def _compute_component_manifest_digests() -> str:
 # Dependency resolution audit
 # ---------------------------------------------------------------------------
 
+_PRIVATE_MOUNT = os.path.join(os.path.sep, "mnt", "primesauce")
 FORBIDDEN_PREFIXES: tuple[str, ...] = (
     # Secondary legacy-root veto; canonical containment is the primary control.
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "TRMFractalSpine"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "DarwinianMatrix"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "Grid81"),
-    os.path.join("/mnt/primesauce", "Elpis_Companions", "Elpis_Semantic_Fabric"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "HashAdressedCascadeFabric"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "Elpis_Parallel"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "TRMFractalSpine"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "DarwinianMatrix"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "Grid81"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Companions", "Elpis_Semantic_Fabric"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "HashAdressedCascadeFabric"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "Elpis_Parallel"),
 )
 
 
 AUDITED_MODULES: tuple[str, ...] = ('elpis_fractal_spine', 'elpis_p0', 'elpis_grid81_adjudication', 'elpis_grid81_semantics', 'DarwinianMatrix')
 
 
-def _dependency_escape_audit() -> str:
+def _dependency_escape_audit(canon_root: str | None = None) -> str:
     """Veto unresolved imports and imports outside the canonical assembly."""
     import importlib
 
-    canonical_pkg = os.path.realpath(CANONICAL_ROOT).rstrip(os.sep) + os.sep
+    canonical_root = (
+        os.path.realpath(CANONICAL_ROOT)
+        if canon_root is None
+        else _validate_canonical_root(canon_root)
+    )
+    canonical_pkg = canonical_root.rstrip(os.sep) + os.sep
     extensions = os.environ.get("ELPIS_FORBIDDEN_ROOTS", "").split(os.pathsep)
     forbidden = tuple(sorted({
         os.path.realpath(root).rstrip(os.sep) + os.sep
@@ -175,7 +193,7 @@ def _dependency_escape_audit() -> str:
             continue
         real = os.path.realpath(mod_file)
         resolved.append((module_name, real))
-        if not real.startswith(canonical_pkg):
+        if os.path.commonpath((real, canonical_root)) != canonical_root:
             errors.append(f"OUTSIDE_CANONICAL: {module_name}: {real}")
         if any(real.startswith(root) for root in forbidden):
             errors.append(f"FORBIDDEN_ROOT: {module_name}: {real}")
@@ -212,6 +230,7 @@ def execute_r0_transaction(
     """
     if project_root is None:
         project_root = CANONICAL_ROOT
+    project_root = _validate_canonical_root(project_root)
 
     if request is None:
         request = DEFAULT_REQUEST
@@ -434,8 +453,8 @@ def execute_r0_transaction(
     )
 
     # --- Phase 10: Receipt assembly ---
-    component_manifests = _compute_component_manifest_digests()
-    dep_audit = _dependency_escape_audit()
+    component_manifests = _compute_component_manifest_digests(project_root)
+    dep_audit = _dependency_escape_audit(project_root)
 
     ast_result_str = (
         f"{ast_validator}:{ast_code}:{'PASS' if ast_passed else 'FAIL'}:{ast_message}"

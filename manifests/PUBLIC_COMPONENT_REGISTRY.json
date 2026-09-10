@@ -1,6 +1,6 @@
 {
-  "assembly_version": "ELPIS_CANONICAL_PUBLIC_R1_1_1",
-  "component_count": 17,
+  "assembly_version": "ELPIS_CANONICAL_PUBLIC_R1_1_2",
+  "component_count": 16,
   "runtime_admission": false,
   "components": [
     {
@@ -147,14 +147,6 @@
       "public_path": "components/CNumPyCortex",
       "runtime_admission": false,
       "active_status": "OPTIONAL",
-      "dependencies": []
-    },
-    {
-      "component_id": "elpis_nanbeige42_host",
-      "version": "P14.0b",
-      "public_path": "native/elpis-nanbeige42-host",
-      "runtime_admission": false,
-      "active_status": "ACTIVE",
       "dependencies": []
     }
   ]

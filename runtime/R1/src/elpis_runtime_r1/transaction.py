@@ -43,12 +43,33 @@ from .hacf_adapter import (
 from .query_derivation import derive_query
 from .receipt import receipt_bytes_hash
 
+def _validate_canonical_root(root: str) -> str:
+    """Return a real canonical components root or fail closed."""
+    if not isinstance(root, str) or not root:
+        raise R1DependencyEscapeError("CANONICAL_ROOT_INVALID", "empty/non-string root")
+    absolute = os.path.abspath(root)
+    real = os.path.realpath(absolute)
+    if real == os.path.sep:
+        raise R1DependencyEscapeError("CANONICAL_ROOT_INVALID", "filesystem root")
+    if os.path.islink(absolute):
+        raise R1DependencyEscapeError("CANONICAL_ROOT_INVALID", "symlink root")
+    required = (
+        os.path.join(real, "Grid81", "COMPONENT_MANIFEST.json"),
+        os.path.join(real, "DarwinianMatrix", "COMPONENT_MANIFEST.json"),
+        os.path.join(real, "Pipeline", "P0ControlProtocol", "COMPONENT_MANIFEST.json"),
+    )
+    if not all(os.path.isfile(path) for path in required):
+        raise R1DependencyEscapeError(
+            "CANONICAL_ROOT_INVALID", "required component manifests absent"
+        )
+    return real
+
+
 def _resolve_canonical_root() -> str:
-    """Resolve the canonical assembly root portably."""
+    """Resolve source-layout root; validate every explicit environment override."""
     env_root = os.environ.get("ELPIS_CANON_ROOT")
     if env_root:
-        return env_root
-    # runtime/R1/src/elpis_runtime_r1/transaction.py -> repo_root/components
+        return _validate_canonical_root(env_root)
     repo_root = os.path.abspath(
         os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
     )
@@ -82,15 +103,16 @@ def _resolve_build_dir() -> str:
 
 BUILD_DIR: str = ""  # resolved lazily per-transaction
 
+_PRIVATE_MOUNT = os.path.join(os.path.sep, "mnt", "primesauce")
 FORBIDDEN_PREFIXES: tuple[str, ...] = (
     # Secondary legacy-root veto; canonical containment is the primary control.
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "TRMFractalSpine"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "DarwinianMatrix"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "Grid81"),
-    os.path.join("/mnt/primesauce", "Elpis_Companions", "Elpis_Semantic_Fabric"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "HashAdressedCascadeFabric"),
-    os.path.join("/mnt/primesauce", "Elpis_Canon", "Elpis_Parallel"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "TRMFractalSpine"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "DarwinianMatrix"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "Grid81"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Companions", "Elpis_Semantic_Fabric"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "HashAdressedCascadeFabric"),
+    os.path.join(_PRIVATE_MOUNT, "Elpis_Canon", "Elpis_Parallel"),
 )
 
 DEFAULT_REQUEST: dict[str, Any] = {
@@ -124,11 +146,16 @@ def _ensure_dirs() -> None:
 AUDITED_MODULES: tuple[str, ...] = ('elpis_fractal_spine', 'elpis_p0', 'elpis_grid81_adjudication', 'elpis_grid81_semantics', 'DarwinianMatrix')
 
 
-def _dependency_escape_audit() -> str:
+def _dependency_escape_audit(canon_root: str | None = None) -> str:
     """Veto unresolved imports and imports outside the canonical assembly."""
     import importlib
 
-    canonical_pkg = os.path.realpath(CANONICAL_ROOT).rstrip(os.sep) + os.sep
+    canonical_root = (
+        os.path.realpath(CANONICAL_ROOT)
+        if canon_root is None
+        else _validate_canonical_root(canon_root)
+    )
+    canonical_pkg = canonical_root.rstrip(os.sep) + os.sep
     extensions = os.environ.get("ELPIS_FORBIDDEN_ROOTS", "").split(os.pathsep)
     forbidden = tuple(sorted({
         os.path.realpath(root).rstrip(os.sep) + os.sep
@@ -148,7 +175,7 @@ def _dependency_escape_audit() -> str:
             continue
         real = os.path.realpath(mod_file)
         resolved.append((module_name, real))
-        if not real.startswith(canonical_pkg):
+        if os.path.commonpath((real, canonical_root)) != canonical_root:
             errors.append(f"OUTSIDE_CANONICAL: {module_name}: {real}")
         if any(real.startswith(root) for root in forbidden):
             errors.append(f"FORBIDDEN_ROOT: {module_name}: {real}")
@@ -285,11 +312,11 @@ def execute_r1_transaction(
         })
 
         # Phase 10: R0 downstream
-        r0_receipt_digest = _run_r0_downstream(request)
+        r0_receipt_digest = _run_r0_downstream(request, _validate_canonical_root(CANONICAL_ROOT))
 
         # Phase 11-13: Audits
         component_manifests = _compute_component_manifest_digests()
-        dep_audit_digest = _dependency_escape_audit()
+        dep_audit_digest = _dependency_escape_audit(_validate_canonical_root(CANONICAL_ROOT))
         _canonical_nonmutation_check()
 
         # Phase 14: R1 composite receipt
@@ -328,17 +355,17 @@ def execute_r1_transaction(
         shutil.rmtree(corpus_state, ignore_errors=True)
 
 
-def _run_r0_downstream(request: dict[str, Any]) -> str:
+def _run_r0_downstream(request: dict[str, Any], canonical_root: str) -> str:
     """Execute downstream R0 transaction. Returns R0 receipt digest."""
     r0_src = os.path.join(R0_ROOT, "src")
     if r0_src not in sys.path:
         sys.path.insert(0, r0_src)
     for p in [
-        os.path.join(CANONICAL_ROOT, "TRMFractalSpine", "src"),
-        os.path.join(CANONICAL_ROOT, "Pipeline", "P0ControlProtocol", "src"),
-        os.path.join(CANONICAL_ROOT, "Grid81DeterministicStructuralAdjudicator", "src"),
-        os.path.join(CANONICAL_ROOT, "Grid81StructuralSemantics", "src"),
-        CANONICAL_ROOT,
+        os.path.join(canonical_root, "TRMFractalSpine", "src"),
+        os.path.join(canonical_root, "Pipeline", "P0ControlProtocol", "src"),
+        os.path.join(canonical_root, "Grid81DeterministicStructuralAdjudicator", "src"),
+        os.path.join(canonical_root, "Grid81StructuralSemantics", "src"),
+        canonical_root,
     ]:
         if p not in sys.path:
             sys.path.insert(0, p)
@@ -349,7 +376,7 @@ def _run_r0_downstream(request: dict[str, Any]) -> str:
         raise R1DownstreamR0Error("R0_IMPORT_FAILED", str(e)) from e
 
     try:
-        r0_receipt = execute_r0_transaction(request=request)
+        r0_receipt = execute_r0_transaction(request=request, project_root=canonical_root)
         if hasattr(r0_receipt, "receipt_bytes"):
             return hashlib.sha256(r0_receipt.receipt_bytes()).hexdigest()
         elif hasattr(r0_receipt, "to_canonical_json"):

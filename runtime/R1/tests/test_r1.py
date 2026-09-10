@@ -445,3 +445,12 @@ class TestReceipt:
 class TestFailClosed:
     def test_all_negative_cases_fail_closed(self):
         pass
+
+
+def test_canonical_root_rejects_filesystem_root():
+    import os
+    import pytest
+    from elpis_runtime_r1.transaction import _validate_canonical_root
+    from elpis_runtime_r1.errors import R1DependencyEscapeError
+    with pytest.raises(R1DependencyEscapeError, match="CANONICAL_ROOT_INVALID"):
+        _validate_canonical_root(os.path.sep)

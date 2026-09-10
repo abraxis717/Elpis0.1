@@ -25,17 +25,45 @@ elpis = "elpis_reference.cli:main"
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-package-dir = {"" = "src", "DarwinianMatrix" = "components/DarwinianMatrix"}
-py-modules = ["DarwinianMatrix.geometry", "DarwinianMatrix.grid_constants"]
-
 [tool.setuptools.packages.find]
-where = ["src", "components"]
+where = [
+  "src",
+  "components",
+  "components/Pipeline/P0ControlProtocol/src",
+  "components/TRMFractalSpine/src",
+  "components/Grid81StructuralSemantics/src",
+  "components/Grid81TypedProjectionCompiler/src",
+  "components/Grid81StructuralGroupProjectionCompiler/src",
+  "components/Grid81DeterministicStructuralAdjudicator/src",
+  "components/Grid81DeterministicCapabilityAuthorityEvaluator/src",
+  "components/Grid81DeterministicCapabilityConsumptionCompiler/src",
+  "components/Grid81DeterministicCapabilityApplicationExecutor/src",
+  "components/Grid81DeterministicCanonicalPromotionPlanner/src",
+  "components/CNumPyCortex/src",
+  "native/elpis-header/src",
+  "runtime/R0/src",
+  "runtime/R1/src",
+]
 include = [
   "elpis*",
   "elpis_reference*",
-  "DarwinianMatrix.projector*",
+  "DarwinianMatrix*",
+  "elpis_p0*",
+  "elpis_fractal_spine*",
+  "elpis_grid81_semantics*",
+  "elpis_grid81_typed*",
+  "elpis_grid81_groups*",
+  "elpis_grid81_adjudication*",
+  "elpis_grid81_capability_authority*",
+  "elpis_grid81_consumption_compiler*",
+  "elpis_grid81_application_executor*",
+  "elpis_grid81_promotion_planner*",
+  "c_numpy_cortex*",
+  "elpis_header*",
+  "elpis_runtime_r0*",
+  "elpis_runtime_r1*",
 ]
+exclude = ["DarwinianMatrix.tests*"]
 
 [tool.setuptools.package-data]
 elpis_reference = [

@@ -1,74 +1,65 @@
 [
   {
-    "path": "runtime/R0/src/elpis_runtime_r0/transaction.py",
-    "kind": "PRIVATE_PATH",
-    "sha256": "b97ce4af943ecb6af7261e5179b97e947bf78423683a394c86af0d65ca177311",
-    "count": 7
-  },
-  {
-    "path": "runtime/R0/tests/test_r0_transaction.py",
-    "kind": "PRIVATE_PATH",
-    "sha256": "b97ce4af943ecb6af7261e5179b97e947bf78423683a394c86af0d65ca177311",
-    "count": 6
-  },
-  {
-    "path": "runtime/R1/src/elpis_runtime_r1/transaction.py",
-    "kind": "PRIVATE_PATH",
-    "sha256": "b97ce4af943ecb6af7261e5179b97e947bf78423683a394c86af0d65ca177311",
-    "count": 7
-  },
-  {
     "path": "tests/test_ci_secret_scan.py",
     "kind": "PRIVATE_PATH",
     "sha256": "1b86c07ed54cd821b6b2264daaf5c6e5c33c4706e78793447a9123a75223edee",
-    "count": 4
+    "count": 4,
+    "file_sha256": "bf8b2107e973ac43b5cde50ceae83a7b72153b03c822af98c45e7e99baca394d"
   },
   {
     "path": "tests/test_ci_secret_scan.py",
     "kind": "PRIVATE_PATH",
     "sha256": "b97ce4af943ecb6af7261e5179b97e947bf78423683a394c86af0d65ca177311",
-    "count": 4
+    "count": 4,
+    "file_sha256": "bf8b2107e973ac43b5cde50ceae83a7b72153b03c822af98c45e7e99baca394d"
   },
   {
     "path": "tests/test_ci_secret_scan.py",
     "kind": "SECRET:AWS key",
     "sha256": "1a5d44a2dca19669d72edf4c4f1c27c4c1ca4b4408fbb17f6ce4ad452d78ddb3",
-    "count": 1
+    "count": 1,
+    "file_sha256": "bf8b2107e973ac43b5cde50ceae83a7b72153b03c822af98c45e7e99baca394d"
   },
   {
     "path": "tests/test_ci_secret_scan.py",
     "kind": "SECRET:GitHub PAT",
     "sha256": "03aafb028d538b06c4341bf8cf2a692a3c6d1f36e34e0e0b376f407c6117a246",
-    "count": 1
+    "count": 1,
+    "file_sha256": "bf8b2107e973ac43b5cde50ceae83a7b72153b03c822af98c45e7e99baca394d"
   },
   {
     "path": "tests/test_ci_secret_scan.py",
     "kind": "SECRET:GitHub PAT",
     "sha256": "bbe94d8d99f1a2a0025303138adc8d280a38d7f63780245c72d03205a270e0ae",
-    "count": 1
+    "count": 1,
+    "file_sha256": "bf8b2107e973ac43b5cde50ceae83a7b72153b03c822af98c45e7e99baca394d"
   },
   {
     "path": "tests/test_ci_secret_scan.py",
     "kind": "SECRET:Google API key",
     "sha256": "5e8a6a8b9d10a937179bda8192ed390733120e7b5478608152094a09b4975ec8",
-    "count": 1
+    "count": 1,
+    "file_sha256": "bf8b2107e973ac43b5cde50ceae83a7b72153b03c822af98c45e7e99baca394d"
   },
   {
     "path": "tests/test_ci_secret_scan.py",
     "kind": "SECRET:OpenAI-style key",
     "sha256": "19477790732c6774bdadea2b3f019a2d348f9d082e4ba3df5f961af0eff4b483",
-    "count": 1
+    "count": 1,
+    "file_sha256": "bf8b2107e973ac43b5cde50ceae83a7b72153b03c822af98c45e7e99baca394d"
   },
   {
     "path": "tools/ci_secret_scan.py",
     "kind": "PRIVATE_PATH",
     "sha256": "1b86c07ed54cd821b6b2264daaf5c6e5c33c4706e78793447a9123a75223edee",
-    "count": 1
+    "count": 1,
+    "file_sha256": "b79358f5a5da831fc66974375e5f332706157a419750b6d49cd216cba6d32105"
   },
   {
     "path": "tools/ci_secret_scan.py",
     "kind": "PRIVATE_PATH",
     "sha256": "b97ce4af943ecb6af7261e5179b97e947bf78423683a394c86af0d65ca177311",
-    "count": 1
+    "count": 1,
+    "file_sha256": "b79358f5a5da831fc66974375e5f332706157a419750b6d49cd216cba6d32105"
   }
 ]

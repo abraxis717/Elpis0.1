@@ -1,7 +1,9 @@
 from pathlib import Path
+import os
 from types import SimpleNamespace
 
 import torch
+import pytest
 
 import elpis_reference.refinement as refinement
 from elpis_reference.model import (
@@ -37,6 +39,14 @@ def test_sudoku_codec_and_validator():
 def test_fprm_model_abi_constructs_on_cpu():
     root = Path(__file__).resolve().parents[1]
     checkpoint = root / "models" / MODEL_FILENAME
+
+    if not checkpoint.is_file():
+        if os.environ.get("ELPIS_REQUIRE_FPRM_CHECKPOINT") == "1":
+            pytest.fail(f"required canonical FPRM checkpoint absent: {checkpoint}")
+        pytest.skip(
+            "canonical FPRM checkpoint is distributed separately; "
+            "model-blind ABI construction is gated independently"
+        )
 
     authority = verify_model(checkpoint)
 

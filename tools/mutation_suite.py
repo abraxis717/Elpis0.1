@@ -108,6 +108,30 @@ def _reseal(root: Path, rel: str) -> None:
     manifest.write_text(json.dumps(data, indent=2) + "\n")
 
 
+def _rebind_allowlist_containing_file(root: Path, rel: str) -> None:
+    # Acknowledge one deliberate fixture-file edit in a throwaway case.
+    import hashlib
+
+    allowlist_rel = "tools/public_scan_allowlist.json"
+    allowlist_path = root / allowlist_rel
+    entries = json.loads(allowlist_path.read_text())
+    digest = hashlib.sha256((root / rel).read_bytes()).hexdigest()
+
+    changed = 0
+    for entry in entries:
+        if entry.get("path") == rel:
+            if "file_sha256" not in entry:
+                raise AssertionError(f"{rel}: allowlist entry missing file_sha256")
+            entry["file_sha256"] = digest
+            changed += 1
+
+    if changed == 0:
+        raise AssertionError(f"{rel}: no allowlist entries for containing-file rebind")
+
+    allowlist_path.write_text(json.dumps(entries, indent=2) + "\n")
+    _reseal(root, allowlist_rel)
+
+
 def m0_clean(root: Path) -> None:
     """Control: an unmutated tree must verify."""
 
@@ -161,6 +185,7 @@ def m1c_new_secret_beside_allowlisted_findings(root: Path) -> None:
     target = root / rel
     target.write_text(target.read_text() + f'\nNEW_KEY = "{FAKE_AWS_KEY}"\n')
     _reseal(root, rel)
+    _rebind_allowlist_containing_file(root, rel)
 
 
 def m1d_extra_occurrence_of_allowlisted_literal(root: Path) -> None:
@@ -170,6 +195,7 @@ def m1d_extra_occurrence_of_allowlisted_literal(root: Path) -> None:
     target = root / rel
     target.write_text(target.read_text() + f"\n# {FAKE_PRIVATE_PATH_ROOT}\n")
     _reseal(root, rel)
+    _rebind_allowlist_containing_file(root, rel)
 
 
 def m1e_stale_allowlist_entry(root: Path) -> None:
@@ -180,6 +206,7 @@ def m1e_stale_allowlist_entry(root: Path) -> None:
     text = target.read_text()
     target.write_text(text.replace(FAKE_PRIVATE_PATH_ROOT, "/redacted", 1))
     _reseal(root, rel)
+    _rebind_allowlist_containing_file(root, rel)
 
 
 def m2b_pyc_under_build_dir(root: Path) -> None:
@@ -261,6 +288,7 @@ def m12_new_finding_kind(root: Path) -> None:
     target = root / rel
     target.write_text(target.read_text() + "\n# BEGIN " + "PRIVATE KEY\n")
     _reseal(root, rel)
+    _rebind_allowlist_containing_file(root, rel)
 
 
 def m13_empty_cache(root: Path) -> None:

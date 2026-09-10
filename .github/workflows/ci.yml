@@ -514,3 +514,63 @@ jobs:
           ctest \
             --test-dir /tmp/elpis-semantic-sanitized \
             --output-on-failure
+
+  repository-completeness:
+    name: Repository completeness and installed artifact
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONNOUSERSITE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --upgrade pip
+      - name: Read-only assembly/tooling gates before installation
+        run: |
+          python tools/verify_canonical_assembly.py
+          python tools/print_component_map.py >/tmp/elpis-component-map.txt
+          PYTHONPATH=src python tools/qualify_allocator_budget.py >/tmp/elpis-allocator-budget.json
+      - name: Complete declared top-level test suite
+        run: python -m pip install ".[trm]" pytest==9.0.2
+      - run: python -m pytest -q -p no:cacheprovider tests/
+      - name: Qualify installed assembly from pristine throwaway source copy
+        run: |
+          SRC="$(mktemp -d)"
+          VENV="$(mktemp -d)"
+          git archive HEAD | tar -x -C "$SRC"
+          python -m venv "$VENV/venv"
+          "$VENV/venv/bin/python" -m pip install --upgrade pip
+          "$VENV/venv/bin/python" -m pip install "$SRC[trm]" pytest==9.0.2
+          ELPIS_TEST_SOURCE="$SRC" PYTHONPATH="" "$VENV/venv/bin/python" - <<'PY'
+          import importlib
+          packages = (
+              "elpis", "elpis_reference", "DarwinianMatrix", "elpis_p0",
+              "elpis_fractal_spine", "elpis_grid81_semantics",
+              "elpis_grid81_typed", "elpis_grid81_groups",
+              "elpis_grid81_adjudication", "elpis_grid81_capability_authority",
+              "elpis_grid81_consumption_compiler",
+              "elpis_grid81_application_executor",
+              "elpis_grid81_promotion_planner", "c_numpy_cortex",
+              "elpis_header", "elpis_runtime_r0", "elpis_runtime_r1",
+          )
+          for name in packages:
+              importlib.import_module(name)
+
+          import os, struct
+          from elpis_reference.ecs_r0 import Candidate, FrozenTheta, R0Error
+          raw = struct.pack("<d", 1.0) * (6 * 36)
+          os.environ.pop("ELPIS_ECS_AUTHORITY_ROOT", None)
+          try:
+              FrozenTheta(36, raw)
+          except R0Error as exc:
+              assert exc.code == "AUTHORITY_ROOT_REQUIRED"
+          else:
+              raise AssertionError("installed ECS R0 invented an authority root")
+          os.environ["ELPIS_ECS_AUTHORITY_ROOT"] = os.environ["ELPIS_TEST_SOURCE"]
+          candidate = Candidate.bind(FrozenTheta(36, raw))
+          assert candidate.materialize() == raw
+          print(f"PASS_INSTALLED_ASSEMBLY_IMPORTS={len(packages)}")
+          print("PASS_INSTALLED_ECS_AUTHORITY_RELOCATION")
+          PY

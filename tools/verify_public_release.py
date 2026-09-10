@@ -678,7 +678,10 @@ def emitted_allowlist():
     findings, errors = scan_findings()
     if errors:
         raise ValueError("; ".join(errors))
-    return [{"path": p, "kind": k, "sha256": h, "count": n}
+    return [{
+                "path": p, "kind": k, "sha256": h, "count": n,
+                "file_sha256": digest(REPO / p),
+            }
             for (p, k, h), n in sorted(findings.items())]
 
 
@@ -691,6 +694,11 @@ def check_private_data():
             key = (entry["path"], entry["kind"], entry["sha256"])
             if key in allowlist or type(entry["count"]) is not int or entry["count"] < 1:
                 raise ValueError("invalid or duplicate allowlist entry")
+            if type(entry.get("file_sha256")) is not str or not re.fullmatch(r"[0-9a-f]{64}", entry["file_sha256"]):
+                raise ValueError("allowlist entry missing valid file_sha256")
+            file_path = REPO / entry["path"]
+            if not file_path.is_file() or digest(file_path) != entry["file_sha256"]:
+                raise ValueError(f"allowlist containing-file digest mismatch: {entry['path']}")
             allowlist[key] = entry["count"]
     except (OSError, ValueError, KeyError, TypeError) as exc:
         return False, errors + [f"INVALID ALLOWLIST: {exc}"]

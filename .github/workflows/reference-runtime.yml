@@ -134,7 +134,7 @@ jobs:
       - name: Validated-source runtime smoke
         run: |
           PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPATH=runtime/R0/src:components/TRMFractalSpine/src:components/Grid81DeterministicStructuralAdjudicator/src:components/Grid81StructuralSemantics/src:components/Pipeline/P0ControlProtocol/src:components:src \
+          PYTHONPATH="" \
           python -m pytest \
             -q -p no:cacheprovider \
             tests/test_structural_guidance_validated_source_runtime.py \

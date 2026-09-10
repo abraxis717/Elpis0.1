@@ -1,0 +1,17 @@
+{
+  "schema": "elpis.ecs.r0.e0r2-blocker-fixture.v1",
+  "widths": [36, 48, 72],
+  "theta_fixture": "finite unique row-major binary64 values 1 through 6*N",
+  "snapshot_expression": "state entity per operational slot; integer participation quantity; one ABSTAIN proposal",
+  "expected_snapshot_status": "PROJECTED",
+  "expected_quantity_structural_kind": "preserved",
+  "expected_quantity_lanes": [],
+  "expected_writable_participation_referents": 0,
+  "same_count_masks": [[0], [1]],
+  "single_bit_masks": [[], [0]],
+  "permutation": "reverse column order, mask and operational addresses together",
+  "adversaries": ["stale_theta", "stale_candidate", "malformed_address", "frozen_writable_swap", "reverse_binding_collision"],
+  "generic_operation_capacity_boundary": [8, 9],
+  "capacity_control_is_r0_representation": false,
+  "expected_terminal_state": "SEMANTIC_IR_INSUFFICIENT"
+}

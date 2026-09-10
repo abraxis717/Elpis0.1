@@ -1,6 +1,6 @@
 # Components
 
-17 canonical components in the qualified assembly.
+17 canonical components in the qualified assembly; 16 are shipped in the public component registry.
 
 | Component | Version | Path | Status | Runtime |
 |-----------|---------|------|--------|---------|
@@ -20,4 +20,4 @@
 | P0 Control Protocol | P0.3 | components/Pipeline/P0ControlProtocol | QUALIFIED | FALSE |
 | CNumPy Cortex | 0.1.0 | components/CNumPyCortex | QUALIFIED | OPTIONAL |
 | Elpis Header | 0.1.0 | native/elpis-header | SEALED | FALSE |
-| Elpis Nanbeige42 Host | P14.0b | native/elpis-nanbeige42-host | SEALED | FALSE |
+| Elpis Nanbeige42 Host | P14.0b | not shipped (canonical-only metadata) | CANONICAL_ONLY | FALSE |

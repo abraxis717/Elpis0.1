@@ -53,7 +53,6 @@
     "G53b_Capability_Consumption_Compiler",
     "G53c_Capability_Application_Executor",
     "G53e_Canonical_Promotion_Planner",
-    "CNumPyCortex",
-    "elpis_nanbeige42_host"
+    "CNumPyCortex"
   ]
 }

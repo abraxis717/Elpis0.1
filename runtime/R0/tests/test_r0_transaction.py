@@ -39,6 +39,7 @@ from elpis_runtime_r0.errors import (
     R0Error,
     R0RequestContextError,
     R0Grid81ReadError,
+    R0ImportEscapeError,
     R0OracleError,
 )
 from elpis_runtime_r0.receipt import (
@@ -164,11 +165,11 @@ class TestNegativeCases:
             execute_r0_transaction(request={"request_id": "x", "prompt": ""})
 
     def test_missing_grid81_head(self):
-        with pytest.raises(R0Grid81ReadError):
+        with pytest.raises(R0ImportEscapeError, match="CANONICAL_ROOT_INVALID"):
             execute_r0_transaction(project_root="/tmp/nonexistent_grid81")
 
     def test_invalid_project_root(self):
-        with pytest.raises(R0Grid81ReadError):
+        with pytest.raises(R0ImportEscapeError, match="CANONICAL_ROOT_INVALID"):
             execute_r0_transaction(project_root="/tmp")
 
     def test_malformed_oracle_input_bad_grid_size(self):
@@ -341,12 +342,12 @@ class TestAuthorityBoundaries:
         )
         # These are the OLD pre-promotion paths that must NOT be used
         forbidden_paths = [
-            os.path.join("/mnt/primesauce", "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
-            os.path.join("/mnt/primesauce", "Elpis_Canon", "TRMFractalSpine"),
-            os.path.join("/mnt/primesauce", "Elpis_Canon", "DarwinianMatrix"),
-            os.path.join("/mnt/primesauce", "Elpis_Canon", "Grid81"),
-            os.path.join("/mnt/primesauce", "Elpis_Companions", "Elpis_Semantic_Fabric"),
-            os.path.join("/mnt/primesauce", "Elpis_Canon", "HashAdressedCascadeFabric"),
+            os.path.join(os.path.sep, "mnt", "primesauce", "Elpis_Canon", "Pipeline", "P0ControlProtocol"),
+            os.path.join(os.path.sep, "mnt", "primesauce", "Elpis_Canon", "TRMFractalSpine"),
+            os.path.join(os.path.sep, "mnt", "primesauce", "Elpis_Canon", "DarwinianMatrix"),
+            os.path.join(os.path.sep, "mnt", "primesauce", "Elpis_Canon", "Grid81"),
+            os.path.join(os.path.sep, "mnt", "primesauce", "Elpis_Companions", "Elpis_Semantic_Fabric"),
+            os.path.join(os.path.sep, "mnt", "primesauce", "Elpis_Canon", "HashAdressedCascadeFabric"),
         ]
         for root, dirs, files in os.walk(pkg_dir):
             dirs[:] = [d for d in dirs if d != "__pycache__"]
@@ -358,3 +359,22 @@ class TestAuthorityBoundaries:
                         assert forbidden not in content, (
                             f"{fname} references old source root: {forbidden}"
                         )
+
+
+def test_canonical_root_rejects_filesystem_root():
+    from elpis_runtime_r0.transaction import _validate_canonical_root
+    from elpis_runtime_r0.errors import R0ImportEscapeError
+    with pytest.raises(R0ImportEscapeError, match="CANONICAL_ROOT_INVALID"):
+        _validate_canonical_root(os.path.sep)
+
+
+def test_canonical_root_rejects_noncanonical_directory(tmp_path):
+    from elpis_runtime_r0.transaction import _validate_canonical_root
+    from elpis_runtime_r0.errors import R0ImportEscapeError
+    with pytest.raises(R0ImportEscapeError, match="CANONICAL_ROOT_INVALID"):
+        _validate_canonical_root(str(tmp_path))
+
+
+def test_canonical_root_accepts_current_components():
+    from elpis_runtime_r0.transaction import _validate_canonical_root, CANONICAL_ROOT
+    assert _validate_canonical_root(CANONICAL_ROOT) == os.path.realpath(CANONICAL_ROOT)
