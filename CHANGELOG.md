@@ -1,3 +1,17 @@
+## Elpis2.1.14 — elpisai Distribution and Hosted Qualification Repair
+
+- Adopt `elpisai` as the Python distribution project while preserving the
+  `elpis` console command and all qualified import-package names.
+- Preserve installed ECS R0 fail-closed authority behavior while explicitly
+  binding repository authority in repository-owned tests and E0R2 tooling.
+- Reproduce the hosted completeness operator order in isolation: install
+  `".[trm]"`, then run the complete declared top-level test suite.
+- Freeze the failed untagged Elpis2.1.13 public-main manifest as predecessor
+  history rather than amending or resealing it.
+- Preserve frozen ECS authority, canonical Grid81, the E0R2
+  `SEMANTIC_IR_INSUFFICIENT` result, and all E1/E2/learned/Darwinian/scientific
+  non-execution boundaries.
+
 ## Elpis2.1.13 — Executable Structural Authority and Repository Hardening
 
 - Make the published ECS Structural Authority R0 contract executable with

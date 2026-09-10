@@ -10,25 +10,22 @@ The current repository contains a qualified structural-guidance runtime and a se
 
 Elpis is therefore presented as a falsifiable systems-research program rather than a general intelligence claim. It does not claim solved alignment, general Grid81 satisfiability, arbitrary autonomous execution, general semantic correctness, cross-process attestation, autonomous implementation synthesis, AGI, or ASI. The intended standard is narrower: each mechanism should state the authority it possesses, the evidence that qualifies it, the conditions under which it fails, and the observations that would falsify the claim being made.
 
-### Elpis2.1.13
+### Elpis2.1.14
 
-**Release line: Elpis2.1.13**
+**Release line: Elpis2.1.14**
 
-Elpis2.1.13 makes the published ECS Structural Authority R0 contract executable
-and hardens repository, packaging, containment, and CI integrity.
+Elpis2.1.14 is the forward repair successor to the failed, untagged 2.1.13
+public-main release candidate. The Python distribution is named `elpisai`
+while the `elpis` CLI and existing Python import-package names remain
+unchanged.
 
-The bounded E0R2 diagnostic terminates `SEMANTIC_IR_INSUFFICIENT`: the existing
-Semantic IR and Projector preserve participation facts descriptively but do not
-provide the writable whole-column participation primitive required by the
-published mutation contract. One executable semantic primitive remains
-unresolved; E1 and E2 were not executed.
+Repository-owned ECS tests and diagnostics now bind repository authority
+explicitly; installed `elpis_reference.ecs_r0` continues to fail closed with
+`AUTHORITY_ROOT_REQUIRED` when no authority root is supplied.
 
-The release also reconciles canonical-only versus publicly shipped component
-metadata, qualifies the installed Python assembly without source-tree
-`PYTHONPATH` compensation, hardens canonical-root containment and private-path
-scanning, and gates repository/tooling completeness.
-
-No learned, Darwinian, or scientific execution is introduced.
+The bounded E0R2 result remains `SEMANTIC_IR_INSUFFICIENT` with one unresolved
+executable semantic primitive. E1/E2, learned execution, Darwinian execution,
+and scientific execution remain outside this release.
 
 ## 1. Research Question and Scope
 

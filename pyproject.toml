@@ -1,6 +1,6 @@
 [project]
 name = "elpisai"
-version = "2.1.13"
+version = "2.1.14"
 description = "Elpis structural-guidance primitive with an end-to-end validated-source runtime"
 requires-python = ">=3.11"
 license = {text = "MIT"}
