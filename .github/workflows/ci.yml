@@ -559,6 +559,27 @@ jobs:
               importlib.import_module(name)
 
           import os, struct
+          import importlib.metadata as metadata
+
+          expected_version = open(
+              os.path.join(os.environ["ELPIS_TEST_SOURCE"], "VERSION"),
+              encoding="utf-8",
+          ).read().strip()
+          assert metadata.version("elpisai") == expected_version
+          try:
+              metadata.distribution("elpis")
+          except metadata.PackageNotFoundError:
+              pass
+          else:
+              raise AssertionError("legacy PyPI distribution name elpis is installed")
+
+          scripts = {
+              (entry.name, entry.value)
+              for entry in metadata.distribution("elpisai").entry_points
+              if entry.group == "console_scripts"
+          }
+          assert ("elpis", "elpis_reference.cli:main") in scripts
+
           from elpis_reference.ecs_r0 import Candidate, FrozenTheta, R0Error
           raw = struct.pack("<d", 1.0) * (6 * 36)
           os.environ.pop("ELPIS_ECS_AUTHORITY_ROOT", None)
@@ -572,5 +593,7 @@ jobs:
           candidate = Candidate.bind(FrozenTheta(36, raw))
           assert candidate.materialize() == raw
           print(f"PASS_INSTALLED_ASSEMBLY_IMPORTS={len(packages)}")
+          print("PASS_INSTALLED_DISTRIBUTION=elpisai")
+          print("PASS_INSTALLED_CLI=elpis")
           print("PASS_INSTALLED_ECS_AUTHORITY_RELOCATION")
           PY

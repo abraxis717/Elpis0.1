@@ -11,10 +11,18 @@ import sys
 import pytest
 
 from elpis_reference.ecs_r0 import (
-    AUTHORITY_DIR, DEFAULT_ROOT, EXPECTED, Candidate, EditAddress, FrozenTheta,
+    AUTHORITY_DIR, EXPECTED, Candidate, EditAddress, FrozenTheta,
     MutationRequest, Opcode, R0Error, Status, equivalent, mutate, permute,
     verify_authority,
 )
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.fixture(autouse=True)
+def _bind_repository_ecs_authority(monkeypatch):
+    monkeypatch.setenv("ELPIS_ECS_AUTHORITY_ROOT", str(REPO_ROOT))
 
 
 def theta_bytes(n=36):
@@ -37,9 +45,9 @@ def authority_copy(tmp_path):
     target = tmp_path / AUTHORITY_DIR
     target.mkdir(parents=True)
     for name in (*EXPECTED, "SHA256SUMS"):
-        (target / name).write_bytes((DEFAULT_ROOT / AUTHORITY_DIR / name).read_bytes())
+        (target / name).write_bytes((REPO_ROOT / AUTHORITY_DIR / name).read_bytes())
     (tmp_path / "ECS_AUTHORITY_HEADER.md").write_bytes(
-        (DEFAULT_ROOT / "ECS_AUTHORITY_HEADER.md").read_bytes())
+        (REPO_ROOT / "ECS_AUTHORITY_HEADER.md").read_bytes())
     return tmp_path
 
 
@@ -340,10 +348,10 @@ def test_fresh_process_digests_and_materialization(candidate):
                          hashlib.sha256(candidate.materialize()).hexdigest()))
     for seed in ("1", "77"):
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONHASHSEED=seed,
-                   PYTHONPATH=os.pathsep.join((str(DEFAULT_ROOT / "src"),
-                                              str(DEFAULT_ROOT / "tests"))))
+                   PYTHONPATH=os.pathsep.join((str(REPO_ROOT / "src"),
+                                              str(REPO_ROOT / "tests"))))
         assert subprocess.check_output([sys.executable, "-B", "-c", code],
-                                       cwd=DEFAULT_ROOT, env=env, text=True).strip() == expected
+                                       cwd=REPO_ROOT, env=env, text=True).strip() == expected
 
 
 @pytest.mark.parametrize("field", ["ontology_id", "ontology_version",

@@ -17,7 +17,7 @@ import re
 import struct
 
 from elpis_reference.ecs_r0 import (
-    Candidate, DEFAULT_ROOT, FrozenTheta, GAUGE, R0Error, Status,
+    Candidate, FrozenTheta, GAUGE, R0Error, Status,
     MutationRequest, Opcode, equivalent, mutate, permute, verify_authority,
 )
 from elpis_reference.structural_guidance._authority.c2r6p0.contracts import (
@@ -33,6 +33,7 @@ from elpis_reference.structural_guidance._authority.elpis_p0.structural_residual
 )
 
 PREDICATE = "ecs_r0_participation_status"
+REPO_ROOT = Path(__file__).resolve().parents[1]
 MISSING_PRIMITIVE = (
     "A writable binary whole-column participation referent bound to an external "
     "frozen sidecar and operational gauge slot, with deterministic DISABLE/RESTORE "
@@ -44,7 +45,7 @@ def synthetic_candidate(width: int) -> Candidate:
     """Distinct finite columns, for software fixtures only; no scientific evaluation."""
     raw = b"".join(struct.pack("<d", float(row * width + i + 1))
                    for row in range(6) for i in range(width))
-    return Candidate.bind(FrozenTheta(width, raw))
+    return Candidate.bind(FrozenTheta(width, raw, REPO_ROOT))
 
 
 def _slot_id(i: int) -> str:

@@ -25,6 +25,12 @@ from tools.ecs_r0_e0r2 import (
 )
 
 FIXTURE = json.loads(Path(__file__).with_name("ecs_r0_e0r2_blocker.json").read_text())
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.fixture(autouse=True)
+def _bind_repository_ecs_authority(monkeypatch):
+    monkeypatch.setenv("ELPIS_ECS_AUTHORITY_ROOT", str(REPO_ROOT))
 
 
 @pytest.fixture(params=FIXTURE["widths"])

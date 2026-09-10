@@ -15,6 +15,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 
 RELEASE_VERSION = (REPO / "VERSION").read_text(encoding="utf-8").strip()
+PACKAGE_NAME = "elpisai"
 # Ratified repository identities, never inferred from a manifest's claims.
 RELEASE_IDENTITIES = {
     "2.1.2": {
@@ -201,7 +202,7 @@ def load_manifest():
         "release_name": f"Elpis{RELEASE_VERSION}",
         "release_tag": f"Elpis{RELEASE_VERSION}",
         "version": RELEASE_VERSION,
-        "package_name": "elpis",
+        "package_name": PACKAGE_NAME,
         "primitive_closure_commit": identity["primitive_closure_commit"],
         "runtime_status": "VALIDATED_SOURCE",
         "full_elpis_runtime_admission": True,
@@ -351,8 +352,8 @@ def check_package():
     )
     project = data["project"]
 
-    if project.get("name") != "elpis":
-        errors.append("package name is not elpis")
+    if project.get("name") != PACKAGE_NAME:
+        errors.append(f"package name is not {PACKAGE_NAME}")
 
     if project.get("version") != RELEASE_VERSION:
         errors.append(f"package version is not {RELEASE_VERSION}")

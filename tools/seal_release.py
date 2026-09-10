@@ -149,7 +149,7 @@ def main(argv: list[str]) -> int:
     else:
         data = {
             "schema": "elpis.release-manifest.v2",
-            "package_name": "elpis",
+            "package_name": verifier["PACKAGE_NAME"],
             "runtime_status": "VALIDATED_SOURCE",
             "full_elpis_runtime_admission": True,
             "request_guidance_gate_default": False,
@@ -161,6 +161,7 @@ def main(argv: list[str]) -> int:
             "nanbeige_host_shipped": False,
         }
 
+    data["package_name"] = verifier["PACKAGE_NAME"]
     data["release_name"] = f"Elpis{version}"
     data["release_tag"] = f"Elpis{version}"
     data["version"] = version

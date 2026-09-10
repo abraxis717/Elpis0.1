@@ -47,3 +47,13 @@ def test_ci_has_complete_top_level_suite_and_read_only_assembly_gate():
     assert "python tools/verify_canonical_assembly.py" in workflow
     assert "python tools/print_component_map.py" in workflow
     assert "python tools/qualify_allocator_budget.py" in workflow
+
+
+def test_distribution_identity_is_elpisai_without_import_or_cli_rename():
+    config = tomllib.loads((ROOT / "pyproject.toml").read_text())
+    project = config["project"]
+    find = config["tool"]["setuptools"]["packages"]["find"]
+    assert project["name"] == "elpisai"
+    assert project["scripts"]["elpis"] == "elpis_reference.cli:main"
+    assert "elpis*" in find["include"]
+    assert "elpis_reference*" in find["include"]
