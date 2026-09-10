@@ -56,7 +56,7 @@ jobs:
           )
 
           expected_version = Path("VERSION").read_text().strip()
-          assert version("elpis") == expected_version
+          assert version("elpisai") == expected_version
 
           package = files("elpis_reference")
 

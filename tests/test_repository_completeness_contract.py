@@ -57,3 +57,9 @@ def test_distribution_identity_is_elpisai_without_import_or_cli_rename():
     assert project["scripts"]["elpis"] == "elpis_reference.cli:main"
     assert "elpis*" in find["include"]
     assert "elpis_reference*" in find["include"]
+
+def test_reference_runtime_uses_elpisai_distribution_metadata():
+    workflow = (ROOT / ".github/workflows/reference-runtime.yml").read_text()
+    assert 'version("elpisai")' in workflow
+    assert 'version("elpis")' not in workflow
+
