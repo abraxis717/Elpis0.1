@@ -46,7 +46,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 
 # Versions that have been released. Their manifest bytes are frozen.
-PUBLISHED = frozenset({"2.0.0", "2.1.0", "2.1.1", "2.1.2", "2.1.3", "2.1.4", "2.1.5", "2.1.6", "2.1.7", "2.1.8", "2.1.9", "2.1.10", "2.1.11"})
+PUBLISHED = frozenset({"2.0.0", "2.1.0", "2.1.1", "2.1.2", "2.1.3", "2.1.4", "2.1.5", "2.1.6", "2.1.7", "2.1.8", "2.1.9", "2.1.10", "2.1.11", "2.1.12"})
 
 IGNORE_PARTS = {".git"}
 

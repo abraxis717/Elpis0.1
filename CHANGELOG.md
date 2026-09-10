@@ -1,3 +1,21 @@
+## Elpis2.1.13 — Executable Structural Authority and Repository Hardening
+
+- Make the published ECS Structural Authority R0 contract executable with
+  exact whole-column ACTIVE/DISABLED/FROZEN_ZERO semantics and bounded
+  ABSTAIN/DISABLE/RESTORE mutation authority.
+- Add a bounded E0R2 diagnostic whose qualified result is
+  `SEMANTIC_IR_INSUFFICIENT` with one unresolved writable-participation
+  semantic primitive; E1 and E2 remain unexecuted.
+- Reconcile canonical-only Nanbeige42 metadata with the actual public shipment
+  boundary and gate canonical assembly consistency.
+- Qualify the installed Python distribution as the intended assembly rather
+  than relying on source-tree `PYTHONPATH` compensation.
+- Harden canonical-root containment, public private-path scanning, mutation
+  reachability, FPRM checkpoint optionality, and repository/tooling CI
+  completeness.
+- Preserve frozen ECS authority, canonical Grid81, historical release
+  manifests, learned/Darwinian boundaries, and scientific non-execution.
+
 ## Elpis2.1.12 — ECS Structural Authority R0 Publication
 
 - Publish and seal the bounded ECS Structural Authority R0 contract

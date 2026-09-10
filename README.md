@@ -10,23 +10,25 @@ The current repository contains a qualified structural-guidance runtime and a se
 
 Elpis is therefore presented as a falsifiable systems-research program rather than a general intelligence claim. It does not claim solved alignment, general Grid81 satisfiability, arbitrary autonomous execution, general semantic correctness, cross-process attestation, autonomous implementation synthesis, AGI, or ASI. The intended standard is narrower: each mechanism should state the authority it possesses, the evidence that qualifies it, the conditions under which it fails, and the observations that would falsify the claim being made.
 
-### Elpis2.1.12
+### Elpis2.1.13
 
-**Release line: Elpis2.1.12**
+**Release line: Elpis2.1.13**
 
-Elpis2.1.12 publishes and seals the qualified ECS Structural Authority R0
-contract, `MICROSCOPIC_COLUMN_PARTICIPATION_MASK_R0`, while preserving the
-existing production runtime authority contracts.
+Elpis2.1.13 makes the published ECS Structural Authority R0 contract executable
+and hardens repository, packaging, containment, and CI integrity.
 
-The public ECS contract treats microscopic column slots as operational gauge
-addresses rather than intrinsic entities. Exact nonzero frozen whole columns
-carry one binary ACTIVE/DISABLED participation state; structural mutation is
-limited to `ABSTAIN`, `DISABLE_COLUMN`, and `RESTORE_COLUMN`. Continuous column
-bytes remain frozen and restoration is exact.
+The bounded E0R2 diagnostic terminates `SEMANTIC_IR_INSUFFICIENT`: the existing
+Semantic IR and Projector preserve participation facts descriptively but do not
+provide the writable whole-column participation primitive required by the
+published mutation contract. One executable semantic primitive remains
+unresolved; E1 and E2 were not executed.
 
-This release does not establish Semantic-IR representability, Grid81
-compatibility, learned-refinement efficacy, scientific improvement,
-evolutionary benefit, or any E0R2/E1/E2 result. Runtime behavior is unchanged.
+The release also reconciles canonical-only versus publicly shipped component
+metadata, qualifies the installed Python assembly without source-tree
+`PYTHONPATH` compensation, hardens canonical-root containment and private-path
+scanning, and gates repository/tooling completeness.
+
+No learned, Darwinian, or scientific execution is introduced.
 
 ## 1. Research Question and Scope
 
