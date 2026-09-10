@@ -10,18 +10,18 @@ The current repository contains a qualified structural-guidance runtime and a se
 
 Elpis is therefore presented as a falsifiable systems-research program rather than a general intelligence claim. It does not claim solved alignment, general Grid81 satisfiability, arbitrary autonomous execution, general semantic correctness, cross-process attestation, autonomous implementation synthesis, AGI, or ASI. The intended standard is narrower: each mechanism should state the authority it possesses, the evidence that qualifies it, the conditions under which it fails, and the observations that would falsify the claim being made.
 
-### Elpis2.1.14
+### Elpis2.1.15
 
-**Release line: Elpis2.1.14**
+**Release line: Elpis2.1.15**
 
-Elpis2.1.14 is the forward repair successor to the failed, untagged 2.1.13
-public-main release candidate. The Python distribution is named `elpisai`
-while the `elpis` CLI and existing Python import-package names remain
-unchanged.
+Elpis2.1.15 is the forward repair successor to the failed, untagged 2.1.14
+public-main release candidate. The Python distribution remains `elpisai`,
+while the `elpis` CLI and all Python import-package names remain unchanged.
 
-Repository-owned ECS tests and diagnostics now bind repository authority
-explicitly; installed `elpis_reference.ecs_r0` continues to fail closed with
-`AUTHORITY_ROOT_REQUIRED` when no authority root is supplied.
+The release corrects the hosted reference-runtime metadata assertion from
+`version("elpis")` to `version("elpisai")` and adds a repository regression
+that locks that distribution boundary. Installed ECS authority resolution
+remains fail-closed unless authority is supplied explicitly.
 
 The bounded E0R2 result remains `SEMANTIC_IR_INSUFFICIENT` with one unresolved
 executable semantic primitive. E1/E2, learned execution, Darwinian execution,

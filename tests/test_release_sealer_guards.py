@@ -59,7 +59,7 @@ def seal(root, *args):
 
 @pytest.mark.parametrize(
     "version",
-    ["2.0.0", "2.1.0", "2.1.1", "2.1.2", "2.1.3", "2.1.4", "2.1.5", "2.1.6", "2.1.7", "2.1.8", "2.1.9", "2.1.10", "2.1.11", "2.1.12", "2.1.13"],
+    ["2.0.0", "2.1.0", "2.1.1", "2.1.2", "2.1.3", "2.1.4", "2.1.5", "2.1.6", "2.1.7", "2.1.8", "2.1.9", "2.1.10", "2.1.11", "2.1.12", "2.1.13", "2.1.14"],
 )
 def test_existing_published_manifest_is_write_once(copy_root, version):
     path = copy_root / f"manifests/Elpis{version}.RELEASE_MANIFEST.json"

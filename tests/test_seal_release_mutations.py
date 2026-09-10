@@ -76,14 +76,14 @@ def test_existing_manifest_is_write_once(tmp_path: Path) -> None:
 
 def test_published_belt_is_independent_of_manifest_existence(tmp_path: Path) -> None:
     root = copy_repo(tmp_path)
-    (root / "VERSION").write_text("2.1.13\n", encoding="utf-8")
-    manifest = root / "manifests/Elpis2.1.13.RELEASE_MANIFEST.json"
+    (root / "VERSION").write_text("2.1.14\n", encoding="utf-8")
+    manifest = root / "manifests/Elpis2.1.14.RELEASE_MANIFEST.json"
     manifest.unlink(missing_ok=True)
 
-    proc = run(root, str(SEALER), "--version", "2.1.13")
+    proc = run(root, str(SEALER), "--version", "2.1.14")
 
     assert proc.returncode == 2
-    assert "Elpis2.1.13 is published; its manifest is immutable" in output(proc)
+    assert "Elpis2.1.14 is published; its manifest is immutable" in output(proc)
 
 def test_sealer_refuses_ephemeral_artifact(tmp_path: Path) -> None:
     root = copy_repo(tmp_path)

@@ -1,3 +1,19 @@
+## Elpis2.1.15 — Reference-Runtime Distribution Metadata Repair
+
+- Correct hosted `reference-runtime-smoke` metadata lookup from the legacy
+  distribution name `elpis` to the current distribution name `elpisai`.
+- Add a repository regression that requires `version("elpisai")` and forbids
+  the stale `version("elpis")` assertion in the reference-runtime workflow.
+- Preserve the `elpis` console command, all Python import-package names, FPRM
+  cache namespace, package-data layout, and runtime semantics.
+- Reproduce both the hosted repository-completeness ordering and the complete
+  reference-runtime-smoke sequence locally before release authority is accepted.
+- Freeze failed untagged Elpis2.1.14 public-main authority as predecessor
+  history rather than amending, resealing, or force-rewriting it.
+- Preserve frozen ECS authority, canonical Grid81, E0R2
+  `SEMANTIC_IR_INSUFFICIENT`, and all E1/E2/learned/Darwinian/scientific
+  non-execution boundaries.
+
 ## Elpis2.1.14 — elpisai Distribution and Hosted Qualification Repair
 
 - Adopt `elpisai` as the Python distribution project while preserving the
