@@ -1,6 +1,6 @@
 [project]
 name = "elpisai"
-version = "2.1.15"
+version = "2.1.16"
 description = "Elpis structural-guidance primitive with an end-to-end validated-source runtime"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -21,6 +21,12 @@ trm = [
 
 [project.scripts]
 elpis = "elpis_reference.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/abraxis717/Elpis0.1"
+Repository = "https://github.com/abraxis717/Elpis0.1"
+Issues = "https://github.com/abraxis717/Elpis0.1/issues"
+Changelog = "https://github.com/abraxis717/Elpis0.1/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["setuptools>=68"]

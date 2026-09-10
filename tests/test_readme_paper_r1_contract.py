@@ -15,8 +15,9 @@ def _readme() -> str:
 
 def test_readme_keeps_single_canonical_release_declaration():
     text = _readme()
+    version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     matches = re.findall(r"(?m)^\*\*Release line: Elpis([0-9]+\.[0-9]+\.[0-9]+)\*\*[ \t]*$", text)
-    assert matches == ["2.1.15"]
+    assert matches == [version]
 
 
 def test_distribution_metadata_binds_markdown_readme():
@@ -24,6 +25,12 @@ def test_distribution_metadata_binds_markdown_readme():
     assert project["name"] == "elpisai"
     assert project["readme"] == "README.md"
     assert project["scripts"]["elpis"] == "elpis_reference.cli:main"
+    assert project["urls"] == {
+        "Homepage": "https://github.com/abraxis717/Elpis0.1",
+        "Repository": "https://github.com/abraxis717/Elpis0.1",
+        "Issues": "https://github.com/abraxis717/Elpis0.1/issues",
+        "Changelog": "https://github.com/abraxis717/Elpis0.1/blob/main/CHANGELOG.md",
+    }
 
 
 def test_base_dependency_contract_does_not_reintroduce_hard_torch():

@@ -1,3 +1,26 @@
+## Elpis2.1.16 — README Paper R1 and PyPI Launch Preparation
+
+- Reconcile the top-level README with the current public repository and remove
+  stale architecture/frontier claims.
+- Document APW R0, ECS Structural Authority R0/E0R2, native ingress surfaces,
+  current Grid81 component families, historical R0/R1 integrations, and the
+  public FPRM path without collapsing repository coexistence into runtime
+  integration.
+- Bind `README.md` as the PEP 621 project readme so `elpisai` wheel metadata
+  carries the Markdown long description.
+- Add canonical project URLs for the repository, issue tracker, and changelog.
+- Keep base dependencies at NumPy/SciPy and Torch/model dependencies behind the
+  `trm` extra; preserve the `elpis` CLI and Python import-package names.
+- Make the README Paper R1 release declaration regression VERSION-driven.
+- Advance the immutable predecessor belt through published Elpis2.1.15 and add
+  the Elpis2.1.16 release identity.
+- Qualify both wheel and sdist with `twine check` before release authority.
+- Prepare Elpis2.1.16 as the first intended PyPI publication under `elpisai`;
+  the irreversible upload/readback remains a later post-GitHub-release gate.
+- Preserve ECS/Grid81/runtime/model semantics and all E1/E2, learned,
+  Darwinian, generated-source-execution, and scientific non-execution
+  boundaries.
+
 ## Elpis2.1.15 — Reference-Runtime Distribution Metadata Repair
 
 - Correct hosted `reference-runtime-smoke` metadata lookup from the legacy
