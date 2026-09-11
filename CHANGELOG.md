@@ -1,3 +1,11 @@
+## Elpis2.1.20 — Hosted CI history/tag checkout correction
+
+- Preserve failed sealed Elpis2.1.19 authority without resealing or history rewrite.
+- Give the repository-completeness CI job complete Git history and semantic tags.
+- Restore the authority preconditions required by qualification-ancestor and
+  published-release-registry tests.
+- Preserve runtime, native, Grid81, packaging, and successor-writer admission semantics.
+
 ## Elpis2.1.19 — Sealed-control copy-harness corrective successor
 
 - Freeze failed sealed local Elpis2.1.18 authority without resealing,
