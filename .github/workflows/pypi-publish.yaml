@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - .github/workflows/pypi-publish.yml
+      - .github/workflows/pypi-publish.yaml
   workflow_dispatch:
 
 concurrency:
@@ -15,7 +15,7 @@ jobs:
   publish:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.event.head_commit.message == 'publication: add PyPI trusted publisher workflow'
+      github.event.head_commit.message == 'publication: align PyPI trusted publisher workflow filename'
     name: exact-tag build, qualify, publish, readback
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -31,7 +31,7 @@ jobs:
       RELEASE_COMMIT: 2579566f4bb3bb5190a0321928d19c21f2d612bb
       TAG_OBJECT: 4b3accdba97d81aab6a59d89a4a4aab2d7f2b394
       MANIFEST_SHA: 83597eb4353688875f03618dd7ec548df83e6e601676f4e328e8a9cc25452f25
-      EXPECTED_WORKFLOW_REF: abraxis717/Elpis0.1/.github/workflows/pypi-publish.yml@refs/heads/main
+      EXPECTED_WORKFLOW_REF: abraxis717/Elpis0.1/.github/workflows/pypi-publish.yaml@refs/heads/main
 
     steps:
       - name: Assert trusted workflow identity
