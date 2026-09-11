@@ -536,7 +536,7 @@ def publish_candidate(
             receipt_digest=receipt_digest,
             expected_previous_head=expected_ledger_head,
         )
-        artifact_seen = bool(ledger.has_receipt(promotion_capability_digest))
+        artifact_seen = bool(ledger.has_receipt(artifact_digest))
 
         # Crash/retry after a successful exchange: verify the exact reservation,
         # clean the old exchanged directory if it remains, and return idempotently.
@@ -610,7 +610,7 @@ def publish_candidate(
                 entry = ledger.append(
                     expected_ledger_head,
                     receipt_digest,
-                    promotion_capability_digest,
+                    artifact_digest,
                 )
             except ValueError as exc:
                 raise PublicationError("STALE_LEDGER_HEAD") from exc

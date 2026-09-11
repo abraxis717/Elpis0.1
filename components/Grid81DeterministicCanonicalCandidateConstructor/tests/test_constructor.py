@@ -460,7 +460,7 @@ def test_constructor_output_is_directly_publishable(
     assert published.status == "COMMITTED"
     assert after.generation_number == before.generation_number + 1
     assert after.canonical_digest == constructed.candidate_canonical_digest
-    assert ledger.has_receipt(cap["capability_digest"])
+    assert ledger.has_receipt(artifact["artifact_digest"])
     assert ledger.to_dict()["count"] == 1
 
 

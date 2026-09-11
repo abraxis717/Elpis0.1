@@ -22,7 +22,7 @@ Its responsibilities are narrower:
 - require the capability's expected publication-ledger head to match the
   durable publication ledger;
 - preserve all historical generation files byte-for-byte;
-- reserve publication exactly once in the durable ledger;
+- reserve the source structural artifact exactly once in the durable publication ledger;
 - perform the canonical directory exchange atomically;
 - verify the committed result through the production Grid81 reader;
 - support exact idempotent replay of an already committed transaction; and
@@ -60,6 +60,13 @@ The publication path distinguishes two histories:
 
 Those ledger heads are distinct authority channels and must not be silently
 collapsed.
+
+The durable publication ledger's uniqueness identity is the source structural
+artifact digest, not the promotion-capability digest. A newly issued valid
+promotion capability therefore cannot republish an artifact that already has
+a durable canonical-publication reservation. The promotion capability digest
+remains independently authenticated by the publication receipt and canonical
+candidate sidecars.
 
 ## Atomicity and recovery
 

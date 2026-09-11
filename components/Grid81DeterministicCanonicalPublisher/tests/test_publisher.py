@@ -304,8 +304,8 @@ def test_atomic_publish_consumes_promotion_capability_and_replays_idempotently(
     assert receipt.artifact_digest == cap["source_bindings"]["artifact_digest"]
     assert receipt.promotion_capability_digest == cap["capability_digest"]
     assert load_current_grid81(current).canonical_digest == candidate_state.canonical_digest
-    assert ledger.has_receipt(cap["capability_digest"])
-    assert not ledger.has_receipt(cap["source_bindings"]["artifact_digest"])
+    assert ledger.has_receipt(cap["source_bindings"]["artifact_digest"])
+    assert not ledger.has_receipt(cap["capability_digest"])
     assert ledger.to_dict()["count"] == 1
 
     replay = _publish(current, candidate, ledger, cap, tmp_path)
@@ -426,7 +426,7 @@ def test_exact_capability_reservation_resumes_after_exchange_failure(
         _publish(current, candidate, ledger, cap, tmp_path)
 
     assert ledger.to_dict()["count"] == 1
-    assert ledger.has_receipt(cap["capability_digest"])
+    assert ledger.has_receipt(cap["source_bindings"]["artifact_digest"])
     assert load_current_grid81(current).generation_number == 1
 
     monkeypatch.setattr(publisher, "_commit_exchange", real)

@@ -321,8 +321,8 @@ def test_grid81_canonical_writer_chain_golden_publish_and_exact_replay(
         assert committed.capability_id == cap["capability_id"]
 
         assert ledger.to_dict()["count"] == 1
-        assert ledger.has_receipt(cap["capability_digest"])
-        assert not ledger.has_receipt(artifact["artifact_digest"])
+        assert ledger.has_receipt(artifact["artifact_digest"])
+        assert not ledger.has_receipt(cap["capability_digest"])
         committed_ledger_head = ledger.head
         assert committed_ledger_head != initial_ledger_head
 
