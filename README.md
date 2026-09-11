@@ -195,7 +195,7 @@ The registered public components are:
 |---|---|---|
 | [`HACF_R3`](native/hacf/README.md) | `native/hacf/` | Native deterministic HACF substrate. |
 | [`Semantic_Structural_Spine_V1`](native/semantic-spine/README.md) | `native/semantic-spine/` | Native semantic/structural spine over HACF. |
-| [`Grid81_Structural_Semantics`](components/Grid81StructuralSemantics/TEST_PLAN.md) | `components/Grid81StructuralSemantics/` | Typed structural semantics for the Grid81 family. |
+| [`Grid81_Structural_Semantics`](components/Grid81StructuralSemantics/README.md) | `components/Grid81StructuralSemantics/` | Typed structural semantics for the Grid81 family. |
 | [`Grid81_Typed_Projection_Compiler`](components/Grid81TypedProjectionCompiler/COMPONENT_MANIFEST.json) | `components/Grid81TypedProjectionCompiler/` | Deterministic typed projection. |
 | [`G50b_Structural_Group_Projection_Compiler`](components/Grid81StructuralGroupProjectionCompiler/README.md) | `components/Grid81StructuralGroupProjectionCompiler/` | Structural group projection. |
 | [`Grid81_Canonical_Substrate`](components/Grid81/README.md) | `components/Grid81/` | Read-only canonical Grid81 generation substrate. |
