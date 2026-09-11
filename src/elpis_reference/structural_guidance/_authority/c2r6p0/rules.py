@@ -7,18 +7,42 @@ authority versions so that a change of authority is detectable.
 from __future__ import annotations
 
 import hashlib
+import inspect
 import json
 from dataclasses import dataclass
+from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 FROZEN_STRUCTURAL_RESIDUAL_SHA256 = "d517be0041cf61dafe7813bd4b443982723288b43e7ab30f69c8075459c9b5ca"
 FROZEN_STRUCTURAL_TRM_FEATURES_SHA256 = "d1dec9488c7eca67008b14b7e9d6fb620c48965f417f8a30c5486b5d5df427b2"
-FROZEN_P0_CONTRACTS_SHA256 = "face8a09f0ad76a0e34cd4544a805302502ebb70ff8b7517934521d85ed8266a"
+FROZEN_P0_CONTRACTS_SHA256 = "8f0d7e14774d02ea068833bb4fa91eee43c14b1733371edac52a7cba019005a1"
 FROZEN_P0_SEMANTIC_IR_SHA256 = "d4c44e586c7869ff1ab8621e0f0ddd638784951f2583b847b75efc07f788f519"
 
 
 def _sha(path: str) -> str:
-    return hashlib.sha256(open(path, "rb").read()).hexdigest()
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+class FrozenAuthorityError(RuntimeError):
+    """An imported authority source cannot be verified against its frozen pin."""
+
+
+def _verify_authority(module: ModuleType, expected: str) -> None:
+    path = inspect.getsourcefile(module)
+    if path is None:
+        raise FrozenAuthorityError(f"frozen authority source unavailable: {module.__name__}")
+    try:
+        actual = _sha(path)
+    except OSError as exc:
+        raise FrozenAuthorityError(
+            f"frozen authority source unreadable: {module.__name__} ({path})"
+        ) from exc
+    if actual != expected:
+        raise FrozenAuthorityError(
+            f"frozen authority SHA-256 mismatch: {module.__name__} ({path}); "
+            f"expected={expected}; actual={actual}"
+        )
 
 
 @dataclass(frozen=True)
@@ -86,9 +110,20 @@ class BudgetedRulesetV2(Ruleset):
 
 
 def load_ruleset() -> BudgetedRulesetV2:
-    """Build the pinned ruleset from the frozen authority sources."""
+    """Verify imported authority source bytes before building the pinned ruleset."""
     from ..elpis_p0 import structural_residual as SR
     from ..c2r7c import structural_trm_features as F
+    from ..elpis_p0 import contracts as C, semantic_ir as IR
+
+    # These are the vendored authorities consumed by the projector/refiner;
+    # C supplies BasisToken, not the c2r6p0 projector wrapper contracts.
+    for module, expected in (
+        (SR, FROZEN_STRUCTURAL_RESIDUAL_SHA256),
+        (F, FROZEN_STRUCTURAL_TRM_FEATURES_SHA256),
+        (C, FROZEN_P0_CONTRACTS_SHA256),
+        (IR, FROZEN_P0_SEMANTIC_IR_SHA256),
+    ):
+        _verify_authority(module, expected)
 
     return BudgetedRulesetV2(
         grid_size=SR.GRID_SIZE,

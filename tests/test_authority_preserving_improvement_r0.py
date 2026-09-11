@@ -77,7 +77,7 @@ def test_authority_preserving_improvement_witness_r0():
             "de4e1e3e3c9cfdd9e7a58bb2b479026f2c093de86b25fb159428e3ecb697444d"
         ),
         "projection_digest": (
-            "3c008b56e72b71e60b583ef2eef703d7bb370754c6f5f7b540836504f8ef5a08"
+            "c12f248e47cd3cf27a1009b8cb8d85591853810a02447289adf36f87dea36c9a"
         ),
         "initial_cost": 1,
         "initial_fingerprint": (
