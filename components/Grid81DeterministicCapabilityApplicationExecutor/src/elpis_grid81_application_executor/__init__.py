@@ -10,3 +10,4 @@ from .errors import ApplicationError, ApplicationRejected, AuthorityViolation
 from .shadow_state import ShadowCapabilityState
 from .application import apply_artifact
 from .ledger import ApplicationLedger, ledger_head_digest
+from .durable_ledger import DurableApplicationLedger
