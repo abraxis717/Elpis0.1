@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elpis-grid81-canonical-publisher"
+version = "0.1.0"
+description = "Atomic recoverable Grid81 canonical snapshot publication"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["src"]
