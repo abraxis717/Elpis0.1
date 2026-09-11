@@ -1,40 +1,49 @@
-# Elpis2.1.21
+# Elpis2.1.22
 
-## Version: v2.1.21
+## Version: v2.1.22
 
-Elpis2.1.21 is the publication-authority corrective successor to the hosted-green,
-untagged Elpis2.1.20 release candidate.
+Elpis2.1.22 is the structural-guidance authority-integrity successor to the
+published and immutable Elpis2.1.21 release.
 
-Elpis2.1.20 remains immutable sealed evidence at
-`13444ef72e1aca98af4315d48e77144b8d72ebdf`. Its push workflows all passed,
-but it is deliberately not tagged because the post-2.1.16 publication registry
-introduced a circular authority dependency.
+The successor carries the independently qualified D1+D2 repair from commit
+`1195907c2f3ee19eabbde49a02aec7078399f2ee`.
 
-## Publication-registry correction
+## Structural-guidance authority reconciliation
 
-`PUBLISHED_RELEASES.json` is derived from `refs/tags/Elpis<semver>`. A new entry
-requires both the final peeled tag commit and the release-manifest SHA. Those
-facts do not exist until after sealing and tagging. Therefore the registry
-cannot itself be part of the immutable pre-tag release-manifest file set.
+`load_ruleset()` now resolves the source paths of the four imported production
+authority modules, hashes the exact executing source bytes, and rejects any
+frozen-digest mismatch before constructing a ruleset.
 
-Elpis2.1.21 makes the registry a post-tag projection:
+The live production authority identities are:
 
-- physical safety scanning still covers the registry;
-- release-manifest membership excludes only `PUBLISHED_RELEASES.json`;
-- ordinary branch CI requires exact registry/tag equality;
-- tag-event CI permits exactly the current event tag to be pending;
-- `tools/refresh_published_releases.py` deterministically materializes the exact
-  tag-derived registry after tag qualification;
-- the resulting registry-only post-publication commit does not mutate the
-  sealed release payload.
+- `elpis_p0/structural_residual.py`:
+  `d517be0041cf61dafe7813bd4b443982723288b43e7ab30f69c8075459c9b5ca`
+- `c2r7c/structural_trm_features.py`:
+  `d1dec9488c7eca67008b14b7e9d6fb620c48965f417f8a30c5486b5d5df427b2`
+- `elpis_p0/contracts.py`:
+  `8f0d7e14774d02ea068833bb4fa91eee43c14b1733371edac52a7cba019005a1`
+- `elpis_p0/semantic_ir.py`:
+  `d4c44e586c7869ff1ab8621e0f0ddd638784951f2583b847b75efc07f788f519`
 
-No runtime, native, Grid81, canonical, package-admission, or scientific
-semantics are changed.
+The public structural-guidance authority declarations re-export the internal
+pins, removing the stale duplicate structural-residual declaration.
+
+The corrected P0 contract identity changes the deterministic ruleset,
+projection, and trace identity digests that transitively bind that authority.
+Allocator structural outputs, lane bindings, masks, residuals, semantic IDs,
+and topology are unchanged.
+
+## Release-authority continuity
+
+Elpis2.1.21 remains immutable. Its tag, release manifest, publication registry,
+published PyPI files, and GitHub Release are not rewritten or resealed by this
+successor.
+
+Elpis2.1.22 receives its own write-once release manifest and release identity.
 
 ## Explicit nonclaims
 
-This corrective release does not authorize E1 or E2, establish learned-
-refinement efficacy, execute Darwinian evolution, perform new scientific
-evaluation, claim evolutionary benefit, autonomous self-improvement, general
-RSI safety, hostile same-process isolation, process-external attestation,
-generated-source execution authority, AGI, ASI, or full Elpis alignment.
+This successor does not authorize new execution surfaces, alter allocator
+policy semantics, authorize E1 or E2, establish learned-refinement efficacy,
+execute Darwinian evolution, claim autonomous self-improvement, general RSI
+safety, AGI, ASI, or full Elpis alignment.
