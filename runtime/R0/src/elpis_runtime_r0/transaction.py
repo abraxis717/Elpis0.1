@@ -7,9 +7,13 @@ RequestContext -> P0 projection -> Grid81 read -> scope derivation
 
 from __future__ import annotations
 
+from contextlib import ExitStack
+import errno
 import hashlib
 import json
 import os
+import stat
+from types import MappingProxyType
 from typing import Any
 
 from .adapters import (
@@ -51,23 +55,97 @@ from .errors import (
 # Canonical input
 # ---------------------------------------------------------------------------
 
+# External authority: candidate roots never supply or override these release pins.
+# Keep the R0/R1 copies identical; neither package depends on the other at import.
+EXPECTED_CANONICAL_MANIFESTS = MappingProxyType({
+    "Grid81/COMPONENT_MANIFEST.json": MappingProxyType({
+        "sha256": "b3d79b251f4ef162d8b959de0c4adb06c5a82e83b40bfe5d2609e0ad75560256",
+        "component_id": "Grid81_Canonical_Substrate",
+        "canonical_destination": "Grid81",
+        "manifest_self_hash": "5f0f3c220b6454f5157ebaeae92898b6eff2c252a08443d8fc5e9ece5f2da021",
+    }),
+    "DarwinianMatrix/COMPONENT_MANIFEST.json": MappingProxyType({
+        "sha256": "af86c3eaf908124edc26a63c79f83dde350947a63d854689f5295e44e99abd0e",
+        "component_id": "DarwinianMatrix",
+        "canonical_destination": "DarwinianMatrix",
+        "manifest_self_hash": "e26091a7cf232db0c88e3833d16ebff1da7a8898b27905e436dea90c370512d1",
+    }),
+    "Pipeline/P0ControlProtocol/COMPONENT_MANIFEST.json": MappingProxyType({
+        "sha256": "704186993a52f7504a3d4abdf33cf4f24b22cfbbee8a1ba85992614677c2a4fd",
+        "component_id": "P0ControlProtocol",
+        "canonical_destination": "Pipeline/P0ControlProtocol",
+        "manifest_self_hash": "1f29d1d3e0aad16581f0ef3b2bf6f4336b9a80e7a79c119b56c68b410d96f825",
+    }),
+})
+
+
 def _validate_canonical_root(root: str) -> str:
-    """Return a real canonical components root or fail closed."""
+    """Authenticate the three required manifests against runtime-owned byte pins.
+
+    Directory descriptors and O_NOFOLLOW prevent symlink traversal between the
+    root and each manifest, including replacement between metadata and open.
+    Authentication covers these manifests only, not all component contents.
+    """
     if not isinstance(root, str) or not root:
         raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: empty/non-string root")
-    absolute = os.path.abspath(root)
-    real = os.path.realpath(absolute)
-    if real == os.path.sep:
-        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: filesystem root")
-    if os.path.islink(absolute):
-        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: symlink root")
-    required = (
-        os.path.join(real, "Grid81", "COMPONENT_MANIFEST.json"),
-        os.path.join(real, "DarwinianMatrix", "COMPONENT_MANIFEST.json"),
-        os.path.join(real, "Pipeline", "P0ControlProtocol", "COMPONENT_MANIFEST.json"),
-    )
-    if not all(os.path.isfile(path) for path in required):
-        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: required component manifests absent")
+    if "\x00" in root:
+        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: root_malformed")
+    try:
+        absolute = os.path.abspath(root)
+        real = os.path.realpath(absolute)
+        if real == os.path.sep:
+            raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: filesystem root")
+        if os.path.islink(absolute):
+            raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: symlink root")
+        # Keep module import portable; unsupported platforms fail only on use.
+        if not all(hasattr(os, flag) for flag in ("O_DIRECTORY", "O_NOFOLLOW", "O_NONBLOCK")):
+            raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_io_unsupported")
+        directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+        with ExitStack() as root_handles:
+            root_fd = os.open(absolute, directory_flags)
+            root_handles.callback(os.close, root_fd)
+            for relative, expected in EXPECTED_CANONICAL_MANIFESTS.items():
+                with ExitStack() as handles:
+                    parent_fd = root_fd
+                    parts = relative.split("/")
+                    for index, part in enumerate(parts):
+                        metadata = os.stat(part, dir_fd=parent_fd, follow_symlinks=False)
+                        if stat.S_ISLNK(metadata.st_mode):
+                            raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_symlink")
+                        if index < len(parts) - 1:
+                            if not stat.S_ISDIR(metadata.st_mode):
+                                raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_missing")
+                            parent_fd = os.open(part, directory_flags, dir_fd=parent_fd)
+                            handles.callback(os.close, parent_fd)
+                        else:
+                            if not stat.S_ISREG(metadata.st_mode):
+                                raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_not_regular")
+                            # O_NONBLOCK avoids blocking on a raced-in FIFO.
+                            fd = os.open(part, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                                         dir_fd=parent_fd)
+                            handles.callback(os.close, fd)
+                            if not stat.S_ISREG(os.fstat(fd).st_mode):
+                                raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_not_regular")
+                            with os.fdopen(fd, "rb", closefd=False) as manifest_file:
+                                raw = manifest_file.read()
+                if hashlib.sha256(raw).hexdigest() != expected["sha256"]:
+                    raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_digest_mismatch")
+                try:
+                    manifest = json.loads(raw)
+                except (ValueError, UnicodeError, RecursionError):
+                    raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_malformed") from None
+                if not isinstance(manifest, dict):
+                    raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_malformed")
+                if any(manifest.get(field) != expected[field] for field in (
+                    "component_id", "canonical_destination", "manifest_self_hash",
+                )):
+                    raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_identity_mismatch")
+    except (FileNotFoundError, NotADirectoryError):
+        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_missing") from None
+    except OSError as error:
+        if error.errno == errno.ELOOP:
+            raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_symlink") from None
+        raise R0ImportEscapeError("CANONICAL_ROOT_INVALID: manifest_unreadable") from None
     return real
 
 
@@ -168,10 +246,8 @@ def _dependency_escape_audit(canon_root: str | None = None) -> str:
     """Veto unresolved imports and imports outside the canonical assembly."""
     import importlib
 
-    canonical_root = (
-        os.path.realpath(CANONICAL_ROOT)
-        if canon_root is None
-        else _validate_canonical_root(canon_root)
+    canonical_root = _validate_canonical_root(
+        CANONICAL_ROOT if canon_root is None else canon_root
     )
     canonical_pkg = canonical_root.rstrip(os.sep) + os.sep
     extensions = os.environ.get("ELPIS_FORBIDDEN_ROOTS", "").split(os.pathsep)

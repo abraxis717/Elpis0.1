@@ -454,3 +454,248 @@ def test_canonical_root_rejects_filesystem_root():
     from elpis_runtime_r1.errors import R1DependencyEscapeError
     with pytest.raises(R1DependencyEscapeError, match="CANONICAL_ROOT_INVALID"):
         _validate_canonical_root(os.path.sep)
+
+
+# Exact canonical manifest authority; all fixtures copy only these three files.
+_CANONICAL_MANIFEST_PATHS = (
+    "Grid81/COMPONENT_MANIFEST.json",
+    "DarwinianMatrix/COMPONENT_MANIFEST.json",
+    "Pipeline/P0ControlProtocol/COMPONENT_MANIFEST.json",
+)
+
+
+@pytest.fixture
+def canonical_root_fixture(tmp_path):
+    from pathlib import Path
+
+    components = Path(__file__).resolve().parents[3] / "components"
+    candidate = tmp_path / "candidate"
+    for relative in _CANONICAL_MANIFEST_PATHS:
+        destination = candidate / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes((components / relative).read_bytes())
+    return candidate
+
+
+def _assert_canonical_root_rejected(root, reason):
+    from elpis_runtime_r1.transaction import _validate_canonical_root
+    from elpis_runtime_r1.errors import R1DependencyEscapeError
+
+    with pytest.raises(R1DependencyEscapeError, match="CANONICAL_ROOT_INVALID") as caught:
+        _validate_canonical_root(root)
+    assert reason in str(caught.value)
+    assert caught.value.code == "CANONICAL_ROOT_INVALID"
+
+
+def test_canonical_root_exact_copies_accepted(canonical_root_fixture):
+    from elpis_runtime_r1.transaction import _validate_canonical_root
+
+    assert _validate_canonical_root(str(canonical_root_fixture)) == str(canonical_root_fixture.resolve())
+
+
+def test_canonical_root_pins_match_repository_bytes():
+    from pathlib import Path
+    from elpis_runtime_r1.transaction import EXPECTED_CANONICAL_MANIFESTS, _validate_canonical_root
+
+    components = Path(__file__).resolve().parents[3] / "components"
+    assert set(EXPECTED_CANONICAL_MANIFESTS) == set(_CANONICAL_MANIFEST_PATHS)
+    for relative, expected in EXPECTED_CANONICAL_MANIFESTS.items():
+        raw = (components / relative).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == expected["sha256"]
+        manifest = json.loads(raw)
+        for field in ("component_id", "canonical_destination", "manifest_self_hash"):
+            assert manifest[field] == expected[field]
+    assert _validate_canonical_root(str(components)) == str(components.resolve())
+
+
+def test_canonical_root_pins_are_immutable():
+    from elpis_runtime_r1.transaction import EXPECTED_CANONICAL_MANIFESTS
+
+    with pytest.raises(TypeError):
+        EXPECTED_CANONICAL_MANIFESTS["extra"] = {}
+    with pytest.raises(TypeError):
+        EXPECTED_CANONICAL_MANIFESTS[_CANONICAL_MANIFEST_PATHS[0]]["sha256"] = "0" * 64
+
+
+def test_canonical_root_json_stubs_rejected(canonical_root_fixture):
+    for relative in _CANONICAL_MANIFEST_PATHS:
+        path = canonical_root_fixture / relative
+        legitimate = json.loads(path.read_bytes())
+        path.write_text(json.dumps({
+            field: legitimate[field]
+            for field in ("component_id", "canonical_destination", "manifest_self_hash")
+        }), encoding="utf-8")
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_digest_mismatch")
+
+
+@pytest.mark.parametrize("relative", _CANONICAL_MANIFEST_PATHS)
+@pytest.mark.parametrize("rewrite", ["single_byte", "content", "self_consistent"])
+def test_canonical_root_manifest_rewrites_rejected(canonical_root_fixture, relative, rewrite):
+    path = canonical_root_fixture / relative
+    raw = path.read_bytes()
+    if rewrite == "single_byte":
+        # Even one added whitespace byte must fail exact-byte authentication.
+        changed = raw + b"\n"
+    else:
+        manifest = json.loads(raw)
+        manifest["display_name"] = "rewritten"
+        if rewrite == "self_consistent":
+            manifest.pop("manifest_self_hash")
+            payload = json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            manifest["manifest_self_hash"] = hashlib.sha256(payload).hexdigest()
+            assert len(manifest["manifest_self_hash"]) == 64
+            assert manifest["manifest_self_hash"] != json.loads(raw)["manifest_self_hash"]
+        changed = json.dumps(manifest, sort_keys=True).encode("utf-8")
+    path.write_bytes(changed)
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_digest_mismatch")
+
+
+@pytest.mark.parametrize("field", ["component_id", "canonical_destination", "manifest_self_hash"])
+def test_canonical_root_wrong_identity_rejected(canonical_root_fixture, field):
+    path = canonical_root_fixture / _CANONICAL_MANIFEST_PATHS[0]
+    manifest = json.loads(path.read_bytes())
+    manifest[field] = "0" * 64 if field == "manifest_self_hash" else "wrong"
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_digest_mismatch")
+
+
+@pytest.mark.parametrize("other", _CANONICAL_MANIFEST_PATHS[1:])
+def test_canonical_root_swapped_manifests_rejected(canonical_root_fixture, other):
+    first = canonical_root_fixture / _CANONICAL_MANIFEST_PATHS[0]
+    second = canonical_root_fixture / other
+    first_bytes, second_bytes = first.read_bytes(), second.read_bytes()
+    first.write_bytes(second_bytes)
+    second.write_bytes(first_bytes)
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_digest_mismatch")
+
+
+@pytest.mark.parametrize("raw", [b'{"malformed":', b"[]", b"null", b"\xff"])
+def test_canonical_root_malformed_or_nonobject_json_rejected(canonical_root_fixture, raw):
+    (canonical_root_fixture / _CANONICAL_MANIFEST_PATHS[0]).write_bytes(raw)
+    # The external byte pin rejects malformed replacements before JSON parsing.
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_digest_mismatch")
+
+
+@pytest.mark.parametrize("relative", _CANONICAL_MANIFEST_PATHS)
+def test_canonical_root_missing_manifest_rejected(canonical_root_fixture, relative):
+    (canonical_root_fixture / relative).unlink()
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_missing")
+
+
+@pytest.mark.parametrize("relative", [
+    "", "Grid81", "DarwinianMatrix", "Pipeline", "Pipeline/P0ControlProtocol",
+    *_CANONICAL_MANIFEST_PATHS,
+])
+def test_canonical_root_symlink_rejected(canonical_root_fixture, tmp_path, relative):
+    path = canonical_root_fixture / relative
+    is_directory = path.is_dir()
+    authentic = tmp_path / "authentic"
+    path.rename(authentic)
+    path.symlink_to(authentic, target_is_directory=is_directory)
+    reason = "manifest_symlink" if relative else "symlink root"
+    _assert_canonical_root_rejected(str(canonical_root_fixture), reason)
+
+
+@pytest.mark.parametrize("kind", ["directory", "fifo"])
+def test_canonical_root_nonregular_manifest_rejected(canonical_root_fixture, kind):
+    path = canonical_root_fixture / _CANONICAL_MANIFEST_PATHS[0]
+    path.unlink()
+    if kind == "directory":
+        path.mkdir()
+    else:
+        os.mkfifo(path)
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_not_regular")
+
+
+@pytest.mark.parametrize("root", ["", None, 42, "\x00"])
+def test_canonical_root_invalid_input_rejected(root):
+    reason = "root_malformed" if root == "\x00" else "empty/non-string root"
+    _assert_canonical_root_rejected(root, reason)
+
+
+def test_canonical_root_environment_override_authenticated(canonical_root_fixture, monkeypatch):
+    from elpis_runtime_r1 import transaction
+
+    monkeypatch.setenv("ELPIS_CANON_ROOT", str(canonical_root_fixture))
+    assert transaction._resolve_canonical_root() == str(canonical_root_fixture.resolve())
+    (canonical_root_fixture / _CANONICAL_MANIFEST_PATHS[0]).write_bytes(b"{}")
+    with pytest.raises(transaction.R1DependencyEscapeError, match="manifest_digest_mismatch"):
+        transaction._resolve_canonical_root()
+
+
+def test_canonical_root_default_resolution_remains_lazy(tmp_path, monkeypatch):
+    from elpis_runtime_r1 import transaction
+
+    monkeypatch.delenv("ELPIS_CANON_ROOT", raising=False)
+    monkeypatch.setattr(transaction, "__file__", str(tmp_path / "installed" / "transaction.py"))
+
+    def unexpected_authentication(root):
+        pytest.fail("Default-root resolution must not require a source checkout at import")
+
+    monkeypatch.setattr(transaction, "_validate_canonical_root", unexpected_authentication)
+    expected = os.path.join(os.path.abspath(os.path.join(
+        os.path.dirname(transaction.__file__), "..", "..", "..", ".."
+    )), "components")
+    assert transaction._resolve_canonical_root() == expected
+
+
+@pytest.mark.parametrize("use_default", [True, False])
+def test_canonical_root_dependency_audit_authenticates(canonical_root_fixture, monkeypatch, use_default):
+    from elpis_runtime_r1 import transaction
+
+    (canonical_root_fixture / _CANONICAL_MANIFEST_PATHS[0]).write_bytes(b"{}")
+    monkeypatch.setattr(transaction, "CANONICAL_ROOT", str(canonical_root_fixture))
+    with pytest.raises(transaction.R1DependencyEscapeError, match="manifest_digest_mismatch"):
+        if use_default:
+            transaction._dependency_escape_audit()
+        else:
+            transaction._dependency_escape_audit(str(canonical_root_fixture))
+
+
+@pytest.mark.parametrize("field", ["component_id", "canonical_destination", "manifest_self_hash"])
+def test_canonical_root_parsed_identity_defense(canonical_root_fixture, monkeypatch, field):
+    from elpis_runtime_r1 import transaction
+
+    manifest = json.loads((canonical_root_fixture / _CANONICAL_MANIFEST_PATHS[0]).read_bytes())
+    manifest[field] = "wrong"
+    # Fault injection after authentic bytes: identity checks independently reject.
+    monkeypatch.setattr(transaction.json, "loads", lambda raw: manifest)
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_identity_mismatch")
+
+
+@pytest.mark.parametrize("parsed", [None, []])
+def test_canonical_root_parsed_object_required(canonical_root_fixture, monkeypatch, parsed):
+    from elpis_runtime_r1 import transaction
+
+    monkeypatch.setattr(transaction.json, "loads", lambda raw: parsed)
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_malformed")
+
+
+def test_canonical_root_parser_error_is_bounded(canonical_root_fixture, monkeypatch):
+    from elpis_runtime_r1 import transaction
+
+    def malformed(raw):
+        raise json.JSONDecodeError("arbitrary parser detail", "", 0)
+
+    monkeypatch.setattr(transaction.json, "loads", malformed)
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_malformed")
+
+
+def test_canonical_root_filesystem_error_is_bounded(canonical_root_fixture, monkeypatch):
+    from elpis_runtime_r1 import transaction
+
+    def unreadable(*args, **kwargs):
+        raise PermissionError("arbitrary filesystem detail")
+
+    monkeypatch.setattr(transaction.os, "open", unreadable)
+    _assert_canonical_root_rejected(str(canonical_root_fixture), "manifest_unreadable")
+
+
+def test_canonical_root_downstream_rejects_before_import_paths(canonical_root_fixture):
+    from elpis_runtime_r1 import transaction
+
+    (canonical_root_fixture / _CANONICAL_MANIFEST_PATHS[0]).write_bytes(b"{}")
+    before = list(sys.path)
+    with pytest.raises(transaction.R1DependencyEscapeError, match="manifest_digest_mismatch"):
+        transaction._run_r0_downstream({}, str(canonical_root_fixture))
+    assert sys.path == before
