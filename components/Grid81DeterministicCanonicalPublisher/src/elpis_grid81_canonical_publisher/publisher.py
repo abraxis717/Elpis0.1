@@ -38,6 +38,10 @@ import stat
 from typing import Any
 
 from Grid81.canonical_reader import CanonicalReadError, load_current_grid81
+from elpis_grid81_promotion_authority import (
+    PromotionAuthorityError,
+    require_promotion_capability,
+)
 
 
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
@@ -59,6 +63,7 @@ class CanonicalPublicationReceipt:
     status: str
     publication_receipt_digest: str
     artifact_digest: str
+    promotion_capability_digest: str
     previous_canonical_digest: str
     resulting_canonical_digest: str
     generation_number: int
@@ -252,6 +257,7 @@ def _exact_reserved_entry(
 def _publication_payload(
     *,
     artifact_digest: str,
+    promotion_capability_digest: str,
     previous_canonical_digest: str,
     candidate: Any,
     expected_ledger_head: str,
@@ -259,6 +265,7 @@ def _publication_payload(
     return {
         "schema": "elpis.grid81.atomic-publication-receipt.v1",
         "artifact_digest": artifact_digest,
+        "promotion_capability_digest": promotion_capability_digest,
         "previous_canonical_digest": previous_canonical_digest,
         "resulting_canonical_digest": candidate.canonical_digest,
         "generation_number": candidate.generation_number,
@@ -270,7 +277,11 @@ def _publication_payload(
     }
 
 
-def _validate_candidate_sidecars(candidate_root: Path, candidate: Any) -> None:
+def _validate_candidate_sidecars(
+    candidate_root: Path,
+    candidate: Any,
+    promotion_capability: dict,
+) -> None:
     grid = candidate_root / "Canonical" / "Grid81"
     head_path = grid / "HEAD.json"
     consumed_path = grid / ".consumed_capability.json"
@@ -279,6 +290,10 @@ def _validate_candidate_sidecars(candidate_root: Path, candidate: Any) -> None:
     head = _load_json(head_path, "CANDIDATE_HEAD_INVALID")
     consumed = _load_json(consumed_path, "CANDIDATE_CONSUMED_CAPABILITY_INVALID")
     receipt = _load_json(receipt_path, "CANDIDATE_CONSUMPTION_RECEIPT_INVALID")
+    generation = _load_json(
+        candidate_root / candidate.generation_path,
+        "CANDIDATE_GENERATION_INVALID",
+    )
 
     _require(head.get("append_only") is True, "CANDIDATE_NOT_APPEND_ONLY")
     _require(head.get("transaction_id") == candidate.transaction_id,
@@ -286,25 +301,33 @@ def _validate_candidate_sidecars(candidate_root: Path, candidate: Any) -> None:
     _require(head.get("capability_id") == candidate.capability_id,
              "CANDIDATE_HEAD_CAPABILITY_MISMATCH")
 
-    _require(consumed.get("capability_id") == candidate.capability_id,
-             "CANDIDATE_CONSUMED_CAPABILITY_MISMATCH")
-    lifecycle = consumed.get("lifecycle", {})
-    _require(type(lifecycle) is dict, "CANDIDATE_LIFECYCLE_INVALID")
-    _require(lifecycle.get("consumed") is True
-             and lifecycle.get("consumption_count") == 1
-             and lifecycle.get("replay_permitted") is False,
-             "CANDIDATE_LIFECYCLE_INVALID")
-    target = consumed.get("target_bindings", {})
-    txn = consumed.get("transaction_binding", {})
-    _require(type(target) is dict and target.get("generation") == candidate.generation_number,
-             "CANDIDATE_TARGET_GENERATION_MISMATCH")
-    _require(type(txn) is dict and txn.get("transaction_id") == candidate.transaction_id,
-             "CANDIDATE_CONSUMED_TRANSACTION_MISMATCH")
+    expected_consumed = json.loads(json.dumps(promotion_capability))
+    expected_consumed["lifecycle"] = {
+        "state": "CONSUMED",
+        "consumed": True,
+        "consumption_count": 1,
+        "replay_permitted": False,
+    }
+    _require(
+        consumed == expected_consumed,
+        "CANDIDATE_CONSUMED_CAPABILITY_PROJECTION_MISMATCH",
+    )
+
+    _require(
+        generation.get("source_capability_digest")
+        == promotion_capability["capability_digest"],
+        "CANDIDATE_GENERATION_CAPABILITY_DIGEST_MISMATCH",
+    )
 
     _require(receipt.get("commit_status") == "COMMITTED",
              "CANDIDATE_RECEIPT_NOT_COMMITTED")
     _require(receipt.get("capability_id") == candidate.capability_id,
              "CANDIDATE_RECEIPT_CAPABILITY_MISMATCH")
+    _require(
+        receipt.get("capability_digest")
+        == promotion_capability["capability_digest"],
+        "CANDIDATE_RECEIPT_CAPABILITY_DIGEST_MISMATCH",
+    )
     _require(receipt.get("transaction_id") == candidate.transaction_id,
              "CANDIDATE_RECEIPT_TRANSACTION_MISMATCH")
     _require(receipt.get("generation_file_sha256") == candidate.generation_raw_sha256,
@@ -320,6 +343,7 @@ def _validate_successor(
     candidate_root: Path,
     current: Any,
     candidate: Any,
+    promotion_capability: dict,
 ) -> None:
     expected_generation = current.generation_number + 1
     _require(candidate.generation_number == expected_generation,
@@ -374,7 +398,65 @@ def _validate_successor(
         "HEAD_PREVIOUS_GENERATION_BINDING_MISMATCH",
     )
 
-    _validate_candidate_sidecars(candidate_root, candidate)
+    _validate_candidate_sidecars(
+        candidate_root,
+        candidate,
+        promotion_capability,
+    )
+
+
+def _validate_candidate_promotion_bindings(
+    promotion_capability: dict,
+    candidate: Any,
+) -> None:
+    source = promotion_capability["source_bindings"]
+    target = promotion_capability["target_bindings"]
+
+    _require(
+        target["target_generation"] == candidate.generation_number,
+        "PROMOTION_TARGET_GENERATION_MISMATCH",
+    )
+    _require(
+        target["generation_target"] == candidate.generation_path,
+        "PROMOTION_GENERATION_PATH_MISMATCH",
+    )
+    _require(
+        target["head_target"] == "Canonical/Grid81/HEAD.json",
+        "PROMOTION_HEAD_PATH_MISMATCH",
+    )
+    _require(
+        target["transaction_id"] == candidate.transaction_id,
+        "PROMOTION_TRANSACTION_ID_MISMATCH",
+    )
+    _require(
+        promotion_capability["capability_id"] == candidate.capability_id,
+        "PROMOTION_CAPABILITY_ID_MISMATCH",
+    )
+    _require_hex64(
+        source["artifact_digest"],
+        "PROMOTION_ARTIFACT_DIGEST_INVALID",
+    )
+
+
+def _validate_live_source_promotion_bindings(
+    promotion_capability: dict,
+    current: Any,
+) -> None:
+    target = promotion_capability["target_bindings"]
+
+    _require(
+        target["source_generation"] == current.generation_number,
+        "PROMOTION_SOURCE_GENERATION_MISMATCH",
+    )
+    _require(
+        target["source_canonical_digest"] == current.canonical_digest,
+        "PROMOTION_SOURCE_CANONICAL_DIGEST_MISMATCH",
+    )
+    _require(
+        target["source_generation_semantic_digest"]
+        == current.generation_semantic_digest,
+        "PROMOTION_SOURCE_SEMANTIC_DIGEST_MISMATCH",
+    )
 
 
 def publish_candidate(
@@ -382,9 +464,7 @@ def publish_candidate(
     project_root: Path | str,
     candidate_root: Path | str,
     ledger: Any,
-    artifact_digest: str,
-    expected_current_canonical_digest: str,
-    expected_ledger_head: str,
+    promotion_capability: dict,
     lock_path: Path | str,
 ) -> CanonicalPublicationReceipt:
     """Atomically publish one pre-qualified immediate successor snapshot.
@@ -397,10 +477,26 @@ def publish_candidate(
     candidate_root = Path(candidate_root).absolute()
     lock_path = Path(lock_path).absolute()
 
-    _require_hex64(artifact_digest, "ARTIFACT_DIGEST_INVALID")
-    _require_hex64(expected_current_canonical_digest,
-                   "EXPECTED_CANONICAL_DIGEST_INVALID")
-    _require_hex64(expected_ledger_head, "EXPECTED_LEDGER_HEAD_INVALID")
+    try:
+        promotion_capability = require_promotion_capability(
+            promotion_capability
+        )
+    except PromotionAuthorityError as exc:
+        raise PublicationError(
+            "PROMOTION_CAPABILITY_INVALID",
+            exc.detail or exc.code,
+        ) from exc
+
+    source_binding = promotion_capability["source_bindings"]
+    target_binding = promotion_capability["target_bindings"]
+    artifact_digest = source_binding["artifact_digest"]
+    promotion_capability_digest = promotion_capability["capability_digest"]
+    expected_current_canonical_digest = target_binding[
+        "source_canonical_digest"
+    ]
+    expected_ledger_head = target_binding[
+        "expected_publication_ledger_head"
+    ]
 
     target = project_root / "Canonical" / "Grid81"
     candidate_grid = candidate_root / "Canonical" / "Grid81"
@@ -418,9 +514,14 @@ def publish_candidate(
 
         _require_hex64(candidate.transaction_id, "CANDIDATE_TRANSACTION_ID_INVALID")
         _require_hex64(candidate.capability_id, "CANDIDATE_CAPABILITY_ID_INVALID")
+        _validate_candidate_promotion_bindings(
+            promotion_capability,
+            candidate,
+        )
 
         payload = _publication_payload(
             artifact_digest=artifact_digest,
+            promotion_capability_digest=promotion_capability_digest,
             previous_canonical_digest=expected_current_canonical_digest,
             candidate=candidate,
             expected_ledger_head=expected_ledger_head,
@@ -435,12 +536,16 @@ def publish_candidate(
             receipt_digest=receipt_digest,
             expected_previous_head=expected_ledger_head,
         )
-        artifact_seen = bool(ledger.has_receipt(artifact_digest))
+        artifact_seen = bool(ledger.has_receipt(promotion_capability_digest))
 
         # Crash/retry after a successful exchange: verify the exact reservation,
         # clean the old exchanged directory if it remains, and return idempotently.
         if current.canonical_digest == candidate.canonical_digest:
-            _validate_candidate_sidecars(candidate_root, candidate)
+            _validate_candidate_sidecars(
+                candidate_root,
+                candidate,
+                promotion_capability,
+            )
             _require(artifact_seen and existing is not None,
                      "CANONICAL_WITHOUT_EXACT_LEDGER_RECEIPT")
             if stage.exists():
@@ -450,6 +555,7 @@ def publish_candidate(
                 status="ALREADY_COMMITTED",
                 publication_receipt_digest=receipt_digest,
                 artifact_digest=artifact_digest,
+                promotion_capability_digest=promotion_capability_digest,
                 previous_canonical_digest=expected_current_canonical_digest,
                 resulting_canonical_digest=candidate.canonical_digest,
                 generation_number=candidate.generation_number,
@@ -463,7 +569,17 @@ def publish_candidate(
             current.canonical_digest == expected_current_canonical_digest,
             "STALE_CANONICAL_HEAD",
         )
-        _validate_successor(project_root, candidate_root, current, candidate)
+        _validate_live_source_promotion_bindings(
+            promotion_capability,
+            current,
+        )
+        _validate_successor(
+            project_root,
+            candidate_root,
+            current,
+            candidate,
+            promotion_capability,
+        )
 
         if artifact_seen:
             _require(existing is not None, "ARTIFACT_LEDGER_CONFLICT")
@@ -494,7 +610,7 @@ def publish_candidate(
                 entry = ledger.append(
                     expected_ledger_head,
                     receipt_digest,
-                    artifact_digest,
+                    promotion_capability_digest,
                 )
             except ValueError as exc:
                 raise PublicationError("STALE_LEDGER_HEAD") from exc
@@ -545,6 +661,7 @@ def publish_candidate(
             status="COMMITTED",
             publication_receipt_digest=receipt_digest,
             artifact_digest=artifact_digest,
+            promotion_capability_digest=promotion_capability_digest,
             previous_canonical_digest=expected_current_canonical_digest,
             resulting_canonical_digest=candidate.canonical_digest,
             generation_number=candidate.generation_number,
