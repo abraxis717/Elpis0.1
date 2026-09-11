@@ -1,0 +1,25 @@
+{
+  "R8_material_consumed": false,
+  "backend_qdir_manifest_sha256": "eeff27aa7b5f1be22f12a379539aef8175328c3a07d600411536cfbb68e956d2",
+  "branch": 38,
+  "branch39_material_generated": false,
+  "deterministic_rerun_digest": "ce75d2ef40d9059fb7471d5468016b870e0a9b19efa178d248cfdf22afec886b",
+  "evidence_authority_digest": "93c21b2eb1d437439fa15cc35fdc7c5dc53853b8fd40590f85dbe77272c05470",
+  "precision_backend_qualification_digest": "2b7afcfeff47b8bba1e55ccfe4756020fdf6d183e249e48b3bd8b1d65eee946b",
+  "precommit_digest": "2a2b9d283562a15e40f2efdb493ae4a072cec2c2e7b7914495707dfb2ff7a358",
+  "precommit_qdir_manifest_sha256": "f3d58fa9c8ce821a0f0a84f61785c8633793ff021e3698336f36494e5c0a8540",
+  "predecessor_authority_digest": "cad4d76367276cae97428b1e0c416cdfd2f238f7e772a430d7d338f2ac6a7fc6",
+  "predecessor_branch37_closure_digest": "4155ab600034e7f4094eff6d5c83b7932d08f3723b6295ebc0c0cf88b1cd385f",
+  "predecessor_pre_post_exact_match": true,
+  "rerun_qdir_manifest_sha256": "2de5eb1d48acac89a1692614b35681f6e1e18878fcbe98443e52e0fb758bd17e",
+  "schema": "elpis.branch38.s3_weak_numerical_tail.closure_evidence_authority.v0",
+  "science_qdir_manifest_sha256": "b9533ad51bc540699ce5565d36e94aa80524dc94f541e1190a0b0ea6287f58fa",
+  "scientific_adjudication_digest": "feeab57c40b2751b472d2101423d3997cf7e450b8a66a0043c149c65033a9ec8",
+  "scientific_evidence_digest": "b631cb889bf4d973533d43f906da433344df1e57221309b767fa4c68c60f83f4",
+  "source_binding": {
+    "source_dir": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH38_S3_WEAK_NUMERICAL_TAIL_FULL_EXECUTION_V0_SOURCE_ebcde2ffaefd/BRANCH38_S3_WEAK_NUMERICAL_TAIL_FULL_EXECUTION_V0_SOURCE",
+    "source_file_sha256": "ebcde2ffaefde77328f428ad09418465e01a5d753ed6283b19b4eca7a9456d63",
+    "source_manifest_sha256": "8a08973fabf0847dc6ce95f2372fd7a71236bcfd4babd1656efa0de32913974c"
+  },
+  "specification_digest": "c89f0051b4081194c09c47e37f6bd10c0fe2f502ebc515822cff8a753169dba0"
+}

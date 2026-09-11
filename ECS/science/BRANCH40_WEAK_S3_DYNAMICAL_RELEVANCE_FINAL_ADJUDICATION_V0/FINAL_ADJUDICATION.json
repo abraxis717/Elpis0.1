@@ -1,0 +1,19 @@
+{
+  "A_B_C_authorization_chain": {
+    "A": true,
+    "B": true,
+    "C": true
+  },
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch41_material_generated": false,
+  "claim_ceiling_enforced": true,
+  "ecs_facing_position": "Outcome_A_RETAIN_FULL_ACTIVE_S3",
+  "final_adjudication_digest": "b120000033888c7278712ccff8082a09ce5169228a9459734dc667da18adf1b7",
+  "pooled_rescue_permitted": false,
+  "schema": "elpis.branch40.final_adjudication.v0",
+  "scientific_evidence_digest": "e4bb2265c3684f64c7a2fab1d324334241e93c4f8214bc9e039ecac74d4773f1",
+  "scientific_terminal_state": "PASS_BRANCH40_WEAK_S3_DYNAMICAL_RELEVANCE",
+  "weak_vs_fiber_used_for_split_authorization": false,
+  "width_stratification_mandatory": true
+}

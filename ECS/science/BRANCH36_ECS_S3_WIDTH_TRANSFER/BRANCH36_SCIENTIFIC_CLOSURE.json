@@ -1,0 +1,33 @@
+{
+  "R8_material_consumed": false,
+  "active_DEV_mutated_during_closure": false,
+  "branch": 36,
+  "branch36_closed": true,
+  "claim_digest": "10dae87ba87669843068c12b9aa1136ad48a6ecf1ddd07983d0947741afd1af3",
+  "closure_digest": "ca8c607b264af133513fb7a74d2e00c06bff930ab7f15292049531683695541a",
+  "evidence_authority_digest": "554e17c20162e229bf18d1e561c6ac966d8e7979461701ecb0206ee975172c51",
+  "evidence_mutated_during_closure": false,
+  "final_pooled_gate_vector_digest": "7b295a50abf8ab1e8e59e5ae8a65f4e6f9fade1b28a3f4ad59c1bf5dfbc15f87",
+  "final_width_gate_vector_digest": "926b102ff3569b35958ae0eb50a621048dffed01e2c1fa30a279b03ee87f339c",
+  "frozen_final_pass_rule": "A,B,C each passed all split gates AND all 57 final width gates PASS AND all 20 pooled gates PASS",
+  "frozen_final_pass_rule_satisfied": true,
+  "gate_contract_self_digest": "4296ed05c924f18a5d9b73447291d390e2755f79205135fd000406c7338cb5a2",
+  "git_mutation_during_closure": false,
+  "new_scientific_gate_evaluation_performed_during_closure": false,
+  "new_scientific_worlds_executed_during_closure": 0,
+  "parent_branch35_closure_digest": "5a1289289a5e09bcef726ea20b74f5567d715a4c646469775f7248a2273e9010",
+  "post_branch36_followups_are_new_science": true,
+  "schema": "elpis.branch36.ecs_s3_width_transfer.scientific_closure.v0",
+  "scientific_model_steps_executed_during_closure": 0,
+  "scientific_result": "PASS",
+  "scientific_world_count": 144,
+  "split_gate_vector_digests": {
+    "A": "bb9b12776b5632d9e810e1a9a94dfbdcfddee64444f2a178fd76eb05131f362b",
+    "B": "f9b5665c801714c1386d5b6879add28d7aa065a00dd01c1910ade45e811bfb01",
+    "C": "da4790a97e7637228c6de04af239fecef9dd57ec776f5916629936d3a71bc935"
+  },
+  "status": "PASS_BRANCH36_ECS_S3_WIDTH_TRANSFER_SCIENTIFIC_CLOSURE",
+  "thresholds_changed_during_closure": false,
+  "total_gate_count": 248,
+  "total_gate_pass_count": 248
+}

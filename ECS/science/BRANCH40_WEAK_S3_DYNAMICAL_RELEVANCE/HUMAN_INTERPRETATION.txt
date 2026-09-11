@@ -1,0 +1,26 @@
+Branch40 — Dynamical Relevance of the Weak S3 Subspace
+
+Terminal scientific state: PASS_BRANCH40_WEAK_S3_DYNAMICAL_RELEVANCE
+ECS-facing position: Outcome_A_RETAIN_FULL_ACTIVE_S3
+
+The decisive comparison is weak-S3 versus S3-fiber under exact frozen future GD. Robust-S3 versus fiber is the positive causal sensitivity control.
+
+N=36:
+  robust positive adequate: True
+  integrated weak relevant: True
+  integrated weak equivalent: False
+  median integrated S3 fiber/weak/robust: 1.08120915674e-07 / 0.000127315951439 / 0.000507364621765
+
+N=48:
+  robust positive adequate: True
+  integrated weak relevant: True
+  integrated weak equivalent: False
+  median integrated S3 fiber/weak/robust: 7.28222654032e-08 / 0.00013730691943 / 0.00056934572415
+
+N=72:
+  robust positive adequate: True
+  integrated weak relevant: True
+  integrated weak equivalent: False
+  median integrated S3 fiber/weak/robust: 2.78351786831e-08 / 0.000160562842058 / 0.00061990934171
+
+Nonclaims: no exact null/gauge claim; no dimension-77 claim; no global Markov/minimal-state claim; no generalization outside the frozen cubic d=6 widths/optimizer/horizons/amplitude; no runtime or architectural admission; no Branch41 material.

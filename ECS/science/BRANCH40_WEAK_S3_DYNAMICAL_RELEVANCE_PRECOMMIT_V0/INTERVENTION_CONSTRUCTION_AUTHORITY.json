@@ -1,0 +1,19 @@
+{
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch36_engine_sha256": "e27abb2023ffce68437ad7af28c28e986367c42be434230d28b319ea993f7997",
+  "branch39_amplitude_freeze_digest": "0063c137952ce3f3d1a0eb2ebae011c49aefa9c91096b1b507b7f23bd587bc73",
+  "branch39_projector_authority_digest": "c1afd212b52fe830bfc7bcf44fd0162c08fef546c3e892b555dc012655a168f1",
+  "branch39_projector_digest": "775ba97dd564d28d38f6d7aa7dee1e32ca97dfdfa211196c8c296ffcf34aeec2",
+  "branch39_selected_epsilon": 0.0001,
+  "branch39_source_sha256": "2febdc53a03fb9af9b85d186b618de9792f1fd8094ea7b6c56431d0466de63c2",
+  "fiber_generalization": "replace fixed delta=0.02*||W||F by prospectively supplied target radius only; preserve tangent-null construction, 8 stages, 32 iterations/stage, scaled residual, active rank threshold, damped pseudoinverse, and 13-step backtracking exactly",
+  "fiber_matching_target": "||Wweak-W4096||F",
+  "fiber_parent_function": "Branch36 branch36_engine.py:s3_intervention",
+  "future_outcomes_feed_intervention_construction": false,
+  "intervention_authority_digest": "67321273a82c263d345b72194bcb3b0e7c43790935549ebf5a5a386a1bf65b83",
+  "schema": "elpis.branch40.intervention_construction_authority.v0",
+  "seed_plan_digest": "3bbfecfd60d4cd4c68098617f91ba8bcbdd72800b8ac87290e6b145f1f48881f",
+  "specification_digest": "4e7bc5a1c3f2b93304e13f4225350d767b04499f0819b37ae7d79e128c773ac7",
+  "weak_robust_matching": "same inherited Branch39 alpha=1e-4*max(1,||S3(W4096)||2)"
+}

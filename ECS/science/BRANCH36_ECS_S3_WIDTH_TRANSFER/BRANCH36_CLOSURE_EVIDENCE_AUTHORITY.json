@@ -1,0 +1,505 @@
+{
+  "R8_material_consumed": false,
+  "active_DEV_pre_post_exact_match": true,
+  "branch": 36,
+  "branch35_parent_strong_digest_resolutions": {
+    "claim": {
+      "duplicate_matches_byte_identical": false,
+      "label": "Branch35_claim",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "29e180cee8906aaeb14b6e4db14777826d31b4a44517a1a8389b940819123d7f",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/ScientificClosure/34_BRANCH35_ECS_STABLE_CHECKPOINT_THIRD_MOMENT_SUFFICIENCY_PASS/CLAIM.json"
+      ],
+      "target_digest": "fd2dde69c89df5e16e7e0bd0ada3c122060aa9884dc5b083201f9cec3f8d5040"
+    },
+    "closure": {
+      "duplicate_matches_byte_identical": false,
+      "label": "Branch35_closure",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "d89224cc733723f336e9a20f523991b27a1c20507b26ca17cd8ab31b42cc8afd",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/ScientificClosure/34_BRANCH35_ECS_STABLE_CHECKPOINT_THIRD_MOMENT_SUFFICIENCY_PASS/SCIENTIFIC_CLOSURE_34.json"
+      ],
+      "target_digest": "5a1289289a5e09bcef726ea20b74f5567d715a4c646469775f7248a2273e9010"
+    },
+    "evidence_authority": {
+      "duplicate_matches_byte_identical": false,
+      "label": "Branch35_evidence_authority",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "0da2bab8089cdce04264e774474743bb6c3c1eb8a8665371b2e06b6772df9e1c",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/ScientificClosure/34_BRANCH35_ECS_STABLE_CHECKPOINT_THIRD_MOMENT_SUFFICIENCY_PASS/EVIDENCE_AUTHORITY.json"
+      ],
+      "target_digest": "33be4e1d1399c3ceb98ccf12daf5ecd97dd6de0075c5cbc88998bfa5c1fdc269"
+    },
+    "freeze": {
+      "duplicate_matches_byte_identical": false,
+      "label": "Branch35_freeze",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "7af273b56773bd28798a4af99e5bcd67d16aaeead10fc4a69429cc40e83e3078",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/ScientificClosure/34_BRANCH35_ECS_STABLE_CHECKPOINT_THIRD_MOMENT_SUFFICIENCY_PASS/FREEZE.json"
+      ],
+      "target_digest": "08bff6e288f8d8402a94158ce5aada975c5825307fbfef98f4ab64e2f15b9471"
+    },
+    "qualification": {
+      "duplicate_matches_byte_identical": false,
+      "label": "Branch35_qualification",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "1021133a25f5a7a2118128767ac6a168b46224291ac5058b9b159f829350dde1",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/qualification/SCIENTIFIC_CLOSURE_34_BRANCH35_ECS_STABLE_CHECKPOINT_THIRD_MOMENT_SUFFICIENCY_PASS/QUALIFICATION_REPORT.json"
+      ],
+      "target_digest": "e7b4a4cf1bd74aca9369a28708942150dbadd1a9e7fb50435c2a1935563015bb"
+    }
+  },
+  "branch36_precommit_strong_digest_resolutions": {
+    "execution_semantics": {
+      "duplicate_matches_byte_identical": false,
+      "label": "execution_semantics",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "9b12439efc9062a4d74b63f2051f9b40ff9cf277d9b3a11325efc8339801e2e2",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/EXECUTION_SEMANTICS.json"
+      ],
+      "target_digest": "c94a9dc832722069d158a1f0440ef73432c5e11e4be092305948783107277b47"
+    },
+    "gate_contract": {
+      "duplicate_matches_byte_identical": false,
+      "label": "gate_contract",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "79ab3db8af1abb02cccf0d74cce594d241cd11af00e00b02cf00c10274a38d75",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/GATE_CONTRACT.json"
+      ],
+      "target_digest": "4296ed05c924f18a5d9b73447291d390e2755f79205135fd000406c7338cb5a2"
+    },
+    "intervention": {
+      "duplicate_matches_byte_identical": false,
+      "label": "intervention",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "a56d73fc323a5c0c9f9229f5ca6c1e8817d668e4bbda226d691285ba70262dab",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/INTERVENTION_CONTRACT.json"
+      ],
+      "target_digest": "c8b224d25871d9223f45540da0280564f3fc0c30c61339f0697b7dffccff69d0"
+    },
+    "parent_frontier": {
+      "duplicate_matches_byte_identical": false,
+      "label": "parent_frontier",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "00694b17f416cedd3a937acfde1ef510b5612ee3b49bdef46e7b5cf7c05bf23c",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/PARENT_FRONTIER.json"
+      ],
+      "target_digest": "14059eabaf5cfa2484467560bb2476f2e7707b48d327f0586e1c6b8a98e0de3b"
+    },
+    "plan_A": {
+      "duplicate_matches_byte_identical": false,
+      "label": "plan_A",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "606f4ac8e2dcd9829895e215dc0c50c21580e879f3047d736b38642ddf267b36",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/PLAN_A.json"
+      ],
+      "target_digest": "2a71f9a809df429a35c1cf30215abb45e0a9c23325e9873403ae8adb5eefbc47"
+    },
+    "plan_B": {
+      "duplicate_matches_byte_identical": false,
+      "label": "plan_B",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "834bbe77eef94e32dbe1867c241174c18f3952e95337977690c7e231b07c9a00",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/PLAN_B.json"
+      ],
+      "target_digest": "ef83a916d485a6215c8b3953039def462563e2f2d859aa3bc0af8302702f1671"
+    },
+    "plan_C": {
+      "duplicate_matches_byte_identical": false,
+      "label": "plan_C",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "6b61aef01d0d621452328d477483f65435d80fe61d601feab8e2761d73d60dbd",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/PLAN_C.json"
+      ],
+      "target_digest": "42f32ae3dc195acf45e0e5802d3740a2a4ebe808d1f28f14442b66efa737b4de"
+    },
+    "precommit": {
+      "duplicate_matches_byte_identical": false,
+      "label": "precommit",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "9048dc5edcdfd1a24c7200753607963294a286479b1b09aadce89fece2f02cab",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/PRECOMMIT_V0.json"
+      ],
+      "target_digest": "8c06c2f717b77db12cd7d9652ca2b9ab1dd2b0840b91c3f2c4776910d17f4adf"
+    },
+    "precommit_source_manifest": {
+      "duplicate_matches_byte_identical": false,
+      "label": "precommit_source_manifest",
+      "match_types": [
+        "file_sha256"
+      ],
+      "resolved_file_sha256": "b332979ac15ca09af60b651a66e1140d1a4b8c785ba48e385162a5e129f1fb04",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/SHA256SUMS"
+      ],
+      "target_digest": "b332979ac15ca09af60b651a66e1140d1a4b8c785ba48e385162a5e129f1fb04"
+    },
+    "primitive": {
+      "duplicate_matches_byte_identical": false,
+      "label": "primitive",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "63065516b321f96317b79e7a9ea4509ca09062fff2d78198b7f6cf72a2b34e9f",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/PRIMITIVE_CONTRACT.json"
+      ],
+      "target_digest": "745fe2d762568dced27b9ff55e373ea40943f5104d24d995c30847052044ec90"
+    },
+    "question": {
+      "duplicate_matches_byte_identical": false,
+      "label": "question",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "70269f4d06b757650ba32aeaf45c450cd52e1d52c5d30797d2ce77cf178f094b",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/BRANCH36_QUESTION_SELECTION.json"
+      ],
+      "target_digest": "eed2041b2267fc6b777c2dea896ee04e54e9d6621de241a57fb2bf7fbc3cdb1f"
+    },
+    "seed_plan": {
+      "duplicate_matches_byte_identical": false,
+      "label": "seed_plan",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "71defb070b49b86ebff6424821f071782f5c2f8affd906a01306d5649d2c5932",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/SEED_PLAN.json"
+      ],
+      "target_digest": "507d987e076d70b88696b684b1ea2466ac4bec79459fbba846ae4e45b1d96058"
+    },
+    "spec": {
+      "duplicate_matches_byte_identical": false,
+      "label": "spec",
+      "match_types": [
+        "valid_self_digest"
+      ],
+      "resolved_file_sha256": "48e13fc2382c0eadfda19b74ef5771992080799340adea36120be62436e1359e",
+      "resolved_paths": [
+        "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/BRANCH36_SPEC.json"
+      ],
+      "target_digest": "8b437f65e767c04464de4e2131596e7137218bd79642e7abef6cd0fe77194ef4"
+    }
+  },
+  "canonical_observer_roots": [
+    "/mnt/primesauce/Geometric_Reasoning/observer/BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_A",
+    "/mnt/primesauce/Geometric_Reasoning/observer/BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_B",
+    "/mnt/primesauce/Geometric_Reasoning/observer/BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_C"
+  ],
+  "canonical_observer_world_count": 144,
+  "evidence_authority_digest": "554e17c20162e229bf18d1e561c6ac966d8e7979461701ecb0206ee975172c51",
+  "evidence_mutation": false,
+  "final_pooled_adjudication": {
+    "frozen_final_pass_rule_satisfied": true,
+    "gate_count": 20,
+    "gate_pass_count": 20,
+    "objects": {
+      "freeze": {
+        "file": "FINAL_POOLED_ADJUDICATION_FREEZE.json",
+        "file_sha256": "589a7a1d796cc61bfb592fb60c3e0db35a4e8a416d1e410b0b648dcf1f0022cd",
+        "freeze_digest": "fea595a932b57629d0f651972609d3088716614231151951fb9fa46dfcc45219"
+      },
+      "gate_vector": {
+        "file": "FINAL_POOLED_GATE_VECTOR.json",
+        "file_sha256": "1febfcced7bca9ec8bfbdd8389304707d1b048ec6c0ddba68f6064a8ac8dd707",
+        "gate_vector_digest": "7b295a50abf8ab1e8e59e5ae8a65f4e6f9fade1b28a3f4ad59c1bf5dfbc15f87"
+      },
+      "qualification": {
+        "file": "QUALIFICATION_REPORT.json",
+        "file_sha256": "a2cf11baed4d7d56cbf0b5b18579722dbbe3d4072be3d350ff0ac165144a5604",
+        "qualification_digest": "424dd4bfec4eca15b7ead7c18a48b5af2a194c0d71930c377ed0bb051d954f74"
+      },
+      "receipt": {
+        "file": "FINAL_POOLED_ADJUDICATION_RECEIPT.json",
+        "file_sha256": "16d225124160345c77485ca4ba759e9adde4fe75438b5ad4f0de2fdc1dd41f54",
+        "receipt_digest": "c6c93fe29c7f194dec6d925e75e2752052ab4bcef0583c8a73becffad13c6939"
+      },
+      "report": {
+        "file": "FINAL_POOLED_ADJUDICATION_REPORT.json",
+        "file_sha256": "9a5122b15451a06ce980f061d1e8e0044439ec924d393a20ef8d71f213b83b38",
+        "report_digest": "025870b83e4c4d39ad3169fb0152220d64908873324094f87a079508969ac2e7"
+      }
+    },
+    "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_POOLED_ADJUDICATION",
+    "qdir_manifest_sha256": "8600b9ce4d22fcad7b0e3ce523ec11c06ccb6857cf25e79f44f8d06699dfedba",
+    "status": "PASS_BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_POOLED_ADJUDICATION"
+  },
+  "final_width_adjudication": {
+    "gate_count": 57,
+    "gate_pass_count": 57,
+    "objects": {
+      "freeze": {
+        "file": "FINAL_WIDTH_ADJUDICATION_FREEZE.json",
+        "file_sha256": "a317206b3fd3c00d88b35c6efe18577d323d39f4a495c227637cf7db0a07d0da",
+        "freeze_digest": "f20912f2f9fad12991034a20afa110fedff15814addcf4733eab228bf6b2c228"
+      },
+      "gate_vector": {
+        "file": "FINAL_WIDTH_GATE_VECTOR.json",
+        "file_sha256": "b575c16496b26d33823f69c6302b8865f07752f39dc0de8d6ac24b152729313f",
+        "gate_vector_digest": "926b102ff3569b35958ae0eb50a621048dffed01e2c1fa30a279b03ee87f339c"
+      },
+      "qualification": {
+        "file": "QUALIFICATION_REPORT.json",
+        "file_sha256": "88b3b79a36e6c95f4115d6897b8c7c61fd6839cf96fd20a4d0cba1e5739016e0",
+        "qualification_digest": "1604a88c285c826c058e22a49c3b7ff01df9b136ed9dcbb0baa1885be2a2361d"
+      },
+      "receipt": {
+        "file": "FINAL_WIDTH_ADJUDICATION_RECEIPT.json",
+        "file_sha256": "70e498b801ced8d4c8bc8e2dac08e1aa719e75eda101f883881e1dc75bd7a8df",
+        "receipt_digest": "4a366c0bfd5b7f29628ca1b7370344dbb44c8b59ec3e76efa02f85f23fd71384"
+      },
+      "report": {
+        "file": "FINAL_WIDTH_ADJUDICATION_REPORT.json",
+        "file_sha256": "bcd9648112ee0fd7524eb8cc51daf5a9aa442f4def1a0aaf52d69ed1954c3eb7",
+        "report_digest": "4b560a6cb53d3455dd6f0229a22d2c3a600ca4c8869d3648fcf0a388332e5abe"
+      }
+    },
+    "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_WIDTH_ADJUDICATION",
+    "qdir_manifest_sha256": "2527bdf61990a523ce0e767d313c06010299f52ccd51402b038e2cac1a101dea",
+    "status": "PASS_BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_WIDTH_ADJUDICATION",
+    "width_pass": {
+      "36": true,
+      "48": true,
+      "72": true
+    }
+  },
+  "final_width_authorization": {
+    "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_WIDTH_ADJUDICATION_AUTHORIZATION",
+    "qdir_manifest_sha256": "f6c54d8e258c70e840cf2ceca305721e0d854ca86d22dc188df023a4e943c5ee",
+    "strong_digest_resolutions": {
+      "authorization": {
+        "duplicate_matches_byte_identical": false,
+        "label": "authorization",
+        "match_types": [
+          "valid_self_digest"
+        ],
+        "resolved_file_sha256": "5fe05843f46b96ac736c314ac806c151b171af775863e3221a2d3ac1f872f632",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_WIDTH_ADJUDICATION_AUTHORIZATION/FINAL_WIDTH_ADJUDICATION_AUTHORIZATION.json"
+        ],
+        "target_digest": "177041d713e3e64737b1d03268a8ed02fe8904b5903327a0ef7a8cba292a815b"
+      },
+      "freeze": {
+        "duplicate_matches_byte_identical": false,
+        "label": "freeze",
+        "match_types": [
+          "valid_self_digest"
+        ],
+        "resolved_file_sha256": "9fe4d17d1d654ec51bf5ac72f4befaf2bfa49f9c56144453004b65a70469347a",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_WIDTH_ADJUDICATION_AUTHORIZATION/FINAL_WIDTH_ADJUDICATION_AUTHORIZATION_FREEZE.json"
+        ],
+        "target_digest": "bc7f80846f1c17f6ce7166cb2f33e51c773a62b00b7d8f2d8e3a9d7c26b7e550"
+      },
+      "integrity": {
+        "duplicate_matches_byte_identical": false,
+        "label": "integrity",
+        "match_types": [
+          "valid_self_digest"
+        ],
+        "resolved_file_sha256": "38ad4250118d0794fb8fff071a41d01b3c77687ed5ffc4747b26a3a3aa3b2b7e",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_WIDTH_ADJUDICATION_AUTHORIZATION/AUTHORIZATION_INTEGRITY.json"
+        ],
+        "target_digest": "73e9e48de408d354964ecf0e549d47f14c20688fa8496f643c0c29f5f2e02768"
+      },
+      "qualification": {
+        "duplicate_matches_byte_identical": false,
+        "label": "qualification",
+        "match_types": [
+          "valid_self_digest"
+        ],
+        "resolved_file_sha256": "9ed6a01db14bb992727a238facebf2dfa712ac6bd509bfe5e5ce940167efe553",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_WIDTH_ADJUDICATION_AUTHORIZATION/QUALIFICATION_REPORT.json"
+        ],
+        "target_digest": "4e4bf3e69fdd73cb7afbef15d20e377e6feb3401b91554572a3da3bf267744aa"
+      }
+    }
+  },
+  "gate_contract": {
+    "file_sha256": "79ab3db8af1abb02cccf0d74cce594d241cd11af00e00b02cf00c10274a38d75",
+    "final_pass_rule": "A,B,C each passed all split gates AND all 57 final width gates PASS AND all 20 pooled gates PASS",
+    "path": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE_b332979ac15c/BRANCH36_ECS_S3_WIDTH_TRANSFER_PRECOMMIT_V0_SOURCE/GATE_CONTRACT.json",
+    "self_digest": "4296ed05c924f18a5d9b73447291d390e2755f79205135fd000406c7338cb5a2"
+  },
+  "generalized_mechanics": {
+    "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_REALIZABILITY_STABILITY_AND_INTERVENTION_MECHANICS",
+    "qdir_manifest_sha256": "faf92a13f5c491d8be395f2cad7cec492081bd3463b532d127c07144983a79db",
+    "strong_digest_resolutions": {
+      "engine": {
+        "duplicate_matches_byte_identical": false,
+        "label": "mechanics_engine",
+        "match_types": [
+          "file_sha256"
+        ],
+        "resolved_file_sha256": "e27abb2023ffce68437ad7af28c28e986367c42be434230d28b319ea993f7997",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_MECHANICS_V0_SOURCE_ef9d87a041d4/BRANCH36_ECS_S3_WIDTH_TRANSFER_MECHANICS_V0_SOURCE/branch36_engine.py"
+        ],
+        "target_digest": "e27abb2023ffce68437ad7af28c28e986367c42be434230d28b319ea993f7997"
+      },
+      "execution_authority": {
+        "duplicate_matches_byte_identical": false,
+        "label": "execution_authority",
+        "match_types": [
+          "valid_self_digest"
+        ],
+        "resolved_file_sha256": "cd95df4d4b2f87d3053f6044c4aabfd37a7cfd98bb5f8202cdf7a5d3d2d62129",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_REALIZABILITY_STABILITY_AND_INTERVENTION_MECHANICS/EXECUTION_AUTHORITY.json"
+        ],
+        "target_digest": "eb0edbbb5c170bb2a50a93f266d21073b7b72f106cf3521739fb25fffe5e4cbd"
+      },
+      "freeze": {
+        "duplicate_matches_byte_identical": false,
+        "label": "freeze",
+        "match_types": [
+          "valid_self_digest"
+        ],
+        "resolved_file_sha256": "9a8ab1eb0e542cc25fc3a8b713ede64da35a81b23b1ba53fbeb1dade2dc94664",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_REALIZABILITY_STABILITY_AND_INTERVENTION_MECHANICS/MECHANICS_FREEZE.json"
+        ],
+        "target_digest": "e3c1e1a14e607e3aa1115287567caa23a9bbeeb38d5bdcccb132b207a7609712"
+      },
+      "qualification": {
+        "duplicate_matches_byte_identical": false,
+        "label": "qualification",
+        "match_types": [
+          "valid_self_digest"
+        ],
+        "resolved_file_sha256": "ca7bbc8fb3f46267017cc37010d54a2986dcc6e8977a0624d5317f2d8db31a46",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_REALIZABILITY_STABILITY_AND_INTERVENTION_MECHANICS/QUALIFICATION_REPORT.json"
+        ],
+        "target_digest": "a8516ed9b6e08c213e51733dc57271713221f1f7b0477ad285ea8ab9c706bfc0"
+      },
+      "report": {
+        "duplicate_matches_byte_identical": false,
+        "label": "report",
+        "match_types": [
+          "valid_self_digest"
+        ],
+        "resolved_file_sha256": "fbe5a277fa1ba06cced26caba13f580fd803c89fa5e044da9ccd8cee5e6d541b",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_REALIZABILITY_STABILITY_AND_INTERVENTION_MECHANICS/MECHANICS_REPORT.json"
+        ],
+        "target_digest": "02a0bb93fe8566880a1c5964473325b2193b66b04661c388b358eb0039d3c1e2"
+      },
+      "source_manifest": {
+        "duplicate_matches_byte_identical": false,
+        "label": "mechanics_source_manifest",
+        "match_types": [
+          "file_sha256"
+        ],
+        "resolved_file_sha256": "ef9d87a041d45b7bd22b5746361217c6f0fa010d155ac99c311618395f896b71",
+        "resolved_paths": [
+          "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_MECHANICS_V0_SOURCE_ef9d87a041d4/BRANCH36_ECS_S3_WIDTH_TRANSFER_MECHANICS_V0_SOURCE/SHA256SUMS"
+        ],
+        "target_digest": "ef9d87a041d45b7bd22b5746361217c6f0fa010d155ac99c311618395f896b71"
+      }
+    }
+  },
+  "git_mutation": false,
+  "input_evidence_interface": {
+    "objects": {
+      "interface": {
+        "file": "INPUT_EVIDENCE_INTERFACE.json",
+        "file_sha256": "d647ac9ee29e113f87a145e8d22a9541a735330b72fcb2ed6820f14e14fb8bb0",
+        "interface_digest": "3a6efbf2f11983c6266f839ea2400fbd34ff553a9be069e1f91bdf730a09205c"
+      },
+      "qualification": {
+        "file": "QUALIFICATION_REPORT.json",
+        "file_sha256": "2a437654d0b469536fd74f828f55a0d62ab4709fb39786ce26d7b499487543ed",
+        "qualification_digest": "ff2db40a0d690a205e5205165d6b2cf84cae50ab52c51289047a0cdcab3da55e"
+      },
+      "reconstruction": {
+        "file": "CLOSED_SPLIT_SCALAR_RECONSTRUCTION.json",
+        "file_sha256": "29d53cc3acf41ebdbb2364627f01c8b43566d423d66789aa568b79b492e2b64f",
+        "reconstruction_digest": "8bdccb36bc6f28fdd82745bc8fa1ce439dd90e41633439a420eb4fe493b9f144"
+      },
+      "resolution": {
+        "file": "UNIT_RESOLUTION.json",
+        "file_sha256": "c7782abad8cab40942a9bd7a8fd320df8b97e00fde15a07e7c45c4f2776af1ed",
+        "resolution_digest": "d2b1031a481bec3e5892355700f3e6eb94303c5d92ed1a7dc6ea601442bb4364"
+      }
+    },
+    "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_FINAL_WIDTH_INPUT_EVIDENCE_INTERFACE_QUALIFICATION_V0",
+    "qdir_manifest_sha256": "47801ac1e77b8d22a72b26530b6cc6188a30b21db2a20c08622140f6192bfdd0"
+  },
+  "schema": "elpis.branch36.ecs_s3_width_transfer.closure_evidence_authority.v0",
+  "source_binding": {
+    "source_authority": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_SCIENTIFIC_CLOSURE_R1_SOURCE_42e83742a33f/BRANCH36_ECS_S3_WIDTH_TRANSFER_SCIENTIFIC_CLOSURE_R1_SOURCE",
+    "source_file": "close.py",
+    "source_file_sha256": "42e83742a33f0e8315ebdb4b59b88e61d6c2b989166363e1d6e6ab3fbcffbc89",
+    "source_manifest_sha256": "6a2ec31169c0098d324d32e0700d5b6a0f3a11dd96e9790129f45937fec529fb"
+  },
+  "split_adjudications": {
+    "A": {
+      "gate_count": 57,
+      "gate_vector_digest": "bb9b12776b5632d9e810e1a9a94dfbdcfddee64444f2a178fd76eb05131f362b",
+      "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_A_ADJUDICATION",
+      "qdir_manifest_sha256": "7e9290e641ef6d3e6047e9a6a82271c17906118e08045b774e56ccdedc156cd1",
+      "status": "PASS_BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_A"
+    },
+    "B": {
+      "gate_count": 57,
+      "gate_vector_digest": "f9b5665c801714c1386d5b6879add28d7aa065a00dd01c1910ade45e811bfb01",
+      "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_B_ADJUDICATION",
+      "qdir_manifest_sha256": "ad475ea6b90c891d577b03ac7b90d3334877944ae4287e949979706e71c48d3c",
+      "status": "PASS_BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_B"
+    },
+    "C": {
+      "gate_count": 57,
+      "gate_vector_digest": "da4790a97e7637228c6de04af239fecef9dd57ec776f5916629936d3a71bc935",
+      "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_C_ADJUDICATION",
+      "qdir_manifest_sha256": "b7c2180095427cfc31793e06083bf3fc8fdf13b89b8ae2083b730805ffa8c4fa",
+      "status": "PASS_BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_C"
+    }
+  },
+  "thresholds_changed": false,
+  "upstream_file_count_snapshotted": 235,
+  "upstream_pre_post_exact_match": true
+}

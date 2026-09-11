@@ -1,0 +1,24 @@
+{
+  "Branch35_39_mutation": false,
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch39_predecessor_digest": "e8ec0b77aa27520330fa77a278876cffb035b112d044a7a99a2fbef94273bd2c",
+  "branch41_material_generated": false,
+  "future_scientific_worlds_executed": 0,
+  "git_mutation": false,
+  "horizons": [
+    1,
+    4,
+    16,
+    64
+  ],
+  "intervention_authority_digest": "67321273a82c263d345b72194bcb3b0e7c43790935549ebf5a5a386a1bf65b83",
+  "precommit_digest": "84d244a0c10e9d5dc3751e5ca298d071e9fea41d3f9a01b8c63f3e429fcf8acf",
+  "predecessor_census_digest": "320bce59d1abde504ead7d72f7c39bcdeba80521cb8e3602593b93189ace1ed4",
+  "primary_metrics_frozen": true,
+  "schema": "elpis.branch40.precommit.v0",
+  "seed_plan_digest": "3bbfecfd60d4cd4c68098617f91ba8bcbdd72800b8ac87290e6b145f1f48881f",
+  "specification_digest": "4e7bc5a1c3f2b93304e13f4225350d767b04499f0819b37ae7d79e128c773ac7",
+  "statistical_decision_rules_frozen": true,
+  "status": "PASS_BRANCH40_PRECOMMIT_ZERO_FUTURE_SCIENCE"
+}

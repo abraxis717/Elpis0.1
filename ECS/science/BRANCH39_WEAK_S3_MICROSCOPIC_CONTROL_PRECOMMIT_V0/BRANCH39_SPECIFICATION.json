@@ -1,0 +1,90 @@
+{
+  "Grid81_or_DEV_dependency": false,
+  "J3_rank_rule": "active singular values satisfy s > 1e-12*sigma_max; require active rank 83 before every solve correction",
+  "R8_material_consumed": false,
+  "branch": 39,
+  "branch40_material_generated": false,
+  "direction_rule": "g~PCG64 Gaussian(83); vweak=Pweak*g/||Pweak*g||; vrobust=(I-Pweak)*g/||(I-Pweak)*g||; reject projected norm <1e-12; no redraw",
+  "evaluation_panel": "gen_panel(eval_panel_seed,512) under exact Branch36 generator; 512 is frozen Branch36 base cardinality, yielding an antipodal 1024-row panel",
+  "frozen_object": {
+    "S3_dimension": 83,
+    "checkpoint": 4096,
+    "d": 6,
+    "eval_panel_base": 512,
+    "learning_rate": 0.002,
+    "primitive": "0.5z+0.5z^2+0.5z^3",
+    "train_panel_base": 128,
+    "width_normalization": false,
+    "widths": [
+      36,
+      48,
+      72
+    ]
+  },
+  "future_GD_steps_after_intervention": 0,
+  "identity_tolerance_freeze": "abs_RMS_tolerance=max(1e-12,100*max finite mechanics direct-vs-S3-predicted RMS residual); identity residual only; frozen before Split A",
+  "mechanics_amplitude": {
+    "alpha": "epsilon*max(1,||Psi(W4096)||2)",
+    "candidates": [
+      "1e-6",
+      "3e-6",
+      "1e-5",
+      "3e-5",
+      "1e-4"
+    ],
+    "micro_relative_max": 0.01,
+    "selection": "largest candidate passing all 18 weak/robust realizations",
+    "suppression_not_consulted": true,
+    "world_count": 9,
+    "worlds_per_width": 3
+  },
+  "predecessor_branch38_closure_digest": "6fd656cacb55758dbc5bb8434ec3aa99fc6cb829763602fc447ee292a90d1654",
+  "primary_gates": {
+    "Q_eval_min": 100000000.0,
+    "Q_train_min": 100000000.0,
+    "S3_magnitude_ratio_abs_error_max": 1e-08,
+    "directional_cosine_min": 0.9999999999,
+    "identity_tolerance": "amplitude-freeze value",
+    "target_relative_error_max": 1e-08
+  },
+  "question": "Can the stable six-dimensional weak S3 subspace established by Branch38 be realized prospectively as nonzero microscopic perturbations of the actual cubic ECS at N in {36,48,72}, with realized nonlinear S3 displacement aligned to the intended weak subspace and instantaneous function displacement suppressed by >=1e8 relative to equal-S3-norm robust controls on train and fresh evaluation panels?",
+  "schema": "elpis.branch39.weak_s3_microscopic_control.specification.v0",
+  "scientific_design": {
+    "no_pooled_rescue": true,
+    "splits": [
+      "A",
+      "B",
+      "C"
+    ],
+    "strict_sequential_authorization": true,
+    "worlds_per_split": 48,
+    "worlds_per_width_per_split": 16
+  },
+  "seed_scheme": "1+(uint64_be(SHA256('ELPIS_BRANCH39_SEED_V0\\0'||branch38_closure_digest||'\\0'||specification_digest||'\\0'||world_id||'\\0'||role)[0:8]) mod (2^63-1))",
+  "solver": {
+    "backtracking_scales": "1,1/2,...,1/2^20",
+    "fallback": false,
+    "formula": "dw=J.T @ solve(J@J.T,r)",
+    "max_iterations": 12,
+    "method": "minimum-norm Gauss-Newton",
+    "strict_residual_decrease": true,
+    "success_directional_cosine_min": 0.9999999999,
+    "success_target_relative_error": 1e-08
+  },
+  "solver_failure_classification": {
+    "backend_exception_or_nonfinite": "MECHANICS_NONQUAL",
+    "mechanics_world_failure": "candidate epsilon inadmissible",
+    "scientific_world_finite_nonconvergence_or_rank_gate_failure": "SCIENTIFIC_GATE_FAIL"
+  },
+  "source_binding": {
+    "source_dir": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL_V0_SOURCE_2febdc53a03f/BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL_V0_SOURCE",
+    "source_file_sha256": "2febdc53a03fb9af9b85d186b618de9792f1fd8094ea7b6c56431d0466de63c2",
+    "source_manifest_sha256": "e7d2570849d1f6e2f6f6f8189a2aa50d6aa457fad4643fc74e4e0117a59d3375"
+  },
+  "specification_digest": "a812e5539f3a3420da59df231078b3a4ac4332f704e472a4828a4be1091f8076",
+  "weak_authority": {
+    "individual_vectors_authoritative": false,
+    "projector_authoritative": true,
+    "source": "Branch38 CANONICAL exact-dyadic Q^TQ eigensystem at 320 dps"
+  }
+}

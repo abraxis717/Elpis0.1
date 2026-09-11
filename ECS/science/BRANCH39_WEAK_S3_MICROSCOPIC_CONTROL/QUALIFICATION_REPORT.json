@@ -1,0 +1,33 @@
+{
+  "A_B_C_authorization_chain": {
+    "A": true,
+    "B": true,
+    "C": true
+  },
+  "Branch35_38_mutation": false,
+  "R8_material_consumed": false,
+  "branch": 39,
+  "branch40_material_generated": false,
+  "claim_digest": "eeecce68354d7b148c274a4c0a9aff1c0879900bd8f313e8bca5386b00bfcd78",
+  "closure_digest": "e8ec0b77aa27520330fa77a278876cffb035b112d044a7a99a2fbef94273bd2c",
+  "closure_freeze_digest": "340d71547c1a96a0b1e166ad926443e8da9a45002a305ba2e30a75735a75641d",
+  "closure_qualified": true,
+  "evidence_authority_digest": "cea69556bb6e27aa7452282ca5938efd64f518067eb7fbf3a8a85091fd37e0f7",
+  "future_GD_steps_after_intervention": 0,
+  "git_mutation": false,
+  "mechanics_qualification_result": "PASS_BRANCH39_TARGET_REALIZATION_MECHANICS",
+  "minimum_J3_rank": 83,
+  "minimum_Q_eval": 19492498104.396595,
+  "minimum_Q_train": 20899558376.733482,
+  "qualification_digest": "f448f387ab9354178e5bddf21d2cf397cd00aaabb343ecec29edfa2627d20cd3",
+  "schema": "elpis.branch39.scientific_closure_qualification.v0",
+  "selected_epsilon": 0.0001,
+  "status": "PASS_BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL",
+  "worlds_per_width": {
+    "36": 48,
+    "48": 48,
+    "72": 48
+  },
+  "worst_directional_cosine_deficit": 4.440892098500626e-16,
+  "worst_target_realization_error": 8.439543813695704e-09
+}

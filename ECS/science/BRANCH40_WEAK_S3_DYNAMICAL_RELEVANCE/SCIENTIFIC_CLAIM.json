@@ -1,0 +1,30 @@
+{
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch41_material_generated": false,
+  "claim": "Under the frozen cubic d=6 Branch36 dynamics, matched weak-S3 interventions are future-dynamically distinguishable from S3-fiber microscopic controls across all tested widths under the frozen Branch40 primary trajectory criterion, while robust-S3 controls provide positive causal sensitivity. The weak S3 coordinates therefore carry latent future-dynamical state under the tested regime.",
+  "claim_ceiling_enforced": true,
+  "claim_digest": "94543c4f5c66ed758e1390c47bda677179c76118246fc7ce8b252768b1b48fcb",
+  "ecs_facing_position": "Outcome_A_RETAIN_FULL_ACTIVE_S3",
+  "exact_nonclaims": [
+    "global Markov sufficiency",
+    "exact minimal state dimension",
+    "S3 dimension 77",
+    "exact gauge symmetry",
+    "exact null directions",
+    "global dynamical equivalence",
+    "universal width independence",
+    "semantic meaning",
+    "memory",
+    "topology",
+    "reasoning",
+    "learning-theoretic optimality",
+    "generalization beyond frozen regime",
+    "ECS runtime admission",
+    "Elpis architectural admission",
+    "autonomous self-improvement",
+    "evolutionary benefit"
+  ],
+  "schema": "elpis.branch40.scientific_claim.v0",
+  "scientific_terminal_state": "PASS_BRANCH40_WEAK_S3_DYNAMICAL_RELEVANCE"
+}

@@ -16,6 +16,8 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+from collections import Counter
+import hashlib
 import json
 import re
 import sys
@@ -81,6 +83,70 @@ TEST_FIXTURE_NAMES: set[str] = {
 # The release verifier constructs private-path detector literals itself;
 # no runtime transaction source is exempt from workstation-path scanning.
 GUARD_NAMES: set[str] = {"verify_public_release.py"}
+
+ALLOWLIST_REL = Path("tools/public_scan_allowlist.json")
+CONTRACT_TEXT_SUFFIXES = {".py", ".c", ".cpp", ".h", ".json", ".toml", ".yaml", ".yml", ".md", ".txt", ".cff", ".cmake", ".sh"}
+
+
+def _file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _contract_private_path_findings(repo_root: Path):
+    findings = Counter()
+    errors: list[str] = []
+    for f in repo_root.rglob("*"):
+        if not f.is_file():
+            continue
+        rel_path = f.relative_to(repo_root)
+        rel = rel_path.as_posix()
+        if ".git" in rel_path.parts:
+            continue
+        if f.suffix not in CONTRACT_TEXT_SUFFIXES and f.name not in {"VERSION", "LICENSE", "CMakeLists.txt"}:
+            continue
+        try:
+            text = f.read_text(encoding="utf-8", errors="strict")
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"TEXT_SCAN_DECODE_FAILED: {rel}: {exc}")
+            continue
+        for literal in PRIVATE_PATHS:
+            literal_digest = hashlib.sha256(literal.encode("utf-8")).hexdigest()
+            for _ in re.finditer(re.escape(literal), text):
+                findings[(rel, "PRIVATE_PATH", literal_digest)] += 1
+    return findings, errors
+
+
+def scan_private_paths_with_allowlist(repo_root: Path) -> list[str]:
+    allow_path = repo_root / ALLOWLIST_REL
+    if not allow_path.is_file():
+        return scan_private_paths(repo_root)
+    findings, errors = _contract_private_path_findings(repo_root)
+    try:
+        entries = json.loads(allow_path.read_text(encoding="utf-8"))
+        allow = {}
+        for entry in entries:
+            if entry.get("kind") != "PRIVATE_PATH":
+                continue
+            key = (entry["path"], entry["kind"], entry["sha256"])
+            if key in allow or type(entry["count"]) is not int or entry["count"] < 1:
+                raise ValueError("invalid or duplicate private-path allowlist entry")
+            file_sha = entry.get("file_sha256")
+            if type(file_sha) is not str or not re.fullmatch(r"[0-9a-f]{64}", file_sha):
+                raise ValueError("allowlist entry missing valid file_sha256")
+            file_path = repo_root / entry["path"]
+            if not file_path.is_file() or _file_sha256(file_path) != file_sha:
+                raise ValueError(f"allowlist containing-file digest mismatch: {entry['path']}")
+            allow[key] = entry["count"]
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        return errors + [f"INVALID ALLOWLIST: {exc}"]
+    for key, count in sorted(findings.items()):
+        if count > allow.get(key, 0):
+            errors.append(f"PRIVATE PATH not allowlisted: {key[0]} (count {count})")
+    for key, count in sorted(allow.items()):
+        if findings.get(key, 0) < count:
+            errors.append(f"STALE ALLOWLIST ENTRY: {key[0]}: PRIVATE_PATH")
+    return errors
+
 
 
 def scan_secrets(repo_root: Path) -> list[str]:
@@ -153,7 +219,7 @@ def run_scan(repo_root: str) -> dict:
     """Run all scans and return structured results."""
     root = Path(repo_root).resolve()
     secret_findings = scan_secrets(root)
-    path_findings = scan_private_paths(root)
+    path_findings = scan_private_paths_with_allowlist(root)
     binary_findings = scan_binaries(root)
 
     result = {

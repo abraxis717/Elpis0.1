@@ -1,0 +1,29 @@
+{
+  "R8_material_consumed": false,
+  "branch": 39,
+  "branch40_material_generated": false,
+  "claim": "Under the frozen d=6 cubic ECS and Branch36 width regime, the Branch38 stable weak S3 subspace admits prospectively generated, microscopically realizable nonzero S3 displacements at N in {36,48,72} whose instantaneous function displacement is strongly suppressed relative to equal-S3-norm robust-direction controls on both training and fresh evaluation panels. This establishes a realizable approximate function-preserving S3-changing intervention control under the tested regime.",
+  "claim_ceiling_enforced": true,
+  "claim_digest": "eeecce68354d7b148c274a4c0a9aff1c0879900bd8f313e8bca5386b00bfcd78",
+  "forbidden_claims": [
+    "exact output preservation",
+    "exact/global function equivalence",
+    "S3 dimension reduction",
+    "exact null directions",
+    "future dynamical divergence",
+    "future transition sufficiency",
+    "Markov closure",
+    "memory",
+    "semantics",
+    "topology",
+    "Grid81 compatibility",
+    "reasoning",
+    "emergence",
+    "evolutionary fitness",
+    "microscopic uniqueness"
+  ],
+  "future_GD_steps_after_intervention": 0,
+  "schema": "elpis.branch39.scientific_claim.v0",
+  "status": "CLOSED_SCIENTIFIC_PASS",
+  "terminal_scientific_state": "PASS_BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL"
+}

@@ -1,0 +1,17 @@
+{
+  "Branch35_39_pre_post_exact_match": true,
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch39_predecessor_digest": "e8ec0b77aa27520330fa77a278876cffb035b112d044a7a99a2fbef94273bd2c",
+  "branch41_material_generated": false,
+  "closure_executes_new_science": false,
+  "deterministic_rerun_digest": "8912d27b506f6fa012ba3628a9c843abd2ff1c3749dc52b3f179ec1e2b4b217a",
+  "evidence_authority_digest": "401c992eddc89cd0b0eff36ecda80e28cd06a8675e4c0bb07be23cea5db632ec",
+  "final_adjudication_digest": "b120000033888c7278712ccff8082a09ce5169228a9459734dc667da18adf1b7",
+  "git_mutation": false,
+  "mechanics_qualification_digest": "f7cee93e05cd250972c4705bec7592305ca2f59d7e48cc249ec14cd03ca864d5",
+  "precommit_digest": "84d244a0c10e9d5dc3751e5ca298d071e9fea41d3f9a01b8c63f3e429fcf8acf",
+  "schema": "elpis.branch40.evidence_authority.v0",
+  "scientific_evidence_digest": "e4bb2265c3684f64c7a2fab1d324334241e93c4f8214bc9e039ecac74d4773f1",
+  "specification_digest": "4e7bc5a1c3f2b93304e13f4225350d767b04499f0819b37ae7d79e128c773ac7"
+}

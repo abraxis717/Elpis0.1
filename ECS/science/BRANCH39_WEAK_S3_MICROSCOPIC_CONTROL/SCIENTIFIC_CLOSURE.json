@@ -1,0 +1,16 @@
+{
+  "Branch35_38_mutation": false,
+  "R8_material_consumed": false,
+  "branch": 39,
+  "branch39_closed": true,
+  "branch40_material_generated": false,
+  "claim_digest": "eeecce68354d7b148c274a4c0a9aff1c0879900bd8f313e8bca5386b00bfcd78",
+  "closure_digest": "e8ec0b77aa27520330fa77a278876cffb035b112d044a7a99a2fbef94273bd2c",
+  "evidence_authority_digest": "cea69556bb6e27aa7452282ca5938efd64f518067eb7fbf3a8a85091fd37e0f7",
+  "future_GD_steps_after_intervention": 0,
+  "git_mutation": false,
+  "new_science_during_closure": false,
+  "schema": "elpis.branch39.scientific_closure.v0",
+  "scientific_terminal_state": "PASS_BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL",
+  "status": "PASS_BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL"
+}

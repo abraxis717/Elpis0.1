@@ -1,0 +1,31 @@
+{
+  "Branch33_reclassification_performed": false,
+  "Branch33_rescue_performed": false,
+  "Branch33_scientific_nonpass_preserved": true,
+  "Branch34_claim_expanded": false,
+  "Branch34_stability_diagnostic_scope_preserved": true,
+  "R8_material_consumed": false,
+  "active_release_tree_access": "NONE",
+  "claim_digest": "fd2dde69c89df5e16e7e0bd0ada3c122060aa9884dc5b083201f9cec3f8d5040",
+  "closure_number": 34,
+  "closure_status": "PASS_SCIENTIFIC_CLOSURE_34_BRANCH35_ECS_STABLE_CHECKPOINT_THIRD_MOMENT_SUFFICIENCY_PASS",
+  "explicit_nonclaims": [
+    "No Branch33 rescue or reclassification.",
+    "No expansion of Branch34 beyond its stability-diagnostic conclusion.",
+    "No claim that T3 is necessary, unique, or minimal.",
+    "No claim that checkpoint 4096 is globally optimal.",
+    "No universal moment hierarchy claim.",
+    "No generic random-initialization claim.",
+    "No exact Markov closure claim.",
+    "No NQF, memory, semantics, geometry, or reasoning claim.",
+    "No Dion, R1, Supra Elegans, or other-substrate applicability claim."
+  ],
+  "proposed_branch_claim_established": true,
+  "release": "NONE",
+  "ruling": "Branch35 passes its exact independently frozen confirmatory experiment. All three sequential splits A, B, and C passed all 19 frozen split gates, and all 20 final pooled gates passed across 144 worlds. The pooled median S2_OVER_S3 is 220.17831841682823 and the pooled median RAND_OVER_S3 is 429.7500318613778, while the pooled median STABILITY is 0.004126846666435523 with 144/144 worlds below the unchanged 0.01 stability threshold. Under the exact Branch35 design, preserving S3=(mu,M,T3) therefore protects future augmented transitions far more strongly than preserving S2=(mu,M) while changing T3, and far more strongly than preserving an arbitrary dimension-matched RAND83 projection. This establishes only the exact claim ceiling frozen by Branch35.",
+  "schema": "elpis.geometric_reasoning.scientific_closure34_claim.v0",
+  "scientific_result": "PASS_BRANCH35_ECS_STABLE_CHECKPOINT_THIRD_MOMENT_SUFFICIENCY_FINAL_POOLED",
+  "scope": "Branch35 exact frozen stable-checkpoint certified third-moment intervention-sufficiency experiment only.",
+  "supported": "Within the exact precommitted Branch35 exchangeable cubic ECS, exact-realizable teachers, teacher-neighborhood initialization, deterministic full-batch GD, the Branch34-certified 4096-to-4352 stable regime, equal-magnitude interventions, and fresh sequential A/B/C worlds, S3=(mu,M,T3) has privileged intervention-supported approximate local transition sufficiency relative to S2=(mu,M) and a dimension-matched arbitrary RAND83 control.",
+  "third_moment_sufficiency_claim_performed": true
+}

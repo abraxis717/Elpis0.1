@@ -1,0 +1,45 @@
+{
+  "Branch35_38_mutation": false,
+  "R8_material_consumed": false,
+  "all_A_B_C_seeds_frozen": true,
+  "amplitude_selected": false,
+  "branch": 39,
+  "branch38_predecessor_digest": "6fd656cacb55758dbc5bb8434ec3aa99fc6cb829763602fc447ee292a90d1654",
+  "branch40_material_generated": false,
+  "checkpoint4096_parity": [
+    {
+      "N": 36,
+      "exact_match": true,
+      "expected_W4096_sha256": "a4eb3901befa9fcfaf892d5aadcbc3c18ff6f76ff9861bac5f41dd6d502e1c55",
+      "reconstructed_W4096_sha256": "a4eb3901befa9fcfaf892d5aadcbc3c18ff6f76ff9861bac5f41dd6d502e1c55",
+      "world_id": "B36_A_N36_000"
+    },
+    {
+      "N": 48,
+      "exact_match": true,
+      "expected_W4096_sha256": "bfd76e9f3202a675f6f327b6acf1c86c418fd29d2d41dbd5489d28e066669731",
+      "reconstructed_W4096_sha256": "bfd76e9f3202a675f6f327b6acf1c86c418fd29d2d41dbd5489d28e066669731",
+      "world_id": "B36_A_N48_000"
+    },
+    {
+      "N": 72,
+      "exact_match": true,
+      "expected_W4096_sha256": "807ae00a036d5a080661c76c6f7066fd4a56a8223eecb9dae86a18e276cfb1cc",
+      "reconstructed_W4096_sha256": "807ae00a036d5a080661c76c6f7066fd4a56a8223eecb9dae86a18e276cfb1cc",
+      "world_id": "B36_A_N72_000"
+    }
+  ],
+  "future_GD_steps_after_intervention": 0,
+  "git_mutation": false,
+  "mechanics_worlds_frozen": 9,
+  "precommit_digest": "3a29639e0b8422aff8006d41bef5f1268fc1721c00a99f2dbcf876a2f3f9d6b5",
+  "schema": "elpis.branch39.weak_s3_microscopic_control.precommit.v0",
+  "scientific_gates_evaluated": false,
+  "scientific_worlds_executed": 0,
+  "scientific_worlds_frozen": 144,
+  "seed_plan_digest": "f52145bc9d6d29b55a8164e31e5247972c087c82821465caca6416a27baf295e",
+  "specification_digest": "a812e5539f3a3420da59df231078b3a4ac4332f704e472a4828a4be1091f8076",
+  "status": "PASS_BRANCH39_PRECOMMIT_ZERO_SCIENCE",
+  "weak_projector_authority_digest": "c1afd212b52fe830bfc7bcf44fd0162c08fef546c3e892b555dc012655a168f1",
+  "weak_projector_digest": "775ba97dd564d28d38f6d7aa7dee1e32ca97dfdfa211196c8c296ffcf34aeec2"
+}

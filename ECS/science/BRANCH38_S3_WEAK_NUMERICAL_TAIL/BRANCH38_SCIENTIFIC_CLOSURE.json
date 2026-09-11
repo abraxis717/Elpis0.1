@@ -1,0 +1,16 @@
+{
+  "R8_material_consumed": false,
+  "branch": 38,
+  "branch35_36_37_mutated_during_branch38": false,
+  "branch38_closed": true,
+  "branch39_material_generated": false,
+  "claim_digest": "79434c895d2475e6e0db019822b65cc566525f00308d2c76f99447475fef3dae",
+  "closure_digest": "6fd656cacb55758dbc5bb8434ec3aa99fc6cb829763602fc447ee292a90d1654",
+  "deterministic_rerun_digest": "ce75d2ef40d9059fb7471d5468016b870e0a9b19efa178d248cfdf22afec886b",
+  "evidence_authority_digest": "93c21b2eb1d437439fa15cc35fdc7c5dc53853b8fd40590f85dbe77272c05470",
+  "precommit_digest": "2a2b9d283562a15e40f2efdb493ae4a072cec2c2e7b7914495707dfb2ff7a358",
+  "predecessor_branch37_closure_digest": "4155ab600034e7f4094eff6d5c83b7932d08f3723b6295ebc0c0cf88b1cd385f",
+  "schema": "elpis.branch38.s3_weak_numerical_tail.scientific_closure.v0",
+  "specification_digest": "c89f0051b4081194c09c47e37f6bd10c0fe2f502ebc515822cff8a753169dba0",
+  "terminal_scientific_classification": "PASS_BRANCH38_STABLE_WEAK_TAIL"
+}

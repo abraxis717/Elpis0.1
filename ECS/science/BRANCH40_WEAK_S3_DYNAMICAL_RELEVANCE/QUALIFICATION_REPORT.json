@@ -1,0 +1,31 @@
+{
+  "A_B_C_authorization_chain": {
+    "A": true,
+    "B": true,
+    "C": true
+  },
+  "Branch35_39_mutation": false,
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch39_predecessor_digest": "e8ec0b77aa27520330fa77a278876cffb035b112d044a7a99a2fbef94273bd2c",
+  "branch40_specification_digest": "4e7bc5a1c3f2b93304e13f4225350d767b04499f0819b37ae7d79e128c773ac7",
+  "branch41_material_generated": false,
+  "claim_digest": "94543c4f5c66ed758e1390c47bda677179c76118246fc7ce8b252768b1b48fcb",
+  "closure_digest": "f8a555526f5ea36842cf68da4a8a9059ce4b713f3f7dd3ff634de18c44cffdf5",
+  "closure_freeze_digest": "d2c42af386395d773ddcb4582d5cc741e899cb4fe68aadb8c53905f28a94ab19",
+  "closure_qualified": true,
+  "deterministic_rerun_digest": "8912d27b506f6fa012ba3628a9c843abd2ff1c3749dc52b3f179ec1e2b4b217a",
+  "evidence_authority_digest": "401c992eddc89cd0b0eff36ecda80e28cd06a8675e4c0bb07be23cea5db632ec",
+  "final_adjudication_digest": "b120000033888c7278712ccff8082a09ce5169228a9459734dc667da18adf1b7",
+  "git_mutation": false,
+  "mechanics_qualification_result": "PASS_BRANCH40_MECHANICS_QUALIFICATION",
+  "qualification_digest": "e71b136e12d690c77cacc0112ed51ac0d56eecfe85c14f41ea648fb509bc7c40",
+  "schema": "elpis.branch40.scientific_closure_qualification.v0",
+  "scientific_evidence_digest": "e4bb2265c3684f64c7a2fab1d324334241e93c4f8214bc9e039ecac74d4773f1",
+  "status": "PASS_BRANCH40_WEAK_S3_DYNAMICAL_RELEVANCE",
+  "worlds_per_width": {
+    "36": 48,
+    "48": 48,
+    "72": 48
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "A_B_C_gate_vector_digests": {
+    "A": "bb9b12776b5632d9e810e1a9a94dfbdcfddee64444f2a178fd76eb05131f362b",
+    "B": "f9b5665c801714c1386d5b6879add28d7aa065a00dd01c1910ade45e811bfb01",
+    "C": "da4790a97e7637228c6de04af239fecef9dd57ec776f5916629936d3a71bc935"
+  },
+  "R8_material_consumed": false,
+  "branch": 36,
+  "branch35_parent_closure_digest": "5a1289289a5e09bcef726ea20b74f5567d715a4c646469775f7248a2273e9010",
+  "branch36_precommit_digest": "8c06c2f717b77db12cd7d9652ca2b9ab1dd2b0840b91c3f2c4776910d17f4adf",
+  "claim_digest": "10dae87ba87669843068c12b9aa1136ad48a6ecf1ddd07983d0947741afd1af3",
+  "closure_digest": "ca8c607b264af133513fb7a74d2e00c06bff930ab7f15292049531683695541a",
+  "closure_is_immutable_scientific_authority": true,
+  "evidence_authority_digest": "554e17c20162e229bf18d1e561c6ac966d8e7979461701ecb0206ee975172c51",
+  "final_pooled_freeze_digest": "fea595a932b57629d0f651972609d3088716614231151951fb9fa46dfcc45219",
+  "final_width_authorization_digest": "177041d713e3e64737b1d03268a8ed02fe8904b5903327a0ef7a8cba292a815b",
+  "final_width_freeze_digest": "f20912f2f9fad12991034a20afa110fedff15814addcf4733eab228bf6b2c228",
+  "freeze_digest": "786b05e5da814abb4cecb2d656f76af0522799219026e88c1237161f3efeb2bb",
+  "frozen_final_pass_rule_satisfied": true,
+  "generalized_mechanics_qualification_digest": "a8516ed9b6e08c213e51733dc57271713221f1f7b0477ad285ea8ab9c706bfc0",
+  "input_interface_qualification_digest": "ff2db40a0d690a205e5205165d6b2cf84cae50ab52c51289047a0cdcab3da55e",
+  "schema": "elpis.branch36.ecs_s3_width_transfer.scientific_closure_freeze.v0",
+  "source_binding": {
+    "source_authority": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_SCIENTIFIC_CLOSURE_R1_SOURCE_42e83742a33f/BRANCH36_ECS_S3_WIDTH_TRANSFER_SCIENTIFIC_CLOSURE_R1_SOURCE",
+    "source_file": "close.py",
+    "source_file_sha256": "42e83742a33f0e8315ebdb4b59b88e61d6c2b989166363e1d6e6ab3fbcffbc89",
+    "source_manifest_sha256": "6a2ec31169c0098d324d32e0700d5b6a0f3a11dd96e9790129f45937fec529fb"
+  },
+  "status": "PASS_BRANCH36_ECS_S3_WIDTH_TRANSFER_SCIENTIFIC_CLOSURE"
+}

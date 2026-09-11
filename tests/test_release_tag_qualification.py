@@ -65,9 +65,9 @@ def test_supported_release_tags_enter_all_qualification_workflows():
     )
 
     historical = tuple(
-        path.stem.removeprefix("RELEASE_NOTES_")
-        for path in ROOT.glob(
-            "RELEASE_NOTES_Elpis*.md"
+        path.stem
+        for path in (ROOT / "RELEASE_NOTES").glob(
+            "Elpis*.md"
         )
     )
 

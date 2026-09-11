@@ -340,12 +340,13 @@ def m15_readme_declared_release_drift(root: Path) -> None:
 def m16_release_notes_declared_version_drift(
     root: Path,
 ) -> None:
-    """Canonical RELEASE_NOTES.md version must agree with VERSION.
+    """Canonical current release-note version must agree with VERSION.
 
     Match the declaration grammar itself rather than merely searching for
     the current version as an arbitrary substring elsewhere in the file.
     """
-    rel = "RELEASE_NOTES.md"
+    version = (root / "VERSION").read_text().strip()
+    rel = f"RELEASE_NOTES/Elpis{version}.md"
     target = root / rel
 
     stale = "0.0.0"
@@ -364,7 +365,7 @@ def m16_release_notes_declared_version_drift(
 
     if count != 1:
         raise AssertionError(
-            "canonical RELEASE_NOTES.md "
+            "canonical current release-note "
             "version declaration not found"
         )
 
@@ -383,7 +384,7 @@ CASES: tuple[tuple[str, object, int, str], ...] = (
         "M16 RELEASE_NOTES declared version drift",
         m16_release_notes_declared_version_drift,
         1,
-        "DECLARED_TEXT_VERSION_MISMATCH: RELEASE_NOTES.md",
+        "DECLARED_TEXT_VERSION_MISMATCH: RELEASE_NOTES/Elpis",
     ),
     ("M12 new finding kind in allowlisted fixture",
      m12_new_finding_kind, 1, "SECRET:private key"),

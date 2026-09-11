@@ -1,0 +1,134 @@
+{
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch41_material_generated": false,
+  "claim_ceiling": [
+    "no global Markov sufficiency",
+    "no exact minimal dimension",
+    "no S3 dimension 77 claim",
+    "no exact gauge/null symmetry",
+    "no global dynamical equivalence",
+    "no universal width independence",
+    "no semantics/memory/topology/reasoning",
+    "no runtime/architectural admission",
+    "no Branch41 material"
+  ],
+  "decision_rule": {
+    "H2": "robust positive control adequate all widths; A and B false; at least one integrated-width relevance or Bonferroni-corrected horizon-specific relevance",
+    "Outcome_A": "robust positive control adequate all widths AND lower 95% CI of median(I_weak-I_fiber) > SESOI in all widths",
+    "Outcome_B": "robust positive control adequate all widths AND upper 95% CI of median(abs(I_weak-I_fiber)) < SESOI in all widths AND no horizon-specific weak relevance in any width",
+    "Outcome_C": "positive control inadequate OR weak/fiber remains unresolved under the frozen rules",
+    "SESOI": "per width/horizon = 0.05 * median robust-minus-fiber effect at the same summary/horizon; formula frozen prospectively",
+    "robust_positive_control_final": "for every width: >=45/48 worlds I_robust>I_fiber and lower 95% bootstrap CI of median(I_robust-I_fiber)>0"
+  },
+  "fiber_tolerances": {
+    "M_relative_max": 1e-09,
+    "T3_relative_max": 1e-09,
+    "active_J3_rank": 83,
+    "mu_relative_max": 1e-09,
+    "radius_relative_max": 1e-10
+  },
+  "formal_inference": {
+    "bootstrap_ci": "deterministic percentile CI with PCG64 seed derived from spec digest and analysis label",
+    "bootstrap_reps": 20000,
+    "bootstrap_statistic": "median paired difference",
+    "horizon_familywise_correction": "Bonferroni across four frozen horizons; each horizon CI level 98.75%",
+    "integrated_ci_level": 0.95,
+    "paired": true,
+    "pseudo_replication_of_horizons": false,
+    "replication_unit": "world",
+    "width_stratified": true
+  },
+  "frozen_object": {
+    "S3_dimension": 83,
+    "checkpoint": 4096,
+    "d": 6,
+    "learning_rate": 0.002,
+    "no_width_normalization": true,
+    "primitive": "0.5z+0.5z^2+0.5z^3",
+    "widths": [
+      36,
+      48,
+      72
+    ]
+  },
+  "future_process": "resume exact frozen Branch36 full-batch GD independently from baseline/fiber/weak/robust states; identical Xtrain,ytrain; no intervention-dependent optimizer behavior; no reprojection/rescue",
+  "horizon_authority": "exact frozen Branch36 HORIZONS=(1,4,16,64); no Branch40 horizon search",
+  "horizons": [
+    1,
+    4,
+    16,
+    64
+  ],
+  "hypotheses": {
+    "H0": "weak-S3 future dynamics are indistinguishable from S3-fiber within frozen resolution while robust-S3 separates",
+    "H1": "weak-S3 produces reproducible future divergence from S3-fiber despite suppressed instantaneous function effect",
+    "H2": "weak-S3 effect is graded, delayed, horizon-dependent, or width-dependent"
+  },
+  "instantaneous_preconditions": {
+    "branch39_Q_eval_min": 100000000.0,
+    "branch39_Q_train_min": 100000000.0,
+    "cubic_identity_abs_RMS_max": 1e-12
+  },
+  "intervention_classes": {
+    "fiber": "Branch36 S3-preserving continuation algorithm with only radial target generalized; target microscopic radius equals reconstructed Branch39 weak-intervention ||dW||F for the same world",
+    "robust": "exact Branch39 robust-complement direction/epsilon/Gauss-Newton machinery",
+    "weak": "exact Branch39 weak projector/direction/epsilon/Gauss-Newton machinery"
+  },
+  "matching_hierarchy": [
+    "weak and robust matched first in S3 norm by exact inherited Branch39 alpha rule",
+    "fiber microscopic norm matched to weak microscopic norm",
+    "residual robust-vs-fiber microscopic imbalance reported, never repaired post hoc"
+  ],
+  "mechanics_worlds": "exact 9 Branch39 mechanics-only worlds; permanently ineligible for Branch40 science; no future-effect threshold chosen from their outcomes",
+  "predecessor": {
+    "branch39_closure_digest": "e8ec0b77aa27520330fa77a278876cffb035b112d044a7a99a2fbef94273bd2c",
+    "branch39_projector_digest": "775ba97dd564d28d38f6d7aa7dee1e32ca97dfdfa211196c8c296ffcf34aeec2",
+    "branch39_scientific_evidence_digest": "9ad3b9a2417aeebb6ac95f43f616e914673566b124ce9a8695d3a30a04754e67",
+    "branch39_selected_epsilon": 0.0001,
+    "branch39_specification_digest": "a812e5539f3a3420da59df231078b3a4ac4332f704e472a4828a4be1091f8076"
+  },
+  "primary_observable": "Branch36 normalized S3 trajectory divergence from matched unperturbed trajectory: sqrt(((||dmu||/sm)^2+(||dM||/sM)^2+(||dT3||/sT)^2)/3)",
+  "projection_tolerances": {
+    "decomposition_closure_relative_max": 1e-12,
+    "weak_robust_S3_norm_match_relative_max": 2e-08,
+    "weak_robust_leak_relative_max": 2e-08
+  },
+  "question": "Do Branch38/39 weak-S3 directions carry information that matters for future dynamics beyond S3-fiber microscopic controls?",
+  "schema": "elpis.branch40.weak_s3_dynamical_relevance.specification.v0",
+  "scientific_worlds": "exact 144 Branch39 A/B/C worlds; 16 per width per split; same teacher/init/train/eval/weak/robust seeds and epsilon; only new world seed is fiber direction seed",
+  "secondary_observables": [
+    "raw packed-S3 Euclidean divergence and Pweak/Probust decomposition",
+    "train/eval forward-function RMS divergence",
+    "train/eval loss displacement",
+    "terminal h=64 S3 divergence",
+    "integrated eval-function divergence"
+  ],
+  "source_binding": {
+    "source_dir": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH40_WEAK_S3_DYNAMICAL_RELEVANCE_V0_SOURCE_94e3cced2c48/BRANCH40_WEAK_S3_DYNAMICAL_RELEVANCE_V0_SOURCE",
+    "source_file_sha256": "94e3cced2c486744baef042710917d36f7c9162847063c61bb9a40d813a23908",
+    "source_manifest_sha256": "e3a477f49a74381daf6e5f9e0804882b2b820c62a1f6bd2372b87fa33a84638b"
+  },
+  "specification_digest": "4e7bc5a1c3f2b93304e13f4225350d767b04499f0819b37ae7d79e128c773ac7",
+  "split_authorization": {
+    "A": "always after mechanics PASS",
+    "B": "only if A has 48/48 construction-valid worlds and robust positive-control sensitivity independently at all widths",
+    "C": "only if B has 48/48 construction-valid worlds and robust positive-control sensitivity independently at all widths",
+    "weak_vs_fiber_scientific_direction_never_controls_authorization": true
+  },
+  "split_positive_control": {
+    "median_robust_over_fiber_integrated_S3_min": 10.0,
+    "min_worlds_robust_integrated_S3_gt_fiber": 15,
+    "per_width_n": 16
+  },
+  "terminal_states": [
+    "PASS_BRANCH40_WEAK_S3_DYNAMICAL_RELEVANCE",
+    "PASS_BRANCH40_QUOTIENT_INVESTIGATION_JUSTIFIED",
+    "PASS_BRANCH40_GRADED_OR_HORIZON_DEPENDENT_WEAK_RELEVANCE",
+    "NONPASS_BRANCH40_UNRESOLVED_WEAK_DYNAMICAL_RELEVANCE",
+    "NONPASS_BRANCH40_POSITIVE_CONTROL_INSUFFICIENT",
+    "NONPASS_BRANCH40_INTERVENTION_VALIDITY",
+    "MECHANICS_NONQUAL_*"
+  ],
+  "trajectory_primary_summary": "RMS of normalized S3 divergence across horizons [1,4,16,64]"
+}

@@ -1,0 +1,87 @@
+{
+  "R8_material_consumed": false,
+  "active_DEV_pre_post_exact_match": true,
+  "branch": 37,
+  "closure_validation_only": true,
+  "evidence_authority_digest": "6362426110adac7db2d5a22a9852c84112e1ad1666442618a3f9d539b28aa5f1",
+  "evidence_mutation": false,
+  "exact_rank_descriptive_svd_authority": {
+    "certifying_prime_distribution": {
+      "1000000007": 144
+    },
+    "descriptive_numerical_rank_distribution_at_all_frozen_thresholds": {
+      "77": 144
+    },
+    "exact_certificate_distribution": {
+      "MODULAR_FULL_COLUMN_RANK": 144
+    },
+    "exact_rank_distribution": {
+      "83": 144
+    },
+    "freeze_digest": "5383a9f6ca6817bb5fa75f89373c1e03fa6b81621878cbf762c781fca8202b6d",
+    "gate_vector_digest": "c876f2bcb4c07665dadccbe2bd4a8df500d8f7ab62dc77c41284b3078e248ea7",
+    "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH37_S3_FEATURE_MATRIX_IDENTIFIABILITY_EXACT_RANK_ADJUDICATION",
+    "qdir_manifest_sha256": "bcb2524a357f98f2dee58c2b34f122dd8d760804d30a1ebaaed2d73d539fcb90",
+    "qualification_digest": "bfbe1005416cf2d60103d697748d2a04dc9fc925bf990c987376b36b1f2aff91",
+    "report_digest": "1e285255d53e160ad001543377f325460755f539d6095cdc98d4218d8d3a52e9",
+    "scientific_result": "PASS_BRANCH37_S3_FEATURE_MATRIX_IDENTIFIABILITY_EXACT_RANK",
+    "sigma77_over_sigma1_max": 0.14952110281382275,
+    "sigma77_over_sigma1_min": 0.09424299726541066,
+    "sigma78_over_sigma1_max": 1.38168360353536e-16,
+    "sigma78_over_sigma1_min": 5.2932537408440844e-17,
+    "sigma_min_max": 1.6953005575433217e-15,
+    "sigma_min_min": 9.683514587622344e-18,
+    "sigma_min_over_sigma_max_max": 3.1840171779886994e-17,
+    "sigma_min_over_sigma_max_min": 1.762529612481113e-19,
+    "source_dir": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH37_EXACT_RANK_DESCRIPTIVE_SVD_ADJUDICATION_V0_SOURCE_5d145b986bfb/BRANCH37_EXACT_RANK_DESCRIPTIVE_SVD_ADJUDICATION_V0_SOURCE",
+    "source_file_sha256": "5d145b986bfb74653243c870ca579b35749f5704ab531e45c5cfdfc0fd235aff",
+    "source_manifest_sha256": "79f5427eafe6552b4680ae0fa48f05ff8a65b97334712ee5150a3705f354d3ca"
+  },
+  "git_mutation": false,
+  "new_rank_computation_during_closure": false,
+  "new_scientific_gate_evaluation_during_closure": false,
+  "new_scientific_worlds_during_closure": 0,
+  "new_svd_computation_during_closure": false,
+  "parent_branch36": {
+    "closure_digest": "ca8c607b264af133513fb7a74d2e00c06bff930ab7f15292049531683695541a",
+    "closure_dir": "/mnt/primesauce/Geometric_Reasoning/ScientificClosure/BRANCH36_ECS_S3_WIDTH_TRANSFER",
+    "closure_manifest_sha256": "a14ba9c62343dfb58f4f1429a39e87a5e5d13f2acfb9f34d21713274b1484b18"
+  },
+  "precommit_authority": {
+    "precommit_digest": "7077368dd7e4a67d28d52b284320f46335a8275db669b2bf057f02150b39b05e",
+    "q_coordinate_contract_digest": "ebc0b6451d95db4071d2d00ed8d879bdcf7bc5f52d2385cd0833c905e5ec8dd1",
+    "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH37_S3_FEATURE_MATRIX_IDENTIFIABILITY_PRECOMMIT_R1",
+    "qdir_manifest_sha256": "71604ef2e8ebdbb4245b53ae2fe9562e20eb80c171001c36c2cf8bb3de26b1e6",
+    "qualification_digest": "b66576cbecbe5d8dfd0abc10b4134243e8364310f375253f5879797c3655078d",
+    "question_digest": "eac1ee0f3f9526e908311de31cd8425575d3ba8db7dd727c581ba9671e9e9bcd",
+    "rank_adjudication_contract_digest": "8008a6cc72fe2d3f837b0f2ae7bc912d406bbeed4b3b90ea88555537ce264957",
+    "source_dir": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH37_S3_FEATURE_MATRIX_IDENTIFIABILITY_PRECOMMIT_R1_SOURCE_4fe53d8ba97c/BRANCH37_S3_FEATURE_MATRIX_IDENTIFIABILITY_PRECOMMIT_R1_SOURCE",
+    "source_manifest_sha256": "4fe53d8ba97c537b6a4009e5eb4f67633dbd381cb635363ec333fb1fba316466",
+    "world_train_panel_seed_binding_digest": "e9e8b16e92dfe509a84191bf9169439f091def1a0b965c73ca15f2cac59685a8"
+  },
+  "schema": "elpis.branch37.s3_feature_matrix_identifiability.closure_evidence_authority.v0",
+  "scientific_gate_accounting": {
+    "exact_rank_distribution": {
+      "83": 144
+    },
+    "gate_count": 144,
+    "gate_fail_count": 0,
+    "gate_pass_count": 144
+  },
+  "scientific_model_steps_during_closure": 0,
+  "source_binding": {
+    "source_dir": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH37_S3_FEATURE_MATRIX_IDENTIFIABILITY_SCIENTIFIC_CLOSURE_V0_SOURCE_7010d60146c0/BRANCH37_S3_FEATURE_MATRIX_IDENTIFIABILITY_SCIENTIFIC_CLOSURE_V0_SOURCE",
+    "source_file_sha256": "7010d60146c08bad56dba7b359c67efc27a76bb40640bceaa9cba6d3f70e9048",
+    "source_manifest_sha256": "9d68fefcb6914ad4e5ce1bf1d65a246766879280683503cb687c3fbc82d8a11d"
+  },
+  "thresholds_changed": false,
+  "train_panel_q_interface_authority": {
+    "interface_certificate_digest": "1e3813bd34a3e6c6ccd1cd94de7904474316b478d4df454ea1c1ad20c7631325",
+    "qdir": "/mnt/primesauce/Geometric_Reasoning/qualification/BRANCH37_TRAIN_PANEL_Q_INTERFACE_QUALIFICATION_V0",
+    "qdir_manifest_sha256": "2c8618c4cb87a64f4c0060f90b7a2d60659988bdec39ce54cc3c640ec7df7225",
+    "qualification_digest": "a20e2bec9ce6f8cca90d4ec22f352672ef356ad6b9d39323d0b5c8886cb67ec6",
+    "source_dir": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH37_TRAIN_PANEL_Q_INTERFACE_QUALIFICATION_V0_SOURCE_f3b94a9d2966/BRANCH37_TRAIN_PANEL_Q_INTERFACE_QUALIFICATION_V0_SOURCE",
+    "source_manifest_sha256": "e4ce4c368504801b431500f74b4a95a1dbf74b4813e2cef55f92c1109946a5e8"
+  },
+  "upstream_pre_post_exact_match": true
+}

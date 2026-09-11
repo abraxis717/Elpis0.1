@@ -46,8 +46,8 @@ def authority_copy(tmp_path):
     target.mkdir(parents=True)
     for name in (*EXPECTED, "SHA256SUMS"):
         (target / name).write_bytes((REPO_ROOT / AUTHORITY_DIR / name).read_bytes())
-    (tmp_path / "ECS_AUTHORITY_HEADER.md").write_bytes(
-        (REPO_ROOT / "ECS_AUTHORITY_HEADER.md").read_bytes())
+    (tmp_path / "ECS/ECS_AUTHORITY_HEADER.md").write_bytes(
+        (REPO_ROOT / "ECS/ECS_AUTHORITY_HEADER.md").read_bytes())
     return tmp_path
 
 
@@ -70,7 +70,7 @@ def test_authority_symlinks_fail_closed_inside_fixture(authority_copy, target):
         root = link
     else:
         paths = {
-            "header": authority_copy / "ECS_AUTHORITY_HEADER.md",
+            "header": authority_copy / "ECS/ECS_AUTHORITY_HEADER.md",
             "manifest": authority_copy / AUTHORITY_DIR / "SHA256SUMS",
             "entry": authority_copy / AUTHORITY_DIR / "README.md",
             "directory": authority_copy / AUTHORITY_DIR,
@@ -84,7 +84,7 @@ def test_authority_symlinks_fail_closed_inside_fixture(authority_copy, target):
 
 
 def test_header_tamper_and_manifest_byte_pin(authority_copy):
-    header = authority_copy / "ECS_AUTHORITY_HEADER.md"
+    header = authority_copy / "ECS/ECS_AUTHORITY_HEADER.md"
     original = header.read_bytes()
     header.write_bytes(original + b"\n")
     with pytest.raises(R0Error, match="AUTHORITY_HEADER_DIGEST"):

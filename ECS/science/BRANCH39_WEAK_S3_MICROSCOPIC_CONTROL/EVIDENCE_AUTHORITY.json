@@ -1,0 +1,18 @@
+{
+  "Branch35_38_pre_post_exact_match": true,
+  "R8_material_consumed": false,
+  "amplitude_freeze_digest": "0063c137952ce3f3d1a0eb2ebae011c49aefa9c91096b1b507b7f23bd587bc73",
+  "branch": 39,
+  "branch38_predecessor_digest": "6fd656cacb55758dbc5bb8434ec3aa99fc6cb829763602fc447ee292a90d1654",
+  "branch40_material_generated": false,
+  "closure_executes_new_science": false,
+  "deterministic_rerun_digest": "72cf9dd855159b3da4d56ba6af9aa86af0bd5d1a86fb1fd5f62f42f33613cc3f",
+  "evidence_authority_digest": "cea69556bb6e27aa7452282ca5938efd64f518067eb7fbf3a8a85091fd37e0f7",
+  "final_adjudication_digest": "32d81d2e2a844759a5de5438ce71a10cf6a5b50f6da527fe17550b02abab0371",
+  "future_GD_steps_after_intervention": 0,
+  "git_mutation": false,
+  "mechanics_qualification_digest": "8b8b61e0848793f5764e0fc88b7c86097c13c6de56f4d920d910541f380690ae",
+  "precommit_digest": "3a29639e0b8422aff8006d41bef5f1268fc1721c00a99f2dbcf876a2f3f9d6b5",
+  "schema": "elpis.branch39.evidence_authority.v0",
+  "scientific_evidence_digest": "9ad3b9a2417aeebb6ac95f43f616e914673566b124ce9a8695d3a30a04754e67"
+}

@@ -1,0 +1,17 @@
+{
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch41_material_generated": false,
+  "ledger_digest": "64a7edc62faffeb8cb75c93414ecfd10d4d3d91335ba0b978d80520fdacd9d3e",
+  "mechanics_worlds_excluded_from_science": 9,
+  "pooled_rescues": 0,
+  "posthoc_basis_changes": 0,
+  "posthoc_horizon_changes": 0,
+  "posthoc_threshold_changes": 0,
+  "schema": "elpis.branch40.failure_and_exclusion_ledger.v0",
+  "scientific_world_exclusions": [],
+  "scientific_world_replacements": 0,
+  "scientific_worlds_executed": 144,
+  "scientific_worlds_planned": 144,
+  "unmaterialized_splits": []
+}

@@ -2,7 +2,7 @@
 
 **A deterministic structural-reasoning architecture for bounded learned proposals, explicit authority, and falsifiable runtime composition.**
 
-**Release line: Elpis2.1.22**
+**Release line: Elpis2.1.23**
 
 Elpis is a systems-research project about a narrow question: can learned components contribute useful structural proposals while deterministic machinery retains ownership of representation, admissibility, authority, validation, and terminal action?
 
@@ -11,6 +11,14 @@ The repository is intentionally decomposed. It contains several qualified public
 That decomposition matters. A component can be present, qualified, and useful without being runtime-admitted into every other component. Evidence can establish a mechanism without granting that mechanism authority. A proposal can improve without becoming executable. A structural contract can be public and executable while still lacking a qualified semantic binding into another subsystem.
 
 Elpis therefore presents itself as a falsifiable research artifact rather than a general intelligence claim. It does **not** claim solved alignment, trusted natural-language understanding, general Grid81 satisfiability, unrestricted autonomous execution, autonomous implementation synthesis, cross-process attestation, AGI, or ASI.
+
+## Release Notes
+
+**Elpis2.1.23** consolidates the public ECS surface and publishes the closed Branch35–40 scientific evidence without rewriting its bytes. The root release-note files are also consolidated into a single archive.
+
+- Current notes: [`RELEASE_NOTES/Elpis2.1.23.md`](RELEASE_NOTES/Elpis2.1.23.md)
+- Release-note archive: [`RELEASE_NOTES/`](RELEASE_NOTES/)
+- ECS authority and science: [`ECS/`](ECS/)
 
 ## Install and quick start
 
@@ -675,13 +683,14 @@ The repository contains several distinct authority and implementation roots:
 | `native/elpis-header/` | Header/runtime-side Grid81 observation integration. |
 | `runtime/R0/` | Historical deterministic offline structural transaction integration. |
 | `runtime/R1/` | Historical bounded HACF retrieval + R0 integration. |
-| `ECS_AUTHORITY/STRUCTURAL_R0/` | Normative public ECS Structural Authority R0 contract. |
+| `ECS/ECS_AUTHORITY/STRUCTURAL_R0/` | Normative public ECS Structural Authority R0 contract. |
+| `ECS/science/` | Closed Branch35–40 scientific evidence and adjudication lineage; evidence bytes remain authority-bound. |
 | `tests/` | Mechanism, determinism, integration, mutation, adversarial, and release tests. |
 | `manifests/` | Versioned release manifests and public component registry. |
 | `docs/` | Architecture, build, qualification, provenance, and release-policy documentation. |
 | `.github/` | Hosted qualification workflows. |
 | `CHANGELOG.md` | Development/release chronology. |
-| `RELEASE_NOTES_Elpis*.md` | Release-specific claim and qualification boundaries. |
+| `RELEASE_NOTES/` | Release-specific claim and qualification boundaries. |
 
 For current shipped-component truth, prefer `manifests/PUBLIC_COMPONENT_REGISTRY.json` over the broader internal canonical registry. For a component's detailed claim boundary, inspect its local README/manifest and corresponding tests rather than inferring capability from its name.
 

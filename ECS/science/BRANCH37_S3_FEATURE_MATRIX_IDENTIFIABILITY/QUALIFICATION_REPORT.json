@@ -1,0 +1,28 @@
+{
+  "R8_material_consumed": false,
+  "active_DEV_pre_post_exact_match": true,
+  "branch": 37,
+  "claim_digest": "1e240228440c5ce8fc1911f0fad54a524a149c510d3f73adc242f8ade834ab0c",
+  "closure_digest": "4155ab600034e7f4094eff6d5c83b7932d08f3723b6295ebc0c0cf88b1cd385f",
+  "closure_qualified": true,
+  "descriptive_numerical_rank_at_all_frozen_thresholds": "77/83 in 144/144 worlds",
+  "evidence_authority_digest": "6362426110adac7db2d5a22a9852c84112e1ad1666442618a3f9d539b28aa5f1",
+  "evidence_mutation": false,
+  "exact_rank_distribution": {
+    "83": 144
+  },
+  "exact_rank_gates": "144/144 PASS",
+  "freeze_digest": "282eeb667bab5b00430b765f59ad43be2d4c58bf24a42829ccd70975567f1c2c",
+  "git_mutation": false,
+  "new_rank_computation_during_closure": false,
+  "new_scientific_gate_evaluation_during_closure": false,
+  "new_scientific_worlds_during_closure": 0,
+  "new_svd_computation_during_closure": false,
+  "next_action": "BRANCH37_CLOSED_BEGIN_SEPARATE_POST_BRANCH37_PRECOMMIT_IF_DESIRED",
+  "qualification_digest": "fa55f4a9b46760d0eb35b0cf4c62c97e3d14f9108005ee2c434facab9610d092",
+  "schema": "elpis.branch37.s3_feature_matrix_identifiability.scientific_closure_qualification.v0",
+  "scientific_model_steps_during_closure": 0,
+  "status": "PASS_BRANCH37_S3_FEATURE_MATRIX_IDENTIFIABILITY_SCIENTIFIC_CLOSURE",
+  "thresholds_changed": false,
+  "upstream_pre_post_exact_match": true
+}

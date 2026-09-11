@@ -1,0 +1,39 @@
+{
+  "R8_material_consumed": false,
+  "branch": 38,
+  "branch39_material_generated": false,
+  "claim_ceiling": "Under the frozen d=6 cubic S3 feature construction and the prospectively fixed finite-panel regime, the 83-dimensional observation operator remains exactly identifiable while exhibiting a reproducible six-dimensional weak numerical singular tail [if supported], establishing strong finite-panel ill-conditioning rather than a reduced algebraic S3 dimension.",
+  "claim_digest": "79434c895d2475e6e0db019822b65cc566525f00308d2c76f99447475fef3dae",
+  "claim_limits": [
+    "finite-panel conditioning only",
+    "does not redefine S3 dimension",
+    "does not establish microscopic realizability",
+    "does not establish global functional equivalence",
+    "does not establish dynamics/Markov closure",
+    "does not touch Elpis integration"
+  ],
+  "forbidden_claims": [
+    "S3 is really 77-dimensional",
+    "six S3 coordinates are redundant",
+    "six coordinates may be discarded",
+    "Grid81 therefore fits S3",
+    "81-versus-83 dimensional coincidence has scientific significance",
+    "weak singular directions are exact null directions",
+    "coefficient-space directions are realizable microscopic ECS perturbations",
+    "exact function-preserving microscopic interventions have been demonstrated",
+    "Markov closure",
+    "T3 minimality",
+    "T3 uniqueness",
+    "memory",
+    "semantics",
+    "reasoning",
+    "attractor dynamics",
+    "Grid81 representability",
+    "TRM compatibility",
+    "Darwinian compatibility"
+  ],
+  "schema": "elpis.branch38.s3_weak_numerical_tail.scientific_claim.v0",
+  "scientific_claim": "Under the frozen d=6 cubic S3 feature construction and the prospectively fixed Branch38 finite-panel regime, all four construction panels retain exact rank 83 and exhibit a numerically resolved nonzero six-dimensional weak singular tail whose 320-dps weak right-singular subspace satisfies the precommitted cross-panel principal-angle stability criterion. This establishes reproducible finite-panel ill-conditioning, not a reduced algebraic S3 dimension.",
+  "status": "CLOSED_SCIENTIFIC_PASS",
+  "terminal_classification": "PASS_BRANCH38_STABLE_WEAK_TAIL"
+}

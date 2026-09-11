@@ -1,0 +1,17 @@
+{
+  "R8_material_consumed": false,
+  "branch": 37,
+  "claim_digest": "1e240228440c5ce8fc1911f0fad54a524a149c510d3f73adc242f8ade834ab0c",
+  "closure_digest": "4155ab600034e7f4094eff6d5c83b7932d08f3723b6295ebc0c0cf88b1cd385f",
+  "closure_is_immutable_scientific_authority": true,
+  "evidence_authority_digest": "6362426110adac7db2d5a22a9852c84112e1ad1666442618a3f9d539b28aa5f1",
+  "freeze_digest": "282eeb667bab5b00430b765f59ad43be2d4c58bf24a42829ccd70975567f1c2c",
+  "interface_certificate_digest": "1e3813bd34a3e6c6ccd1cd94de7904474316b478d4df454ea1c1ad20c7631325",
+  "parent_branch36_closure_digest": "ca8c607b264af133513fb7a74d2e00c06bff930ab7f15292049531683695541a",
+  "precommit_digest": "7077368dd7e4a67d28d52b284320f46335a8275db669b2bf057f02150b39b05e",
+  "rank_freeze_digest": "5383a9f6ca6817bb5fa75f89373c1e03fa6b81621878cbf762c781fca8202b6d",
+  "rank_gate_vector_digest": "c876f2bcb4c07665dadccbe2bd4a8df500d8f7ab62dc77c41284b3078e248ea7",
+  "rank_report_digest": "1e285255d53e160ad001543377f325460755f539d6095cdc98d4218d8d3a52e9",
+  "schema": "elpis.branch37.s3_feature_matrix_identifiability.scientific_closure_freeze.v0",
+  "status": "PASS_BRANCH37_S3_FEATURE_MATRIX_IDENTIFIABILITY_SCIENTIFIC_CLOSURE"
+}

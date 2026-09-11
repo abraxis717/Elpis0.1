@@ -143,6 +143,12 @@ RELEASE_IDENTITIES = {
         # Original Elpis2.0.0 distribution baseline, not immediate predecessor.
         "base_release_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
     },
+    "2.1.23": {
+        # ECS evidence/layout and release-note archive successor; primitive/runtime closure unchanged.
+        "primitive_closure_commit": "482d4064321392108b87124cd47343d9c748f5bc",
+        # Original Elpis2.0.0 distribution baseline, not immediate predecessor.
+        "base_release_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
+    },
 }
 RELEASE_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.RELEASE_MANIFEST.json")
 DISTRIBUTION_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.DISTRIBUTION_MANIFEST.json")
@@ -376,7 +382,7 @@ _DECLARED_TEXT_VERSION_PATTERNS = {
         r"([0-9]+\.[0-9]+\.[0-9]+)"
         r"\*\*[ \t]*$"
     ),
-    "RELEASE_NOTES.md": re.compile(
+    f"RELEASE_NOTES/Elpis{RELEASE_VERSION}.md": re.compile(
         r"(?m)^## Version: v"
         r"([0-9]+\.[0-9]+\.[0-9]+)"
         r"[ \t]*$"

@@ -1,0 +1,12 @@
+{
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch41_material_generated": false,
+  "claim_digest": "94543c4f5c66ed758e1390c47bda677179c76118246fc7ce8b252768b1b48fcb",
+  "closure_digest": "f8a555526f5ea36842cf68da4a8a9059ce4b713f3f7dd3ff634de18c44cffdf5",
+  "closure_freeze_digest": "d2c42af386395d773ddcb4582d5cc741e899cb4fe68aadb8c53905f28a94ab19",
+  "evidence_authority_digest": "401c992eddc89cd0b0eff36ecda80e28cd06a8675e4c0bb07be23cea5db632ec",
+  "immutable": true,
+  "schema": "elpis.branch40.scientific_closure_freeze.v0",
+  "status": "PASS_BRANCH40_WEAK_S3_DYNAMICAL_RELEVANCE"
+}

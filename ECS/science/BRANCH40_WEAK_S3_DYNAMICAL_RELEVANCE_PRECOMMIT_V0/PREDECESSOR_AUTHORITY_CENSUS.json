@@ -1,0 +1,49 @@
+{
+  "R8_material_consumed": false,
+  "branch": 40,
+  "branch36": {
+    "engine_dir": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH36_ECS_S3_WIDTH_TRANSFER_MECHANICS_V0_SOURCE_ef9d87a041d4/BRANCH36_ECS_S3_WIDTH_TRANSFER_MECHANICS_V0_SOURCE",
+    "engine_file_sha256": "e27abb2023ffce68437ad7af28c28e986367c42be434230d28b319ea993f7997",
+    "engine_manifest_sha256": "ef9d87a041d45b7bd22b5746361217c6f0fa010d155ac99c311618395f896b71",
+    "horizons": [
+      1,
+      4,
+      16,
+      64
+    ],
+    "split_A_observer_dir": "/mnt/primesauce/Geometric_Reasoning/observer/BRANCH36_ECS_S3_WIDTH_TRANSFER_SPLIT_A",
+    "split_A_observer_manifest_sha256": "507936b5f5ecb64a4d48709442d6758fcb851c5a9f1d72ce8da69df07274ba9d"
+  },
+  "branch39": {
+    "amplitude_freeze_digest": "0063c137952ce3f3d1a0eb2ebae011c49aefa9c91096b1b507b7f23bd587bc73",
+    "claim_digest": "eeecce68354d7b148c274a4c0a9aff1c0879900bd8f313e8bca5386b00bfcd78",
+    "closure_digest": "e8ec0b77aa27520330fa77a278876cffb035b112d044a7a99a2fbef94273bd2c",
+    "closure_dir": "/mnt/primesauce/Geometric_Reasoning/ScientificClosure/BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL",
+    "closure_freeze_digest": "340d71547c1a96a0b1e166ad926443e8da9a45002a305ba2e30a75735a75641d",
+    "closure_manifest_sha256": "86744150d28e8d188573d42b4ce273fa1f301202ca63250b0f08eded795a8d16",
+    "evidence_authority_digest": "cea69556bb6e27aa7452282ca5938efd64f518067eb7fbf3a8a85091fd37e0f7",
+    "mechanics_qualification_digest": "8b8b61e0848793f5764e0fc88b7c86097c13c6de56f4d920d910541f380690ae",
+    "precommit_digest": "3a29639e0b8422aff8006d41bef5f1268fc1721c00a99f2dbcf876a2f3f9d6b5",
+    "precommit_manifest_sha256": "44b1b536223afe0078b1bb69fb7937a18cc08fc19f108eae12c84ceb38ea624d",
+    "projector_authority_digest": "c1afd212b52fe830bfc7bcf44fd0162c08fef546c3e892b555dc012655a168f1",
+    "projector_digest": "775ba97dd564d28d38f6d7aa7dee1e32ca97dfdfa211196c8c296ffcf34aeec2",
+    "qualification_digest": "f448f387ab9354178e5bddf21d2cf397cd00aaabb343ecec29edfa2627d20cd3",
+    "scientific_evidence_digest": "9ad3b9a2417aeebb6ac95f43f616e914673566b124ce9a8695d3a30a04754e67",
+    "seed_plan_digest": "f52145bc9d6d29b55a8164e31e5247972c087c82821465caca6416a27baf295e",
+    "source_dir": "/mnt/primesauce/Geometric_Reasoning/source/BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL_V0_SOURCE_2febdc53a03f/BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL_V0_SOURCE",
+    "source_file_sha256": "2febdc53a03fb9af9b85d186b618de9792f1fd8094ea7b6c56431d0466de63c2",
+    "source_manifest_sha256": "e7d2570849d1f6e2f6f6f8189a2aa50d6aa457fad4643fc74e4e0117a59d3375",
+    "specification_digest": "a812e5539f3a3420da59df231078b3a4ac4332f704e472a4828a4be1091f8076",
+    "split_digests": {
+      "A": "e152b3e51dabd0dd2dc5c1c220d3a054ddb56915d8cfd9c29f60a12c9ed2e80c",
+      "B": "cc905854f70baac97e23bbe7e0ad1845890933ec71d5fc8e88e059fa435d26f0",
+      "C": "da35a9e466e00bfc5beb3165b34b283a8bae9e986b05fad61783f95a9425e701"
+    }
+  },
+  "predecessor_census_digest": "320bce59d1abde504ead7d72f7c39bcdeba80521cb8e3602593b93189ace1ed4",
+  "predecessor_file_entry_count": 1511,
+  "predecessor_path_count": 150,
+  "predecessor_scope": "Branch35-39 source/qualification/observer/ScientificClosure paths",
+  "predecessor_snapshot_digest": "4399c9ec4043da3b6b1832e202760db28a47fec1c396708fa7a0cf2c2b4f322d",
+  "schema": "elpis.branch40.predecessor_authority_census.v0"
+}

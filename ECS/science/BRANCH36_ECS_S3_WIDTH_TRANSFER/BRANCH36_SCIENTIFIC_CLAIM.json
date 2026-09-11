@@ -1,0 +1,45 @@
+{
+  "R8_material_consumed": false,
+  "S3_dimension": 83,
+  "branch": 36,
+  "claim_digest": "10dae87ba87669843068c12b9aa1136ad48a6ecf1ddd07983d0947741afd1af3",
+  "claim_limits": [
+    "empirical claim is restricted to the exact frozen Branch36 regime",
+    "does not establish a universal causal state",
+    "does not establish exact dynamical Markov closure",
+    "does not establish necessity",
+    "does not establish minimality",
+    "does not establish universal sufficiency",
+    "does not authorize post-hoc threshold, width, learning-rate, seed, split-size, or comparison-group changes"
+  ],
+  "d": 6,
+  "gate_accounting": {
+    "final_pooled": "20/20 PASS",
+    "final_width": "57/57 PASS",
+    "split_gates": {
+      "A": "57/57 PASS",
+      "B": "57/57 PASS",
+      "C": "57/57 PASS"
+    },
+    "split_total": "171/171 PASS",
+    "total_frozen_gate_objects_evaluated": 248,
+    "total_frozen_gate_objects_passed": 248
+  },
+  "no_cross_width_rescue": true,
+  "schema": "elpis.branch36.ecs_s3_width_transfer.scientific_claim.v0",
+  "scientific_claim": "Under the exact frozen Branch36 ECS S3 Width Transfer regime, varying only raw microscopic width across N in {36,48,72}, S3=(mu,M,T3) transfers the Branch35 result as a privileged intervention-supported approximate local dynamical macrostate relative to S2 and RAND83: all A/B/C split gates passed independently at every width, all frozen final-width gates passed independently at every width, and all frozen final pooled gates passed.",
+  "status": "CLOSED_SCIENTIFIC_PASS",
+  "tested_widths": [
+    36,
+    48,
+    72
+  ],
+  "theorem_context": "For the frozen cubic primitive phi(z)=0.5 z + 0.5 z^2 + 0.5 z^3 with raw-sum forward map, S3 exactly determines the instantaneous forward function. This theorem about the current function does not imply exact dynamical Markov closure under microscopic training.",
+  "thresholds_changed": false,
+  "title": "ECS S3 Width Transfer",
+  "width_pass": {
+    "36": true,
+    "48": true,
+    "72": true
+  }
+}

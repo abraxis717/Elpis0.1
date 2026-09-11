@@ -1,0 +1,36 @@
+{
+  "R8_material_consumed": false,
+  "S3_dimension": 83,
+  "branch": 37,
+  "canonical_world_count": 144,
+  "claim_digest": "1e240228440c5ce8fc1911f0fad54a524a149c510d3f73adc242f8ade834ab0c",
+  "claim_limits": [
+    "restricted to the 144 canonical Branch36 training panels and the exact frozen Branch37 construction",
+    "exact-rank statement uses exact dyadic interpretation of the realized float64 coordinates",
+    "does not establish well-conditioned inversion",
+    "does not establish robust identifiability under finite tolerance",
+    "does not establish impossibility of approximate output-preserving S3 change",
+    "does not identify or adjudicate the mechanism of the six descriptive near-null directions",
+    "does not perform perturbation-scaling or transition-dynamics science"
+  ],
+  "descriptive_numerical_caveat": "The same 144 Q matrices have descriptive float64 numerical rank 77 under every precommitted SVD threshold. Accordingly, Branch37 does not establish numerically robust or approximate identifiability and does not rule out approximate training-output preservation accompanied by nontrivial S3 change.",
+  "descriptive_numerical_rank_result": "144/144 worlds numerical rank 77 at all four frozen thresholds",
+  "exact_rank_result": "144/144 worlds exact rank 83",
+  "schema": "elpis.branch37.s3_feature_matrix_identifiability.scientific_claim.v0",
+  "scientific_claim": "Under the exact frozen Branch37 interpretation of the actual float64 Branch36 training panels as exact dyadic rationals, the S3 feature matrix Q has exact column rank 83 in all 144 canonical worlds. Therefore exact preservation of every training output forces DeltaS3=0 for every canonical panel.",
+  "sigma77_over_sigma1_range": [
+    0.09424299726541066,
+    0.14952110281382275
+  ],
+  "sigma78_over_sigma1_range": [
+    5.2932537408440844e-17,
+    1.38168360353536e-16
+  ],
+  "sigma_min_over_sigma_max_range": [
+    1.762529612481113e-19,
+    3.1840171779886994e-17
+  ],
+  "status": "CLOSED_SCIENTIFIC_PASS",
+  "thresholds_changed": false,
+  "title": "S3 Feature-Matrix Rank / Training-Output Identifiability"
+}

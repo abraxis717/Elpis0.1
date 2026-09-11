@@ -22,7 +22,7 @@ PRIMITIVE = "745fe2d762568dced27b9ff55e373ea40943f5104d24d995c30847052044ec90"
 GAUGE = "BOUND_ARRAY_COLUMN_ORDER_G0"
 WIDTHS = (36, 48, 72)
 DEFAULT_ROOT = Path(__file__).absolute().parents[2]
-AUTHORITY_DIR = "ECS_AUTHORITY/STRUCTURAL_R0"
+AUTHORITY_DIR = "ECS/ECS_AUTHORITY/STRUCTURAL_R0"
 AUTHORITY_ROOT_ENV = "ELPIS_ECS_AUTHORITY_ROOT"
 # Public release pins also reject a self-consistently rewritten manifest.
 EXPECTED = {
@@ -105,7 +105,7 @@ def verify_authority(root: Path | str | None = None) -> str:
         _require(entries == EXPECTED, "AUTHORITY_MANIFEST_ENTRIES")
         _require(hashlib.sha256(raw).hexdigest() == MANIFEST_SHA256,
                  "AUTHORITY_MANIFEST_DIGEST")
-        header = root / "ECS_AUTHORITY_HEADER.md"
+        header = root / "ECS/ECS_AUTHORITY_HEADER.md"
         _require(not header.is_symlink(), "AUTHORITY_SYMLINK")
         _require(header.is_file(), "AUTHORITY_UNREADABLE")
         _require(hashlib.sha256(header.read_bytes()).hexdigest() == HEADER_SHA256,

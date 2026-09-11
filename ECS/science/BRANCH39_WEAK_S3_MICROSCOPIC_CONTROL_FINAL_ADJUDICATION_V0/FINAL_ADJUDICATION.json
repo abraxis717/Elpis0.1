@@ -1,0 +1,40 @@
+{
+  "A_B_C_authorization_chain": {
+    "A": true,
+    "B": true,
+    "C": true
+  },
+  "R8_material_consumed": false,
+  "branch": 39,
+  "branch40_material_generated": false,
+  "final_adjudication_digest": "32d81d2e2a844759a5de5438ce71a10cf6a5b50f6da527fe17550b02abab0371",
+  "future_GD_steps_after_intervention": 0,
+  "no_pooled_rescue": true,
+  "per_width_adjudication": {
+    "36": {
+      "pass_count": 48,
+      "world_count": 48
+    },
+    "48": {
+      "pass_count": 48,
+      "world_count": 48
+    },
+    "72": {
+      "pass_count": 48,
+      "world_count": 48
+    }
+  },
+  "pooled_adjudication": {
+    "can_rescue_width_or_split": false,
+    "pass_count": 144,
+    "world_count": 144
+  },
+  "schema": "elpis.branch39.final_adjudication.v0",
+  "scientific_evidence_digest": "9ad3b9a2417aeebb6ac95f43f616e914673566b124ce9a8695d3a30a04754e67",
+  "terminal_scientific_state": "PASS_BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL",
+  "worlds_per_width": {
+    "36": 48,
+    "48": 48,
+    "72": 48
+  }
+}

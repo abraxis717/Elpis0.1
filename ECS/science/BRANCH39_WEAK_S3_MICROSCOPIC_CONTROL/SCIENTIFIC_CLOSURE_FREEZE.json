@@ -1,0 +1,11 @@
+{
+  "R8_material_consumed": false,
+  "branch": 39,
+  "claim_digest": "eeecce68354d7b148c274a4c0a9aff1c0879900bd8f313e8bca5386b00bfcd78",
+  "closure_digest": "e8ec0b77aa27520330fa77a278876cffb035b112d044a7a99a2fbef94273bd2c",
+  "closure_freeze_digest": "340d71547c1a96a0b1e166ad926443e8da9a45002a305ba2e30a75735a75641d",
+  "evidence_authority_digest": "cea69556bb6e27aa7452282ca5938efd64f518067eb7fbf3a8a85091fd37e0f7",
+  "immutable": true,
+  "schema": "elpis.branch39.scientific_closure_freeze.v0",
+  "status": "PASS_BRANCH39_WEAK_S3_MICROSCOPIC_CONTROL"
+}

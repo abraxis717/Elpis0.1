@@ -247,3 +247,48 @@ class TestRunScan:
         assert result["clean"] is False
         assert result["total_findings"] > 0
         assert len(result["secrets"]) > 0
+
+
+class TestBoundedPrivatePathAllowlist:
+    @staticmethod
+    def _write_bound_repo(tmp_path, content: str, count: int = 1):
+        import hashlib
+        tools = tmp_path / "tools"
+        tools.mkdir()
+        evidence = tmp_path / "evidence.md"
+        evidence.write_text(content, encoding="utf-8")
+        literal = "/mnt/primesauce"
+        entry = {
+            "path": "evidence.md",
+            "kind": "PRIVATE_PATH",
+            "sha256": hashlib.sha256(literal.encode()).hexdigest(),
+            "count": count,
+            "file_sha256": hashlib.sha256(evidence.read_bytes()).hexdigest(),
+        }
+        (tools / "public_scan_allowlist.json").write_text(json.dumps([entry], indent=2) + "\n")
+        return evidence
+
+    def test_exact_bound_private_path_is_accepted(self, tmp_path):
+        self._write_bound_repo(tmp_path, "/mnt/primesauce/closed/evidence\n")
+        result = run_scan(str(tmp_path))
+        assert result["clean"] is True, result
+
+    def test_containing_file_digest_drift_is_rejected(self, tmp_path):
+        evidence = self._write_bound_repo(tmp_path, "/mnt/primesauce/closed/evidence\n")
+        evidence.write_text(evidence.read_text() + "changed\n")
+        result = run_scan(str(tmp_path))
+        assert result["clean"] is False
+        assert any("INVALID ALLOWLIST" in x for x in result["private_paths"])
+
+    def test_stale_count_is_rejected(self, tmp_path):
+        self._write_bound_repo(tmp_path, "/mnt/primesauce/closed/evidence\n", count=2)
+        result = run_scan(str(tmp_path))
+        assert result["clean"] is False
+        assert any("STALE ALLOWLIST ENTRY" in x for x in result["private_paths"])
+
+    def test_unallowlisted_private_path_is_rejected(self, tmp_path):
+        self._write_bound_repo(tmp_path, "/mnt/primesauce/closed/evidence\n")
+        (tmp_path / "other.md").write_text("/home/joe/new/path\n")
+        result = run_scan(str(tmp_path))
+        assert result["clean"] is False
+        assert any("not allowlisted" in x for x in result["private_paths"])
