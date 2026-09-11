@@ -1,0 +1,106 @@
+{
+  "dependency_edges": [
+    {
+      "from": "Grid81_Atomic_Canonical_Publisher",
+      "to": "G53c_Capability_Application_Executor"
+    },
+    {
+      "from": "Grid81_Atomic_Canonical_Publisher",
+      "to": "Grid81_Canonical_Promotion_Authority"
+    },
+    {
+      "from": "Grid81_Atomic_Canonical_Publisher",
+      "to": "Grid81_Canonical_Substrate"
+    },
+    {
+      "from": "Grid81_Canonical_Candidate_Constructor",
+      "to": "G53b_Capability_Consumption_Compiler"
+    },
+    {
+      "from": "Grid81_Canonical_Candidate_Constructor",
+      "to": "Grid81_Canonical_Promotion_Authority"
+    },
+    {
+      "from": "Grid81_Canonical_Candidate_Constructor",
+      "to": "Grid81_Canonical_Substrate"
+    },
+    {
+      "from": "Grid81_Canonical_Promotion_Authority",
+      "to": "G53c_Capability_Application_Executor"
+    },
+    {
+      "from": "Grid81_Canonical_Promotion_Authority",
+      "to": "G53e_Canonical_Promotion_Planner"
+    },
+    {
+      "from": "Grid81_Canonical_Promotion_Authority",
+      "to": "Grid81_Canonical_Substrate"
+    }
+  ],
+  "graph_id": "GRID81_WRITER_CHAIN_SUCCESSOR_DEPENDENCY_GRAPH_R0",
+  "graph_self_hash": "a46d76151f2f9b3d8d3b3f500d9e3c73b561cab8e043fe5c3ed420f88d46fc45",
+  "graph_self_hash_contract": "sha256(canonical-json(graph without graph_self_hash))",
+  "legacy_assembly_bindings": [
+    {
+      "path": "ELPIS_CANONICAL_MANIFEST.json",
+      "sha256": "1f48892c45c29c713d45c9cacc58314235589cc4984156ad9113f705ec22ba00",
+      "size": 4675
+    },
+    {
+      "path": "manifests/PUBLIC_COMPONENT_REGISTRY.json",
+      "sha256": "125af908252a6029e4b22e645f09aca43de5f04f590cf94487e13b53553c863c",
+      "size": 4534
+    },
+    {
+      "path": "manifests/PUBLIC_DEPENDENCY_GRAPH.json",
+      "sha256": "f977e342820bf861fd49584d1c1cf4d2367677667cc5b7a1c0d24e2f80777ad4",
+      "size": 1540
+    }
+  ],
+  "legacy_assembly_expected": {
+    "canonical_component_count": 17,
+    "public_component_count": 16,
+    "successor_ids_absent_from_legacy": true
+  },
+  "legacy_external_nodes": [
+    "G53b_Capability_Consumption_Compiler",
+    "G53c_Capability_Application_Executor",
+    "G53e_Canonical_Promotion_Planner",
+    "Grid81_Canonical_Substrate"
+  ],
+  "public_registry_admission": false,
+  "registry_path": "manifests/GRID81_WRITER_CHAIN_SUCCESSOR_REGISTRY_R0.json",
+  "registry_self_hash": "4f5eeb1ce84d2fc48a5b74b5c3de55509954fe64f8724adc7b3093cbd8c23eef",
+  "runtime_admission": false,
+  "schema": "elpis.grid81.writer-chain.successor-dependency-graph.v1",
+  "successor_nodes": [
+    "Grid81_Atomic_Canonical_Publisher",
+    "Grid81_Canonical_Candidate_Constructor",
+    "Grid81_Canonical_Promotion_Authority"
+  ],
+  "writer_flow_edges": [
+    {
+      "from": "G53e_Canonical_Promotion_Planner",
+      "to": "Grid81_Canonical_Promotion_Authority"
+    },
+    {
+      "from": "Grid81_Canonical_Promotion_Authority",
+      "to": "Grid81_Canonical_Candidate_Constructor"
+    },
+    {
+      "from": "Grid81_Canonical_Candidate_Constructor",
+      "to": "Grid81_Atomic_Canonical_Publisher"
+    },
+    {
+      "from": "Grid81_Atomic_Canonical_Publisher",
+      "to": "Grid81_Canonical_Substrate"
+    }
+  ],
+  "writer_flow_nodes": [
+    "G53e_Canonical_Promotion_Planner",
+    "Grid81_Canonical_Promotion_Authority",
+    "Grid81_Canonical_Candidate_Constructor",
+    "Grid81_Atomic_Canonical_Publisher",
+    "Grid81_Canonical_Substrate"
+  ]
+}
