@@ -6,22 +6,62 @@ The supplied historical state is **canonical generation `000001`**, committed un
 
 ## Qualified mutation and replay boundary
 
-This repository contains no canonical-state writer for `HEAD.json` or generations.
-Durable canonical-state mutation, atomic publication, and cross-process replay
-rejection are outside this repository's qualified boundary. Reading a manifest
-that declares those properties does not independently establish how it was
-published or whether a capability was consumed by another process.
+The **Elpis2.1.16 released public boundary** is read-only: canonical generation
+`000001`, the production reader, and the runtime reducer are shipped there
+without an in-repository canonical writer.
 
-The capability evaluator's nonce is a deterministic digest-derived identity.
-Equal bound inputs produce equal nonce digests; the digest does not establish
-one-time consumption. `ApplicationLedger` maintains lists and sets in memory and
-proves consumption only within the same process-local ledger instance. A fresh
-ledger or process has no durable consumption history, and no cross-process
-synchronization or atomic publication is qualified here.
+The post-2.1.16 successor engineering lineage now contains a qualified,
+explicitly authorized writer chain outside the normal runtime read path:
 
-The historical `.authority_audit.json` was produced by a constant generator; its
-fields are historical assertions, not independent observations of authority,
-network use, mutation, or publication. All supplied state bytes remain frozen.
+```text
+Grid81DeterministicCanonicalPromotionPlanner
+        |
+        v
+Grid81DeterministicCanonicalPromotionAuthority
+        |
+        v
+Grid81DeterministicCanonicalCandidateConstructor
+        |
+        v
+DurableApplicationLedger reservation
+        |
+        v
+Grid81DeterministicCanonicalPublisher
+        |
+        v
+Canonical/Grid81
+        |
+        v
+canonical_reader.py post-verification
+```
+
+The boundaries are intentionally strict:
+
+- the promotion planner remains advisory, non-executable, non-self-applying,
+  and non-authoritative;
+- promotion authority issues a deterministic one-use capability only after an
+  explicit external operator-approval digest is supplied;
+- that digest binds approval input but is not claimed to authenticate a human,
+  prove private-key possession, or constitute a digital signature;
+- the candidate constructor works in an isolated output tree and must not
+  mutate live canonical state or consume the publication ledger;
+- the publisher requires the exact promotion capability rather than bare
+  digests;
+- the durable SQLite ledger provides cross-process reservation and replay
+  history for publication;
+- publication preserves all historical generation bytes, performs atomic
+  exchange, and verifies committed state through the production reader;
+- ECS world mutation remains unauthorized.
+
+The historical `.authority_audit.json` was produced by the original generation
+`000001` promotion flow. Its fields remain historical assertions rather than
+independent observations of authority, network use, mutation, or publication.
+
+The earlier process-local `ApplicationLedger` still proves consumption only
+inside one in-memory instance. It must not be confused with the later
+`DurableApplicationLedger`, which is the publication-reservation primitive used
+by the successor writer chain.
+
 
 ## Current runtime path
 
@@ -205,7 +245,7 @@ Qualified result:
 ## Development rules
 
 1. **Never modify `Canonical/Grid81` during reader, consumer, or integration development.**
-2. **No canonical-state writer is supplied or qualified here; runtime code must remain read-only.**
+2. **Runtime consumers remain read-only; canonical publication must use the separately authorized successor writer chain.**
 3. **Never create generation `000002` without a separately authorized promotion phase.**
 4. **Never add files to the canonical directory.**
 5. **Never treat a phase verifier as a runtime consumer.**
@@ -222,9 +262,14 @@ Grid81/canonical_reader.py
 Grid81/test_g53ig1_adversarial_runtime_consumer.py
 components/elpis_header/src/elpis_header/observer/grid81_reducer.py
 components/elpis_header/src/elpis_header/observer/__init__.py
+components/Grid81DeterministicCanonicalPromotionAuthority/src/elpis_grid81_promotion_authority/authority.py
+components/Grid81DeterministicCanonicalCandidateConstructor/src/elpis_grid81_candidate_constructor/constructor.py
+components/Grid81DeterministicCanonicalPublisher/src/elpis_grid81_canonical_publisher/publisher.py
+components/Grid81DeterministicCapabilityApplicationExecutor/src/elpis_grid81_application_executor/durable_ledger.py
+tests/test_grid81_canonical_writer_chain_r0.py
 ```
 
-The earlier documentation referenced `g53ie_production_atomic_grid81_canonical_promotion_executor.py`, which is absent from this repository. That historical reference does not qualify an in-repository writer. Available phase-named `g53i*` modules are qualification, forensic, or evidence machinery, not the normal runtime API.
+The earlier documentation referenced `g53ie_production_atomic_grid81_canonical_promotion_executor.py`. That historical phase executor remains absent and is not the successor writer API. The post-2.1.16 writer chain is implemented instead by the normal production components listed above. Available phase-named `g53i*` modules remain qualification, forensic, or evidence machinery rather than the runtime/publication API.
 
 ## Evidence and reports
 
@@ -254,12 +299,18 @@ G5.3I_COMPLETE
 
 ## Architectural boundary
 
-Grid81 now has three distinct layers:
+Grid81 now has distinct read and promotion layers:
 
 | Layer | Responsibility | Mutability |
 |---|---|---|
-| Canonical state | Sealed generation, authority, receipt, manifest and HEAD | Immutable after commit |
+| Canonical state | Generation history, authority, receipt, manifest and HEAD | Append-only through authorized publication |
 | Production reader | Validate and normalize canonical state | Read-only |
 | Runtime reducer | Convert canonical state into Elpis runtime state | Read-only |
+| Promotion planner | Advisory readiness and bounded intentions | Read-only / non-executable |
+| Promotion authority | Issue one-use publication capability from explicit bound authority | No canonical writes |
+| Candidate constructor | Build isolated immediate-successor candidate | Candidate tree only |
+| Durable publication ledger | Cross-process reservation and replay history | Durable ledger only |
+| Atomic publisher | Commit an authority-bound candidate and verify it | Canonical write boundary |
 
-Promotion and evidence generators remain outside this runtime path.
+Normal runtime consumers remain read-only. Promotion and publication require a
+separate explicit authority path and are not implicit runtime behavior.

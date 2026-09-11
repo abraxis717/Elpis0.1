@@ -224,6 +224,29 @@ The repository also contains qualified successor components that are not represe
 
 These components are useful evidence of bounded composition, but their presence does not imply general runtime admission.
 
+
+### 2.3 Post-2.1.16 canonical-writer engineering successor
+
+The released **Elpis2.1.16** public component registry remains the 16-component
+surface above. The following components were qualified later on the local
+successor engineering lineage and are **not yet entries** in
+`manifests/PUBLIC_COMPONENT_REGISTRY.json`:
+
+- [`Grid81DeterministicCanonicalPromotionAuthority`](components/Grid81DeterministicCanonicalPromotionAuthority/README.md) — converts an advisory promotion decision plus explicit external operator-approval binding into a deterministic one-use `ATOMIC_GRID81_CANONICAL_PROMOTION` capability. The approval digest is a binding, not a digital-signature or human-authentication claim.
+- [`Grid81DeterministicCanonicalCandidateConstructor`](components/Grid81DeterministicCanonicalCandidateConstructor/README.md) — constructs a complete isolated immediate-successor canonical candidate while leaving live canonical state and the publication ledger untouched.
+- [`Grid81DeterministicCanonicalPublisher`](components/Grid81DeterministicCanonicalPublisher/README.md) — performs authority-gated atomic publication with durable publication-ledger reservation, exact replay handling, historical-generation preservation, and production-reader post-verification.
+
+The application-executor component also now contains a durable SQLite-backed
+application ledger used for cross-process publication reservation. The
+repository-level writer-chain regression composes promotion authority,
+candidate construction, durable reservation, atomic publication, and the
+production reader in one bounded transaction.
+
+These successor components do not broaden model authority, do not authorize
+ECS world mutation, and do not make canonical mutation a background runtime
+behavior. Canonical publication remains an explicitly authorized transaction.
+
+
 ---
 
 ## 3. Structural-control path
@@ -244,13 +267,56 @@ The earlier C2R6-P0 greedy rank/locus allocator was independently shown incomple
 
 The successor allocator also carries a deterministic search-entry budget. `SEARCH_BUDGET_EXHAUSTED` is distinct from UNSAT or decomposition. The bounded qualification is not a theorem of universal Grid81 satisfiability.
 
-### 3.3 Canonical Grid81 state remains read-only
+### 3.3 Canonical Grid81 runtime remains read-only; promotion is explicit
 
-The repository ships canonical generation `000001`, a production reader, and a runtime reducer. Runtime resolution is HEAD-first through `Canonical/Grid81/HEAD.json`.
+The released **Elpis2.1.16** public runtime boundary remains read-only: it ships
+canonical generation `000001`, a production reader, and a runtime reducer, and
+it does not ship the post-2.1.16 writer-chain components described above.
 
-There is **no qualified in-repository writer** for canonical `HEAD.json` or future generations. Durable canonical-state mutation, atomic publication, and cross-process replay rejection remain outside this public runtime boundary. The Canonical Promotion Planner is planning machinery; its existence does not qualify a canonical-state writer.
+On the successor engineering lineage, a qualified in-repository canonical
+writer chain now exists, but it is deliberately separated from normal runtime
+consumption:
 
-The historical `.authority_audit.json` is not independent proof of its own claims. Process-local application ledgers do not establish cross-process one-time consumption.
+```text
+G5.3B/C/D evidence
+        |
+        v
+G5.3E advisory promotion plan
+        |
+        v
+explicit promotion authority
+        |
+        v
+one-use ATOMIC_GRID81_CANONICAL_PROMOTION capability
+        |
+        v
+isolated candidate constructor
+        |
+        v
+durable publication-ledger reservation
+        |
+        v
+atomic canonical publisher
+        |
+        v
+production-reader verification
+```
+
+The promotion planner remains non-executable and non-authoritative. The
+promotion-authority component requires an explicit external operator-approval
+digest and does not claim that the digest authenticates a human or constitutes
+a digital signature. The candidate constructor does not mutate live canonical
+state or consume the publication ledger. The publisher requires the exact
+promotion capability, rejects stale or mismatched authority, preserves prior
+generation bytes, reserves durable one-use publication state, performs atomic
+directory exchange, and verifies the committed result through the production
+reader.
+
+The historical `.authority_audit.json` remains historical evidence rather than
+independent proof of its own claims. Likewise, the original process-local
+`ApplicationLedger` should not be confused with the later durable publication
+ledger.
+
 
 ### 3.4 Bounded learned structural guidance
 

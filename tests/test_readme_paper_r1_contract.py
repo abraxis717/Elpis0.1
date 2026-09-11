@@ -92,7 +92,8 @@ def test_readme_preserves_critical_negative_boundaries():
     text = _readme()
     required = (
         "Repository coexistence does not imply runtime integration.",
-        "There is **no qualified in-repository writer**",
+        "The released **Elpis2.1.16** public runtime boundary remains read-only",
+        "Canonical publication remains an explicitly authorized transaction.",
         "E1 and E2 have not executed.",
         "Generated source does not execute.",
         "No generated source is executed by this path.",
@@ -101,3 +102,20 @@ def test_readme_preserves_critical_negative_boundaries():
     )
     for marker in required:
         assert marker in text
+
+
+def test_readme_distinguishes_successor_writer_chain_from_public_registry():
+    text = _readme()
+    required = (
+        "Post-2.1.16 canonical-writer engineering successor",
+        "Grid81DeterministicCanonicalPromotionAuthority",
+        "Grid81DeterministicCanonicalCandidateConstructor",
+        "Grid81DeterministicCanonicalPublisher",
+        "not yet entries",
+        "ATOMIC_GRID81_CANONICAL_PROMOTION",
+        "durable publication-ledger reservation",
+    )
+    for marker in required:
+        assert marker in text
+
+    assert "There is **no qualified in-repository writer**" not in text
