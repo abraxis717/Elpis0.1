@@ -193,22 +193,22 @@ The registered public components are:
 
 | Component | Public path | Role / boundary |
 |---|---|---|
-| `HACF_R3` | `native/hacf/` | Native deterministic HACF substrate. |
-| `Semantic_Structural_Spine_V1` | `native/semantic-spine/` | Native semantic/structural spine over HACF. |
-| `Grid81_Structural_Semantics` | `components/Grid81StructuralSemantics/` | Typed structural semantics for the Grid81 family. |
-| `Grid81_Typed_Projection_Compiler` | `components/Grid81TypedProjectionCompiler/` | Deterministic typed projection. |
-| `G50b_Structural_Group_Projection_Compiler` | `components/Grid81StructuralGroupProjectionCompiler/` | Structural group projection. |
-| `Grid81_Canonical_Substrate` | `components/Grid81/` | Read-only canonical Grid81 generation substrate. |
-| `TRMFractalSpine_Structural_Modules` | `components/TRMFractalSpine/` | Structural TRM contracts/refinement surfaces. |
-| `G51b_Deterministic_Structural_Adjudicator` | `components/Grid81DeterministicStructuralAdjudicator/` | Deterministic structural adjudication. |
-| `DarwinianMatrix` | `components/DarwinianMatrix/` | Structural clamp, Projector, and bounded refinement mechanisms. |
-| `P0ControlProtocol` | `components/Pipeline/P0ControlProtocol/` | P0 control, Semantic IR, projection, and validation contracts. |
-| `elpis_header` | `native/elpis-header/` | Native/header-side Grid81 runtime observation contract. |
-| `G52b_Capability_Authority_Evaluator` | `components/Grid81DeterministicCapabilityAuthorityEvaluator/` | Capability authority evaluation. |
-| `G53b_Capability_Consumption_Compiler` | `components/Grid81DeterministicCapabilityConsumptionCompiler/` | Capability-consumption compilation. |
-| `G53c_Capability_Application_Executor` | `components/Grid81DeterministicCapabilityApplicationExecutor/` | Bounded capability application. |
-| `G53e_Canonical_Promotion_Planner` | `components/Grid81DeterministicCanonicalPromotionPlanner/` | Canonical promotion planning; not an in-repository canonical-state writer. |
-| `CNumPyCortex` | `components/CNumPyCortex/` | Optional telemetry-to-Grid81 transport/recursion surface. |
+| [`HACF_R3`](native/hacf/README.md) | `native/hacf/` | Native deterministic HACF substrate. |
+| [`Semantic_Structural_Spine_V1`](native/semantic-spine/README.md) | `native/semantic-spine/` | Native semantic/structural spine over HACF. |
+| [`Grid81_Structural_Semantics`](components/Grid81StructuralSemantics/TEST_PLAN.md) | `components/Grid81StructuralSemantics/` | Typed structural semantics for the Grid81 family. |
+| [`Grid81_Typed_Projection_Compiler`](components/Grid81TypedProjectionCompiler/COMPONENT_MANIFEST.json) | `components/Grid81TypedProjectionCompiler/` | Deterministic typed projection. |
+| [`G50b_Structural_Group_Projection_Compiler`](components/Grid81StructuralGroupProjectionCompiler/README.md) | `components/Grid81StructuralGroupProjectionCompiler/` | Structural group projection. |
+| [`Grid81_Canonical_Substrate`](components/Grid81/README.md) | `components/Grid81/` | Read-only canonical Grid81 generation substrate. |
+| [`TRMFractalSpine_Structural_Modules`](components/TRMFractalSpine/README.md) | `components/TRMFractalSpine/` | Structural TRM contracts/refinement surfaces. |
+| [`G51b_Deterministic_Structural_Adjudicator`](components/Grid81DeterministicStructuralAdjudicator/README.md) | `components/Grid81DeterministicStructuralAdjudicator/` | Deterministic structural adjudication. |
+| [`DarwinianMatrix`](components/DarwinianMatrix/README.md) | `components/DarwinianMatrix/` | Structural clamp, Projector, and bounded refinement mechanisms. |
+| [`P0ControlProtocol`](components/Pipeline/P0ControlProtocol/README.md) | `components/Pipeline/P0ControlProtocol/` | P0 control, Semantic IR, projection, and validation contracts. |
+| [`elpis_header`](native/elpis-header/src/elpis_header/observer/README.md) | `native/elpis-header/` | Native/header-side Grid81 runtime observation contract. |
+| [`G52b_Capability_Authority_Evaluator`](components/Grid81DeterministicCapabilityAuthorityEvaluator/COMPONENT_MANIFEST.json) | `components/Grid81DeterministicCapabilityAuthorityEvaluator/` | Capability authority evaluation. |
+| [`G53b_Capability_Consumption_Compiler`](components/Grid81DeterministicCapabilityConsumptionCompiler/COMPONENT_MANIFEST.json) | `components/Grid81DeterministicCapabilityConsumptionCompiler/` | Capability-consumption compilation. |
+| [`G53c_Capability_Application_Executor`](components/Grid81DeterministicCapabilityApplicationExecutor/COMPONENT_MANIFEST.json) | `components/Grid81DeterministicCapabilityApplicationExecutor/` | Bounded capability application. |
+| [`G53e_Canonical_Promotion_Planner`](components/Grid81DeterministicCanonicalPromotionPlanner/COMPONENT_MANIFEST.json) | `components/Grid81DeterministicCanonicalPromotionPlanner/` | Canonical promotion planning; not an in-repository canonical-state writer. |
+| [`CNumPyCortex`](components/CNumPyCortex/README.md) | `components/CNumPyCortex/` | Optional telemetry-to-Grid81 transport/recursion surface. |
 
 The internal canonical manifest also retains historical/canonical identities that are not all physically shipped as public components. Public repository descriptions should use the public registry when stating what is actually shipped.
 
