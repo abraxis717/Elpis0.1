@@ -199,13 +199,18 @@ def _artifact() -> dict:
     return artifact
 
 
-def _authority_objects(artifact_digest: str):
+def _authority_objects(
+    artifact_digest: str,
+    structural_capability_digest: str | None = None,
+):
+    if structural_capability_digest is None:
+        structural_capability_digest = _h("structural-capability")
     chain = SourceChain(
         g53b1=_phase("G5.3B.1"),
         g53c=_phase(
             "G5.3C",
             artifact_digest=artifact_digest,
-            capability_digest=_h("structural-capability"),
+            capability_digest=structural_capability_digest,
             lifecycle_state="GRANTED_UNCONSUMED",
             receipt=_h("application-receipt"),
             state=_h("resulting-state"),
@@ -496,3 +501,36 @@ def test_manifest_authenticates_all_six_ordinary_files(
 
     assert entries["transaction_manifest"]["sha256"] == ""
     assert load_current_grid81(candidate).generation_number == 2
+
+
+def test_artifact_must_match_authorized_structural_capability(
+    current, ledger, tmp_path
+):
+    artifact = _artifact()
+    chain, decision, plan = _authority_objects(
+        artifact["artifact_digest"],
+        structural_capability_digest=_h("different-structural-capability"),
+    )
+    cap = issue_promotion_capability(
+        plan=plan,
+        decision=decision,
+        chain=chain,
+        project_root=current,
+        operator_approval_digest=_h("operator-approval"),
+        expected_publication_ledger_head=ledger.head,
+    )
+    candidate = tmp_path / "candidate"
+
+    with pytest.raises(
+        CandidateConstructionError,
+        match="ARTIFACT_STRUCTURAL_CAPABILITY_BINDING_MISMATCH",
+    ):
+        construct_candidate(
+            project_root=current,
+            candidate_root=candidate,
+            promotion_capability=cap,
+            structural_artifact=artifact,
+        )
+
+    assert not candidate.exists()
+    assert ledger.is_empty

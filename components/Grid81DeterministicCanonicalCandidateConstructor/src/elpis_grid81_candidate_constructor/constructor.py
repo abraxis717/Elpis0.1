@@ -170,7 +170,11 @@ def _tree_digest(root: Path) -> str:
     )
 
 
-def _validate_structural_artifact(artifact: dict, expected_digest: str) -> None:
+def _validate_structural_artifact(
+    artifact: dict,
+    expected_digest: str,
+    expected_structural_capability_digest: str,
+) -> None:
     _require(type(artifact) is dict, "ARTIFACT_TYPE")
     _require(set(artifact) == _ARTIFACT_FIELDS, "ARTIFACT_FIELDS")
     _require(
@@ -264,6 +268,11 @@ def _validate_structural_artifact(artifact: dict, expected_digest: str) -> None:
     _require(
         artifact["artifact_digest"] == expected_digest,
         "ARTIFACT_AUTHORITY_BINDING_MISMATCH",
+    )
+    _require(
+        artifact["source_capability_digest"]
+        == expected_structural_capability_digest,
+        "ARTIFACT_STRUCTURAL_CAPABILITY_BINDING_MISMATCH",
     )
 
 
@@ -444,6 +453,7 @@ def construct_candidate(
     _validate_structural_artifact(
         structural_artifact,
         capability["source_bindings"]["artifact_digest"],
+        capability["source_bindings"]["structural_capability_digest"],
     )
 
     try:
