@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import io
 import os
 import shutil
 import subprocess
 import sys
+import tarfile
 from pathlib import Path
 
 import pytest
@@ -37,13 +39,45 @@ def copy_ignore(src, names):
 
 
 def copy_repo(tmp_path: Path) -> Path:
+    """Materialize the sealed control from committed HEAD bytes.
+
+    The test helper itself may be modified while qualifying a successor, so
+    reading tracked files from the current working tree would invalidate
+    the predecessor manifest.  `git archive HEAD` supplies exact committed
+    membership and bytes.  A newly sealed active manifest is added only
+    when it does not yet exist in HEAD.
+    """
     root = tmp_path / "repo"
-    shutil.copytree(
-        REPO,
-        root,
-        ignore=copy_ignore,
-        symlinks=True,
+    root.mkdir()
+
+    proc = subprocess.run(
+        ["git", "-C", str(REPO), "archive", "--format=tar", "HEAD"],
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
+    with tarfile.open(fileobj=io.BytesIO(proc.stdout), mode="r:") as archive:
+        archive.extractall(root)
+
+    version = (REPO / "VERSION").read_text(encoding="utf-8").strip()
+    active_manifest = Path(
+        f"manifests/Elpis{version}.RELEASE_MANIFEST.json"
+    )
+    local_manifest = REPO / active_manifest
+    if local_manifest.exists():
+        committed = subprocess.run(
+            [
+                "git", "-C", str(REPO), "cat-file", "-e",
+                f"HEAD:{active_manifest.as_posix()}",
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        ).returncode == 0
+        if not committed:
+            dst = root / active_manifest
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(local_manifest, dst)
+
     return root
 
 

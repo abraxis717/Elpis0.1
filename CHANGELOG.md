@@ -1,3 +1,15 @@
+## Elpis2.1.19 — Sealed-control copy-harness corrective successor
+
+- Freeze failed sealed local Elpis2.1.18 authority without resealing,
+  rewriting, tagging, or publication-registry admission.
+- Make release mutation-suite repository copies reproduce Git-tracked
+  publication membership from current working-tree bytes.
+- Include only the active newly sealed manifest explicitly when it exists
+  uncommitted during post-seal qualification.
+- Exclude arbitrary ignored/untracked clone-local residue from sealed-control
+  copies while preserving Git-less physical-tree verifier semantics.
+- Preserve runtime, Grid81 assembly, and writer-package admission boundaries.
+
 ## Elpis2.1.18 — Corrective release-integrity successor
 
 - Freeze failed untagged Elpis2.1.17 public-main authority without rewriting,
