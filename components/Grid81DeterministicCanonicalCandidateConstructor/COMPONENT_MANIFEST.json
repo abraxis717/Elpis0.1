@@ -1,0 +1,64 @@
+{
+  "base_public_release_commit": "2cb0768c9b53488c79b9c1f85c73a10c9653a0a6",
+  "canonical_destination": "Grid81DeterministicCanonicalCandidateConstructor",
+  "claims_not_made": [
+    "does not imply runtime admission",
+    "does not imply inclusion in manifests/PUBLIC_COMPONENT_REGISTRY.json",
+    "does not reconstruct legacy promotion-receipt provenance",
+    "does not alter the Elpis2.1.16 public release boundary"
+  ],
+  "component_id": "Grid81_Canonical_Candidate_Constructor",
+  "component_path": "components/Grid81DeterministicCanonicalCandidateConstructor",
+  "dependencies": [
+    "G53b_Capability_Consumption_Compiler",
+    "Grid81_Canonical_Promotion_Authority",
+    "Grid81_Canonical_Substrate"
+  ],
+  "display_name": "Grid81 Canonical Candidate Constructor",
+  "engineering_lineage_base_commit": "644f5dcf5e42a9be3af6b7bd8af64dd87a8b6a09",
+  "manifest_self_hash": "60a081dc3c354234961cddf6d2e1ba8a8071465c7536d9700b227db0db1f74a9",
+  "manifest_self_hash_contract": "sha256(canonical-json(manifest without manifest_self_hash))",
+  "pipeline_role": "Construct a deterministic isolated immediate-successor Grid81 candidate without mutating live canonical state or consuming the publication ledger.",
+  "public_interface_paths": [
+    "src/elpis_grid81_candidate_constructor/"
+  ],
+  "public_registry_admission": false,
+  "qualification_commits": [
+    "a12cb68e8be513c78c502c99af57dc329d735e3b",
+    "49eeb8d16068ed8ffa0b2a5e46dc435c2c90ab28",
+    "e8548308663d6d6b7cf3cf69ce62055bedb7e3e4"
+  ],
+  "qualification_disposition": "QUALIFIED_LOCAL_SUCCESSOR",
+  "runtime_admission": false,
+  "schema": "elpis.component-manifest.successor-engineering.v1",
+  "source_inventory": [
+    {
+      "path": "README.md",
+      "sha256": "6d7d70ded5ed6913605a18b6f8d12213d47fef832ca0dcd057de8bd4654fb40b",
+      "size": 2200
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "d95776555667bc9505c8437d1ba60465a597736dbcfaf0654e90cc81e0e016a4",
+      "size": 327
+    },
+    {
+      "path": "src/elpis_grid81_candidate_constructor/__init__.py",
+      "sha256": "197073d017c0332ac898e2252a808d39e4cc5611517825e9b58b0f8fbaa97a20",
+      "size": 307
+    },
+    {
+      "path": "src/elpis_grid81_candidate_constructor/constructor.py",
+      "sha256": "cca002204d58a8e92cc4a02e647374d2d6cf9146379e5fca5c0f68c8ba1556d3",
+      "size": 26110
+    },
+    {
+      "path": "tests/test_constructor.py",
+      "sha256": "bd830e18df7b8334da2f7a329cea4c84cc4695fa9ac0bb5821be82b0f7966504",
+      "size": 16786
+    }
+  ],
+  "source_inventory_contract": "sha256('elpis.writer-component.inventory.v1\\0' + canonical-json(source_inventory))",
+  "source_inventory_digest": "b9b6237b839a687eb257481dda0883cbcfd39975c6e577bcb503bff90a216e37",
+  "version": "R0"
+}
