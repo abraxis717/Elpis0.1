@@ -16,21 +16,21 @@
       "component_id": "Grid81_Canonical_Candidate_Constructor",
       "component_path": "components/Grid81DeterministicCanonicalCandidateConstructor",
       "manifest_path": "components/Grid81DeterministicCanonicalCandidateConstructor/COMPONENT_MANIFEST.json",
-      "manifest_self_hash": "60a081dc3c354234961cddf6d2e1ba8a8071465c7536d9700b227db0db1f74a9",
+      "manifest_self_hash": "6633939ad786d7f6e454995eb48114d84e72954d33b868dd5c617931760437d0",
       "public_registry_admission": false,
       "qualification_disposition": "QUALIFIED_LOCAL_SUCCESSOR",
       "runtime_admission": false,
-      "source_inventory_digest": "b9b6237b839a687eb257481dda0883cbcfd39975c6e577bcb503bff90a216e37"
+      "source_inventory_digest": "121e73d2c96cecc29af9cd35a85d135f0d8a776dfc8aad272f723009fad3f910"
     },
     {
       "component_id": "Grid81_Atomic_Canonical_Publisher",
       "component_path": "components/Grid81DeterministicCanonicalPublisher",
       "manifest_path": "components/Grid81DeterministicCanonicalPublisher/COMPONENT_MANIFEST.json",
-      "manifest_self_hash": "170ca9c8005e399fc981999a1b9e07d7c6828b5407ec1803826010921f7417ad",
+      "manifest_self_hash": "076d52567af78c06751975aba9f03a2541ef66233a15358063806aa764cc2c89",
       "public_registry_admission": false,
       "qualification_disposition": "QUALIFIED_LOCAL_SUCCESSOR",
       "runtime_admission": false,
-      "source_inventory_digest": "890fa363b82d961508eee95c6c88d7ec0b44f1cc677a34ba1b9e986e25a948dd"
+      "source_inventory_digest": "28461336b49de4a66cb2204ae7101ba5407fe74c25231afe8259eb7fdb8668a2"
     }
   ],
   "engineering_lineage_base_commit": "644f5dcf5e42a9be3af6b7bd8af64dd87a8b6a09",
@@ -41,7 +41,7 @@
   "legacy_assembly_metadata_unchanged": true,
   "public_registry_admission": false,
   "registry_id": "GRID81_WRITER_CHAIN_SUCCESSOR_REGISTRY_R0",
-  "registry_self_hash": "4f5eeb1ce84d2fc48a5b74b5c3de55509954fe64f8724adc7b3093cbd8c23eef",
+  "registry_self_hash": "b12ceb27d2606438a532ab0662d8347c9f547ee24b3743495c8306f493ab5b2f",
   "registry_self_hash_contract": "sha256(canonical-json(registry without registry_self_hash))",
   "runtime_admission": false,
   "schema": "elpis.grid81.writer-chain.successor-registry.v1",
