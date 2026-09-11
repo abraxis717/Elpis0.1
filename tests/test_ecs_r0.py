@@ -363,3 +363,69 @@ def test_address_string_fields_are_strictly_typed(candidate, field):
     address = replace(candidate.address(0), **{field: EqualToAnything()})
     with pytest.raises(R0Error, match="ADDRESS_FIELD_TYPE"):
         mutate(candidate, MutationRequest(Opcode.DISABLE_COLUMN, candidate.digest, address))
+
+
+# Explicit bounded decoder census at the largest supported width.
+#
+# Address domain = {None} U {0, ..., 71}
+# Opcode domain  = {ABSTAIN, DISABLE_COLUMN, RESTORE_COLUMN}
+#
+# Therefore the complete structural decode surface is 3 * 73 = 219 rows.
+_DECODE_TOTALITY_ROWS_72 = tuple(
+    (opcode, slot)
+    for opcode in tuple(Opcode)
+    for slot in (None, *range(72))
+)
+
+
+@pytest.fixture(scope="module")
+def decode_candidate72():
+    return Candidate.bind(
+        FrozenTheta(72, theta_bytes(72), authority_root=REPO_ROOT)
+    )
+
+
+@pytest.mark.parametrize(
+    ("opcode", "slot"),
+    _DECODE_TOTALITY_ROWS_72,
+    ids=[
+        f"{opcode.value}-{'none' if slot is None else slot}"
+        for opcode, slot in _DECODE_TOTALITY_ROWS_72
+    ],
+)
+def test_mutation_packet_decode_totality_72(
+    decode_candidate72, opcode, slot
+):
+    """Every bounded opcode/address pair has one deterministic decode result."""
+    candidate = decode_candidate72
+
+    packet = {
+        "op": opcode.value,
+        "expected_candidate_digest": candidate.digest,
+        "address": (
+            None
+            if slot is None
+            else asdict(candidate.address(slot))
+        ),
+    }
+
+    should_decode = (
+        (opcode is Opcode.ABSTAIN and slot is None)
+        or
+        (opcode is not Opcode.ABSTAIN and slot is not None)
+    )
+
+    if not should_decode:
+        with pytest.raises(R0Error, match="EDIT_ADDRESS"):
+            MutationRequest.from_packet(packet)
+        return
+
+    request = MutationRequest.from_packet(packet)
+
+    assert request.op is opcode
+    assert request.expected_candidate_digest == candidate.digest
+
+    if slot is None:
+        assert request.address is None
+    else:
+        assert request.address == candidate.address(slot)
