@@ -71,9 +71,11 @@ The central question is:
 
 Let `x` denote a typed request, `S` a structural state, `M` a learned proposer, `p = M(x, S)` a proposal, and `J` a deterministic adjudicator operating under an explicit contract `C`. The intended separation is:
 
-```text
-proposal:    p  = M(x, S)
-transition:  S' = J(x, S, p; C)
+```math
+\begin{aligned}
+p &= M(x,S),\\
+S' &= J(x,S,p;C).
+\end{aligned}
 ```
 
 `M` must not be able to redefine `C`, widen its writable scope, grant itself capability, convert confidence into permission, or treat its own output as proof of admissibility.
@@ -93,41 +95,92 @@ Four separations recur throughout the project:
 
 The current public repository should not be read as one monolithic agent loop. Its major surfaces are better represented as follows:
 
-```text
-                              ELPIS
-                                |
-          +---------------------+---------------------+
-          |                     |                     |
-          v                     v                     v
-  Native semantic /      Structural-control      Reference-model
-  retrieval substrate    and guidance path       path
-          |                     |                     |
-  Streaming Regex        Semantic IR             FPRM authority
-  HACF retrieval         deterministic Projector pinned checkpoint
-  Query-local ingress    Grid81                  elpis CLI
-  Semantic Spine         TRM guidance            Sudoku inference
-          |              P1 / adjudication
-          |              validated-source path
-          |                     |
-          +----------+----------+
-                     |
-                     v
-             explicit authority /
-             capability boundaries
+```math
+\begin{array}{c}
+\boxed{\mathrm{ELPIS}}
+\\[1em]
+\begin{array}{ccc}
 
-      ECS Structural Authority R0
-      --------------------------------
-      separate frozen structural contract;
-      not silently identified with Grid81 or Semantic IR
+\boxed{
+\begin{array}{c}
+\text{Native semantic / retrieval}\\
+\text{substrate}\\[0.35em]
+\text{Streaming Regex}\\
+\text{HACF retrieval}\\
+\text{Query-local ingress}\\
+\text{Semantic Spine}
+\end{array}
+}
 
-      Historical runtime integrations
-      --------------------------------
-      runtime/R0 and runtime/R1 preserve earlier qualified
-      offline transaction compositions
+&
 
-      Release / provenance authority
-      --------------------------------
-      manifests, verifier, mutation tests, CI, tags, releases
+\boxed{
+\begin{array}{c}
+\text{Structural control / guidance}\\
+\text{path}\\[0.35em]
+\text{Semantic IR}\\
+\text{Deterministic Projector}\\
+\text{Grid81}\\
+\text{TRM guidance}\\
+\text{P1 / adjudication}\\
+\text{Validated-source path}
+\end{array}
+}
+
+&
+
+\boxed{
+\begin{array}{c}
+\text{Reference-model}\\
+\text{path}\\[0.35em]
+\text{FPRM authority}\\
+\text{Pinned checkpoint}\\
+\mathrm{elpis\ CLI}\\
+\text{Sudoku inference}
+\end{array}
+}
+
+\end{array}
+\\[1em]
+\Downarrow
+\\[-0.1em]
+\boxed{\text{Explicit authority / capability boundaries}}
+\\[1.2em]
+\begin{array}{ccc}
+
+\boxed{
+\begin{array}{c}
+\text{ECS Structural Authority R0}\\[0.25em]
+\text{Separate frozen structural contract}\\
+\text{not silently identified with}\\
+\text{Grid81 or Semantic IR}
+\end{array}
+}
+
+&
+
+\boxed{
+\begin{array}{c}
+\text{Historical runtime integrations}\\[0.25em]
+\mathrm{runtime/R0}\\
+\mathrm{runtime/R1}\\
+\text{Earlier qualified offline compositions}
+\end{array}
+}
+
+&
+
+\boxed{
+\begin{array}{c}
+\text{Release / provenance authority}\\[0.25em]
+\text{Manifests}\\
+\text{Verifier and mutation tests}\\
+\text{CI, tags, and releases}
+\end{array}
+}
+
+\end{array}
+\end{array}
 ```
 
 **Repository coexistence does not imply runtime integration.** This is especially important for ECS Structural Authority R0, the native ingress components, canonical Grid81 state, historical R0/R1 integrations, and the public reference-model path.
@@ -207,10 +260,10 @@ Candidate legality and transition execution remain deterministic. The frozen TRM
 
 ### 3.5 Authority-preserving improvement witness
 
-Elpis2.1.11 added the closed Authority-Preserving Improvement Witness R0 (APW R0). Its bounded deterministic fixture demonstrates proposal quality improving exactly:
+Elpis2.1.11 added the closed Authority-Preserving Improvement Witness R0 (APW R0). Its bounded deterministic fixture demonstrates proposal quality improving exactly as the literal witness `27 -> 54 -> 81/81`:
 
-```text
-27 -> 54 -> 81/81
+```math
+27 \;\longrightarrow\; 54 \;\longrightarrow\; 81/81
 ```
 
 across three proposal cycles while proposer authority, feedback authority, and accumulated authority remain zero.
@@ -223,18 +276,20 @@ This is evidence that repeated proposal improvement can coexist with authority s
 
 The public structural-guidance runtime under `src/elpis_reference/structural_guidance/` composes already-qualified stages into a terminal static-validation result:
 
-```text
-Semantic IR
-    -> deterministic structural projection
-    -> bounded guidance admission
-    -> resolved topology
-    -> zero-authority observation
-    -> one-shot materialization
-    -> deterministic planning
-    -> decoder-plan normalization
-    -> deterministic source construction
-    -> canonical Python AST policy
-    -> authority-zero terminal result
+```math
+\begin{aligned}
+\mathrm{Semantic\ IR}
+&\longrightarrow \mathrm{Deterministic\ structural\ projection}\\
+&\longrightarrow \mathrm{Bounded\ guidance\ admission}\\
+&\longrightarrow \mathrm{Resolved\ topology}\\
+&\longrightarrow \mathrm{Zero\!-\!authority\ observation}\\
+&\longrightarrow \mathrm{One\!-\!shot\ materialization}\\
+&\longrightarrow \mathrm{Deterministic\ planning}\\
+&\longrightarrow \mathrm{Decoder\!-\!plan\ normalization}\\
+&\longrightarrow \mathrm{Deterministic\ source\ construction}\\
+&\longrightarrow \mathrm{Canonical\ Python\ AST\ policy}\\
+&\longrightarrow \mathrm{Authority\!-\!zero\ terminal\ result}.
+\end{aligned}
 ```
 
 The composition binds major intermediate identities and emitted-source digest. Terminal results retain:
