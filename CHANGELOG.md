@@ -1,3 +1,18 @@
+## Elpis2.1.17 — Grid81 canonical-writer engineering successor
+
+- Add the qualified post-2.1.16 Grid81 canonical-writer source chain:
+  promotion authority, isolated candidate construction, and atomic publisher.
+- Bind durable canonical-publication replay exclusion to the source structural
+  artifact digest while preserving separate promotion-capability authentication.
+- Add reproducible successor component manifests, dependency graph, and
+  fail-closed successor-assembly verification.
+- Preserve the published 16-component public registry and 17-component
+  canonical assembly unchanged.
+- Keep all three successor writer packages outside the top-level `elpisai`
+  package-discovery surface; public and runtime admission remain false.
+- Preserve `PUBLISHED_RELEASES.json` as tag-derived publication history rather
+  than pre-declaring the untagged 2.1.17 candidate as published.
+
 ## Elpis2.1.16 — README Paper R1 and PyPI Launch Preparation
 
 - Reconcile the top-level README with the current public repository and remove
