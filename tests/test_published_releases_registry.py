@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -33,6 +34,13 @@ def _semantic_tags() -> list[str]:
     )
 
 
+def _pending_event_tag() -> str | None:
+    if os.environ.get("GITHUB_REF_TYPE") != "tag":
+        return None
+    tag = os.environ.get("GITHUB_REF_NAME", "")
+    return tag if TAG_RE.fullmatch(tag) else None
+
+
 def test_published_release_registry_matches_tag_authority():
     data = json.loads(REGISTRY.read_text(encoding="utf-8"))
 
@@ -47,7 +55,24 @@ def test_published_release_registry_matches_tag_authority():
 
     assert len(versions) == len(set(versions))
     assert len(tags) == len(set(tags))
-    assert tags == _semantic_tags()
+
+    semantic_tags = _semantic_tags()
+    pending = _pending_event_tag()
+    if pending is None:
+        assert tags == semantic_tags
+    else:
+        # The tag event creates publication authority. The immutable tagged tree
+        # necessarily contains the pre-tag projection, so allow exactly this
+        # current event tag to be pending until main materializes the registry.
+        assert pending in semantic_tags
+        assert pending not in tags
+        assert tags == [tag for tag in semantic_tags if tag != pending]
+
+        manifest = ROOT / "manifests" / f"{pending}.RELEASE_MANIFEST.json"
+        assert manifest.is_file()
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        assert payload["release_tag"] == pending
+        assert payload["version"] == pending.removeprefix("Elpis")
 
     for entry in entries:
         tag = entry["release_tag"]

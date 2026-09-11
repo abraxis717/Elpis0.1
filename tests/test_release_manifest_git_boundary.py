@@ -24,11 +24,12 @@ def _fixture_repo(tmp_path: Path) -> Path:
     _git(repo, "init")
 
     (repo / "tracked.txt").write_text("tracked\\n", encoding="utf-8")
+    (repo / "PUBLISHED_RELEASES.json").write_text("{}\\n", encoding="utf-8")
     local = repo / ".astra_tmp" / "codex-bwrap-synthetic-mount-targets-1000"
     local.mkdir(parents=True)
     (local / "lock").write_text("clone-local\\n", encoding="utf-8")
 
-    _git(repo, "add", "tracked.txt")
+    _git(repo, "add", "tracked.txt", "PUBLISHED_RELEASES.json")
     return repo
 
 

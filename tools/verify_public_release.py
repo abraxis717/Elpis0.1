@@ -131,6 +131,12 @@ RELEASE_IDENTITIES = {
         # Original Elpis2.0.0 distribution baseline, not immediate predecessor.
         "base_release_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
     },
+    "2.1.21": {
+        # Publication-registry cycle corrective successor; runtime closure unchanged.
+        "primitive_closure_commit": "482d4064321392108b87124cd47343d9c748f5bc",
+        # Original Elpis2.0.0 distribution baseline, not immediate predecessor.
+        "base_release_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
+    },
 }
 RELEASE_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.RELEASE_MANIFEST.json")
 DISTRIBUTION_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.DISTRIBUTION_MANIFEST.json")
@@ -138,6 +144,7 @@ MANIFEST_REL = (DISTRIBUTION_MANIFEST_REL
                 if (REPO / DISTRIBUTION_MANIFEST_REL).exists()
                 else RELEASE_MANIFEST_REL)
 MANIFEST = REPO / MANIFEST_REL
+PUBLICATION_REGISTRY_REL = Path("PUBLISHED_RELEASES.json")
 IGNORE_PARTS = {".git"}
 EPHEMERAL_PARTS = {"build", "dist", "__pycache__", ".venv",
                    ".pytest_cache", ".mypy_cache", ".ruff_cache"}
@@ -220,7 +227,7 @@ def actual_files() -> set[str]:
             if not raw:
                 continue
             rel = Path(raw.decode("utf-8"))
-            if ignored(rel) or rel == MANIFEST_REL:
+            if ignored(rel) or rel in {MANIFEST_REL, PUBLICATION_REGISTRY_REL}:
                 continue
             path = REPO / rel
             if path.is_file() or path.is_symlink():
@@ -234,7 +241,7 @@ def actual_files() -> set[str]:
     out: set[str] = set()
     for path in release_paths():
         rel = path.relative_to(REPO)
-        if ignored(rel) or rel == MANIFEST_REL:
+        if ignored(rel) or rel in {MANIFEST_REL, PUBLICATION_REGISTRY_REL}:
             continue
         if path.is_file() or path.is_symlink():
             out.add(rel.as_posix())

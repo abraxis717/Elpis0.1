@@ -1,3 +1,12 @@
+## Elpis2.1.21 — Publication-registry authority-cycle correction
+
+- Preserve hosted-green, untagged Elpis2.1.20 as immutable sealed evidence.
+- Remove `PUBLISHED_RELEASES.json` from pre-tag release-manifest membership.
+- Preserve physical safety scanning of the registry.
+- Permit exactly the current GitHub tag event to be pending from the registry.
+- Add deterministic post-tag registry materialization from immutable tag authority.
+- Preserve runtime, native, Grid81, canonical, packaging, and scientific semantics.
+
 ## Elpis2.1.20 — Hosted CI history/tag checkout correction
 
 - Preserve failed sealed Elpis2.1.19 authority without resealing or history rewrite.

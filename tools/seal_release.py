@@ -50,6 +50,7 @@ REPO = Path(__file__).resolve().parent.parent
 PUBLISHED = frozenset({"2.0.0", "2.1.0", "2.1.1", "2.1.2", "2.1.3", "2.1.4", "2.1.5", "2.1.6", "2.1.7", "2.1.8", "2.1.9", "2.1.10", "2.1.11", "2.1.12", "2.1.13", "2.1.14", "2.1.15"})
 
 IGNORE_PARTS = {".git"}
+PUBLICATION_REGISTRY_REL = Path("PUBLISHED_RELEASES.json")
 
 EPHEMERAL_PARTS = {
     "build", "dist", "__pycache__", ".venv",
@@ -85,7 +86,7 @@ def tree_files(manifest_rel: Path) -> list[str]:
             if not raw:
                 continue
             rel = Path(raw.decode("utf-8"))
-            if set(rel.parts) & IGNORE_PARTS or rel == manifest_rel:
+            if set(rel.parts) & IGNORE_PARTS or rel in {manifest_rel, PUBLICATION_REGISTRY_REL}:
                 continue
             path = REPO / rel
             if not (path.is_file() or path.is_symlink()):
@@ -98,7 +99,7 @@ def tree_files(manifest_rel: Path) -> list[str]:
     out = []
     for path in REPO.rglob("*"):
         rel = path.relative_to(REPO)
-        if set(rel.parts) & IGNORE_PARTS or rel == manifest_rel:
+        if set(rel.parts) & IGNORE_PARTS or rel in {manifest_rel, PUBLICATION_REGISTRY_REL}:
             continue
         if path.is_file() or path.is_symlink():
             out.append(rel.as_posix())
