@@ -1,0 +1,118 @@
+{
+  "published_releases": [
+    {
+      "manifest_path": "manifests/Elpis2.0.0.RELEASE_MANIFEST.json",
+      "manifest_sha256": "c7b89d3fe705aa870731fb1f4324275bac2f698d19f1b5ca8cd4769927348f82",
+      "peeled_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
+      "release_tag": "Elpis2.0.0",
+      "version": "2.0.0"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.0.RELEASE_MANIFEST.json",
+      "manifest_sha256": "98726f106ae361de0433ee316bf609878246c74241f249138762aeda5ac8a4e2",
+      "peeled_commit": "27ea93ff057f7a1c85dd652e30fa05a851049d40",
+      "release_tag": "Elpis2.1.0",
+      "version": "2.1.0"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.1.RELEASE_MANIFEST.json",
+      "manifest_sha256": "0328767c13ec97af0696ab0c581b59d1e30b9f0c37c18de241b3e1574952b49a",
+      "peeled_commit": "9251e109af5ed18ca9b7b6f6c9f0a8229881b58d",
+      "release_tag": "Elpis2.1.1",
+      "version": "2.1.1"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.2.RELEASE_MANIFEST.json",
+      "manifest_sha256": "889a5831372a92856ea3506dc71ff2c0a8a4177f8e3637e9f696df590476a3c5",
+      "peeled_commit": "8adfdd80f004611a1af77a2105d845bba4464d9b",
+      "release_tag": "Elpis2.1.2",
+      "version": "2.1.2"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.3.RELEASE_MANIFEST.json",
+      "manifest_sha256": "0461419cd5c21a8ad498fb5c314dd55c227037e90c76d15c56b9ac8bbe4c6c76",
+      "peeled_commit": "8c91ced051b81494a30b205d69d0332a2565c923",
+      "release_tag": "Elpis2.1.3",
+      "version": "2.1.3"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.4.RELEASE_MANIFEST.json",
+      "manifest_sha256": "b8904753d97964761ff2a328b4331c4e4df4ec13e7176e0eb13722e627bd482b",
+      "peeled_commit": "dcbc011d7f55707e4fdf998de744f7794675a656",
+      "release_tag": "Elpis2.1.4",
+      "version": "2.1.4"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.5.RELEASE_MANIFEST.json",
+      "manifest_sha256": "86b5e850c2c59e36fc41b2973fb114657622359c70945999376d3465f4066c9e",
+      "peeled_commit": "0ddc21fe4f50b1015b6f947eb86a54ecd574b648",
+      "release_tag": "Elpis2.1.5",
+      "version": "2.1.5"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.6.RELEASE_MANIFEST.json",
+      "manifest_sha256": "eae0b7b5acb5ab54d06396c4002f300e3051a4d636b9b86a1a4e26157c126ce6",
+      "peeled_commit": "e0c5462b81525fe45e2f5342dfc2a227b9e6f7f2",
+      "release_tag": "Elpis2.1.6",
+      "version": "2.1.6"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.7.RELEASE_MANIFEST.json",
+      "manifest_sha256": "d6820c436075cbe75ab620fd84315904c391b90a0ff8022eac7f8fc199403db4",
+      "peeled_commit": "45251f7d6c3e9c1684a843e25172d2ddccf5fb5d",
+      "release_tag": "Elpis2.1.7",
+      "version": "2.1.7"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.8.RELEASE_MANIFEST.json",
+      "manifest_sha256": "2cfb7b7c1d8ff13d19c4b6e5e1e4bdc3b9d24bc2422ce4ee29ac661ba2df750d",
+      "peeled_commit": "d3efe5a179130987ed61d1e52ddb4327f7a6b65c",
+      "release_tag": "Elpis2.1.8",
+      "version": "2.1.8"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.9.RELEASE_MANIFEST.json",
+      "manifest_sha256": "9e7eb7be9e04f57c0c9ae781f8164bae2e4b6a994fe2a30826266aee5115a3c0",
+      "peeled_commit": "71a06a346e4fccd1f2e7830bba4b4e77f224556f",
+      "release_tag": "Elpis2.1.9",
+      "version": "2.1.9"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.10.RELEASE_MANIFEST.json",
+      "manifest_sha256": "638c31acbe52d57abe286a95dff2e5c79c71f886d86cc2859c769945ff669c02",
+      "peeled_commit": "d668760b5d51fd8984eaffcfd13834c0fd5b22f7",
+      "release_tag": "Elpis2.1.10",
+      "version": "2.1.10"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.11.RELEASE_MANIFEST.json",
+      "manifest_sha256": "8e0caf5a9c326b616fe3e8e71c2ea63da1321eecb20670d6e9df01ade6567d8b",
+      "peeled_commit": "eb3cd7da9255e5f935be5b4685e2cb38da6c6f9e",
+      "release_tag": "Elpis2.1.11",
+      "version": "2.1.11"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.12.RELEASE_MANIFEST.json",
+      "manifest_sha256": "b036956a85aee57055cd242548d3a8d7976e600a372e7c8bea46bdcf4e408ffd",
+      "peeled_commit": "716c7120f6f1ec72a263ed2032075150f1f1ae7f",
+      "release_tag": "Elpis2.1.12",
+      "version": "2.1.12"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.15.RELEASE_MANIFEST.json",
+      "manifest_sha256": "0a8b0d641b3e2d6703f58167824b01c1e14aeb18e31131aa25b5872463235868",
+      "peeled_commit": "1448f5f4f1e55375d198a20903a8a2534d6331c8",
+      "release_tag": "Elpis2.1.15",
+      "version": "2.1.15"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.16.RELEASE_MANIFEST.json",
+      "manifest_sha256": "5daccf7f8bce2a9964b4e7beaa91a320a99f701b597d93f83461bbd8114703c9",
+      "peeled_commit": "2cb0768c9b53488c79b9c1f85c73a10c9653a0a6",
+      "release_tag": "Elpis2.1.16",
+      "version": "2.1.16"
+    }
+  ],
+  "schema": "elpis.published-releases.v1",
+  "source_of_truth": "refs/tags/Elpis<semver>"
+}
