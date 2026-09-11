@@ -1,3 +1,17 @@
+## Elpis2.1.18 — Corrective release-integrity successor
+
+- Freeze failed untagged Elpis2.1.17 public-main authority without rewriting,
+  resealing, tagging, or adding it to publication history.
+- Bind future release-manifest membership to the Git-tracked publication tree
+  instead of clone-local ignored/untracked physical residue.
+- Preserve physical-tree secret/private-path and generated-artifact scans.
+- Repair the isolated R0/R1 dependency-escape mutation harness after canonical-
+  root authentication became a prerequisite.
+- Make the repository-only Grid81 canonical-writer chain test explicitly load
+  its non-shipped writer source roots.
+- Preserve the 16-component public registry, 17-component canonical assembly,
+  and non-admission/non-packaging of the three successor writer components.
+
 ## Elpis2.1.17 — Grid81 canonical-writer engineering successor
 
 - Add the qualified post-2.1.16 Grid81 canonical-writer source chain:

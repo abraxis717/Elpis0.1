@@ -26,6 +26,7 @@ def isolated(version, function, tmp_path):
     ns = {"os": os, "json": json, "CANONICAL_ROOT": str(tmp_path / "canonical"),
           "FORBIDDEN_PREFIXES": (), "AUDITED_MODULES": ("first", "second"),
           "R0_ROOT": str(tmp_path / "R0"), "_digest": lambda data: data,
+          "_validate_canonical_root": lambda root: os.path.realpath(root),
           "R0ImportEscapeError": Veto, "R1DependencyEscapeError": Veto,
           "R1CanonicalMutationError": Veto}
     exec(compile(ast.Module(body=[node], type_ignores=[]), str(path), "exec"), ns)

@@ -38,6 +38,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
 import sys
 import runpy
 import tempfile
@@ -63,6 +64,37 @@ def ephemeral(rel: Path) -> bool:
 
 
 def tree_files(manifest_rel: Path) -> list[str]:
+    # In a real Git checkout, release authority is the tracked publication
+    # tree, never clone-local ignored/untracked residue. Git-less mutation
+    # copies retain the historical physical-tree fallback.
+    if (REPO / ".git").exists():
+        proc = subprocess.run(
+            ["git", "-C", str(REPO), "ls-files", "-z"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(
+                "git ls-files failed while deriving release tree: "
+                + proc.stderr.decode("utf-8", errors="replace")
+            )
+
+        out = []
+        for raw in proc.stdout.split(b"\0"):
+            if not raw:
+                continue
+            rel = Path(raw.decode("utf-8"))
+            if set(rel.parts) & IGNORE_PARTS or rel == manifest_rel:
+                continue
+            path = REPO / rel
+            if not (path.is_file() or path.is_symlink()):
+                raise RuntimeError(
+                    f"tracked release path missing from working tree: {rel.as_posix()}"
+                )
+            out.append(rel.as_posix())
+        return sorted(out)
+
     out = []
     for path in REPO.rglob("*"):
         rel = path.relative_to(REPO)

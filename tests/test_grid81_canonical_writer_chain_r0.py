@@ -5,6 +5,19 @@ import hashlib
 import json
 from pathlib import Path
 import shutil
+import sys
+
+REPO = Path(__file__).resolve().parents[1]
+_REPO_ONLY_IMPORT_ROOTS = (
+    REPO / "components",
+    REPO / "components" / "Grid81DeterministicCanonicalPromotionAuthority" / "src",
+    REPO / "components" / "Grid81DeterministicCanonicalCandidateConstructor" / "src",
+    REPO / "components" / "Grid81DeterministicCanonicalPublisher" / "src",
+)
+for _root in reversed(_REPO_ONLY_IMPORT_ROOTS):
+    _value = str(_root)
+    if _value not in sys.path:
+        sys.path.insert(0, _value)
 
 import pytest
 
@@ -23,7 +36,6 @@ from elpis_grid81_promotion_planner.decision import DECISION_READY
 from elpis_grid81_canonical_publisher import PublicationError, publish_candidate
 
 
-REPO = Path(__file__).resolve().parents[1]
 SOURCE_GRID81 = (
     REPO / "components" / "Grid81" / "state" / "Canonical" / "Grid81"
 )

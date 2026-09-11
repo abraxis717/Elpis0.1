@@ -7,6 +7,7 @@ import ast
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import tomllib
 from pathlib import Path
@@ -112,6 +113,12 @@ RELEASE_IDENTITIES = {
         # Original Elpis2.0.0 distribution baseline, not immediate predecessor.
         "base_release_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
     },
+    "2.1.18": {
+        # Corrective successor to failed untagged 2.1.17; primitive/runtime closure unchanged.
+        "primitive_closure_commit": "482d4064321392108b87124cd47343d9c748f5bc",
+        # Original Elpis2.0.0 distribution baseline, not immediate predecessor.
+        "base_release_commit": "c911af22e01ee35c441d65e8dbcad18694bdcb2a",
+    },
 }
 RELEASE_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.RELEASE_MANIFEST.json")
 DISTRIBUTION_MANIFEST_REL = Path(f"manifests/Elpis{RELEASE_VERSION}.DISTRIBUTION_MANIFEST.json")
@@ -180,20 +187,45 @@ def release_paths() -> list[Path]:
 
 
 def actual_files() -> set[str]:
-    out: set[str] = set()
+    # Manifest exactness uses tracked-tree membership in real Git checkouts.
+    # Physical safety scans still use release_paths(). Git-less mutation copies
+    # retain the historical physical-tree behavior.
+    if (REPO / ".git").exists():
+        proc = subprocess.run(
+            ["git", "-C", str(REPO), "ls-files", "-z"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(
+                "git ls-files failed while verifying release tree: "
+                + proc.stderr.decode("utf-8", errors="replace")
+            )
 
+        out: set[str] = set()
+        for raw in proc.stdout.split(b"\0"):
+            if not raw:
+                continue
+            rel = Path(raw.decode("utf-8"))
+            if ignored(rel) or rel == MANIFEST_REL:
+                continue
+            path = REPO / rel
+            if path.is_file() or path.is_symlink():
+                out.add(rel.as_posix())
+            else:
+                raise RuntimeError(
+                    f"tracked release path missing from working tree: {rel.as_posix()}"
+                )
+        return out
+
+    out: set[str] = set()
     for path in release_paths():
         rel = path.relative_to(REPO)
-
-        if ignored(rel):
+        if ignored(rel) or rel == MANIFEST_REL:
             continue
-
-        if rel == MANIFEST_REL:
-            continue
-
         if path.is_file() or path.is_symlink():
             out.add(rel.as_posix())
-
     return out
 
 
