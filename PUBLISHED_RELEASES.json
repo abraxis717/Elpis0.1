@@ -146,6 +146,13 @@
       "peeled_commit": "7ee559f4b9f615498b6bbac38bea40d1d9696fc0",
       "release_tag": "Elpis2.1.26",
       "version": "2.1.26"
+    },
+    {
+      "manifest_path": "manifests/Elpis2.1.27.RELEASE_MANIFEST.json",
+      "manifest_sha256": "25dac4c04bd0ec482bfe7d3d8fd3b572b746ea1b9bf25241b1f5e79a57a58c0b",
+      "peeled_commit": "05cf10bd070918ae3a495062a1988e132f08ac60",
+      "release_tag": "Elpis2.1.27",
+      "version": "2.1.27"
     }
   ],
   "schema": "elpis.published-releases.v1",
