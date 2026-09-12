@@ -475,7 +475,7 @@ jobs:
             ctest --test-dir /tmp/elpis-root-native -N \
               | sed -n 's/^Total Tests: //p'
           )"
-          test "$COUNT" = "96"
+          test "$COUNT" = "105"
           echo "ROOT_NATIVE_TEST_COUNT=$COUNT"
       - name: Run root native suite
         run: |

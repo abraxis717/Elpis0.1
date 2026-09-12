@@ -16,7 +16,7 @@
   ],
   "display_name": "Grid81 Atomic Canonical Publisher",
   "engineering_lineage_base_commit": "644f5dcf5e42a9be3af6b7bd8af64dd87a8b6a09",
-  "manifest_self_hash": "076d52567af78c06751975aba9f03a2541ef66233a15358063806aa764cc2c89",
+  "manifest_self_hash": "71093a427d274e3896a65fb6bbf8b0a04f4467eb07725a88966ff71f06e4503c",
   "manifest_self_hash_contract": "sha256(canonical-json(manifest without manifest_self_hash))",
   "pipeline_role": "Perform authority-gated durable-reservation-backed atomic publication with exact replay and production-reader post-verification.",
   "public_interface_paths": [
@@ -34,9 +34,14 @@
   "schema": "elpis.component-manifest.successor-engineering.v1",
   "source_inventory": [
     {
+      "path": "R1_PROTOCOL.md",
+      "sha256": "2684dcee3c3ddb9528286884332c0c881bc665af70b7bb99fafbaca481f97cca",
+      "size": 20525
+    },
+    {
       "path": "README.md",
-      "sha256": "8cf4a4dac8e0ce11b6edd6204da86784cefbe0a58412ff9ae8608d360646c4fc",
-      "size": 5094
+      "sha256": "644f39f00eb97c658b5c58f885691878cc2188f299843668a00f82cfc8d50115",
+      "size": 3043
     },
     {
       "path": "pyproject.toml",
@@ -45,21 +50,31 @@
     },
     {
       "path": "src/elpis_grid81_canonical_publisher/__init__.py",
-      "sha256": "5d4ce8fa00269dd08c08de91b2ce1eea09c2a3573a4c10bebbb2d8d47c156223",
-      "size": 288
+      "sha256": "9bf5ea01bea813e78b314126e8b61bafb6bf01bc8793fa8e472526e503c049df",
+      "size": 344
     },
     {
       "path": "src/elpis_grid81_canonical_publisher/publisher.py",
-      "sha256": "994c3067e6a16bfd4cc9dc2976f241694706d1208c1572542976801faf2fd3c9",
-      "size": 23255
+      "sha256": "a234692203d87d05f67dda0bc0306e16b3e2020f04e640a5b5ce91d06d1a0265",
+      "size": 29900
+    },
+    {
+      "path": "tests/reproduce_r0.py",
+      "sha256": "94c4ef9d3fda6a74c3b0993b4e3a5ba7c1749217eb84141a761a08ddb63b1452",
+      "size": 5591
+    },
+    {
+      "path": "tests/test_protocol_r1.py",
+      "sha256": "a01cdfa6092557243f91bda98808310c92f8a19b795e8d209ec69af9833956eb",
+      "size": 24832
     },
     {
       "path": "tests/test_publisher.py",
-      "sha256": "fea558d59d49bfd717662735f64d81fffb64e0b76ffcf17c5eb72ecd8a589239",
-      "size": 16440
+      "sha256": "11ba038921cc49ff7fd4bad81afe38bb286a008a8f9bf4781ced515628192726",
+      "size": 16434
     }
   ],
   "source_inventory_contract": "sha256('elpis.writer-component.inventory.v1\\0' + canonical-json(source_inventory))",
-  "source_inventory_digest": "28461336b49de4a66cb2204ae7101ba5407fe74c25231afe8259eb7fdb8668a2",
+  "source_inventory_digest": "c438a5baefc63dd88737b213338f77f602b7aab3d4dc5bd9beb538a2115ec07f",
   "version": "R0"
 }

@@ -38,7 +38,7 @@
     }
   ],
   "graph_id": "GRID81_WRITER_CHAIN_SUCCESSOR_DEPENDENCY_GRAPH_R0",
-  "graph_self_hash": "c3d8bfe2e0bf77c169e2631b6f4d4b6c9c462373a32e0808ebb433fad9e31c37",
+  "graph_self_hash": "dd55326d8e9024dca815cbf53b213770a5f3001c935ecde79488bef8a7e5f6d5",
   "graph_self_hash_contract": "sha256(canonical-json(graph without graph_self_hash))",
   "legacy_assembly_bindings": [
     {
@@ -70,7 +70,7 @@
   ],
   "public_registry_admission": false,
   "registry_path": "manifests/GRID81_WRITER_CHAIN_SUCCESSOR_REGISTRY_R0.json",
-  "registry_self_hash": "b12ceb27d2606438a532ab0662d8347c9f547ee24b3743495c8306f493ab5b2f",
+  "registry_self_hash": "7ea9dbb8d7a154de088a379ba2fc4d331538ee406526a052f1d9ab1d49f0463f",
   "runtime_admission": false,
   "schema": "elpis.grid81.writer-chain.successor-dependency-graph.v1",
   "successor_nodes": [

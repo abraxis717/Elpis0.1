@@ -1,0 +1,18 @@
+{
+  "failed_releases": [
+    {
+      "disposition": "SEALED_TAGGED_CI_FAILED_NOT_PUBLISHED",
+      "failure_classes": [
+        "GRID81_SUCCESSOR_COMPONENT_MANIFESTS_STALE",
+        "ROOT_NATIVE_TEST_REGISTRY_COUNT_STALE_96_ACTUAL_105"
+      ],
+      "manifest_path": "manifests/Elpis2.1.24.RELEASE_MANIFEST.json",
+      "manifest_sha256": "57fe5f176e6cedb7d3275729ee4254d45f1825d597603be2c5ad1e16e334e94c",
+      "peeled_commit": "111ea53d0dded111b53aa5b62c55ea6c9d57ab34",
+      "release_tag": "Elpis2.1.24",
+      "tag_object": "3c422b52f28048f19ce998b2deab25720dcf6f8a",
+      "version": "2.1.24"
+    }
+  ],
+  "schema": "elpis.failed-releases.v1"
+}

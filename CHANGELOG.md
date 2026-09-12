@@ -1,3 +1,14 @@
+## Elpis2.1.25 — Corrective successor to failed tagged Elpis2.1.24
+
+- Preserve the immutable Elpis2.1.24 tag as failed/unpublished evidence.
+- Refresh stale Grid81 Candidate Constructor and Atomic Publisher successor-component manifest authority.
+- Rebind the Grid81 writer-chain successor registry to those refreshed manifests.
+- Refresh the successor dependency graph's registry binding and graph self-hash.
+- Correct the root-native CI registry count from 96 to 105 while preserving the standalone semantic-spine sanitizer count at 96.
+- Add explicit failed-release authority so tagged-but-failed releases are excluded from `PUBLISHED_RELEASES.json`.
+- Preserve Publisher R1, Regex V2, ECS M1A, frozen Structural R0 authority, and closed Branch35–40 science unchanged.
+- Require hosted CI on the untagged corrective main commit before creating the Elpis2.1.25 tag.
+
 ## Elpis2.1.24 — Publisher R1, Regex V2, and ECS M1A integration
 
 - Integrate the qualified Grid81 Canonical Publisher R1 lock/recovery protocol.

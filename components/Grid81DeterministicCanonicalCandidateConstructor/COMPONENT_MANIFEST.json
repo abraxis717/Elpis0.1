@@ -16,7 +16,7 @@
   ],
   "display_name": "Grid81 Canonical Candidate Constructor",
   "engineering_lineage_base_commit": "644f5dcf5e42a9be3af6b7bd8af64dd87a8b6a09",
-  "manifest_self_hash": "6633939ad786d7f6e454995eb48114d84e72954d33b868dd5c617931760437d0",
+  "manifest_self_hash": "2eafd5d008cfe308f653207fb4360017508fe759a7cd7252582cbb6fa513be3e",
   "manifest_self_hash_contract": "sha256(canonical-json(manifest without manifest_self_hash))",
   "pipeline_role": "Construct a deterministic isolated immediate-successor Grid81 candidate without mutating live canonical state or consuming the publication ledger.",
   "public_interface_paths": [
@@ -55,11 +55,11 @@
     },
     {
       "path": "tests/test_constructor.py",
-      "sha256": "8ffc2265ba057d61a7c4f46c3b06d70f9d05d9482f10f160004df30993add9fd",
-      "size": 16789
+      "sha256": "95051dd89e41f64f319f0c214dec900eec026cf3543dbaea490cbc8436e0aefa",
+      "size": 16783
     }
   ],
   "source_inventory_contract": "sha256('elpis.writer-component.inventory.v1\\0' + canonical-json(source_inventory))",
-  "source_inventory_digest": "121e73d2c96cecc29af9cd35a85d135f0d8a776dfc8aad272f723009fad3f910",
+  "source_inventory_digest": "87ea7c1e8f1c7f0cae176c827a16b9aa52cca39cdff9887b961018e84e2689f2",
   "version": "R0"
 }
