@@ -1,4 +1,4 @@
-"""Grid81 atomic canonical snapshot publisher R0.
+"""Grid81 serialized, recoverable canonical snapshot publisher R1.
 
 This module owns publication mechanics only.  It does not manufacture semantic
 state, grant capability authority, or turn a promotion plan into permission.
@@ -9,7 +9,7 @@ A caller supplies:
   * the expected current canonical digest;
   * an artifact digest naming the exact upstream publication object;
   * an expected durable-ledger head;
-  * an explicit lock path outside Canonical/Grid81.
+  * optionally, an assertion of the publisher-derived Canonical parent lock.
 
 Publication order is recoverable rather than pretending SQLite and the
 filesystem share one transaction:
@@ -25,7 +25,6 @@ the exact same receipt is resume authority.  A different candidate is not.
 from __future__ import annotations
 
 import ctypes
-import fcntl
 import hashlib
 import json
 import os
@@ -37,7 +36,11 @@ import shutil
 import stat
 from typing import Any
 
-from Grid81.canonical_reader import CanonicalReadError, load_current_grid81
+from Grid81.canonical_reader import (
+    CanonicalReadError, load_current_grid81, canonical_namespace_lock,
+    _load_current_grid81_locked,
+)
+from elpis_grid81_application_executor import DurableApplicationLedger
 from elpis_grid81_promotion_authority import (
     PromotionAuthorityError,
     require_promotion_capability,
@@ -213,18 +216,87 @@ def _exchange_probe(parent: Path, token: str) -> None:
 
 
 @contextmanager
-def _exclusive_lock(lock_path: Path):
-    lock_path = lock_path.absolute()
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-    _require("Canonical/Grid81" not in lock_path.as_posix(),
-             "LOCK_INSIDE_CANONICAL_GRID81")
-    fd = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o600)
+def _exclusive_lock(project_root: Path):
+    acquired = False
     try:
-        fcntl.flock(fd, fcntl.LOCK_EX)
-        yield
-    finally:
-        fcntl.flock(fd, fcntl.LOCK_UN)
-        os.close(fd)
+        with canonical_namespace_lock(project_root, exclusive=True):
+            acquired = True
+            yield
+    except CanonicalReadError as exc:
+        raise PublicationError("PUBLICATION_LOCK_INVALID", exc.code) from exc
+    except OSError as exc:
+        raise PublicationError("PUBLICATION_IO_FAILED" if acquired else "PUBLICATION_LOCK_UNAVAILABLE") from exc
+
+
+def publication_lock_path(project_root: Path | str) -> Path:
+    """Physical directory lock; aliases of the project root resolve identically."""
+    return Path(project_root).resolve(strict=True) / "Canonical"
+
+
+def _checkpoint(name: str) -> None:
+    """No-op fault-injection seam. Tests may kill the process at this boundary."""
+
+
+def _tree_identity(grid: Path) -> str:
+    _reject_symlinks(grid)
+    inventory = []
+    for path in sorted(grid.rglob("*")):
+        mode = path.lstat().st_mode
+        _require(stat.S_ISREG(mode) or stat.S_ISDIR(mode), "CANDIDATE_FILE_TYPE")
+        inventory.append([path.relative_to(grid).as_posix(),
+                          _sha256_file(path) if stat.S_ISREG(mode) else None])
+    return _digest(inventory)
+
+
+def _read_recovery(path: Path) -> dict | None:
+    if not path.exists() and not path.is_symlink():
+        return None
+    _require(not path.is_symlink() and path.is_file(), "INVALID_RECOVERY_STATE")
+    record = _load_json(path, "INVALID_RECOVERY_STATE")
+    _require(set(record) == {"schema", "payload", "receipt_digest", "tree_digest", "ledger_identity"}
+             and record.get("schema") == "elpis.grid81.publication-recovery.v1"
+             and type(record.get("payload")) is dict,
+             "INVALID_RECOVERY_STATE")
+    _require(_digest(record["payload"]) == record["receipt_digest"], "INVALID_RECOVERY_STATE")
+    _require_hex64(record["tree_digest"], "INVALID_RECOVERY_STATE")
+    payload = record["payload"]
+    digest_fields = {
+        "artifact_digest", "promotion_capability_digest", "previous_canonical_digest",
+        "resulting_canonical_digest", "generation_file_sha256", "generation_semantic_digest",
+        "transaction_id", "capability_id", "expected_ledger_head",
+    }
+    _require(set(payload) == digest_fields | {"schema", "generation_number"}
+             and payload.get("schema") == "elpis.grid81.atomic-publication-receipt.v1"
+             and type(payload.get("generation_number")) is int
+             and payload["generation_number"] > 0, "INVALID_RECOVERY_STATE")
+    for field in digest_fields:
+        _require_hex64(payload[field], "INVALID_RECOVERY_STATE")
+    identity = record["ledger_identity"]
+    _require(type(identity) is list and len(identity) == 2
+             and all(type(n) is int and n >= 0 for n in identity), "INVALID_RECOVERY_STATE")
+    return record
+
+
+def _write_recovery(path: Path, record: dict) -> None:
+    # The fixed temporary name is safe under the namespace lock. Interrupted
+    # writes are never authority; only the fsynced, replaced record is read.
+    temp = path.with_suffix(".tmp")
+    fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(fd, "wb") as stream:
+        stream.write(_canonical_bytes(record))
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(temp, path)
+    _fsync_dir(path.parent)
+
+
+def _cleanup(stage: Path) -> None:
+    _checkpoint("before_cleanup")
+    if stage.exists() or stage.is_symlink():
+        _require(not stage.is_symlink() and stage.is_dir(), "CORRUPTED_STAGING_STATE")
+        shutil.rmtree(stage)
+    _checkpoint("during_cleanup")
+    _fsync_dir(stage.parent)
 
 
 def _ledger_snapshot(ledger: Any) -> dict:
@@ -465,7 +537,7 @@ def publish_candidate(
     candidate_root: Path | str,
     ledger: Any,
     promotion_capability: dict,
-    lock_path: Path | str,
+    lock_path: Path | str | None = None,
 ) -> CanonicalPublicationReceipt:
     """Atomically publish one pre-qualified immediate successor snapshot.
 
@@ -473,9 +545,14 @@ def publish_candidate(
     The candidate root is read-only input.  A private sibling staging directory
     is copied, fsynced, and exchanged atomically with Canonical/Grid81.
     """
-    project_root = Path(project_root).absolute()
-    candidate_root = Path(candidate_root).absolute()
-    lock_path = Path(lock_path).absolute()
+    project_root = Path(project_root).resolve(strict=True)
+    candidate_root = Path(candidate_root).resolve(strict=True)
+    derived_lock = publication_lock_path(project_root)
+    if lock_path is not None:
+        supplied = Path(os.path.abspath(lock_path))
+        _require(not supplied.is_symlink() and supplied.resolve() == derived_lock,
+                 "WRONG_LOCK_DOMAIN")
+    _require(isinstance(ledger, DurableApplicationLedger), "DURABLE_LEDGER_REQUIRED")
 
     try:
         promotion_capability = require_promotion_capability(
@@ -505,9 +582,15 @@ def publish_candidate(
     _require(target.parent == project_root / "Canonical",
              "CURRENT_LAYOUT_INVALID")
 
-    with _exclusive_lock(lock_path):
+    _checkpoint("before_lock")
+    with _exclusive_lock(project_root):
+        _checkpoint("after_lock")
+        _require(not target.is_symlink(), "CURRENT_LAYOUT_INVALID")
+        _require(candidate_root != project_root and not candidate_root.is_relative_to(project_root),
+                 "CANDIDATE_ROOT_INSIDE_PROJECT_ROOT")
+        tree_digest = _tree_identity(candidate_grid)
         try:
-            current = load_current_grid81(project_root)
+            current = _load_current_grid81_locked(project_root)
             candidate = load_current_grid81(candidate_root)
         except CanonicalReadError as exc:
             raise PublicationError("CANONICAL_READER_REJECTED", exc.code) from exc
@@ -527,7 +610,7 @@ def publish_candidate(
             expected_ledger_head=expected_ledger_head,
         )
         receipt_digest = _digest(payload)
-        token = receipt_digest[:20]
+        token = receipt_digest
         stage = target.parent / f".Grid81.stage.{token}"
 
         snapshot = _ledger_snapshot(ledger)
@@ -537,10 +620,34 @@ def publish_candidate(
             expected_previous_head=expected_ledger_head,
         )
         artifact_seen = bool(ledger.has_receipt(artifact_digest))
+        journal_path = target.parent / ".Grid81.publisher-r1.json"
+        record = {
+            "schema": "elpis.grid81.publication-recovery.v1",
+            "payload": payload,
+            "receipt_digest": receipt_digest,
+            "tree_digest": tree_digest,
+            "ledger_identity": list(ledger.storage_identity),
+        }
+        previous = _read_recovery(journal_path)
+        if previous is not None:
+            _require(previous["ledger_identity"] == record["ledger_identity"],
+                     "PUBLICATION_LEDGER_MISMATCH")
+            if previous != record:
+                prior = previous["payload"]
+                _require(prior.get("resulting_canonical_digest") == current.canonical_digest
+                         and prior.get("previous_canonical_digest") != expected_current_canonical_digest,
+                         "PUBLICATION_RESERVATION_CONFLICT")
+                _require(_exact_reserved_entry(snapshot,
+                         receipt_digest=previous["receipt_digest"],
+                         expected_previous_head=prior.get("expected_ledger_head")) is not None,
+                         "INVALID_RECOVERY_STATE")
+                _require(_tree_identity(target) == previous["tree_digest"],
+                         "INVALID_RECOVERY_STATE")
 
         # Crash/retry after a successful exchange: verify the exact reservation,
         # clean the old exchanged directory if it remains, and return idempotently.
         if current.canonical_digest == candidate.canonical_digest:
+            _require(_tree_identity(target) == tree_digest, "INVALID_RECOVERY_STATE")
             _validate_candidate_sidecars(
                 candidate_root,
                 candidate,
@@ -548,9 +655,14 @@ def publish_candidate(
             )
             _require(artifact_seen and existing is not None,
                      "CANONICAL_WITHOUT_EXACT_LEDGER_RECEIPT")
-            if stage.exists():
-                shutil.rmtree(stage)
-                _fsync_dir(target.parent)
+            _require(previous in (None, record), "INVALID_RECOVERY_STATE")
+            if previous is None:
+                _write_recovery(journal_path, record)
+            # A previous process may have died immediately after renameat2,
+            # before syncing the parent. Persist visibility before deleting
+            # any old-generation recovery material.
+            _fsync_dir(target.parent)
+            _cleanup(stage)
             return CanonicalPublicationReceipt(
                 status="ALREADY_COMMITTED",
                 publication_receipt_digest=receipt_digest,
@@ -561,7 +673,7 @@ def publish_candidate(
                 generation_number=candidate.generation_number,
                 transaction_id=candidate.transaction_id,
                 capability_id=candidate.capability_id,
-                resulting_ledger_head=ledger.head,
+                resulting_ledger_head=existing["entry_digest"],
                 resumed=True,
             )
 
@@ -591,19 +703,35 @@ def publish_candidate(
         else:
             _require(existing is None, "LEDGER_RECEIPT_WITHOUT_ARTIFACT")
             _require(ledger.head == expected_ledger_head, "STALE_LEDGER_HEAD")
+            # Nonempty legacy ledgers have opaque source bindings. Bootstrap
+            # only an exact known reservation, or a fresh empty ledger.
+            _require(previous is not None or snapshot["count"] == 0,
+                     "UNBOUND_PUBLICATION_LEDGER")
             resumed = False
 
+        _checkpoint("after_live_validation")
+
         # Build and flush the exact candidate snapshot before consuming authority.
-        if stage.exists():
+        if stage.exists() or stage.is_symlink():
+            _require(not stage.is_symlink() and stage.is_dir(), "CORRUPTED_STAGING_STATE")
             shutil.rmtree(stage)
         shutil.copytree(candidate_grid, stage, symlinks=False)
         _reject_symlinks(stage)
         _fsync_tree(stage)
         _fsync_dir(target.parent)
+        _require(_tree_identity(stage) == tree_digest
+                 and _tree_identity(candidate_grid) == tree_digest,
+                 "CORRUPTED_STAGING_STATE")
+        _checkpoint("after_staging")
 
         # Prove the kernel/filesystem can exchange directories atomically before
         # the durable ledger reservation is appended.
         _exchange_probe(target.parent, token)
+        _checkpoint("after_probe")
+
+        if previous != record:
+            _write_recovery(journal_path, record)
+        _checkpoint("before_append")
 
         if not resumed:
             try:
@@ -617,9 +745,12 @@ def publish_candidate(
             reserved_head = entry.entry_digest
         else:
             reserved_head = existing["entry_digest"]
+        _checkpoint("after_append")
 
         try:
+            _checkpoint("before_exchange")
             _commit_exchange(stage, target)
+            _checkpoint("after_exchange")
             _fsync_dir(target.parent)
         except Exception as exc:
             # The exact durable reservation intentionally remains so retry can
@@ -629,7 +760,8 @@ def publish_candidate(
             raise PublicationError("ATOMIC_EXCHANGE_FAILED") from exc
 
         try:
-            committed = load_current_grid81(project_root)
+            _checkpoint("before_verification")
+            committed = _load_current_grid81_locked(project_root)
             _require(
                 committed.canonical_digest == candidate.canonical_digest,
                 "POST_COMMIT_CANONICAL_DIGEST_MISMATCH",
@@ -639,11 +771,8 @@ def publish_candidate(
                 "POST_COMMIT_GENERATION_MISMATCH",
             )
         except Exception as verification_error:
-            try:
-                _commit_exchange(stage, target)
-                _fsync_dir(target.parent)
-            except Exception as rollback_error:
-                raise PublicationError("ROLLBACK_FAILED") from rollback_error
+            # Never reverse visibility. Retain reservation and old stage for
+            # an exact verifying retry, including failures after exchange.
             if isinstance(verification_error, PublicationError):
                 raise verification_error
             if isinstance(verification_error, CanonicalReadError):
@@ -654,8 +783,8 @@ def publish_candidate(
             raise PublicationError("POST_COMMIT_VERIFICATION_FAILED") from verification_error
 
         # stage now contains the previous canonical snapshot.
-        shutil.rmtree(stage)
-        _fsync_dir(target.parent)
+        _checkpoint("after_verification")
+        _cleanup(stage)
 
         return CanonicalPublicationReceipt(
             status="COMMITTED",

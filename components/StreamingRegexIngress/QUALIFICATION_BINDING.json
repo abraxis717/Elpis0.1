@@ -1,8 +1,19 @@
 {
   "abi_functional_summary_sha256": "0ae559672bea2b433599f8e60ce677def88f960ceff48c0e6ee8fc9d12d31982",
   "abi_version": 1,
+  "existing_fields_scope": "Historical V1 qualification; successor V2 is described separately below.",
   "full_native_chain_functional_summary_sha256": "a96243c1bb464322931d7af5e9e41ad61fe93748b37dc75c9848d83a5e25b93c",
   "runtime_admission": false,
   "schema": "elpis.streaming-regex-native-abi-r0.qualification-binding.v1",
+  "successor_v2": {
+    "admission_authority": false,
+    "execution_authority": false,
+    "implementation_status": "AVAILABLE",
+    "public_header": "include/streaming_regex_ingress_v2.h",
+    "qualification_report": "V2_QUALIFICATION.md",
+    "qualification_status": "SUCCESSOR_TESTS_PASS_HISTORICAL_MATRIX_UNAVAILABLE",
+    "runtime_admission": false,
+    "semantic_authority": false
+  },
   "verdict": "PASS_STREAMING_REGEX_STABLE_NATIVE_ABI_AND_NO_TEXTUAL_INCLUDE_R0"
 }

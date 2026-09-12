@@ -80,3 +80,14 @@ target_compile_features(
     elpis_regex_hacf_b01_regression
     PRIVATE cxx_std_17
 )
+
+add_test(NAME regex_hacf_v1_bounded COMMAND elpis_regex_hacf_b01_regression
+    "${CMAKE_CURRENT_BINARY_DIR}/b01-corpus")
+add_executable(elpis_regex_hacf_v2_test tests/test_v2_composition.cpp)
+target_link_libraries(elpis_regex_hacf_v2_test PRIVATE elpis_regex_hacf_query_ingress)
+add_test(NAME regex_hacf_v2 COMMAND elpis_regex_hacf_v2_test
+    "${CMAKE_CURRENT_BINARY_DIR}/v2-corpus")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(elpis_regex_hacf_query_ingress PRIVATE -Werror)
+    target_compile_options(elpis_regex_hacf_v2_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()

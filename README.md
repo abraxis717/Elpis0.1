@@ -2,7 +2,7 @@
 
 **A deterministic structural-reasoning architecture for bounded learned proposals, explicit authority, and falsifiable runtime composition.**
 
-**Release line: Elpis2.1.23**
+**Release line: Elpis2.1.24**
 
 Elpis is a systems-research project about a narrow question: can learned components contribute useful structural proposals while deterministic machinery retains ownership of representation, admissibility, authority, validation, and terminal action?
 
@@ -14,9 +14,9 @@ Elpis therefore presents itself as a falsifiable research artifact rather than a
 
 ## Release Notes
 
-**Elpis2.1.23** consolidates the public ECS surface and publishes the closed Branch35–40 scientific evidence without rewriting its bytes. The root release-note files are also consolidated into a single archive.
+**Elpis2.1.24** integrates the qualified Grid81 Canonical Publisher R1, incremental StreamingRegexIngress/RegexHACF V2, and the code-only deterministic ECS M1A kernel while preserving the frozen Structural R0 authority and closed Branch35–40 science.
 
-- Current notes: [`RELEASE_NOTES/Elpis2.1.23.md`](RELEASE_NOTES/Elpis2.1.23.md)
+- Current notes: [`RELEASE_NOTES/Elpis2.1.24.md`](RELEASE_NOTES/Elpis2.1.24.md)
 - Release-note archive: [`RELEASE_NOTES/`](RELEASE_NOTES/)
 - ECS authority and science: [`ECS/`](ECS/)
 

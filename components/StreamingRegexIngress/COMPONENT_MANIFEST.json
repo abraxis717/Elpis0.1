@@ -7,6 +7,7 @@
   "component_id": "StreamingRegexIngress_R1",
   "display_name": "StreamingRegexIngress",
   "execution_authority": false,
+  "existing_fields_scope": "Historical V1 qualification; successor V2 is described separately below.",
   "full_native_chain_functional_summary_sha256": "a96243c1bb464322931d7af5e9e41ad61fe93748b37dc75c9848d83a5e25b93c",
   "grid81_semantics": false,
   "native_regex_engine": "PCRE2-8",
@@ -23,5 +24,15 @@
   "schema": "elpis.component_manifest.v1",
   "semantic_truth_authority": false,
   "stable_native_abi": true,
+  "successor_v2": {
+    "admission_authority": false,
+    "execution_authority": false,
+    "implementation_status": "AVAILABLE",
+    "public_header": "include/streaming_regex_ingress_v2.h",
+    "qualification_report": "V2_QUALIFICATION.md",
+    "qualification_status": "SUCCESSOR_TESTS_PASS_HISTORICAL_MATRIX_UNAVAILABLE",
+    "runtime_admission": false,
+    "semantic_authority": false
+  },
   "textual_source_include_required": false
 }

@@ -2,6 +2,7 @@
   "ambiguous_relation_pre_batch_rejection": "PASS",
   "baseline_chunk_parity": "PASS",
   "build_system_admission": true,
+  "existing_fields_scope": "Historical V1 qualification; successor V2 is described separately below.",
   "fresh_process_runs": 4,
   "prior_stable_abi_baseline_identity_parity": "PASS",
   "prior_stable_abi_positive_identity_parity": "PASS",
@@ -11,5 +12,15 @@
   "reverse_hacf_input_order_parity": "PASS",
   "runtime_admission": false,
   "schema": "elpis.regex-hacf-query-ingress-r0.qualification-binding.v1",
+  "successor_v2": {
+    "admission_authority": false,
+    "execution_authority": false,
+    "implementation_status": "AVAILABLE",
+    "public_header": "include/regex_hacf_query_ingress_v2.h",
+    "qualification_report": "../StreamingRegexIngress/V2_QUALIFICATION.md",
+    "qualification_status": "SUCCESSOR_TESTS_PASS_HISTORICAL_MATRIX_UNAVAILABLE",
+    "runtime_admission": false,
+    "semantic_authority": false
+  },
   "verdict": "PASS_REGEX_HACF_QUERY_INGRESS_COMPOSITE_R0"
 }

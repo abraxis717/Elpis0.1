@@ -207,6 +207,7 @@ class DurableApplicationLedger:
                for parent in (database_path, *database_path.parents)):
             raise ValueError("Ledger database cannot reside inside Canonical/Grid81")
         self._pid = os.getpid()
+        self._database_path = database_path
         self._connection = sqlite3.connect(
             str(database_path), timeout=30.0, isolation_level=None,
         )
@@ -229,9 +230,24 @@ class DurableApplicationLedger:
                     connection.execute(f"PRAGMA user_version = {_SCHEMA_VERSION}")
                     connection.execute(f"PRAGMA application_id = {_APPLICATION_ID}")
                 self._require_valid(connection)
+            info = database_path.stat()
+            self._storage_identity = (info.st_dev, info.st_ino)
         except BaseException:
             self._connection.close()
             raise
+
+    @property
+    def storage_identity(self) -> tuple[int, int]:
+        """Host-local file identity for a publication recovery journal.
+
+        This is not a semantic ledger identity or portable receipt field.
+        Replacing/restoring an open database is outside SQLite's trust model.
+        """
+        self._check_open()
+        info = self._database_path.stat()
+        if (info.st_dev, info.st_ino) != self._storage_identity:
+            raise RuntimeError("Ledger database was replaced")
+        return self._storage_identity
 
     def _check_open(self):
         if os.getpid() != self._pid:

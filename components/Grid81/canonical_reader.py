@@ -11,8 +11,12 @@ No writes, no phase-harness imports, no report generation.
 from __future__ import annotations
 
 import hashlib
+import fcntl
 import json
+import os
 import pathlib
+import stat
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Any, FrozenSet, Optional
 
@@ -126,7 +130,43 @@ _MANIFEST_ROLES: frozenset = frozenset({
 })
 
 
+@contextmanager
+def canonical_namespace_lock(project_root: pathlib.Path, *, exclusive: bool = False):
+    """Pin and lock the persistent Canonical parent inode (POSIX flock).
+
+    Shared readers hold this across every file read. Publishers hold it across
+    validation, reservation, exchange and cleanup, and call the private loader
+    while already locked. The containing filesystem is trusted not to rename
+    or replace this parent during a transaction. No lock file is created.
+    """
+    root = pathlib.Path(project_root).resolve(strict=True)
+    parent = root / "Canonical"
+    fd = os.open(parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX if exclusive else fcntl.LOCK_SH)
+        opened = os.fstat(fd)
+        named = parent.stat(follow_symlinks=False)
+        if (not stat.S_ISDIR(named.st_mode)
+                or (opened.st_dev, opened.st_ino) != (named.st_dev, named.st_ino)):
+            raise CanonicalReadError("CANONICAL_LOCK_REPLACED", "Canonical parent changed")
+        yield root
+    finally:
+        os.close(fd)
+
+
 def load_current_grid81(project_root: pathlib.Path) -> Grid81CanonicalState:
+    """Read a complete canonical snapshot under the namespace's shared lock."""
+    # Retain the public reader's symlink policy; publishers resolve root aliases
+    # before entering their exclusive lock.
+    root = _resolve_no_symlink(pathlib.Path(project_root), "project_root")
+    try:
+        with canonical_namespace_lock(root):
+            return _load_current_grid81_locked(root)
+    except OSError as exc:
+        raise CanonicalReadError("CANONICAL_LOCK_UNAVAILABLE", "Cannot lock canonical parent") from exc
+
+
+def _load_current_grid81_locked(project_root: pathlib.Path) -> Grid81CanonicalState:
     """Load and verify Grid81 canonical state via HEAD-first resolution.
 
     Parameters

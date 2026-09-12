@@ -1,3 +1,12 @@
+## Elpis2.1.24 — Publisher R1, Regex V2, and ECS M1A integration
+
+- Integrate the qualified Grid81 Canonical Publisher R1 lock/recovery protocol.
+- Add true incremental StreamingRegexIngress V2 and RegexHACF V2 while preserving the explicit 4096-byte V1-identity boundary.
+- Add the deterministic same-process ECS M1A kernel as a code-only public surface with one consolidated `ECS/README.md`.
+- Package `elpis_ecs` in the `elpisai` wheel.
+- Preserve frozen Structural R0 authority and closed Branch35–40 science unchanged.
+- Preserve cross-process authority as unresolved/deferred and make no new semantic/runtime-admission claim.
+
 ## Elpis2.1.21 — Publication-registry authority-cycle correction
 
 - Preserve hosted-green, untagged Elpis2.1.20 as immutable sealed evidence.

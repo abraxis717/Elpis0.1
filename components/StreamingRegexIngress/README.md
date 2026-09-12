@@ -74,3 +74,20 @@ authority. It does not extend P4, create a RetrievalBundle, or assign Grid81
 semantics.
 
 Runtime admission remains false.
+
+## Incremental V2 successor
+
+V2 is implemented in `src/incremental_lexer.cpp`, with an additive public API in
+`include/streaming_regex_ingress_v2.h`. It consumes arbitrary-length streams
+within explicit provenance/evidence limits without retaining source prefixes.
+The existing V1 API and carry rejection remain unchanged.
+
+See [V2_DESIGN.md](V2_DESIGN.md) for the state-machine proof, full grammar census,
+UTF-8 handling, memory bounds and the unavoidable long-match representation
+limit. Matches up to 4,096 bytes preserve byte-exact V1 output. Longer matches
+preserve exact hashes, offsets and semantic payloads using an explicit V2
+representation without inline text. This does **not** claim byte-exact V1
+canonical evidence for arbitrarily large matches.
+
+See [V2_QUALIFICATION.md](V2_QUALIFICATION.md) for executed successor qualification
+and the unavailable historical fixture matrix. Runtime admission stays false.

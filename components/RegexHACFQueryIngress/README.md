@@ -51,3 +51,17 @@ Repository build authority uses the real narrow Semantic Spine support
 qualification-only semantic link-compat shim.
 
 Top-level build-system admission is qualified. Runtime admission remains false.
+
+## Additive V2 result consumption
+
+`include/regex_hacf_query_ingress_v2.h` exposes
+`elpis_regex_hacf_query_ingress_from_regex_result_v2`. It borrows an immutable,
+finalized StreamingRegexIngress result and runs the existing context-proposal
+and query-local batch path. It does not duplicate lexical parsing. Both V1 and
+V2-produced Regex results are accepted; existing V1 composition entry points
+remain available.
+
+V2 long-match evidence has an explicitly different representation; see
+[the design](../StreamingRegexIngress/V2_DESIGN.md). Authority and ambiguity
+checks are shared with V1. See [qualification](../StreamingRegexIngress/V2_QUALIFICATION.md)
+for exact identity comparisons and long-stream tests. Runtime admission is false.

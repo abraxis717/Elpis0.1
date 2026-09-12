@@ -6,6 +6,7 @@
   "display_name": "RegexHACFQueryIngress",
   "embedding": false,
   "execution_authority": false,
+  "existing_fields_scope": "Historical V1 qualification; successor V2 is described separately below.",
   "grid81_semantics": false,
   "historical_regex_hacf_query_overlay_lineage_reconciled": false,
   "p4_relation_enum_extension": false,
@@ -20,5 +21,15 @@
   "schema": "elpis.component_manifest.v1",
   "semantic_truth_authority": false,
   "stable_regex_abi_required": true,
+  "successor_v2": {
+    "admission_authority": false,
+    "execution_authority": false,
+    "implementation_status": "AVAILABLE",
+    "public_header": "include/regex_hacf_query_ingress_v2.h",
+    "qualification_report": "../StreamingRegexIngress/V2_QUALIFICATION.md",
+    "qualification_status": "SUCCESSOR_TESTS_PASS_HISTORICAL_MATRIX_UNAVAILABLE",
+    "runtime_admission": false,
+    "semantic_authority": false
+  },
   "vector_index": false
 }

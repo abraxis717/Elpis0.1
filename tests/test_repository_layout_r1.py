@@ -8,13 +8,14 @@ def test_root_release_note_clutter_is_gone():
     archive = ROOT / "RELEASE_NOTES"
     assert (archive / "Elpis2.1.22.md").is_file()
     assert (archive / "Elpis2.1.23.md").is_file()
+    assert (archive / "Elpis2.1.24.md").is_file()
     assert (archive / "README.md").is_file()
 
 def test_readme_surfaces_release_notes_after_opening_abstract_before_install():
     text = (ROOT / "README.md").read_text()
     assert "## Abstract" not in text
     assert text.index("## Release Notes") < text.index("## Install and quick start")
-    assert "RELEASE_NOTES/Elpis2.1.23.md" in text
+    assert "RELEASE_NOTES/Elpis2.1.24.md" in text
 
 def test_ecs_root_surface_is_consolidated():
     assert not (ROOT / "ECS_AUTHORITY").exists()

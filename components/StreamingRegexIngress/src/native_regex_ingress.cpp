@@ -3,6 +3,9 @@
 
 #include "elpis/sha256.h"
 #include "streaming_regex_ingress.h"
+#include "streaming_regex_ingress_v2.h"
+#include "incremental_lexer.h"
+#include <memory>
 #include "bounded_file_staging.h"
 
 #include <algorithm>
@@ -304,6 +307,7 @@ struct Evidence {
     uint64_t start_byte=0,end_byte=0;
     std::string matched_text, matched_sha;
     J payload;
+    bool text_omitted=false;
 };
 
 struct Utf8Prefix {
@@ -407,12 +411,13 @@ static J evidence_to_json(const Evidence &e,const std::string &source_sha) {
     bound["evidence_kind"]=e.evidence_kind;
     bound["execution_authority"]=false;
     bound["lexical_anchor"]=e.lexical_anchor;
-    bound["matched_text"]=e.matched_text;
+    if(e.text_omitted) bound["matched_text_omitted"]=true;
+    else bound["matched_text"]=e.matched_text;
     bound["matched_text_sha256"]=e.matched_sha;
     bound["pattern_id"]=e.pattern_id;
     bound["payload"]=e.payload;
     bound["runtime_admission"]=false;
-    bound["schema"]=SCHEMA;
+    bound["schema"]=e.text_omitted ? "elpis.regex-lexical-evidence.v2" : SCHEMA;
     bound["semantic_authority"]=false;
     bound["source_sha256"]=source_sha;
     bound["start_byte"]=J::num(std::to_string(e.start_byte));
@@ -559,13 +564,44 @@ struct ElpisStreamingRegexInputExceedsCarry final : std::runtime_error {
         : std::runtime_error("INPUT_EXCEEDS_CARRY") {}
 };
 
+static J build_root(std::vector<Evidence>& raw, const std::string& source_sha, uint64_t total_before) {
+    std::sort(raw.begin(),raw.end(),[](const Evidence&a,const Evidence&b){
+        if(a.start_byte!=b.start_byte) return a.start_byte<b.start_byte;
+        if(a.end_byte!=b.end_byte) return a.end_byte<b.end_byte;
+        return a.pattern_id<b.pattern_id;
+    });
+
+    J::A evidence;
+    for(const auto &e:raw)
+        evidence.push_back(evidence_to_json(e,source_sha));
+
+    J::O ingress;
+    ingress["admission_authority"]=false;
+    ingress["candidate_status"]="PROPOSED_UNADMITTED";
+    ingress["evidence"]=J(evidence);
+    ingress["execution_authority"]=false;
+    ingress["runtime_admission"]=false;
+    ingress["schema"]=std::any_of(raw.begin(),raw.end(),[](const Evidence& e){ return e.text_omitted; })
+        ? "elpis.regex-stream-ingress-result.v2" : "elpis.regex-stream-ingress-result.v1";
+    ingress["semantic_authority"]=false;
+    ingress["source_bytes"]=J::num(std::to_string(total_before));
+    ingress["source_sha256"]=source_sha;
+
+    J composition=compose(evidence,source_sha);
+
+    J::O root;
+    root["composition"]=composition;
+    root["ingress"]=J(std::move(ingress));
+    return J(std::move(root));
+}
+
 static J parse_bytes_buffer(
     const uint8_t *data,
     size_t data_len,
     size_t chunk_size,
     size_t carry_bytes);
 
-static J parse_file(
+[[maybe_unused]] static J parse_file(
     const std::string &path,
     size_t chunk_size,
     size_t carry_bytes)
@@ -730,33 +766,7 @@ static J parse_bytes_buffer(
     elpis_sha256_final(&source_ctx,source_digest_bytes);
     std::string source_sha=hex_digest(source_digest_bytes);
 
-    std::sort(raw.begin(),raw.end(),[](const Evidence&a,const Evidence&b){
-        if(a.start_byte!=b.start_byte) return a.start_byte<b.start_byte;
-        if(a.end_byte!=b.end_byte) return a.end_byte<b.end_byte;
-        return a.pattern_id<b.pattern_id;
-    });
-
-    J::A evidence;
-    for(const auto &e:raw)
-        evidence.push_back(evidence_to_json(e,source_sha));
-
-    J::O ingress;
-    ingress["admission_authority"]=false;
-    ingress["candidate_status"]="PROPOSED_UNADMITTED";
-    ingress["evidence"]=J(evidence);
-    ingress["execution_authority"]=false;
-    ingress["runtime_admission"]=false;
-    ingress["schema"]="elpis.regex-stream-ingress-result.v1";
-    ingress["semantic_authority"]=false;
-    ingress["source_bytes"]=J::num(std::to_string(total_before));
-    ingress["source_sha256"]=source_sha;
-
-    J composition=compose(evidence,source_sha);
-
-    J::O root;
-    root["composition"]=composition;
-    root["ingress"]=J(std::move(ingress));
-    return J(std::move(root));
+    return build_root(raw,source_sha,total_before);
 }
 
 static bool abi_copy_string(char *dst,size_t cap,const std::string &src) {
@@ -770,22 +780,8 @@ extern "C" uint32_t elpis_streaming_regex_abi_version_v1(void) {
     return ELPIS_STREAMING_REGEX_ABI_VERSION_V1;
 }
 
-extern "C" int elpis_streaming_regex_parse_bytes_v1(
-    const uint8_t *data,
-    size_t data_len,
-    size_t chunk_size,
-    size_t carry_bytes,
-    elpis_streaming_regex_result_v1 **out)
-{
-    if(!out) return ELPIS_STREAMING_REGEX_E_INVAL;
-    *out=nullptr;
-    elpis_streaming_regex_last_error_storage.clear();
-
-    try {
-        J root=parse_bytes_buffer(
-            data,data_len,chunk_size,carry_bytes);
-
-        auto *r=new elpis_streaming_regex_result_v1;
+static std::unique_ptr<elpis_streaming_regex_result_v1> make_result(J root) {
+        auto r=std::make_unique<elpis_streaming_regex_result_v1>();
         r->root=std::move(root);
         const auto &ro=r->root.obj();
         const J &ingress=ro.at("ingress");
@@ -812,7 +808,26 @@ extern "C" int elpis_streaming_regex_parse_bytes_v1(
         for(const J &c:co.at("candidates").arr())
             r->candidate_ids.push_back(get_s(c.obj(),"candidate_id"));
 
-        *out=r;
+    return r;
+}
+
+extern "C" int elpis_streaming_regex_parse_bytes_v1(
+    const uint8_t *data,
+    size_t data_len,
+    size_t chunk_size,
+    size_t carry_bytes,
+    elpis_streaming_regex_result_v1 **out)
+{
+    if(!out) return ELPIS_STREAMING_REGEX_E_INVAL;
+    *out=nullptr;
+    elpis_streaming_regex_last_error_storage.clear();
+
+    try {
+        J root=parse_bytes_buffer(
+            data,data_len,chunk_size,carry_bytes);
+
+        auto r=make_result(std::move(root));
+        *out=r.release();
         return ELPIS_STREAMING_REGEX_OK;
     } catch(const ElpisStreamingRegexInputExceedsCarry &) {
         elpis_streaming_regex_last_error_storage="INPUT_EXCEEDS_CARRY";
@@ -924,4 +939,91 @@ extern "C" int elpis_streaming_regex_result_candidate_at_v1(
 
 extern "C" const char *elpis_streaming_regex_last_error_v1(void) {
     return elpis_streaming_regex_last_error_storage.c_str();
+}
+
+// V2 errors use static strings: reporting allocation failure cannot allocate.
+static thread_local const char* V2_ERROR="";
+struct elpis_streaming_regex_stream_v2 {
+    std::unique_ptr<elpis_regex_v2::Lexer> lexer;
+    uint64_t limit=ELPIS_STREAMING_REGEX_MAX_SOURCE_BYTES_V2;
+    int failure=0;
+    bool finalized=false;
+};
+static int v2_failure(elpis_streaming_regex_stream_v2* s,int code,const char* text) {
+    V2_ERROR=text;
+    if(s) s->failure=code;
+    return code;
+}
+extern "C" const char* elpis_streaming_regex_last_error_v2(void) { return V2_ERROR; }
+extern "C" int elpis_streaming_regex_stream_create_v2(
+    const elpis_streaming_regex_options_v2* options, elpis_streaming_regex_stream_v2** out) {
+    V2_ERROR="";
+    if(!out) return v2_failure(nullptr,ELPIS_STREAMING_REGEX_E_INVAL,"NULL_OUTPUT");
+    *out=nullptr;
+    if(options && (options->abi_version!=2 || options->struct_size!=sizeof(*options) ||
+        options->reserved || !options->max_evidence || !options->max_source_bytes ||
+        options->max_source_bytes>ELPIS_STREAMING_REGEX_MAX_SOURCE_BYTES_V2))
+        return v2_failure(nullptr,ELPIS_STREAMING_REGEX_E_INVAL,"INVALID_OPTIONS");
+    try {
+        auto s=std::make_unique<elpis_streaming_regex_stream_v2>();
+        auto ps=patterns(); std::vector<std::string> expressions;
+        for(const auto& p:ps) expressions.emplace_back(p.expr);
+        s->lexer=std::make_unique<elpis_regex_v2::Lexer>(expressions,
+            options ? options->max_evidence : ELPIS_STREAMING_REGEX_DEFAULT_MAX_EVIDENCE_V2);
+        if(options) s->limit=options->max_source_bytes;
+        *out=s.release(); return 0;
+    } catch(const std::bad_alloc&) { return v2_failure(nullptr,-3,"NOMEM"); }
+      catch(...) { return v2_failure(nullptr,-2,"V2_GRAMMAR_INIT"); }
+}
+extern "C" int elpis_streaming_regex_stream_feed_v2(
+    elpis_streaming_regex_stream_v2* s,const uint8_t* data,size_t size) {
+    V2_ERROR="";
+    if(!s) return v2_failure(nullptr,-1,"NULL_STREAM");
+    if(s->finalized) { V2_ERROR="FINALIZED"; return ELPIS_STREAMING_REGEX_E_STATE; }
+    if(s->failure) { V2_ERROR="FAILED_STREAM"; return s->failure; }
+    if(size && !data) return v2_failure(s,-1,"NULL_DATA");
+    if(size>s->limit-s->lexer->bytes()) return v2_failure(s,-4,"SOURCE_LIMIT");
+    if(!size) return 0;
+    try { s->lexer->feed(data,size); return 0; }
+    catch(const std::bad_alloc&) { return v2_failure(s,-3,"NOMEM"); }
+    catch(const elpis_regex_v2::RangeError&) { return v2_failure(s,-4,"EVIDENCE_LIMIT"); }
+    catch(...) { return v2_failure(s,-2,"INVALID_UTF8_OR_LEXICAL_STATE"); }
+}
+extern "C" int elpis_streaming_regex_stream_finalize_v2(
+    elpis_streaming_regex_stream_v2* s, elpis_streaming_regex_result_v1** out) {
+    V2_ERROR="";
+    if(!out) return v2_failure(nullptr,-1,"NULL_OUTPUT");
+    *out=nullptr;
+    if(!s) return v2_failure(nullptr,-1,"NULL_STREAM");
+    if(s->finalized) { V2_ERROR="FINALIZED"; return ELPIS_STREAMING_REGEX_E_STATE; }
+    if(s->failure) { V2_ERROR="FAILED_STREAM"; return s->failure; }
+    try {
+        auto matches=s->lexer->finish(); auto ps=patterns();
+        std::vector<Evidence> raw;
+        for(auto& m:matches) {
+            Pattern p=ps.at(m.pattern);
+            p.scalar_group=1; p.value_group=2; p.lower_group=3; p.upper_group=4; p.subject_group=5;
+            PCRE2_SIZE ov[12]{}; std::string captures;
+            for(size_t i=0;i<5;++i) {
+                ov[2*(i+1)]=captures.size(); captures+=m.captures[i];
+                ov[2*(i+1)+1]=captures.size();
+            }
+            raw.push_back(Evidence{p.id,p.kind,p.anchor,m.start,m.end,std::move(m.text),
+                std::move(m.digest),payload_for(p,captures,ov),m.text_omitted});
+        }
+        auto r=make_result(build_root(raw,s->lexer->source_digest(),s->lexer->bytes()));
+        s->finalized=true; *out=r.release(); return 0;
+    } catch(const std::bad_alloc&) { return v2_failure(s,-3,"NOMEM"); }
+      catch(const elpis_regex_v2::RangeError&) { return v2_failure(s,-4,"EVIDENCE_LIMIT"); }
+      catch(...) { return v2_failure(s,-2,"INVALID_UTF8_EOF_OR_LEXICAL_PAYLOAD"); }
+}
+extern "C" void elpis_streaming_regex_stream_destroy_v2(elpis_streaming_regex_stream_v2* s) { delete s; }
+extern "C" int elpis_streaming_regex_stream_stats_v2(
+    const elpis_streaming_regex_stream_v2* s,elpis_streaming_regex_stats_v2* out) {
+    V2_ERROR="";
+    if(!s || !out) return v2_failure(nullptr,-1,"NULL_STATS_ARGUMENT");
+    const auto m=s->lexer->stats();
+    *out={2,sizeof(*out),s->lexer->bytes(),m.peak_candidates,m.peak_threads,
+        m.peak_inline_bytes,m.peak_capture_bytes,m.program_instructions,m.evidence_count};
+    return 0;
 }

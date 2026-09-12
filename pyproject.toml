@@ -1,6 +1,6 @@
 [project]
 name = "elpisai"
-version = "2.1.23"
+version = "2.1.24"
 description = "Elpis structural-guidance primitive with an end-to-end validated-source runtime"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -34,6 +34,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = [
+  "ECS/runtime",
   "src",
   "components",
   "components/Pipeline/P0ControlProtocol/src",

@@ -1,4 +1,4 @@
-#include "regex_hacf_query_ingress.h"
+#include "regex_hacf_query_ingress_v2.h"
 
 #include "streaming_regex_ingress.h"
 #include "query_local_proposal_batch.h"
@@ -11,6 +11,7 @@
 #include <new>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -39,7 +40,11 @@ struct elpis_regex_hacf_query_ingress_result_v1 {
     bool batch_published=false;
 };
 
-static thread_local std::string LAST_ERROR;
+static thread_local char LAST_ERROR[512]{};
+static void set_error(const char* text) noexcept {
+    const size_t n=std::min(std::strlen(text),sizeof(LAST_ERROR)-1);
+    std::memcpy(LAST_ERROR,text,n); LAST_ERROR[n]=0;
+}
 
 struct RegexGuard {
     elpis_streaming_regex_result_v1 *p=nullptr;
@@ -143,6 +148,52 @@ static std::string chunk_text(elpis_corpus *corpus,const std::string &digest) {
     return out;
 }
 
+static RegexView read_finalized_regex_view(const elpis_streaming_regex_result_v1* result) {
+    const char *source=
+        elpis_streaming_regex_result_source_sha256_v1(result);
+    const char *ingress=
+        elpis_streaming_regex_result_ingress_json_v1(result);
+    const char *composition=
+        elpis_streaming_regex_result_composition_json_v1(result);
+    if(!source || !ingress || !composition)
+        throw std::runtime_error("REGEX_ABI_NULL_VIEW");
+
+    RegexView view;
+    view.source_sha256=source;
+    view.ingress_json=ingress;
+    view.composition_json=composition;
+    view.fail_closed=
+        elpis_streaming_regex_result_fail_closed_v1(result)!=0;
+
+    uint32_t ne=elpis_streaming_regex_result_evidence_count_v1(result);
+    view.evidence.reserve(ne);
+    for(uint32_t i=0;i<ne;++i) {
+        elpis_streaming_regex_evidence_view_v1 row{};
+        int rc=elpis_streaming_regex_result_evidence_at_v1(result,i,&row);
+        if(rc!=ELPIS_STREAMING_REGEX_OK ||
+           row.abi_version!=ELPIS_STREAMING_REGEX_ABI_VERSION_V1)
+            throw std::runtime_error("REGEX_ABI_EVIDENCE");
+        view.evidence.push_back({
+            std::string(row.evidence_id),
+            std::string(row.pattern_id),
+            std::string(row.lexical_anchor)
+        });
+    }
+
+    uint32_t nc=elpis_streaming_regex_result_candidate_count_v1(result);
+    view.candidate_ids.reserve(nc);
+    for(uint32_t i=0;i<nc;++i) {
+        elpis_streaming_regex_candidate_view_v1 row{};
+        int rc=elpis_streaming_regex_result_candidate_at_v1(result,i,&row);
+        if(rc!=ELPIS_STREAMING_REGEX_OK ||
+           row.abi_version!=ELPIS_STREAMING_REGEX_ABI_VERSION_V1)
+            throw std::runtime_error("REGEX_ABI_CANDIDATE");
+        view.candidate_ids.push_back(std::string(row.candidate_id));
+    }
+
+    return view;
+}
+
 static RegexView read_regex_view(
     const uint8_t *task_bytes,
     size_t task_len,
@@ -163,49 +214,7 @@ static RegexView read_regex_view(
             (detail_msg?detail_msg:""));
     }
 
-    const char *source=
-        elpis_streaming_regex_result_source_sha256_v1(guard.p);
-    const char *ingress=
-        elpis_streaming_regex_result_ingress_json_v1(guard.p);
-    const char *composition=
-        elpis_streaming_regex_result_composition_json_v1(guard.p);
-    if(!source || !ingress || !composition)
-        throw std::runtime_error("REGEX_ABI_NULL_VIEW");
-
-    RegexView view;
-    view.source_sha256=source;
-    view.ingress_json=ingress;
-    view.composition_json=composition;
-    view.fail_closed=
-        elpis_streaming_regex_result_fail_closed_v1(guard.p)!=0;
-
-    uint32_t ne=elpis_streaming_regex_result_evidence_count_v1(guard.p);
-    view.evidence.reserve(ne);
-    for(uint32_t i=0;i<ne;++i) {
-        elpis_streaming_regex_evidence_view_v1 row{};
-        rc=elpis_streaming_regex_result_evidence_at_v1(guard.p,i,&row);
-        if(rc!=ELPIS_STREAMING_REGEX_OK ||
-           row.abi_version!=ELPIS_STREAMING_REGEX_ABI_VERSION_V1)
-            throw std::runtime_error("REGEX_ABI_EVIDENCE");
-        view.evidence.push_back({
-            std::string(row.evidence_id),
-            std::string(row.pattern_id),
-            std::string(row.lexical_anchor)
-        });
-    }
-
-    uint32_t nc=elpis_streaming_regex_result_candidate_count_v1(guard.p);
-    view.candidate_ids.reserve(nc);
-    for(uint32_t i=0;i<nc;++i) {
-        elpis_streaming_regex_candidate_view_v1 row{};
-        rc=elpis_streaming_regex_result_candidate_at_v1(guard.p,i,&row);
-        if(rc!=ELPIS_STREAMING_REGEX_OK ||
-           row.abi_version!=ELPIS_STREAMING_REGEX_ABI_VERSION_V1)
-            throw std::runtime_error("REGEX_ABI_CANDIDATE");
-        view.candidate_ids.push_back(std::string(row.candidate_id));
-    }
-
-    return view;
+    return read_finalized_regex_view(guard.p);
 }
 
 static detail::J build_context_proposal(
@@ -473,19 +482,19 @@ uint32_t elpis_regex_hacf_query_ingress_abi_version_v1(void) {
     return ELPIS_REGEX_HACF_QUERY_INGRESS_ABI_VERSION_V1;
 }
 
-extern "C"
-int elpis_regex_hacf_query_ingress_run_v1(
+static int run_composition(
     const uint8_t *task_bytes,
     size_t task_len,
     size_t regex_chunk_size,
     elpis_corpus *corpus,
     elpis_context_graph *context_graph,
-    elpis_regex_hacf_query_ingress_result_v1 **out)
+    elpis_regex_hacf_query_ingress_result_v1 **out,
+    const elpis_streaming_regex_result_v1* finalized)
 {
     if(!out)
         return ELPIS_REGEX_HACF_QUERY_INGRESS_E_INVAL;
     *out=nullptr;
-    LAST_ERROR.clear();
+    LAST_ERROR[0]=0;
 
     if((task_len && !task_bytes) ||
        regex_chunk_size==0 ||
@@ -495,6 +504,7 @@ int elpis_regex_hacf_query_ingress_run_v1(
 
     try {
         RegexView regex=
+            finalized ? read_finalized_regex_view(finalized) :
             read_regex_view(task_bytes,task_len,regex_chunk_size);
 
         detail::J proposal=
@@ -513,21 +523,38 @@ int elpis_regex_hacf_query_ingress_run_v1(
         *out=result;
         return ELPIS_REGEX_HACF_QUERY_INGRESS_OK;
     } catch(const std::bad_alloc &) {
-        LAST_ERROR="NOMEM";
+        set_error("NOMEM");
         return ELPIS_REGEX_HACF_QUERY_INGRESS_E_NOMEM;
     } catch(const std::exception &e) {
-        LAST_ERROR=e.what();
-        if(LAST_ERROR.rfind("REGEX_ABI:",0)==0)
+        set_error(e.what());
+        if(std::string_view(LAST_ERROR).rfind("REGEX_ABI:",0)==0)
             return ELPIS_REGEX_HACF_QUERY_INGRESS_E_REGEX;
-        if(LAST_ERROR.rfind("HACF_",0)==0)
+        if(std::string_view(LAST_ERROR).rfind("HACF_",0)==0)
             return ELPIS_REGEX_HACF_QUERY_INGRESS_E_HACF;
-        if(LAST_ERROR=="ZERO_CANDIDATES")
+        if(std::string_view(LAST_ERROR)=="ZERO_CANDIDATES")
             return ELPIS_REGEX_HACF_QUERY_INGRESS_E_CARDINALITY;
         return ELPIS_REGEX_HACF_QUERY_INGRESS_E_BATCH;
     } catch(...) {
-        LAST_ERROR="UNKNOWN";
+        set_error("UNKNOWN");
         return ELPIS_REGEX_HACF_QUERY_INGRESS_E_BATCH;
     }
+}
+
+extern "C" int elpis_regex_hacf_query_ingress_run_v1(
+    const uint8_t* bytes, size_t size, size_t chunk, elpis_corpus* corpus,
+    elpis_context_graph* graph, elpis_regex_hacf_query_ingress_result_v1** out) {
+    return run_composition(bytes,size,chunk,corpus,graph,out,nullptr);
+}
+
+extern "C" int elpis_regex_hacf_query_ingress_from_regex_result_v2(
+    const elpis_streaming_regex_result_v1* regex, elpis_corpus* corpus,
+    elpis_context_graph* graph, elpis_regex_hacf_query_ingress_result_v1** out) {
+    if(!regex) {
+        if(out) *out=nullptr;
+        set_error("NULL_REGEX_RESULT");
+        return ELPIS_REGEX_HACF_QUERY_INGRESS_E_INVAL;
+    }
+    return run_composition(nullptr,0,1,corpus,graph,out,regex);
 }
 
 extern "C"
@@ -656,5 +683,5 @@ int elpis_regex_hacf_query_ingress_result_runtime_admission_v1(
 
 extern "C"
 const char *elpis_regex_hacf_query_ingress_last_error_v1(void) {
-    return LAST_ERROR.c_str();
+    return LAST_ERROR;
 }

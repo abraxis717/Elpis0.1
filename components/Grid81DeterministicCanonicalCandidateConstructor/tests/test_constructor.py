@@ -453,7 +453,7 @@ def test_constructor_output_is_directly_publishable(
         candidate_root=candidate,
         ledger=ledger,
         promotion_capability=cap,
-        lock_path=tmp_path / "publisher.lock",
+        lock_path=current / "Canonical",
     )
 
     after = load_current_grid81(current)

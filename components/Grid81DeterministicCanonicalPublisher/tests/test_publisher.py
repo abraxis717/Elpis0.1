@@ -278,7 +278,7 @@ def _publish(current, candidate, ledger, cap, tmp_path):
         candidate_root=candidate,
         ledger=ledger,
         promotion_capability=cap,
-        lock_path=tmp_path / "publisher.lock",
+        lock_path=current / "Canonical",
     )
 
 

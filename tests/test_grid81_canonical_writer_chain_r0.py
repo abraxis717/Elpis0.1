@@ -317,7 +317,7 @@ def test_grid81_canonical_writer_chain_golden_publish_and_exact_replay(
             candidate_root=candidate,
             ledger=ledger,
             promotion_capability=cap,
-            lock_path=tmp_path / "publisher.lock",
+            lock_path=current / "Canonical",
         )
 
         committed = load_current_grid81(current)
@@ -369,7 +369,7 @@ def test_grid81_canonical_writer_chain_golden_publish_and_exact_replay(
                 candidate_root=candidate,
                 ledger=ledger,
                 promotion_capability=wrong_cap,
-                lock_path=tmp_path / "publisher.lock",
+                lock_path=current / "Canonical",
             )
 
         assert ledger.to_dict()["count"] == 1
@@ -384,7 +384,7 @@ def test_grid81_canonical_writer_chain_golden_publish_and_exact_replay(
             candidate_root=candidate,
             ledger=ledger,
             promotion_capability=cap,
-            lock_path=tmp_path / "publisher.lock",
+            lock_path=current / "Canonical",
         )
 
         assert replay.status == "ALREADY_COMMITTED"

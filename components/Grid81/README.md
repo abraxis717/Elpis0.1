@@ -1,5 +1,14 @@
 # Grid81
 
+The local publisher R1 revision coordinates production reads with canonical
+publication using a shared lock on the persistent `Canonical` directory inode.
+`load_current_grid81` holds this lock across HEAD, generation and sidecar reads;
+the writer holds it exclusively through validation, reservation, exchange and
+cleanup. This closes the multi-file reader race that directory exchange alone
+cannot prevent. The reader remains read-only and requires POSIX directory flock.
+See [the R1 protocol](../Grid81DeterministicCanonicalPublisher/R1_PROTOCOL.md)
+for the recovery and filesystem trust boundary.
+
 Grid81 contains historical sealed state and a reader used by Elpis to verify, load, and consume a canonical Grid81 generation.
 
 The supplied historical state is **canonical generation `000001`**, committed under `state/Canonical/Grid81`, loaded through a reusable production reader, and consumed by the Elpis Header runtime observer.

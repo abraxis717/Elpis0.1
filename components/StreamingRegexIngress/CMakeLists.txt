@@ -8,6 +8,7 @@ set(ELPIS_HACF_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../native/hacf")
 
 add_library(elpis_streaming_regex_ingress SHARED
     src/native_regex_ingress.cpp
+    src/incremental_lexer.cpp
     ${ELPIS_HACF_ROOT}/src/hash/sha256.c
 )
 
@@ -36,6 +37,7 @@ target_compile_features(elpis_streaming_regex_ingress PRIVATE cxx_std_17)
 
 add_executable(elpis_native_regex_ingress
     src/native_regex_ingress.cpp
+    src/incremental_lexer.cpp
     ${ELPIS_HACF_ROOT}/src/hash/sha256.c
 )
 
@@ -86,3 +88,35 @@ target_compile_features(
     elpis_streaming_regex_b01_cli_io_regression
     PRIVATE cxx_std_17
 )
+
+# Both standalone and root CTest discover the frozen V1 regressions and V2.
+enable_testing()
+add_test(NAME streaming_regex_v1_bounded COMMAND elpis_streaming_regex_b01_regression)
+add_test(NAME streaming_regex_v1_cli_eof COMMAND elpis_streaming_regex_b01_cli_io_regression)
+add_executable(elpis_streaming_regex_v2_test tests/test_v2_stream.cpp
+    ${ELPIS_HACF_ROOT}/src/hash/sha256.c)
+target_include_directories(elpis_streaming_regex_v2_test PRIVATE ${ELPIS_HACF_ROOT}/include)
+target_link_libraries(elpis_streaming_regex_v2_test PRIVATE elpis_streaming_regex_ingress ${CMAKE_DL_LIBS})
+add_test(NAME streaming_regex_v2 COMMAND elpis_streaming_regex_v2_test)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(elpis_streaming_regex_ingress PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(elpis_native_regex_ingress PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(elpis_streaming_regex_v2_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+add_executable(elpis_streaming_regex_v2_allocation tests/test_v2_allocation.cpp)
+target_link_libraries(elpis_streaming_regex_v2_allocation PRIVATE elpis_streaming_regex_ingress)
+add_test(NAME streaming_regex_v2_allocation COMMAND elpis_streaming_regex_v2_allocation)
+add_executable(elpis_streaming_regex_v2_c_abi tests/test_v2_c_abi.c)
+target_link_libraries(elpis_streaming_regex_v2_c_abi PRIVATE elpis_streaming_regex_ingress)
+add_test(NAME streaming_regex_v2_c_abi COMMAND elpis_streaming_regex_v2_c_abi)
+add_executable(elpis_streaming_regex_v2_memory tests/test_v2_memory.cpp)
+target_link_libraries(elpis_streaming_regex_v2_memory PRIVATE elpis_streaming_regex_ingress)
+add_test(NAME streaming_regex_v2_memory COMMAND elpis_streaming_regex_v2_memory)
+find_package(Python3 COMPONENTS Interpreter QUIET)
+if(Python3_Interpreter_FOUND)
+    add_test(NAME streaming_regex_v2_properties COMMAND ${Python3_EXECUTABLE}
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/test_v2_properties.py"
+        $<TARGET_FILE:elpis_streaming_regex_ingress>)
+    set_tests_properties(streaming_regex_v2_properties PROPERTIES
+        ENVIRONMENT "PYTHONDONTWRITEBYTECODE=1")
+endif()
