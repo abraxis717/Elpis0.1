@@ -5738,7 +5738,7 @@
     },
     {
       "path": "tests/test_repository_layout_r1.py",
-      "sha256": "8742d511676ab5fc943a0423182868a0bb335a76874b14549fb75101453166ac"
+      "sha256": "243d94df249495d3d7346a755c7695b6bfb19e5e8b0d918d06e37ce954b32784"
     },
     {
       "path": "tests/test_runtime_guard_mutations.py",

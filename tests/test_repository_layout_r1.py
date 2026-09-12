@@ -16,7 +16,8 @@ def test_readme_surfaces_release_notes_after_opening_abstract_before_install():
     text = (ROOT / "README.md").read_text()
     assert "## Abstract" not in text
     assert text.index("## Release Notes") < text.index("## Install and quick start")
-    assert "RELEASE_NOTES/Elpis2.1.25.md" in text
+    version = (ROOT / "VERSION").read_text().strip()
+    assert f"RELEASE_NOTES/Elpis{version}.md" in text
 
 def test_ecs_root_surface_is_consolidated():
     assert not (ROOT / "ECS_AUTHORITY").exists()
