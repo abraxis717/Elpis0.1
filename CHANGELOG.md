@@ -1,3 +1,11 @@
+## Elpis2.1.26 — Repository identity and distribution metadata
+
+- Update the live `elpisai` package project URLs from `abraxis717/Elpis0.1` to `abraxis717/Elpis`.
+- Update current citation, publication-authority, public-overlay, README, and regression-contract repository identity.
+- Preserve historical qualification, release, and evidence records under the repository identity they originally recorded.
+- Preserve the `elpisai` distribution name, `elpis` console command, Python import surfaces, runtime behavior, semantic authority, closed scientific evidence, Publisher R1, Regex V2, and ECS M1A implementation bytes.
+- Make no publication-registry mutation before an immutable `Elpis2.1.26` tag is separately admitted.
+
 ## Elpis2.1.25 — Corrective successor to failed tagged Elpis2.1.24
 
 - Preserve the immutable Elpis2.1.24 tag as failed/unpublished evidence.

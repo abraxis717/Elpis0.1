@@ -1,6 +1,6 @@
 {
   "schema": "elpis.publication-authority.v1",
-  "public_repository": "https://github.com/abraxis717/Elpis0.1",
+  "public_repository": "https://github.com/abraxis717/Elpis",
   "authority_rules": {
     "existing_public_content": "PRESERVE",
     "local_publication_snapshot": "REFERENCE_ONLY",

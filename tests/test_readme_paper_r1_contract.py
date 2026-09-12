@@ -26,10 +26,10 @@ def test_distribution_metadata_binds_markdown_readme():
     assert project["readme"] == "README.md"
     assert project["scripts"]["elpis"] == "elpis_reference.cli:main"
     assert project["urls"] == {
-        "Homepage": "https://github.com/abraxis717/Elpis0.1",
-        "Repository": "https://github.com/abraxis717/Elpis0.1",
-        "Issues": "https://github.com/abraxis717/Elpis0.1/issues",
-        "Changelog": "https://github.com/abraxis717/Elpis0.1/blob/main/CHANGELOG.md",
+        "Homepage": "https://github.com/abraxis717/Elpis",
+        "Repository": "https://github.com/abraxis717/Elpis",
+        "Issues": "https://github.com/abraxis717/Elpis/issues",
+        "Changelog": "https://github.com/abraxis717/Elpis/blob/main/CHANGELOG.md",
     }
 
 

@@ -2,7 +2,7 @@
 
 **A deterministic structural-reasoning architecture for bounded learned proposals, explicit authority, and falsifiable runtime composition.**
 
-**Release line: Elpis2.1.25**
+**Release line: Elpis2.1.26**
 
 Elpis is a systems-research project about a narrow question: can learned components contribute useful structural proposals while deterministic machinery retains ownership of representation, admissibility, authority, validation, and terminal action?
 
@@ -14,9 +14,9 @@ Elpis therefore presents itself as a falsifiable research artifact rather than a
 
 ## Release Notes
 
-**Elpis2.1.25** is the corrective successor to the immutable but unpublished Elpis2.1.24 tag. It refreshes stale Grid81 successor manifest authority, corrects the root native CI registry count, and explicitly records 2.1.24 as failed/unpublished while preserving the qualified Publisher R1, Regex V2, and ECS M1A implementation bytes.
+**Elpis2.1.26** is a repository-identity and distribution-metadata successor after the canonical GitHub repository rename from `abraxis717/Elpis0.1` to `abraxis717/Elpis`. It updates current package, citation, publication-authority, and contract metadata while leaving runtime, semantic, scientific, Publisher R1, Regex V2, and ECS M1A implementation authority unchanged. The Python distribution remains `elpisai`; historical evidence retains the repository identity under which it was created.
 
-- Current notes: [`RELEASE_NOTES/Elpis2.1.25.md`](RELEASE_NOTES/Elpis2.1.25.md)
+- Current notes: [`RELEASE_NOTES/Elpis2.1.26.md`](RELEASE_NOTES/Elpis2.1.26.md)
 - Release-note archive: [`RELEASE_NOTES/`](RELEASE_NOTES/)
 - ECS authority and science: [`ECS/`](ECS/)
 

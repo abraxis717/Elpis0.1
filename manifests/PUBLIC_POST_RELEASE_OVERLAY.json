@@ -502,7 +502,7 @@
     }
   ],
   "policy": "Historical release digests remain authoritative except for paths explicitly declared here. New top-level roots require explicit declaration.",
-  "repository": "abraxis717/Elpis0.1",
+  "repository": "abraxis717/Elpis",
   "runtime_admission": false,
   "schema": "elpis.public-post-release-overlay.v1"
 }
