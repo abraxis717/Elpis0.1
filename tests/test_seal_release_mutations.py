@@ -39,44 +39,25 @@ def copy_ignore(src, names):
 
 
 def copy_repo(tmp_path: Path) -> Path:
-    """Materialize the sealed control from committed HEAD bytes.
+    """Materialize the sealed control from exact staged-index bytes.
 
-    The test helper itself may be modified while qualifying a successor, so
-    reading tracked files from the current working tree would invalidate
-    the predecessor manifest.  `git archive HEAD` supplies exact committed
-    membership and bytes.  A newly sealed active manifest is added only
-    when it does not yet exist in HEAD.
+    During precommit successor qualification, the Git index is the candidate
+    authority: it contains the exact staged source/metadata and the newly
+    sealed write-once manifest while excluding arbitrary unstaged worktree
+    bytes. On a committed clean tree the index and HEAD are identical.
     """
     root = tmp_path / "repo"
     root.mkdir()
 
-    proc = subprocess.run(
-        ["git", "-C", str(REPO), "archive", "--format=tar", "HEAD"],
+    subprocess.run(
+        [
+            "git", "-C", str(REPO), "checkout-index", "--all",
+            f"--prefix={root}{os.sep}",
+        ],
         check=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    with tarfile.open(fileobj=io.BytesIO(proc.stdout), mode="r:") as archive:
-        archive.extractall(root)
-
-    version = (REPO / "VERSION").read_text(encoding="utf-8").strip()
-    active_manifest = Path(
-        f"manifests/Elpis{version}.RELEASE_MANIFEST.json"
-    )
-    local_manifest = REPO / active_manifest
-    if local_manifest.exists():
-        committed = subprocess.run(
-            [
-                "git", "-C", str(REPO), "cat-file", "-e",
-                f"HEAD:{active_manifest.as_posix()}",
-            ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        ).returncode == 0
-        if not committed:
-            dst = root / active_manifest
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(local_manifest, dst)
 
     return root
 

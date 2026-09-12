@@ -1,5 +1,7 @@
 """Tests for canonical data structures and utilities."""
 
+import dataclasses
+import pytest
 import sys
 import os
 
@@ -50,11 +52,8 @@ def test_phase_evidence_immutable():
         disposition="SEALED",
         evidence_files=(),
     )
-    try:
+    with pytest.raises(dataclasses.FrozenInstanceError):
         pe.phase_id = "other"
-        assert False, "Should not be able to modify frozen dataclass"
-    except Exception:
-        pass
 
 
 def test_gate_result_immutable():

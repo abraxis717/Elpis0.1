@@ -1,3 +1,13 @@
+## Elpis2.1.27 — Bounded AST-policy and release-infrastructure maintenance
+
+- Admit only the existing `_EXCEPTION_NAMES` as typed `except` handlers while rejecting bare and non-admitted handlers under the existing `BANNED_CALL` decision ABI.
+- Require the requested Python entrypoint to be module-top-level rather than merely present somewhere under `ast.walk`.
+- Replace the canonical-promotion planner's vacuous frozen-dataclass mutation test with an exact `FrozenInstanceError` assertion.
+- Add an executable scope contract showing that whole-runtime admission and component-level public-registry admission are distinct authority surfaces.
+- Add a dedicated GitHub OIDC Trusted Publishing workflow bound to the PyPI `pypi` environment; no long-lived PyPI token is stored in the workflow.
+- Preserve `PUBLISHED_RELEASES.json` unchanged before immutable tag admission.
+- Defer any DurableApplicationLedger schema-v2/artifact-hash redesign to a separate qualification line.
+
 ## Elpis2.1.26 — Repository identity and distribution metadata
 
 - Update the live `elpisai` package project URLs from `abraxis717/Elpis0.1` to `abraxis717/Elpis`.

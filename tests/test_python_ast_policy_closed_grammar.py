@@ -79,3 +79,71 @@ def test_explicitly_admitted_raised_exceptions(exception):
     for expression in (exception, f'{exception}("invalid input")'):
         assert evaluate_python_ast_policy(language='python', entrypoint='solution',
             source=f'def solution():\n    raise {expression}').passed
+
+def test_typed_handler_admitted_and_bare_handler_rejected_without_new_code():
+    typed = (
+        "def solution(x):\n"
+        "    try:\n"
+        "        return int(x)\n"
+        "    except ValueError:\n"
+        "        return 0\n"
+    )
+    bare = (
+        "def solution(x):\n"
+        "    try:\n"
+        "        return int(x)\n"
+        "    except:\n"
+        "        return 0\n"
+    )
+
+    typed_decision = evaluate_python_ast_policy(
+        language="python",
+        source=typed,
+        entrypoint="solution",
+    )
+    bare_decision = evaluate_python_ast_policy(
+        language="python",
+        source=bare,
+        entrypoint="solution",
+    )
+
+    assert typed_decision.passed
+    assert typed_decision.code == "AST_VALID"
+    assert not bare_decision.passed
+    assert bare_decision.code == "BANNED_CALL"
+    assert bare_decision.call_name == "<bare-except>"
+
+
+def test_non_admitted_typed_handler_remains_banned_call():
+    source = (
+        "def solution(x):\n"
+        "    try:\n"
+        "        return int(x)\n"
+        "    except BaseException:\n"
+        "        return 0\n"
+    )
+    decision = evaluate_python_ast_policy(
+        language="python",
+        source=source,
+        entrypoint="solution",
+    )
+    assert not decision.passed
+    assert decision.code == "BANNED_CALL"
+    assert decision.call_name == "BaseException"
+
+
+def test_nested_definition_does_not_satisfy_module_entrypoint():
+    source = (
+        "def outer():\n"
+        "    def solution(x):\n"
+        "        return x\n"
+        "    return 1\n"
+    )
+    decision = evaluate_python_ast_policy(
+        language="python",
+        source=source,
+        entrypoint="solution",
+    )
+    assert not decision.passed
+    assert decision.code == "ENTRYPOINT_MISSING"
+    assert "solution" in decision.functions

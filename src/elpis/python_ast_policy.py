@@ -131,8 +131,19 @@ def evaluate_python_ast_policy(
             }
         )
     )
+    top_level_functions = {
+        node.name
+        for node in tree.body
+        if isinstance(
+            node,
+            (
+                ast.FunctionDef,
+                ast.AsyncFunctionDef,
+            ),
+        )
+    }
 
-    if entrypoint not in functions:
+    if entrypoint not in top_level_functions:
         return PythonASTPolicyDecisionV1(
             passed=False,
             code="ENTRYPOINT_MISSING",
@@ -148,6 +159,40 @@ def evaluate_python_ast_policy(
     raised_names = {id(node.exc) for node in ast.walk(tree)
                     if isinstance(node, ast.Raise) and isinstance(node.exc, ast.Name)
                     and node.exc.id in _EXCEPTION_NAMES}
+    handler_names = {
+        id(node.type)
+        for node in ast.walk(tree)
+        if (
+            isinstance(node, ast.ExceptHandler)
+            and isinstance(node.type, ast.Name)
+            and node.type.id in _EXCEPTION_NAMES
+        )
+    }
+
+    # Preserve the existing python.ast.v1 decision-code vocabulary. Handler
+    # rejections remain BANNED_CALL rather than manufacturing a new code that
+    # downstream semantic-space and structural-validation contracts do not own.
+    for handler in (
+        node for node in ast.walk(tree)
+        if isinstance(node, ast.ExceptHandler)
+    ):
+        if handler.type is None:
+            return PythonASTPolicyDecisionV1(
+                passed=False,
+                code="BANNED_CALL",
+                lineno=handler.lineno,
+                call_name="<bare-except>",
+            )
+        if id(handler.type) not in handler_names:
+            return PythonASTPolicyDecisionV1(
+                passed=False,
+                code="BANNED_CALL",
+                lineno=handler.lineno,
+                call_name=(
+                    python_call_name(handler.type)
+                    or "<exception-handler>"
+                ),
+            )
 
     for node in ast.walk(tree):
         # These forms invoke capabilities without passing through Call.func.
@@ -161,7 +206,8 @@ def evaluate_python_ast_policy(
             implicit |= not isinstance(exception, ast.Name) or exception.id not in _EXCEPTION_NAMES
         if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
             implicit |= (node.id in _BUILTIN_NAMES and id(node) not in call_nodes
-                         and id(node) not in raised_names)
+                         and id(node) not in raised_names
+                         and id(node) not in handler_names)
         if implicit:
             return PythonASTPolicyDecisionV1(
                 passed=False, code="BANNED_CALL", lineno=node.lineno,
